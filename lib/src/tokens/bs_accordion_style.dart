@@ -14,6 +14,7 @@ import 'bs_borders.dart';
 class BsAccordionStyle {
   const BsAccordionStyle({
     this.padding,
+    this.bodyPadding,
     this.color,
     this.background,
     this.borderWidth,
@@ -29,13 +30,19 @@ class BsAccordionStyle {
     this.iconColor,
     this.iconActiveColor,
     this.iconTransitionDuration,
+    this.iconRotationTurns,
     this.focusRingColor,
     this.focusRingWidth,
   });
 
-  /// `$accordion-padding-y`/`$accordion-padding-x` (`1rem`/`1.25rem`),
-  /// shared by the body and the button.
+  /// `$accordion-button-padding-y`/`$accordion-button-padding-x`
+  /// (`1rem`/`1.25rem`), the header button's own padding.
   final EdgeInsetsGeometry? padding;
+
+  /// `$accordion-body-padding-y`/`$accordion-body-padding-x`
+  /// (`1rem`/`1.25rem` by default, but independently overridable from
+  /// [padding]).
+  final EdgeInsetsGeometry? bodyPadding;
 
   /// `$accordion-color` (`var(--bs-body-color)`).
   final Color? color;
@@ -85,6 +92,10 @@ class BsAccordionStyle {
   /// `$accordion-icon-transition` (`transform .2s ease-in-out`).
   final Duration? iconTransitionDuration;
 
+  /// `$accordion-icon-transform` (`rotate(-180deg)`), expressed as
+  /// [AnimatedRotation] turns (a full turn is `1.0`).
+  final double? iconRotationTurns;
+
   /// `$accordion-button-focus-box-shadow` (`$btn-focus-box-shadow`, i.e. a
   /// ring tinted by the primary color).
   final Color? focusRingColor;
@@ -97,6 +108,7 @@ class BsAccordionStyle {
     if (other == null) return this;
     return BsAccordionStyle(
       padding: other.padding ?? padding,
+      bodyPadding: other.bodyPadding ?? bodyPadding,
       color: other.color ?? color,
       background: other.background ?? background,
       borderWidth: other.borderWidth ?? borderWidth,
@@ -112,6 +124,7 @@ class BsAccordionStyle {
       iconColor: other.iconColor ?? iconColor,
       iconActiveColor: other.iconActiveColor ?? iconActiveColor,
       iconTransitionDuration: other.iconTransitionDuration ?? iconTransitionDuration,
+      iconRotationTurns: other.iconRotationTurns ?? iconRotationTurns,
       focusRingColor: other.focusRingColor ?? focusRingColor,
       focusRingWidth: other.focusRingWidth ?? focusRingWidth,
     );
@@ -128,6 +141,7 @@ class BsAccordionStyle {
   static const double defaultIconWidth = 20;
   static const Color defaultIconColor = BsColors.gray900;
   static const Duration defaultIconTransitionDuration = Duration(milliseconds: 200);
+  static const double defaultIconRotationTurns = 0.5;
   static Color get defaultButtonActiveBackground => BsColorUtils.tint(BsVariant.primary.color, 0.8);
   static Color get defaultButtonActiveColor => BsColorUtils.shade(BsVariant.primary.color, 0.6);
   static const double defaultFocusRingWidth = 4;
@@ -135,6 +149,7 @@ class BsAccordionStyle {
 
   static BsAccordionStyle get defaults => BsAccordionStyle(
     padding: defaultPadding,
+    bodyPadding: defaultPadding,
     color: defaultColor,
     background: defaultBackground,
     borderWidth: defaultBorderWidth,
@@ -150,6 +165,7 @@ class BsAccordionStyle {
     iconColor: defaultIconColor,
     iconActiveColor: defaultButtonActiveColor,
     iconTransitionDuration: defaultIconTransitionDuration,
+    iconRotationTurns: defaultIconRotationTurns,
     focusRingColor: defaultFocusRingColor,
     focusRingWidth: defaultFocusRingWidth,
   );

@@ -131,6 +131,29 @@ class AccordionPage extends StatelessWidget {
             ),
           ),
         ),
+        DemoSection(
+          title: 'Custom icon',
+          child: SizedBox(
+            width: 400,
+            child: BsAccordion(
+              initiallyExpanded: const {0},
+              iconBuilder: (context, color, isExpanded) => Text(
+                isExpanded ? '−' : '+',
+                style: TextStyle(color: color, fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              items: [
+                BsAccordionItem(
+                  header: const Text('Accordion Item #1'),
+                  body: const Text("This is the first item's accordion body."),
+                ),
+                BsAccordionItem(
+                  header: const Text('Accordion Item #2'),
+                  body: const Text("This is the second item's accordion body."),
+                ),
+              ],
+            ),
+          ),
+        ),
       ],
     );
   }

@@ -33,6 +33,7 @@ class BsAccordion extends StatefulWidget {
     this.alwaysOpen = false,
     this.flush = false,
     this.style,
+    this.iconBuilder,
     this.onExpansionChanged,
   });
 
@@ -52,6 +53,13 @@ class BsAccordion extends StatefulWidget {
 
   /// Style overrides layered on top of [BsAccordionStyle.defaults].
   final BsAccordionStyle? style;
+
+  /// Overrides the chevron entirely, replacing Bootstrap's
+  /// `$accordion-btn-icon`/`$accordion-btn-active-icon`. Called with the
+  /// resolved icon color and whether the item is expanded; the returned
+  /// widget is rotated automatically per [BsAccordionStyle.iconRotationTurns]
+  /// unless you opt out by building your own [AnimatedRotation].
+  final Widget Function(BuildContext context, Color color, bool isExpanded)? iconBuilder;
 
   /// Called with the toggled item's index and its new expanded state.
   final void Function(int index, bool isExpanded)? onExpansionChanged;
@@ -92,6 +100,7 @@ class _BsAccordionState extends State<BsAccordion> {
             isExpanded: _expanded.contains(i),
             flush: widget.flush,
             style: style,
+            iconBuilder: widget.iconBuilder,
             onTap: () => _toggle(i),
           ),
       ],
@@ -107,6 +116,7 @@ class _BsAccordionItemView extends StatefulWidget {
     required this.isExpanded,
     required this.flush,
     required this.style,
+    this.iconBuilder,
     required this.onTap,
   });
 
@@ -116,6 +126,7 @@ class _BsAccordionItemView extends StatefulWidget {
   final bool isExpanded;
   final bool flush;
   final BsAccordionStyle style;
+  final Widget Function(BuildContext context, Color color, bool isExpanded)? iconBuilder;
   final VoidCallback onTap;
 
   @override
@@ -215,12 +226,15 @@ class _BsAccordionItemViewState extends State<_BsAccordionItemView> {
                         ),
                         const SizedBox(width: 12),
                         AnimatedRotation(
-                          turns: widget.isExpanded ? 0.5 : 0,
+                          turns: widget.isExpanded
+                              ? (style.iconRotationTurns ?? BsAccordionStyle.defaultIconRotationTurns)
+                              : 0,
                           duration: style.iconTransitionDuration ?? BsAccordionStyle.defaultIconTransitionDuration,
-                          child: _BsChevron(
-                            size: style.iconWidth ?? BsAccordionStyle.defaultIconWidth,
-                            color: iconColor,
-                          ),
+                          child: widget.iconBuilder?.call(context, iconColor, widget.isExpanded) ??
+                              _BsChevron(
+                                size: style.iconWidth ?? BsAccordionStyle.defaultIconWidth,
+                                color: iconColor,
+                              ),
                         ),
                       ],
                     ),
@@ -235,7 +249,7 @@ class _BsAccordionItemViewState extends State<_BsAccordionItemView> {
               child: widget.isExpanded
                   ? Container(
                       width: double.infinity,
-                      padding: style.padding ?? BsAccordionStyle.defaultPadding,
+                      padding: style.bodyPadding ?? style.padding ?? BsAccordionStyle.defaultPadding,
                       color: background,
                       child: DefaultTextStyle.merge(
                         style: TextStyle(color: style.color ?? BsAccordionStyle.defaultColor),
