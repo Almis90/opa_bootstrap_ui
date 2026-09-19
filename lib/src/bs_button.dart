@@ -138,7 +138,7 @@ class _BsButtonState extends State<BsButton> {
               padding: style.padding ?? const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
                 color: background,
-                borderRadius: BorderRadius.circular(style.borderRadius ?? BsButtonStyle.borderRadiusBase),
+                borderRadius: style.borderRadius ?? BorderRadius.circular(BsButtonStyle.borderRadiusBase),
                 border: Border.all(
                   color: borderColor,
                   width: style.borderWidth ?? BsButtonStyle.defaultBorderWidth,

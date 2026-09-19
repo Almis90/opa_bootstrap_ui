@@ -62,7 +62,11 @@ class BsButtonStyle {
   /// set here is overridden when the button is painted.
   final TextStyle? textStyle;
 
-  final double? borderRadius;
+  /// The button's corner rounding, per `--bs-btn-border-radius`. Usually
+  /// uniform ([BorderRadius.circular]), but [BsButtonGroup] overrides this
+  /// per-corner to square off the sides shared with a neighboring button.
+  final BorderRadiusGeometry? borderRadius;
+
   final double? borderWidth;
 
   /// Opacity applied to the whole button when disabled, per
@@ -261,19 +265,19 @@ class BsButtonStyle {
         return const BsButtonStyle(
           padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           textStyle: TextStyle(fontSize: fontSizeSm),
-          borderRadius: borderRadiusSm,
+          borderRadius: BorderRadius.all(Radius.circular(borderRadiusSm)),
         );
       case BsSize.normal:
         return const BsButtonStyle(
           padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           textStyle: TextStyle(fontSize: fontSizeBase),
-          borderRadius: borderRadiusBase,
+          borderRadius: BorderRadius.all(Radius.circular(borderRadiusBase)),
         );
       case BsSize.lg:
         return const BsButtonStyle(
           padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           textStyle: TextStyle(fontSize: fontSizeLg),
-          borderRadius: borderRadiusLg,
+          borderRadius: BorderRadius.all(Radius.circular(borderRadiusLg)),
         );
     }
   }

@@ -162,6 +162,54 @@ class MainApp extends StatelessWidget {
                     ),
                     child: const Text('Custom brand color'),
                   ),
+                  const SizedBox(height: 24),
+                  const Text('Button group'),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 24,
+                    runSpacing: 12,
+                    crossAxisAlignment: WrapCrossAlignment.start,
+                    children: [
+                      BsButtonGroup(
+                        children: [
+                          BsButton(onPressed: () {}, child: const Text('Left')),
+                          BsButton(onPressed: () {}, child: const Text('Middle')),
+                          BsButton(onPressed: () {}, child: const Text('Right')),
+                        ],
+                      ),
+                      BsButtonGroup(
+                        size: BsSize.sm,
+                        children: [
+                          BsButton(
+                            variant: BsVariant.secondary,
+                            onPressed: () {},
+                            child: const Text('1'),
+                          ),
+                          BsButton(
+                            variant: BsVariant.secondary,
+                            onPressed: () {},
+                            child: const Text('2'),
+                          ),
+                          BsButton(
+                            variant: BsVariant.secondary,
+                            onPressed: () {},
+                            child: const Text('3'),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        width: 160,
+                        child: BsButtonGroup(
+                          vertical: true,
+                          children: [
+                            BsButton(onPressed: () {}, child: const Text('Top')),
+                            BsButton(onPressed: () {}, child: const Text('Middle')),
+                            BsButton(onPressed: () {}, child: const Text('Bottom')),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
