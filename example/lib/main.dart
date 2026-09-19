@@ -241,6 +241,8 @@ class _ToggleGroupDemo extends StatefulWidget {
 class _ToggleGroupDemoState extends State<_ToggleGroupDemo> {
   List<bool> _checkboxSelected = [false, false, false];
   List<bool> _radioSelected = [true, false, false];
+  List<bool> _verticalCheckboxSelected = [false, false, false];
+  List<bool> _verticalRadioSelected = [true, false, false];
 
   @override
   Widget build(BuildContext context) {
@@ -267,6 +269,33 @@ class _ToggleGroupDemoState extends State<_ToggleGroupDemo> {
             });
           },
           children: const [Text('Radio 1'), Text('Radio 2'), Text('Radio 3')],
+        ),
+        SizedBox(
+          width: 140,
+          child: BsToggleButtonGroup(
+            vertical: true,
+            isSelected: _verticalCheckboxSelected,
+            onPressed: (index) {
+              setState(() {
+                _verticalCheckboxSelected = [..._verticalCheckboxSelected];
+                _verticalCheckboxSelected[index] = !_verticalCheckboxSelected[index];
+              });
+            },
+            children: const [Text('Checkbox 1'), Text('Checkbox 2'), Text('Checkbox 3')],
+          ),
+        ),
+        SizedBox(
+          width: 140,
+          child: BsToggleButtonGroup(
+            vertical: true,
+            isSelected: _verticalRadioSelected,
+            onPressed: (index) {
+              setState(() {
+                _verticalRadioSelected = List.generate(_verticalRadioSelected.length, (i) => i == index);
+              });
+            },
+            children: const [Text('Radio 1'), Text('Radio 2'), Text('Radio 3')],
+          ),
         ),
       ],
     );
