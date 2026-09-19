@@ -137,6 +137,7 @@ class BsAccordion extends StatefulWidget {
     this.style,
     this.iconBuilder,
     this.onExpansionChanged,
+    this.onExpansionEnd,
   }) : assert(
          controller == null || initiallyExpanded == const <int>{},
          'initiallyExpanded has no effect when controller is set — pass it to '
@@ -178,8 +179,16 @@ class BsAccordion extends StatefulWidget {
   /// unless you opt out by building your own [AnimatedRotation].
   final Widget Function(BuildContext context, Color color, bool isExpanded)? iconBuilder;
 
-  /// Called with the toggled item's index and its new expanded state.
+  /// Called immediately when an item starts expanding or collapsing —
+  /// whether triggered by a tap or programmatically via [controller] —
+  /// mirroring Bootstrap's `show.bs.collapse`/`hide.bs.collapse` events.
   final void Function(int index, bool isExpanded)? onExpansionChanged;
+
+  /// Called once an item's expand/collapse animation finishes, mirroring
+  /// Bootstrap's `shown.bs.collapse`/`hidden.bs.collapse` events. Useful for
+  /// e.g. scrolling newly-revealed content into view, or lazily building it
+  /// only once actually visible.
+  final void Function(int index, bool isExpanded)? onExpansionEnd;
 
   @override
   State<BsAccordion> createState() => _BsAccordionState();
@@ -187,6 +196,7 @@ class BsAccordion extends StatefulWidget {
 
 class _BsAccordionState extends State<BsAccordion> {
   BsAccordionController? _internalController;
+  late Set<int> _lastExpanded;
 
   BsAccordionController get _controller => widget.controller ?? _internalController!;
 
@@ -204,6 +214,7 @@ class _BsAccordionState extends State<BsAccordion> {
         detachedIndices: _detachedIndices,
       );
     }
+    _lastExpanded = {..._controller.expanded};
     _controller.addListener(_handleControllerChanged);
   }
 
@@ -218,6 +229,7 @@ class _BsAccordionState extends State<BsAccordion> {
           detachedIndices: _detachedIndices,
         );
       }
+      _lastExpanded = {..._controller.expanded};
       _controller.addListener(_handleControllerChanged);
     }
   }
@@ -229,13 +241,54 @@ class _BsAccordionState extends State<BsAccordion> {
     super.dispose();
   }
 
-  void _handleControllerChanged() => setState(() {});
+  // Fires onExpansionChanged/onExpansionEnd for whatever changed, regardless
+  // of whether the change came from a tap or programmatically via the
+  // controller — mirroring Bootstrap's events, which fire the same way for
+  // both a user click and a scripted `.collapse('show')` call. Diffing sets
+  // (rather than hooking the tap handler directly) also means a grouped
+  // expand that both opens one item and closes another correctly reports
+  // both, in one pass.
+  void _handleControllerChanged() {
+    final current = _controller.expanded;
+    final becameExpanded = current.difference(_lastExpanded);
+    final becameCollapsed = _lastExpanded.difference(current);
+    _lastExpanded = {...current};
 
-  void _toggle(int index) {
-    final expanding = !_controller.isExpanded(index);
-    _controller.toggle(index);
-    widget.onExpansionChanged?.call(index, expanding);
+    for (final i in becameExpanded) {
+      widget.onExpansionChanged?.call(i, true);
+    }
+    for (final i in becameCollapsed) {
+      widget.onExpansionChanged?.call(i, false);
+    }
+
+    if (widget.onExpansionEnd != null && (becameExpanded.isNotEmpty || becameCollapsed.isNotEmpty)) {
+      final style = BsAccordionStyle.defaults.merge(widget.style);
+      final duration = style.transitionDuration ?? BsAccordionStyle.defaultTransitionDuration;
+      for (final i in becameExpanded) {
+        _scheduleExpansionEnd(i, true, duration);
+      }
+      for (final i in becameCollapsed) {
+        _scheduleExpansionEnd(i, false, duration);
+      }
+    }
+
+    setState(() {});
   }
+
+  void _scheduleExpansionEnd(int index, bool isExpanded, Duration duration) {
+    Future.delayed(duration, () {
+      if (!mounted) return;
+      // Only fire if the item is still in the state we scheduled this for —
+      // a rapid second toggle before this fires means this transition never
+      // actually completed, so reporting it would be a stale/incorrect
+      // notification.
+      if (_controller.isExpanded(index) == isExpanded) {
+        widget.onExpansionEnd?.call(index, isExpanded);
+      }
+    });
+  }
+
+  void _toggle(int index) => _controller.toggle(index);
 
   @override
   Widget build(BuildContext context) {

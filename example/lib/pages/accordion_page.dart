@@ -184,6 +184,47 @@ class AccordionPage extends StatelessWidget {
           ),
         ),
         DemoSection(title: 'Programmatic control', child: _ControllerDemo()),
+        DemoSection(title: 'Events', child: _EventsDemo()),
+      ],
+    );
+  }
+}
+
+class _EventsDemo extends StatefulWidget {
+  @override
+  State<_EventsDemo> createState() => _EventsDemoState();
+}
+
+class _EventsDemoState extends State<_EventsDemo> {
+  final List<String> _log = [];
+
+  void _logEvent(String message) {
+    setState(() {
+      _log.insert(0, message);
+      if (_log.length > 6) _log.removeLast();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: 400,
+          child: BsAccordion(
+            onExpansionChanged: (index, isExpanded) =>
+                _logEvent('${isExpanded ? 'show' : 'hide'}.bs.collapse — item $index'),
+            onExpansionEnd: (index, isExpanded) =>
+                _logEvent('${isExpanded ? 'shown' : 'hidden'}.bs.collapse — item $index'),
+            items: const [
+              BsAccordionItem(header: Text('Accordion Item #1'), body: Text('Body #1')),
+              BsAccordionItem(header: Text('Accordion Item #2'), body: Text('Body #2')),
+            ],
+          ),
+        ),
+        const SizedBox(height: 12),
+        for (final entry in _log) Text(entry, style: const TextStyle(fontFamily: 'monospace', fontSize: 12)),
       ],
     );
   }
