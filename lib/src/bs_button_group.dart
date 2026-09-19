@@ -63,6 +63,7 @@ class BsButtonGroup extends StatelessWidget {
         outline: button.outline,
         size: effectiveSize,
         style: (button.style ?? const BsButtonStyle()).merge(BsButtonStyle(borderRadius: borderRadius)),
+        active: button.active,
         noWrap: button.noWrap,
         focusNode: button.focusNode,
         autofocus: button.autofocus,

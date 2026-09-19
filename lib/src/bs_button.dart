@@ -22,6 +22,7 @@ class BsButton extends StatefulWidget {
     this.outline = false,
     this.size = BsSize.normal,
     this.style,
+    this.active = false,
     this.noWrap = false,
     this.focusNode,
     this.autofocus = false,
@@ -49,6 +50,11 @@ class BsButton extends StatefulWidget {
   /// falls back to the default style, mirroring how a custom `.btn-*` class
   /// in Bootstrap only reassigns the CSS variables it needs.
   final BsButtonStyle? style;
+
+  /// Whether to render the persistent `.active` state (e.g. the current
+  /// item in a `.btn-group`/pagination, a toggled button), which uses the
+  /// same `--bs-btn-active-*` colors/shadow as the transient pressed state.
+  final bool active;
 
   /// Whether to prevent the button's text from wrapping onto multiple
   /// lines, mirroring Bootstrap's `$btn-white-space: nowrap` option.
@@ -89,10 +95,12 @@ class _BsButtonState extends State<BsButton> {
       size: widget.size,
     ).merge(widget.style);
 
+    final isActive = widget.active || _pressed;
+
     final Color background;
     final Color borderColor;
     final Color color;
-    if (_pressed) {
+    if (isActive) {
       background = style.activeBackground!;
       borderColor = style.activeBorderColor!;
       color = style.activeColor!;
@@ -109,7 +117,7 @@ class _BsButtonState extends State<BsButton> {
     final opacity = enabled ? 1.0 : (style.disabledOpacity ?? BsButtonStyle.defaultDisabledOpacity);
 
     final boxShadow = <BoxShadow>[
-      ...?(_pressed ? style.activeShadow : style.boxShadow),
+      ...?(isActive ? style.activeShadow : style.boxShadow),
       if (_focused)
         BoxShadow(
           color: (style.focusRingColor ?? style.borderColor)!.withValues(alpha: 0.5),

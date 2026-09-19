@@ -208,6 +208,13 @@ class MainApp extends StatelessWidget {
                           ],
                         ),
                       ),
+                      BsButtonGroup(
+                        children: [
+                          BsButton(active: true, onPressed: () {}, child: const Text('Active link')),
+                          BsButton(onPressed: () {}, child: const Text('Link')),
+                          BsButton(onPressed: () {}, child: const Text('Link')),
+                        ],
+                      ),
                     ],
                   ),
                 ],
