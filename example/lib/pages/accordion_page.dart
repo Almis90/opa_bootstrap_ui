@@ -154,6 +154,73 @@ class AccordionPage extends StatelessWidget {
             ),
           ),
         ),
+        DemoSection(title: 'Programmatic control', child: _ControllerDemo()),
+      ],
+    );
+  }
+}
+
+class _ControllerDemo extends StatefulWidget {
+  @override
+  State<_ControllerDemo> createState() => _ControllerDemoState();
+}
+
+class _ControllerDemoState extends State<_ControllerDemo> {
+  late final BsAccordionController _controller = BsAccordionController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Wrap(
+          spacing: 12,
+          runSpacing: 8,
+          children: [
+            BsButton(
+              size: BsSize.sm,
+              onPressed: () => _controller.expand(0),
+              child: const Text('Expand #1'),
+            ),
+            BsButton(
+              size: BsSize.sm,
+              onPressed: () => _controller.expand(1),
+              child: const Text('Expand #2'),
+            ),
+            BsButton(
+              size: BsSize.sm,
+              variant: BsVariant.secondary,
+              onPressed: _controller.collapseAll,
+              child: const Text('Collapse all'),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        SizedBox(
+          width: 400,
+          child: BsAccordion(
+            controller: _controller,
+            items: const [
+              BsAccordionItem(
+                header: Text('Accordion Item #1'),
+                body: Text(
+                  'Driven by an external BsAccordionController — the buttons '
+                  'above call expand()/collapseAll() directly.',
+                ),
+              ),
+              BsAccordionItem(
+                header: Text('Accordion Item #2'),
+                body: Text("This is the second item's accordion body."),
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }

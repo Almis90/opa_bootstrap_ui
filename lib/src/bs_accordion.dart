@@ -2,6 +2,52 @@ import 'package:flutter/widgets.dart';
 
 import 'tokens/bs_accordion_style.dart';
 
+/// Controls which [BsAccordion] items are expanded, for programmatic
+/// show/hide — the same pattern Flutter itself uses for [TabController],
+/// [ScrollController] and `ExpansionTileController`: pass an instance you
+/// created to [BsAccordion.controller] and call [expand]/[collapse]/
+/// [toggle] from anywhere with access to it. If you don't need programmatic
+/// control, omit it — [BsAccordion] creates and manages its own internally.
+class BsAccordionController extends ChangeNotifier {
+  BsAccordionController({Set<int> initiallyExpanded = const <int>{}, this.alwaysOpen = false})
+      : _expanded = {...initiallyExpanded};
+
+  /// Whether more than one item can be expanded at once. When false
+  /// (Bootstrap's default), [expand] collapses every other item.
+  final bool alwaysOpen;
+
+  final Set<int> _expanded;
+
+  /// The currently expanded indices. Do not mutate the returned set;
+  /// use [expand]/[collapse]/[toggle]/[collapseAll] instead.
+  Set<int> get expanded => Set.unmodifiable(_expanded);
+
+  bool isExpanded(int index) => _expanded.contains(index);
+
+  /// Expands [index], collapsing every other item first unless
+  /// [alwaysOpen] is true.
+  void expand(int index) {
+    final hasOtherExpanded = !alwaysOpen && _expanded.any((i) => i != index);
+    if (_expanded.contains(index) && !hasOtherExpanded) return;
+    if (!alwaysOpen) _expanded.clear();
+    _expanded.add(index);
+    notifyListeners();
+  }
+
+  void collapse(int index) {
+    if (_expanded.remove(index)) notifyListeners();
+  }
+
+  void toggle(int index) => isExpanded(index) ? collapse(index) : expand(index);
+
+  /// Collapses every item.
+  void collapseAll() {
+    if (_expanded.isEmpty) return;
+    _expanded.clear();
+    notifyListeners();
+  }
+}
+
 /// One collapsible section of a [BsAccordion].
 class BsAccordionItem {
   const BsAccordionItem({required this.header, required this.body});
@@ -29,22 +75,36 @@ class BsAccordion extends StatefulWidget {
   const BsAccordion({
     super.key,
     required this.items,
+    this.controller,
     this.initiallyExpanded = const <int>{},
     this.alwaysOpen = false,
     this.flush = false,
     this.style,
     this.iconBuilder,
     this.onExpansionChanged,
-  });
+  }) : assert(
+         controller == null || initiallyExpanded == const <int>{},
+         'initiallyExpanded has no effect when controller is set — pass it to '
+         'BsAccordionController(initiallyExpanded: ...) instead.',
+       );
 
   /// The items to render, top to bottom.
   final List<BsAccordionItem> items;
 
-  /// Indices expanded when the accordion first builds.
+  /// Controls which items are expanded, for programmatic show/hide. Omit to
+  /// let [BsAccordion] create and manage its own controller internally —
+  /// only supply one if you need to expand/collapse items from outside this
+  /// widget (see [BsAccordionController]). When set, [initiallyExpanded] and
+  /// [alwaysOpen] are ignored in favor of the controller's own settings.
+  final BsAccordionController? controller;
+
+  /// Indices expanded when the accordion first builds. Ignored when
+  /// [controller] is set.
   final Set<int> initiallyExpanded;
 
   /// Whether more than one item can be expanded at once. When false
-  /// (Bootstrap's default), expanding an item collapses the others.
+  /// (Bootstrap's default), expanding an item collapses the others. Ignored
+  /// when [controller] is set — use [BsAccordionController.alwaysOpen].
   final bool alwaysOpen;
 
   /// Whether to render the borderless, edge-to-edge `.accordion-flush`
@@ -69,18 +129,49 @@ class BsAccordion extends StatefulWidget {
 }
 
 class _BsAccordionState extends State<BsAccordion> {
-  late final Set<int> _expanded = {...widget.initiallyExpanded};
+  BsAccordionController? _internalController;
+
+  BsAccordionController get _controller => widget.controller ?? _internalController!;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.controller == null) {
+      _internalController = BsAccordionController(
+        initiallyExpanded: widget.initiallyExpanded,
+        alwaysOpen: widget.alwaysOpen,
+      );
+    }
+    _controller.addListener(_handleControllerChanged);
+  }
+
+  @override
+  void didUpdateWidget(BsAccordion oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.controller != oldWidget.controller) {
+      (oldWidget.controller ?? _internalController)?.removeListener(_handleControllerChanged);
+      if (widget.controller == null) {
+        _internalController ??= BsAccordionController(
+          initiallyExpanded: widget.initiallyExpanded,
+          alwaysOpen: widget.alwaysOpen,
+        );
+      }
+      _controller.addListener(_handleControllerChanged);
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.removeListener(_handleControllerChanged);
+    _internalController?.dispose();
+    super.dispose();
+  }
+
+  void _handleControllerChanged() => setState(() {});
 
   void _toggle(int index) {
-    final expanding = !_expanded.contains(index);
-    setState(() {
-      if (!widget.alwaysOpen) _expanded.clear();
-      if (expanding) {
-        _expanded.add(index);
-      } else {
-        _expanded.remove(index);
-      }
-    });
+    final expanding = !_controller.isExpanded(index);
+    _controller.toggle(index);
     widget.onExpansionChanged?.call(index, expanding);
   }
 
@@ -97,7 +188,7 @@ class _BsAccordionState extends State<BsAccordion> {
             item: widget.items[i],
             isFirst: i == 0,
             isLast: i == widget.items.length - 1,
-            isExpanded: _expanded.contains(i),
+            isExpanded: _controller.isExpanded(i),
             flush: widget.flush,
             style: style,
             iconBuilder: widget.iconBuilder,
