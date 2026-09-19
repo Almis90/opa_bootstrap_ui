@@ -11,7 +11,9 @@ import 'tokens/bs_accordion_style.dart';
 class BsAccordionController extends ChangeNotifier {
   BsAccordionController({Set<int> initiallyExpanded = const <int>{}, Set<int> detachedIndices = const <int>{}})
       : _expanded = {...initiallyExpanded},
-        _detached = {...detachedIndices};
+        _detached = {...detachedIndices} {
+    _normalizeGroupedExpansion();
+  }
 
   final Set<int> _expanded;
   Set<int> _detached;
@@ -22,7 +24,32 @@ class BsAccordionController extends ChangeNotifier {
   /// this in sync with [BsAccordionItem.detached] on every build; set it
   /// yourself only if you're driving the controller without a [BsAccordion].
   Set<int> get detachedIndices => Set.unmodifiable(_detached);
-  set detachedIndices(Set<int> value) => _detached = {...value};
+  set detachedIndices(Set<int> value) {
+    _detached = {...value};
+    _normalizeGroupedExpansion();
+  }
+
+  /// Grouped (non-detached) items are mutually exclusive, so at most one of
+  /// them may start, or be marked, expanded at once. If more than one ends
+  /// up in [_expanded] — e.g. via `initiallyExpanded` — keep the first and
+  /// collapse the rest, matching what [expand] would enforce, and flag the
+  /// mistake in debug builds instead of silently rendering two open items
+  /// that normal interaction could never produce.
+  void _normalizeGroupedExpansion() {
+    final grouped = _expanded.where((i) => !_detached.contains(i)).toList()..sort();
+    if (grouped.length <= 1) return;
+    assert(
+      false,
+      'BsAccordionController: items $grouped were all initially expanded, '
+      'but only one non-detached item can be open at a time — keeping '
+      '${grouped.first} and collapsing the rest. Mark the others as '
+      'detached (BsAccordionItem.detached) if they should stay open '
+      'independently.',
+    );
+    for (final i in grouped.skip(1)) {
+      _expanded.remove(i);
+    }
+  }
 
   /// The currently expanded indices. Do not mutate the returned set;
   /// use [expand]/[collapse]/[toggle]/[collapseAll] instead.
