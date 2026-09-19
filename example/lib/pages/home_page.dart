@@ -1,0 +1,50 @@
+import 'package:flutter/widgets.dart';
+import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
+
+import 'accordion_page.dart';
+import 'button_group_page.dart';
+import 'button_page.dart';
+import 'demo_page.dart';
+
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return DemoPage(
+      title: 'opa_bootstrap_ui',
+      children: [
+        for (final entry in _pages)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: BsButton(
+              outline: true,
+              onPressed: () => Navigator.of(context).push(
+                PageRouteBuilder(
+                  pageBuilder: (context, animation, secondaryAnimation) => entry.builder(context),
+                ),
+              ),
+              child: SizedBox(width: 200, child: Text(entry.title)),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+class _PageEntry {
+  const _PageEntry(this.title, this.builder);
+
+  final String title;
+  final WidgetBuilder builder;
+}
+
+const _pages = [
+  _PageEntry('Button', _buildButtonPage),
+  _PageEntry('Button group', _buildButtonGroupPage),
+  _PageEntry('Accordion', _buildAccordionPage),
+];
+
+Widget _buildButtonPage(BuildContext context) => const ButtonPage();
+Widget _buildButtonGroupPage(BuildContext context) => const ButtonGroupPage();
+Widget _buildAccordionPage(BuildContext context) => const AccordionPage();
