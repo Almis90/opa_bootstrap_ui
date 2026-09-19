@@ -19,6 +19,7 @@ class BsAccordionStyle {
     this.borderWidth,
     this.borderColor,
     this.borderRadius,
+    this.innerBorderRadius,
     this.buttonColor,
     this.buttonBackground,
     this.transitionDuration,
@@ -50,6 +51,11 @@ class BsAccordionStyle {
 
   /// `$accordion-border-radius` (`var(--bs-border-radius)`).
   final double? borderRadius;
+
+  /// `$accordion-inner-border-radius` (`subtract($accordion-border-radius,
+  /// $accordion-border-width)`) — the slightly smaller radius applied to the
+  /// button/body fill so it nests inside the item's outer border curve.
+  final double? innerBorderRadius;
 
   /// `$accordion-button-color` (`var(--bs-body-color)`).
   final Color? buttonColor;
@@ -96,6 +102,7 @@ class BsAccordionStyle {
       borderWidth: other.borderWidth ?? borderWidth,
       borderColor: other.borderColor ?? borderColor,
       borderRadius: other.borderRadius ?? borderRadius,
+      innerBorderRadius: other.innerBorderRadius ?? innerBorderRadius,
       buttonColor: other.buttonColor ?? buttonColor,
       buttonBackground: other.buttonBackground ?? buttonBackground,
       transitionDuration: other.transitionDuration ?? transitionDuration,
@@ -116,6 +123,7 @@ class BsAccordionStyle {
   static const double defaultBorderWidth = BsBorders.width;
   static const Color defaultBorderColor = BsBorders.color;
   static const double defaultBorderRadius = BsBorders.radius;
+  static const double defaultInnerBorderRadius = BsBorders.radius - BsBorders.width;
   static const Duration defaultTransitionDuration = Duration(milliseconds: 150);
   static const double defaultIconWidth = 20;
   static const Color defaultIconColor = BsColors.gray900;
@@ -132,6 +140,7 @@ class BsAccordionStyle {
     borderWidth: defaultBorderWidth,
     borderColor: defaultBorderColor,
     borderRadius: defaultBorderRadius,
+    innerBorderRadius: defaultInnerBorderRadius,
     buttonColor: defaultColor,
     buttonBackground: defaultBackground,
     transitionDuration: defaultTransitionDuration,

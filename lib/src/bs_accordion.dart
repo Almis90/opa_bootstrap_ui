@@ -134,11 +134,25 @@ class _BsAccordionItemViewState extends State<_BsAccordionItemView> {
     final background = style.background ?? BsAccordionStyle.defaultBackground;
     final transitionDuration = style.transitionDuration ?? BsAccordionStyle.defaultTransitionDuration;
 
+    final innerRadius = style.innerBorderRadius ?? BsAccordionStyle.defaultInnerBorderRadius;
+
     final borderRadius = widget.flush
         ? BorderRadius.zero
         : BorderRadius.vertical(
             top: widget.isFirst ? Radius.circular(outerRadius) : Radius.zero,
             bottom: widget.isLast ? Radius.circular(outerRadius) : Radius.zero,
+          );
+
+    // The button's own fill uses a slightly smaller radius than the item's
+    // outer border, per $accordion-inner-border-radius, so it nests inside
+    // the border curve instead of sharing it exactly. Bootstrap only rounds
+    // the last item's button when collapsed — once expanded, the body below
+    // it carries the bottom radius instead (handled by the outer ClipRRect).
+    final buttonRadius = widget.flush
+        ? BorderRadius.zero
+        : BorderRadius.vertical(
+            top: widget.isFirst ? Radius.circular(innerRadius) : Radius.zero,
+            bottom: (widget.isLast && !widget.isExpanded) ? Radius.circular(innerRadius) : Radius.zero,
           );
 
     final side = BorderSide(color: borderColor, width: borderWidth);
@@ -164,7 +178,7 @@ class _BsAccordionItemViewState extends State<_BsAccordionItemView> {
     return ClipRRect(
       borderRadius: borderRadius,
       child: DecoratedBox(
-        decoration: BoxDecoration(border: border),
+        decoration: BoxDecoration(border: border, borderRadius: borderRadius),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -180,6 +194,7 @@ class _BsAccordionItemViewState extends State<_BsAccordionItemView> {
                     padding: style.padding ?? BsAccordionStyle.defaultPadding,
                     decoration: BoxDecoration(
                       color: buttonBackground,
+                      borderRadius: buttonRadius,
                       boxShadow: [
                         if (widget.isExpanded) BoxShadow(color: borderColor, offset: Offset(0, borderWidth)),
                         if (_focused)
