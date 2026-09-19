@@ -9,14 +9,20 @@ import 'tokens/bs_accordion_style.dart';
 /// [toggle] from anywhere with access to it. If you don't need programmatic
 /// control, omit it — [BsAccordion] creates and manages its own internally.
 class BsAccordionController extends ChangeNotifier {
-  BsAccordionController({Set<int> initiallyExpanded = const <int>{}, this.alwaysOpen = false})
-      : _expanded = {...initiallyExpanded};
-
-  /// Whether more than one item can be expanded at once. When false
-  /// (Bootstrap's default), [expand] collapses every other item.
-  final bool alwaysOpen;
+  BsAccordionController({Set<int> initiallyExpanded = const <int>{}, Set<int> detachedIndices = const <int>{}})
+      : _expanded = {...initiallyExpanded},
+        _detached = {...detachedIndices};
 
   final Set<int> _expanded;
+  Set<int> _detached;
+
+  /// Which indices are "detached" — mirroring Bootstrap's `.accordion-collapse`
+  /// omitting `data-bs-parent`: a detached item toggles independently and
+  /// never collapses, or is collapsed by, any other item. [BsAccordion] keeps
+  /// this in sync with [BsAccordionItem.detached] on every build; set it
+  /// yourself only if you're driving the controller without a [BsAccordion].
+  Set<int> get detachedIndices => Set.unmodifiable(_detached);
+  set detachedIndices(Set<int> value) => _detached = {...value};
 
   /// The currently expanded indices. Do not mutate the returned set;
   /// use [expand]/[collapse]/[toggle]/[collapseAll] instead.
@@ -24,12 +30,21 @@ class BsAccordionController extends ChangeNotifier {
 
   bool isExpanded(int index) => _expanded.contains(index);
 
-  /// Expands [index], collapsing every other item first unless
-  /// [alwaysOpen] is true.
+  /// Expands [index]. If [index] is detached (see [detachedIndices]), every
+  /// other item is left untouched. Otherwise, every other *non-detached*
+  /// item collapses first (Bootstrap's `data-bs-parent` grouping) while any
+  /// detached items stay exactly as they were.
   void expand(int index) {
-    final hasOtherExpanded = !alwaysOpen && _expanded.any((i) => i != index);
-    if (_expanded.contains(index) && !hasOtherExpanded) return;
-    if (!alwaysOpen) _expanded.clear();
+    if (_detached.contains(index)) {
+      if (_expanded.contains(index)) return;
+      _expanded.add(index);
+      notifyListeners();
+      return;
+    }
+
+    final hasOtherGroupedExpanded = _expanded.any((i) => i != index && !_detached.contains(i));
+    if (_expanded.contains(index) && !hasOtherGroupedExpanded) return;
+    _expanded.removeWhere((i) => !_detached.contains(i));
     _expanded.add(index);
     notifyListeners();
   }
@@ -40,7 +55,7 @@ class BsAccordionController extends ChangeNotifier {
 
   void toggle(int index) => isExpanded(index) ? collapse(index) : expand(index);
 
-  /// Collapses every item.
+  /// Collapses every item, including detached ones.
   void collapseAll() {
     if (_expanded.isEmpty) return;
     _expanded.clear();
@@ -50,13 +65,23 @@ class BsAccordionController extends ChangeNotifier {
 
 /// One collapsible section of a [BsAccordion].
 class BsAccordionItem {
-  const BsAccordionItem({required this.header, required this.body});
+  const BsAccordionItem({required this.header, required this.body, this.detached = false});
 
   /// The always-visible header content, typically a [Text].
   final Widget header;
 
   /// The content revealed when this item is expanded.
   final Widget body;
+
+  /// Mirrors omitting `data-bs-parent` on this item's `.accordion-collapse`
+  /// in Bootstrap: when true, this item expands/collapses independently and
+  /// never affects, or is affected by, the other items in the same
+  /// [BsAccordion] — even if those items are grouped with each other. A
+  /// "detached" item is simply one that opted out of the accordion's
+  /// single-open grouping; set it on every item to reproduce Bootstrap's
+  /// "always open" example, or on just one to make that item independent
+  /// while the rest still behave as a single-open group.
+  final bool detached;
 }
 
 /// A Bootstrap accordion (`.accordion`): a vertical stack of collapsible
@@ -67,17 +92,19 @@ class BsAccordionItem {
 /// an animated height reveal for the body instead of Bootstrap's CSS
 /// `collapse` transition.
 ///
-/// By default only one item is expanded at a time (Bootstrap's
-/// `data-bs-parent` behavior); pass [alwaysOpen] to let multiple items stay
-/// expanded independently, and [flush] for the edge-to-edge
-/// `.accordion-flush` variant (no outer border or rounded corners).
+/// By default all items are grouped into a single-open set (Bootstrap's
+/// `data-bs-parent` behavior); set [BsAccordionItem.detached] on any item
+/// to exclude it from that grouping — it then expands/collapses on its own,
+/// regardless of what the other items do. Setting it on every item
+/// reproduces Bootstrap's "always open" example. [flush] renders the
+/// edge-to-edge `.accordion-flush` variant (no outer border or rounded
+/// corners).
 class BsAccordion extends StatefulWidget {
   const BsAccordion({
     super.key,
     required this.items,
     this.controller,
     this.initiallyExpanded = const <int>{},
-    this.alwaysOpen = false,
     this.flush = false,
     this.style,
     this.iconBuilder,
@@ -94,18 +121,13 @@ class BsAccordion extends StatefulWidget {
   /// Controls which items are expanded, for programmatic show/hide. Omit to
   /// let [BsAccordion] create and manage its own controller internally —
   /// only supply one if you need to expand/collapse items from outside this
-  /// widget (see [BsAccordionController]). When set, [initiallyExpanded] and
-  /// [alwaysOpen] are ignored in favor of the controller's own settings.
+  /// widget (see [BsAccordionController]). When set, [initiallyExpanded] is
+  /// ignored in favor of the controller's own settings.
   final BsAccordionController? controller;
 
   /// Indices expanded when the accordion first builds. Ignored when
   /// [controller] is set.
   final Set<int> initiallyExpanded;
-
-  /// Whether more than one item can be expanded at once. When false
-  /// (Bootstrap's default), expanding an item collapses the others. Ignored
-  /// when [controller] is set — use [BsAccordionController.alwaysOpen].
-  final bool alwaysOpen;
 
   /// Whether to render the borderless, edge-to-edge `.accordion-flush`
   /// variant.
@@ -133,13 +155,18 @@ class _BsAccordionState extends State<BsAccordion> {
 
   BsAccordionController get _controller => widget.controller ?? _internalController!;
 
+  Set<int> get _detachedIndices => {
+    for (var i = 0; i < widget.items.length; i++)
+      if (widget.items[i].detached) i,
+  };
+
   @override
   void initState() {
     super.initState();
     if (widget.controller == null) {
       _internalController = BsAccordionController(
         initiallyExpanded: widget.initiallyExpanded,
-        alwaysOpen: widget.alwaysOpen,
+        detachedIndices: _detachedIndices,
       );
     }
     _controller.addListener(_handleControllerChanged);
@@ -153,7 +180,7 @@ class _BsAccordionState extends State<BsAccordion> {
       if (widget.controller == null) {
         _internalController ??= BsAccordionController(
           initiallyExpanded: widget.initiallyExpanded,
-          alwaysOpen: widget.alwaysOpen,
+          detachedIndices: _detachedIndices,
         );
       }
       _controller.addListener(_handleControllerChanged);
@@ -178,6 +205,7 @@ class _BsAccordionState extends State<BsAccordion> {
   @override
   Widget build(BuildContext context) {
     final style = BsAccordionStyle.defaults.merge(widget.style);
+    _controller.detachedIndices = _detachedIndices;
 
     return Column(
       mainAxisSize: MainAxisSize.min,

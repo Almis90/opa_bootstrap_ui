@@ -29,7 +29,7 @@ class AccordionPage extends StatelessWidget {
                   header: const Text('Accordion Item #2'),
                   body: const Text(
                     "This is the second item's accordion body. Selecting it "
-                    'closes the first, since alwaysOpen defaults to false.',
+                    'closes the first, since none of the items are detached.',
                   ),
                 ),
                 BsAccordionItem(
@@ -45,10 +45,10 @@ class AccordionPage extends StatelessWidget {
           child: SizedBox(
             width: 400,
             child: BsAccordion(
-              alwaysOpen: true,
               initiallyExpanded: const {0},
               items: [
                 BsAccordionItem(
+                  detached: true,
                   header: const Text('Accordion Item #1'),
                   body: const Text(
                     "This is the first item's accordion body. It supports "
@@ -56,10 +56,41 @@ class AccordionPage extends StatelessWidget {
                   ),
                 ),
                 BsAccordionItem(
+                  detached: true,
                   header: const Text('Accordion Item #2'),
                   body: const Text(
                     "This is the second item's accordion body. It stays "
-                    'open alongside the first, since alwaysOpen is true.',
+                    'open alongside the first, since every item is detached.',
+                  ),
+                ),
+                BsAccordionItem(
+                  detached: true,
+                  header: const Text('Accordion Item #3'),
+                  body: const Text("This is the third item's accordion body."),
+                ),
+              ],
+            ),
+          ),
+        ),
+        DemoSection(
+          title: 'One item detached',
+          child: SizedBox(
+            width: 400,
+            child: BsAccordion(
+              initiallyExpanded: const {0},
+              items: [
+                BsAccordionItem(
+                  header: const Text('Accordion Item #1'),
+                  body: const Text("This is the first item's accordion body."),
+                ),
+                BsAccordionItem(
+                  detached: true,
+                  header: const Text('Accordion Item #2 (detached)'),
+                  body: const Text(
+                    'This item is detached: opening it never closes #1 or '
+                    "#3, and it never gets closed by them either — it's "
+                    "independent, like Bootstrap's data-bs-parent omitted "
+                    'on just one item.',
                   ),
                 ),
                 BsAccordionItem(
@@ -112,18 +143,20 @@ class AccordionPage extends StatelessWidget {
             width: 400,
             child: BsAccordion(
               flush: true,
-              alwaysOpen: true,
               initiallyExpanded: const {0, 2},
               items: [
                 BsAccordionItem(
+                  detached: true,
                   header: const Text('Accordion Item #1'),
                   body: const Text("This is the first item's accordion body."),
                 ),
                 BsAccordionItem(
+                  detached: true,
                   header: const Text('Accordion Item #2'),
                   body: const Text("This is the second item's accordion body."),
                 ),
                 BsAccordionItem(
+                  detached: true,
                   header: const Text('Accordion Item #3'),
                   body: const Text("This is the third item's accordion body."),
                 ),
