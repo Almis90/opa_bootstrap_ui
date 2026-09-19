@@ -8,6 +8,7 @@ export 'src/bs_grid.dart';
 export 'src/bs_responsive_value.dart';
 export 'src/bs_size.dart';
 export 'src/bs_spacing.dart';
+export 'src/bs_toggle_button_group.dart';
 export 'src/bs_variant.dart';
 export 'src/tokens/bs_accordion_style.dart';
 export 'src/tokens/bs_alert_style.dart';
