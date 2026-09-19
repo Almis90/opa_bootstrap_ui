@@ -28,6 +28,8 @@ class BsAccordionStyle {
     this.iconColor,
     this.iconActiveColor,
     this.iconTransitionDuration,
+    this.focusRingColor,
+    this.focusRingWidth,
   });
 
   /// `$accordion-padding-y`/`$accordion-padding-x` (`1rem`/`1.25rem`),
@@ -77,6 +79,14 @@ class BsAccordionStyle {
   /// `$accordion-icon-transition` (`transform .2s ease-in-out`).
   final Duration? iconTransitionDuration;
 
+  /// `$accordion-button-focus-box-shadow` (`$btn-focus-box-shadow`, i.e. a
+  /// ring tinted by the primary color).
+  final Color? focusRingColor;
+
+  /// The width of the focus ring, per `$btn-focus-width` (`.25rem`, i.e.
+  /// `4` at the default `16px` root font size).
+  final double? focusRingWidth;
+
   BsAccordionStyle merge(BsAccordionStyle? other) {
     if (other == null) return this;
     return BsAccordionStyle(
@@ -95,6 +105,8 @@ class BsAccordionStyle {
       iconColor: other.iconColor ?? iconColor,
       iconActiveColor: other.iconActiveColor ?? iconActiveColor,
       iconTransitionDuration: other.iconTransitionDuration ?? iconTransitionDuration,
+      focusRingColor: other.focusRingColor ?? focusRingColor,
+      focusRingWidth: other.focusRingWidth ?? focusRingWidth,
     );
   }
 
@@ -110,6 +122,8 @@ class BsAccordionStyle {
   static const Duration defaultIconTransitionDuration = Duration(milliseconds: 200);
   static Color get defaultButtonActiveBackground => BsColorUtils.tint(BsVariant.primary.color, 0.8);
   static Color get defaultButtonActiveColor => BsColorUtils.shade(BsVariant.primary.color, 0.6);
+  static const double defaultFocusRingWidth = 4;
+  static Color get defaultFocusRingColor => BsVariant.primary.color;
 
   static BsAccordionStyle get defaults => BsAccordionStyle(
     padding: defaultPadding,
@@ -127,5 +141,7 @@ class BsAccordionStyle {
     iconColor: defaultIconColor,
     iconActiveColor: defaultButtonActiveColor,
     iconTransitionDuration: defaultIconTransitionDuration,
+    focusRingColor: defaultFocusRingColor,
+    focusRingWidth: defaultFocusRingWidth,
   );
 }

@@ -180,11 +180,15 @@ class _BsAccordionItemViewState extends State<_BsAccordionItemView> {
                     padding: style.padding ?? BsAccordionStyle.defaultPadding,
                     decoration: BoxDecoration(
                       color: buttonBackground,
-                      boxShadow: _focused
-                          ? [BoxShadow(color: borderColor.withValues(alpha: 0.5), spreadRadius: 2)]
-                          : (!widget.isExpanded
-                              ? null
-                              : [BoxShadow(color: borderColor, offset: Offset(0, borderWidth))]),
+                      boxShadow: [
+                        if (widget.isExpanded) BoxShadow(color: borderColor, offset: Offset(0, borderWidth)),
+                        if (_focused)
+                          BoxShadow(
+                            color: (style.focusRingColor ?? BsAccordionStyle.defaultFocusRingColor)
+                                .withValues(alpha: 0.5),
+                            spreadRadius: style.focusRingWidth ?? BsAccordionStyle.defaultFocusRingWidth,
+                          ),
+                      ],
                     ),
                     child: Row(
                       children: [
