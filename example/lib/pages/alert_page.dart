@@ -60,6 +60,51 @@ class AlertPage extends StatelessWidget {
             child: Text('A custom-styled alert using a brand color instead of a theme variant.'),
           ),
         ),
+        DemoSection(title: 'Events', child: _EventsDemo()),
+      ],
+    );
+  }
+}
+
+class _EventsDemo extends StatefulWidget {
+  @override
+  State<_EventsDemo> createState() => _EventsDemoState();
+}
+
+class _EventsDemoState extends State<_EventsDemo> {
+  bool _visible = true;
+  final List<String> _log = [];
+
+  void _logEvent(String message) {
+    setState(() {
+      _log.insert(0, message);
+      if (_log.length > 4) _log.removeLast();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (_visible)
+          BsAlert(
+            dismissible: true,
+            onClose: () => _logEvent('close.bs.alert'),
+            onDismissed: () {
+              _logEvent('closed.bs.alert');
+              setState(() => _visible = false);
+            },
+            child: const Text('Watch the log below as you close this alert.'),
+          )
+        else
+          BsButton(
+            size: BsSize.sm,
+            onPressed: () => setState(() => _visible = true),
+            child: const Text('Show alert again'),
+          ),
+        const SizedBox(height: 12),
+        for (final entry in _log) Text(entry, style: const TextStyle(fontFamily: 'monospace', fontSize: 12)),
       ],
     );
   }

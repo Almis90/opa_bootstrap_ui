@@ -17,6 +17,7 @@ class BsAlert extends StatefulWidget {
     required this.child,
     this.variant = BsVariant.primary,
     this.dismissible = false,
+    this.onClose,
     this.onDismissed,
     this.style,
   });
@@ -31,9 +32,15 @@ class BsAlert extends StatefulWidget {
   /// Whether to show a close button (`.alert-dismissible`).
   final bool dismissible;
 
+  /// Called immediately when the close button is tapped, before the fade/
+  /// collapse animation starts — mirrors Bootstrap's `close.bs.alert` event.
+  final VoidCallback? onClose;
+
   /// Called once the alert has finished fading/collapsing out, after a tap
-  /// on the close button. The caller is responsible for actually removing
-  /// the alert (e.g. from a list) at that point.
+  /// on the close button — mirrors Bootstrap's `closed.bs.alert` event
+  /// (and Flutter's own [Dismissible.onDismissed], which fires at the same
+  /// point in its own dismiss animation). The caller is responsible for
+  /// actually removing the alert (e.g. from a list) at that point.
   final VoidCallback? onDismissed;
 
   /// Style overrides layered on top of [BsAlertStyle.defaults].
@@ -49,6 +56,7 @@ class _BsAlertState extends State<BsAlert> {
   bool _dismissed = false;
 
   void _dismiss() {
+    widget.onClose?.call();
     setState(() => _dismissed = true);
     Future.delayed(_duration, () {
       if (mounted) widget.onDismissed?.call();
