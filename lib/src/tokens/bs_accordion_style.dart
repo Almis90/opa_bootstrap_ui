@@ -145,7 +145,10 @@ class BsAccordionStyle {
   static Color get defaultButtonActiveBackground => BsColorUtils.tint(BsVariant.primary.color, 0.8);
   static Color get defaultButtonActiveColor => BsColorUtils.shade(BsVariant.primary.color, 0.6);
   static const double defaultFocusRingWidth = 4;
-  static Color get defaultFocusRingColor => BsVariant.primary.color;
+  // Matches button-variant's `--bs-btn-focus-shadow-rgb: mix($color,
+  // $border, 15%)`, where $color is primary's contrast text (white) and
+  // $border is primary itself.
+  static Color get defaultFocusRingColor => BsColorUtils.mix(BsColors.white, BsVariant.primary.color, 0.15);
 
   static BsAccordionStyle get defaults => BsAccordionStyle(
     padding: defaultPadding,
