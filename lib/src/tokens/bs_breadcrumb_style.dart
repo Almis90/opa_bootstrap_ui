@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
 
-import '../bs_colors.dart';
+import 'bs_body.dart';
 
 /// A Bootstrap `.breadcrumb`'s visual variables.
 ///
@@ -61,8 +61,8 @@ class BsBreadcrumbStyle {
   static const EdgeInsets defaultPadding = EdgeInsets.zero;
   static const double defaultItemSpacing = 8;
   static const double defaultMarginBottom = 16;
-  static const Color defaultDividerColor = BsColors.gray600;
-  static const Color defaultActiveColor = BsColors.gray600;
+  static const Color defaultDividerColor = BsBody.secondaryColor;
+  static const Color defaultActiveColor = BsBody.secondaryColor;
   static const String defaultDivider = '/';
 
   static const BsBreadcrumbStyle defaults = BsBreadcrumbStyle(
