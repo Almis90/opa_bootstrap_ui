@@ -19,14 +19,25 @@ class BsBreadcrumbItem {
 /// A Bootstrap breadcrumb (`.breadcrumb`): a trail of page links ending in
 /// the current page.
 class BsBreadcrumb extends StatelessWidget {
-  const BsBreadcrumb({super.key, required this.items, this.style});
+  const BsBreadcrumb({super.key, required this.items, this.style, this.dividerBuilder});
 
   /// The crumbs, from root to current page. The last one is always
   /// rendered as the current page; see [BsBreadcrumbItem.onTap].
   final List<BsBreadcrumbItem> items;
 
-  /// Style overrides layered on top of [BsBreadcrumbStyle.defaults].
+  /// Style overrides layered on top of [BsBreadcrumbStyle.defaults]. Use
+  /// [BsBreadcrumbStyle.divider] for a custom text/character divider (e.g.
+  /// `'>'`), or an empty string to remove it — mirroring Bootstrap's
+  /// `--bs-breadcrumb-divider` CSS variable / `$breadcrumb-divider` Sass
+  /// variable.
   final BsBreadcrumbStyle? style;
+
+  /// Overrides the divider between crumbs entirely with an arbitrary
+  /// widget (e.g. an [Icon] or custom-painted glyph) instead of
+  /// [BsBreadcrumbStyle.divider]'s text — mirroring Bootstrap's example of
+  /// setting `--bs-breadcrumb-divider` to an embedded SVG. Called once per
+  /// gap between crumbs.
+  final WidgetBuilder? dividerBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +61,8 @@ class BsBreadcrumb extends StatelessWidget {
             if (i > 0)
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: itemSpacing),
-                child: Text(divider, style: TextStyle(color: dividerColor)),
+                child: dividerBuilder?.call(context) ??
+                    Text(divider, style: TextStyle(color: dividerColor)),
               ),
             _BsBreadcrumbItemView(
               item: items[i],

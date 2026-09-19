@@ -27,7 +27,66 @@ class BreadcrumbPage extends StatelessWidget {
             ],
           ),
         ),
+        DemoSection(
+          title: 'Custom text divider',
+          child: BsBreadcrumb(
+            style: const BsBreadcrumbStyle(divider: '>'),
+            items: [
+              BsBreadcrumbItem(label: const Text('Home'), onTap: () {}),
+              const BsBreadcrumbItem(label: Text('Library')),
+            ],
+          ),
+        ),
+        DemoSection(
+          title: 'Icon divider',
+          child: BsBreadcrumb(
+            dividerBuilder: (context) => const _ChevronDivider(),
+            items: [
+              BsBreadcrumbItem(label: const Text('Home'), onTap: () {}),
+              const BsBreadcrumbItem(label: Text('Library')),
+            ],
+          ),
+        ),
+        DemoSection(
+          title: 'No divider',
+          child: BsBreadcrumb(
+            style: const BsBreadcrumbStyle(divider: ''),
+            items: [
+              BsBreadcrumbItem(label: const Text('Home'), onTap: () {}),
+              const BsBreadcrumbItem(label: Text('Library')),
+            ],
+          ),
+        ),
       ],
     );
   }
+}
+
+/// A small right-pointing chevron, replicating Bootstrap's SVG icon-divider
+/// example.
+class _ChevronDivider extends StatelessWidget {
+  const _ChevronDivider();
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(size: const Size(8, 8), painter: _ChevronDividerPainter());
+  }
+}
+
+class _ChevronDividerPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final path = Path()
+      ..moveTo(size.width * 0.31, 0)
+      ..lineTo(size.width * 0.125, size.height * 0.19)
+      ..lineTo(size.width * 0.44, size.height * 0.5)
+      ..lineTo(size.width * 0.125, size.height * 0.81)
+      ..lineTo(size.width * 0.31, size.height)
+      ..lineTo(size.width, size.height * 0.5)
+      ..close();
+    canvas.drawPath(path, Paint()..color = BsBreadcrumbStyle.defaultDividerColor);
+  }
+
+  @override
+  bool shouldRepaint(covariant _ChevronDividerPainter oldDelegate) => false;
 }
