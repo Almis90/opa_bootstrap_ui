@@ -218,6 +218,25 @@ class MainApp extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 24),
+                  const Text('Button group sizing'),
+                  const SizedBox(height: 8),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      for (final groupSize in [BsSize.lg, BsSize.normal, BsSize.sm]) ...[
+                        BsButtonGroup(
+                          size: groupSize,
+                          children: [
+                            BsButton(outline: true, onPressed: () {}, child: const Text('Left')),
+                            BsButton(outline: true, onPressed: () {}, child: const Text('Middle')),
+                            BsButton(outline: true, onPressed: () {}, child: const Text('Right')),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                      ],
+                    ],
+                  ),
+                  const SizedBox(height: 24),
                   const Text('Checkbox and radio toggle groups'),
                   const SizedBox(height: 8),
                   const _ToggleGroupDemo(),
