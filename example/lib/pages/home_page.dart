@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 
 import 'accordion_page.dart';
+import 'alert_page.dart';
 import 'button_group_page.dart';
 import 'button_page.dart';
 import 'demo_page.dart';
@@ -43,8 +44,10 @@ const _pages = [
   _PageEntry('Button', _buildButtonPage),
   _PageEntry('Button group', _buildButtonGroupPage),
   _PageEntry('Accordion', _buildAccordionPage),
+  _PageEntry('Alert', _buildAlertPage),
 ];
 
 Widget _buildButtonPage(BuildContext context) => const ButtonPage();
 Widget _buildButtonGroupPage(BuildContext context) => const ButtonGroupPage();
 Widget _buildAccordionPage(BuildContext context) => const AccordionPage();
+Widget _buildAlertPage(BuildContext context) => const AlertPage();

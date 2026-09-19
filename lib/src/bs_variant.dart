@@ -1,5 +1,6 @@
 import 'package:flutter/painting.dart';
 
+import 'bs_color_utils.dart';
 import 'bs_colors.dart';
 
 /// Bootstrap contextual color variants.
@@ -24,4 +25,32 @@ enum BsVariant {
 
   /// The CSS class suffix used by Bootstrap, e.g. `btn-primary`, `text-danger`.
   String get className => name;
+
+  /// `$#{variant}-text-emphasis`: a darkened, higher-contrast version of
+  /// [color] meant for text on a [bgSubtle] background (e.g. `.alert-*`,
+  /// `.badge-*`). `light`/`dark` are special-cased to `$gray-700` rather
+  /// than the general `shade-color($color, 60%)` formula, per Bootstrap.
+  Color get textEmphasis => switch (this) {
+    BsVariant.light || BsVariant.dark => BsColors.gray700,
+    _ => BsColorUtils.shade(color, 0.6),
+  };
+
+  /// `$#{variant}-bg-subtle`: a very light tint of [color] meant as a
+  /// background behind [textEmphasis] text. `light`/`dark` are
+  /// special-cased rather than the general `tint-color($color, 80%)`
+  /// formula, per Bootstrap.
+  Color get bgSubtle => switch (this) {
+    BsVariant.light => BsColorUtils.mix(BsColors.gray100, BsColors.white, 0.5),
+    BsVariant.dark => BsColors.gray400,
+    _ => BsColorUtils.tint(color, 0.8),
+  };
+
+  /// `$#{variant}-border-subtle`: a light tint of [color] meant to border a
+  /// [bgSubtle] background. `light`/`dark` are special-cased rather than
+  /// the general `tint-color($color, 60%)` formula, per Bootstrap.
+  Color get borderSubtle => switch (this) {
+    BsVariant.light => BsColors.gray200,
+    BsVariant.dark => BsColors.gray500,
+    _ => BsColorUtils.tint(color, 0.6),
+  };
 }
