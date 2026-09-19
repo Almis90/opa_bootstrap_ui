@@ -1,4 +1,6 @@
 export 'src/bs_breakpoint.dart';
+export 'src/bs_button.dart';
+export 'src/bs_color_utils.dart';
 export 'src/bs_colors.dart';
 export 'src/bs_responsive_value.dart';
 export 'src/bs_size.dart';
