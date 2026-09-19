@@ -270,6 +270,42 @@ class MainApp extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 24),
+                  const Text('Accordion (flush)'),
+                  const SizedBox(height: 8),
+                  SizedBox(
+                    width: 400,
+                    child: BsAccordion(
+                      flush: true,
+                      items: const [
+                        BsAccordionItem(
+                          header: Text('Accordion Item #1'),
+                          body: Text(
+                            'Placeholder content for this accordion, which is intended to '
+                            'demonstrate the .accordion-flush class. This is the first '
+                            "item's accordion body.",
+                          ),
+                        ),
+                        BsAccordionItem(
+                          header: Text('Accordion Item #2'),
+                          body: Text(
+                            'Placeholder content for this accordion, which is intended to '
+                            'demonstrate the .accordion-flush class. This is the second '
+                            "item's accordion body. Let's imagine this being filled with "
+                            'some actual content.',
+                          ),
+                        ),
+                        BsAccordionItem(
+                          header: Text('Accordion Item #3'),
+                          body: Text(
+                            'Placeholder content for this accordion, which is intended to '
+                            'demonstrate the .accordion-flush class. This is the third '
+                            "item's accordion body.",
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 24),
                   const Text('Accordion (flush, always open)'),
                   const SizedBox(height: 8),
                   SizedBox(
