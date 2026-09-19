@@ -43,12 +43,12 @@ class _PageEntry {
 }
 
 const _pages = [
-  _PageEntry('Button', _buildButtonPage),
-  _PageEntry('Button group', _buildButtonGroupPage),
   _PageEntry('Accordion', _buildAccordionPage),
   _PageEntry('Alert', _buildAlertPage),
   _PageEntry('Badge', _buildBadgePage),
   _PageEntry('Breadcrumb', _buildBreadcrumbPage),
+  _PageEntry('Button', _buildButtonPage),
+  _PageEntry('Button group', _buildButtonGroupPage),
 ];
 
 Widget _buildButtonPage(BuildContext context) => const ButtonPage();
