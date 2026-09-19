@@ -41,6 +41,36 @@ class AccordionPage extends StatelessWidget {
           ),
         ),
         DemoSection(
+          title: 'Always open',
+          child: SizedBox(
+            width: 400,
+            child: BsAccordion(
+              alwaysOpen: true,
+              initiallyExpanded: const {0},
+              items: [
+                BsAccordionItem(
+                  header: const Text('Accordion Item #1'),
+                  body: const Text(
+                    "This is the first item's accordion body. It supports "
+                    'HTML content — really, any widget you like.',
+                  ),
+                ),
+                BsAccordionItem(
+                  header: const Text('Accordion Item #2'),
+                  body: const Text(
+                    "This is the second item's accordion body. It stays "
+                    'open alongside the first, since alwaysOpen is true.',
+                  ),
+                ),
+                BsAccordionItem(
+                  header: const Text('Accordion Item #3'),
+                  body: const Text("This is the third item's accordion body."),
+                ),
+              ],
+            ),
+          ),
+        ),
+        DemoSection(
           title: 'Flush',
           child: SizedBox(
             width: 400,
@@ -77,7 +107,7 @@ class AccordionPage extends StatelessWidget {
           ),
         ),
         DemoSection(
-          title: 'Flush, always open',
+          title: 'Flush + always open',
           child: SizedBox(
             width: 400,
             child: BsAccordion(
