@@ -35,6 +35,7 @@ class BsButtonGroup extends StatelessWidget {
     if (children.isEmpty) return const SizedBox.shrink();
 
     final widgets = <Widget>[];
+    var cumulativeOverlap = 0.0;
     for (var i = 0; i < children.length; i++) {
       final button = children[i];
       final effectiveSize = size ?? button.size;
@@ -70,16 +71,22 @@ class BsButtonGroup extends StatelessWidget {
         child: button.child,
       );
 
-      final borderWidth = button.style?.borderWidth ?? BsButtonStyle.defaultBorderWidth;
-
-      // Overlap adjacent buttons by one border width so the shared seam
+      // Overlap adjacent buttons by one border width so each shared seam
       // reads as a single border, per Bootstrap's negative-margin trick.
       // Painted later, a button's own edge sits on top of its neighbor's.
+      // Row/Column lay out each child at its natural (unshifted) slot, so
+      // the shift must accumulate across every prior seam, not just the
+      // immediately preceding one, or gaps reopen from the 3rd item on.
+      if (!isFirst) {
+        final borderWidth = button.style?.borderWidth ?? BsButtonStyle.defaultBorderWidth;
+        cumulativeOverlap += borderWidth;
+      }
+
       widgets.add(
         isFirst
             ? child
             : Transform.translate(
-                offset: vertical ? Offset(0, -borderWidth) : Offset(-borderWidth, 0),
+                offset: vertical ? Offset(0, -cumulativeOverlap) : Offset(-cumulativeOverlap, 0),
                 child: child,
               ),
       );
