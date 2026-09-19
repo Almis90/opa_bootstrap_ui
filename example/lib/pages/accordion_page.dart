@@ -45,10 +45,10 @@ class AccordionPage extends StatelessWidget {
           child: SizedBox(
             width: 400,
             child: BsAccordion(
+              allDetached: true,
               initiallyExpanded: const {0},
               items: [
                 BsAccordionItem(
-                  detached: true,
                   header: const Text('Accordion Item #1'),
                   body: const Text(
                     "This is the first item's accordion body. It supports "
@@ -56,15 +56,13 @@ class AccordionPage extends StatelessWidget {
                   ),
                 ),
                 BsAccordionItem(
-                  detached: true,
                   header: const Text('Accordion Item #2'),
                   body: const Text(
                     "This is the second item's accordion body. It stays "
-                    'open alongside the first, since every item is detached.',
+                    'open alongside the first, since allDetached is true.',
                   ),
                 ),
                 BsAccordionItem(
-                  detached: true,
                   header: const Text('Accordion Item #3'),
                   body: const Text("This is the third item's accordion body."),
                 ),
@@ -143,20 +141,18 @@ class AccordionPage extends StatelessWidget {
             width: 400,
             child: BsAccordion(
               flush: true,
+              allDetached: true,
               initiallyExpanded: const {0, 2},
               items: [
                 BsAccordionItem(
-                  detached: true,
                   header: const Text('Accordion Item #1'),
                   body: const Text("This is the first item's accordion body."),
                 ),
                 BsAccordionItem(
-                  detached: true,
                   header: const Text('Accordion Item #2'),
                   body: const Text("This is the second item's accordion body."),
                 ),
                 BsAccordionItem(
-                  detached: true,
                   header: const Text('Accordion Item #3'),
                   body: const Text("This is the third item's accordion body."),
                 ),

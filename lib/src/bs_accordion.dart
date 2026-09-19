@@ -122,16 +122,17 @@ class BsAccordionItem {
 /// By default all items are grouped into a single-open set (Bootstrap's
 /// `data-bs-parent` behavior); set [BsAccordionItem.detached] on any item
 /// to exclude it from that grouping — it then expands/collapses on its own,
-/// regardless of what the other items do. Setting it on every item
-/// reproduces Bootstrap's "always open" example. [flush] renders the
-/// edge-to-edge `.accordion-flush` variant (no outer border or rounded
-/// corners).
+/// regardless of what the other items do. Pass [allDetached] as a shorthand
+/// for detaching every item at once, reproducing Bootstrap's "always open"
+/// example. [flush] renders the edge-to-edge `.accordion-flush` variant (no
+/// outer border or rounded corners).
 class BsAccordion extends StatefulWidget {
   const BsAccordion({
     super.key,
     required this.items,
     this.controller,
     this.initiallyExpanded = const <int>{},
+    this.allDetached = false,
     this.flush = false,
     this.style,
     this.iconBuilder,
@@ -155,6 +156,13 @@ class BsAccordion extends StatefulWidget {
   /// Indices expanded when the accordion first builds. Ignored when
   /// [controller] is set.
   final Set<int> initiallyExpanded;
+
+  /// Shorthand for marking every item [BsAccordionItem.detached], so all of
+  /// them expand/collapse independently — Bootstrap's "always open" example
+  /// — without having to set `detached: true` on each one individually. Set
+  /// [BsAccordionItem.detached] on specific items instead if only *some*
+  /// should be independent.
+  final bool allDetached;
 
   /// Whether to render the borderless, edge-to-edge `.accordion-flush`
   /// variant.
@@ -184,7 +192,7 @@ class _BsAccordionState extends State<BsAccordion> {
 
   Set<int> get _detachedIndices => {
     for (var i = 0; i < widget.items.length; i++)
-      if (widget.items[i].detached) i,
+      if (widget.allDetached || widget.items[i].detached) i,
   };
 
   @override
