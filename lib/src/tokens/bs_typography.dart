@@ -106,4 +106,7 @@ abstract final class BsTypography {
 
   /// `$hr-opacity` (`.25`).
   static const double hrOpacity = 0.25;
+
+  /// `$paragraph-margin-bottom` (`1rem`).
+  static const double paragraphMarginBottom = 16;
 }
