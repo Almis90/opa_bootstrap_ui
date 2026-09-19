@@ -20,7 +20,11 @@ class BsBadgeStyle {
     this.borderRadius,
   });
 
-  /// `$badge-color` (`$white`).
+  /// `--bs-badge-color`. Bootstrap's own `$badge-color` Sass default is a
+  /// static `$white`, but real contextual badges in its docs are built with
+  /// the `.text-bg-{variant}` helper, which computes actual
+  /// `color-contrast()` per background instead — so [BsBadge] leaves this
+  /// null by default and derives it from the background, the same way.
   final Color? color;
 
   /// The badge's background (set per-variant; Bootstrap has no single
@@ -52,7 +56,8 @@ class BsBadgeStyle {
     );
   }
 
-  /// `$badge-color`.
+  /// `$badge-color` — Bootstrap's static fallback, not used by [BsBadge]'s
+  /// own defaults (see [color]'s doc comment). Kept for reference/manual use.
   static const Color defaultColor = BsColors.white;
 
   /// `$badge-font-weight`.
@@ -69,7 +74,6 @@ class BsBadgeStyle {
   static const double defaultBorderRadius = BsBorders.radius;
 
   static const BsBadgeStyle defaults = BsBadgeStyle(
-    color: defaultColor,
     fontSize: defaultFontSize,
     fontWeight: defaultFontWeight,
     padding: defaultPadding,
