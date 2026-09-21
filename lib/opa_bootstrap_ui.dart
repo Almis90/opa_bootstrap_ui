@@ -22,6 +22,7 @@ export 'src/bs_navbar.dart';
 export 'src/bs_pagination.dart';
 export 'src/bs_placeholder.dart';
 export 'src/bs_popover.dart';
+export 'src/bs_progress.dart';
 export 'src/bs_responsive_value.dart';
 export 'src/bs_scrollspy.dart';
 export 'src/bs_size.dart';

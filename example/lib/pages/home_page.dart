@@ -22,6 +22,7 @@ import 'navbar_page.dart';
 import 'pagination_page.dart';
 import 'placeholder_page.dart';
 import 'popover_page.dart';
+import 'progress_page.dart';
 import 'scrollspy_page.dart';
 import 'spinner_page.dart';
 import 'toast_page.dart';
@@ -82,6 +83,7 @@ const _pages = [
   _PageEntry('Pagination', _buildPaginationPage),
   _PageEntry('Placeholders', _buildPlaceholderPage),
   _PageEntry('Popovers', _buildPopoverPage),
+  _PageEntry('Progress', _buildProgressPage),
   _PageEntry('Scrollspy', _buildScrollspyPage),
   _PageEntry('Spinners', _buildSpinnerPage),
   _PageEntry('Toasts', _buildToastPage),
@@ -103,6 +105,7 @@ Widget _buildNavPage(BuildContext context) => const NavPage();
 Widget _buildPaginationPage(BuildContext context) => const PaginationPage();
 Widget _buildPlaceholderPage(BuildContext context) => const PlaceholderPage();
 Widget _buildPopoverPage(BuildContext context) => const PopoverPage();
+Widget _buildProgressPage(BuildContext context) => const ProgressPage();
 Widget _buildScrollspyPage(BuildContext context) => const ScrollspyPage();
 Widget _buildSpinnerPage(BuildContext context) => const SpinnerPage();
 Widget _buildToastPage(BuildContext context) => const ToastPage();
