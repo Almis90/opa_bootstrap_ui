@@ -29,6 +29,7 @@ export 'src/bs_scrollspy.dart';
 export 'src/bs_size.dart';
 export 'src/bs_spacing.dart';
 export 'src/bs_spinner.dart';
+export 'src/bs_table.dart';
 export 'src/bs_toast.dart';
 export 'src/bs_toggle_button_group.dart';
 export 'src/bs_tooltip.dart';

@@ -26,6 +26,7 @@ import 'popover_page.dart';
 import 'progress_page.dart';
 import 'scrollspy_page.dart';
 import 'spinner_page.dart';
+import 'table_page.dart';
 import 'toast_page.dart';
 import 'tooltip_page.dart';
 
@@ -88,6 +89,7 @@ const _pages = [
   _PageEntry('Progress', _buildProgressPage),
   _PageEntry('Scrollspy', _buildScrollspyPage),
   _PageEntry('Spinners', _buildSpinnerPage),
+  _PageEntry('Tables', _buildTablePage),
   _PageEntry('Toasts', _buildToastPage),
   _PageEntry('Tooltips', _buildTooltipPage),
 ];
@@ -111,6 +113,7 @@ Widget _buildPopoverPage(BuildContext context) => const PopoverPage();
 Widget _buildProgressPage(BuildContext context) => const ProgressPage();
 Widget _buildScrollspyPage(BuildContext context) => const ScrollspyPage();
 Widget _buildSpinnerPage(BuildContext context) => const SpinnerPage();
+Widget _buildTablePage(BuildContext context) => const TablePage();
 Widget _buildToastPage(BuildContext context) => const ToastPage();
 Widget _buildTooltipPage(BuildContext context) => const TooltipPage();
 Widget _buildAccordionPage(BuildContext context) => const AccordionPage();
