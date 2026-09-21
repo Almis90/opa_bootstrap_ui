@@ -21,6 +21,7 @@ export 'src/bs_form_check.dart';
 export 'src/bs_form_control.dart';
 export 'src/bs_form_label.dart';
 export 'src/bs_form_range.dart';
+export 'src/bs_form_select.dart';
 export 'src/bs_grid.dart';
 export 'src/bs_heading.dart';
 export 'src/bs_list_group.dart';

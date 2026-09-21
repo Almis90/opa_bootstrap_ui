@@ -15,6 +15,7 @@ class _FormPageState extends State<FormPage> {
   bool _switched = false;
   int _radio = 1;
   double _range = 40;
+  String? _fruit = 'apple';
 
   @override
   Widget build(BuildContext context) {
@@ -104,6 +105,26 @@ class _FormPageState extends State<FormPage> {
                 onChanged: null,
                 label: Text('Disabled checkbox'),
               ),
+            ],
+          ),
+        ),
+        DemoSection(
+          title: 'Select',
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              BsFormSelect<String>(
+                value: _fruit,
+                placeholder: const Text('Choose...'),
+                onChanged: (v) => setState(() => _fruit = v),
+                items: const [
+                  BsFormSelectItem(value: 'apple', label: Text('Apple')),
+                  BsFormSelectItem(value: 'banana', label: Text('Banana')),
+                  BsFormSelectItem(value: 'cherry', label: Text('Cherry')),
+                ],
+              ),
+              const SizedBox(height: 4),
+              Text('Value: $_fruit'),
             ],
           ),
         ),
