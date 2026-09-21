@@ -18,6 +18,7 @@ import 'modal_page.dart';
 import 'nav_page.dart';
 import 'navbar_page.dart';
 import 'pagination_page.dart';
+import 'placeholder_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -69,6 +70,7 @@ const _pages = [
   _PageEntry('Navbar', _buildNavbarPage),
   _PageEntry('Navs and tabs', _buildNavPage),
   _PageEntry('Pagination', _buildPaginationPage),
+  _PageEntry('Placeholders', _buildPlaceholderPage),
 ];
 
 Widget _buildButtonPage(BuildContext context) => const ButtonPage();
@@ -83,6 +85,7 @@ Widget _buildModalPage(BuildContext context) => const ModalPage();
 Widget _buildNavbarPage(BuildContext context) => const NavbarPage();
 Widget _buildNavPage(BuildContext context) => const NavPage();
 Widget _buildPaginationPage(BuildContext context) => const PaginationPage();
+Widget _buildPlaceholderPage(BuildContext context) => const PlaceholderPage();
 Widget _buildAccordionPage(BuildContext context) => const AccordionPage();
 Widget _buildAlertPage(BuildContext context) => const AlertPage();
 Widget _buildBadgePage(BuildContext context) => const BadgePage();

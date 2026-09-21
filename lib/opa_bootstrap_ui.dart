@@ -19,6 +19,7 @@ export 'src/bs_modal.dart';
 export 'src/bs_nav.dart';
 export 'src/bs_navbar.dart';
 export 'src/bs_pagination.dart';
+export 'src/bs_placeholder.dart';
 export 'src/bs_responsive_value.dart';
 export 'src/bs_size.dart';
 export 'src/bs_spacing.dart';
