@@ -8,6 +8,7 @@ import 'breadcrumb_page.dart';
 import 'button_group_page.dart';
 import 'button_page.dart';
 import 'card_page.dart';
+import 'carousel_page.dart';
 import 'demo_page.dart';
 
 class HomePage extends StatelessWidget {
@@ -51,11 +52,13 @@ const _pages = [
   _PageEntry('Button', _buildButtonPage),
   _PageEntry('Button group', _buildButtonGroupPage),
   _PageEntry('Card', _buildCardPage),
+  _PageEntry('Carousel', _buildCarouselPage),
 ];
 
 Widget _buildButtonPage(BuildContext context) => const ButtonPage();
 Widget _buildButtonGroupPage(BuildContext context) => const ButtonGroupPage();
 Widget _buildCardPage(BuildContext context) => const CardPage();
+Widget _buildCarouselPage(BuildContext context) => const CarouselPage();
 Widget _buildAccordionPage(BuildContext context) => const AccordionPage();
 Widget _buildAlertPage(BuildContext context) => const AlertPage();
 Widget _buildBadgePage(BuildContext context) => const BadgePage();
