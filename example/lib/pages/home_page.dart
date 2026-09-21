@@ -16,6 +16,7 @@ import 'container_page.dart';
 import 'demo_page.dart';
 import 'dropdown_page.dart';
 import 'figure_page.dart';
+import 'form_page.dart';
 import 'list_group_page.dart';
 import 'modal_page.dart';
 import 'nav_page.dart';
@@ -81,6 +82,7 @@ const _pages = [
   _PageEntry('Container', _buildContainerPage),
   _PageEntry('Dropdown', _buildDropdownPage),
   _PageEntry('Figure', _buildFigurePage),
+  _PageEntry('Forms', _buildFormPage),
   _PageEntry('List group', _buildListGroupPage),
   _PageEntry('Modal', _buildModalPage),
   _PageEntry('Navbar', _buildNavbarPage),
@@ -107,6 +109,7 @@ Widget _buildCollapsePage(BuildContext context) => const CollapsePage();
 Widget _buildContainerPage(BuildContext context) => const ContainerPage();
 Widget _buildDropdownPage(BuildContext context) => const DropdownPage();
 Widget _buildFigurePage(BuildContext context) => const FigurePage();
+Widget _buildFormPage(BuildContext context) => const FormPage();
 Widget _buildListGroupPage(BuildContext context) => const ListGroupPage();
 Widget _buildModalPage(BuildContext context) => const ModalPage();
 Widget _buildNavbarPage(BuildContext context) => const NavbarPage();
