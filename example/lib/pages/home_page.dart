@@ -5,6 +5,7 @@ import 'accordion_page.dart';
 import 'alert_page.dart';
 import 'badge_page.dart';
 import 'breadcrumb_page.dart';
+import 'breakpoints_page.dart';
 import 'button_group_page.dart';
 import 'button_page.dart';
 import 'card_page.dart';
@@ -63,6 +64,7 @@ const _pages = [
   _PageEntry('Alert', _buildAlertPage),
   _PageEntry('Badge', _buildBadgePage),
   _PageEntry('Breadcrumb', _buildBreadcrumbPage),
+  _PageEntry('Breakpoints', _buildBreakpointsPage),
   _PageEntry('Button', _buildButtonPage),
   _PageEntry('Button group', _buildButtonGroupPage),
   _PageEntry('Card', _buildCardPage),
@@ -105,3 +107,4 @@ Widget _buildAccordionPage(BuildContext context) => const AccordionPage();
 Widget _buildAlertPage(BuildContext context) => const AlertPage();
 Widget _buildBadgePage(BuildContext context) => const BadgePage();
 Widget _buildBreadcrumbPage(BuildContext context) => const BreadcrumbPage();
+Widget _buildBreakpointsPage(BuildContext context) => const BreakpointsPage();
