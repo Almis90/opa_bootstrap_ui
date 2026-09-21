@@ -12,6 +12,7 @@ import 'carousel_page.dart';
 import 'close_button_page.dart';
 import 'collapse_page.dart';
 import 'demo_page.dart';
+import 'dropdown_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -57,6 +58,7 @@ const _pages = [
   _PageEntry('Carousel', _buildCarouselPage),
   _PageEntry('Close button', _buildCloseButtonPage),
   _PageEntry('Collapse', _buildCollapsePage),
+  _PageEntry('Dropdown', _buildDropdownPage),
 ];
 
 Widget _buildButtonPage(BuildContext context) => const ButtonPage();
@@ -65,6 +67,7 @@ Widget _buildCardPage(BuildContext context) => const CardPage();
 Widget _buildCarouselPage(BuildContext context) => const CarouselPage();
 Widget _buildCloseButtonPage(BuildContext context) => const CloseButtonPage();
 Widget _buildCollapsePage(BuildContext context) => const CollapsePage();
+Widget _buildDropdownPage(BuildContext context) => const DropdownPage();
 Widget _buildAccordionPage(BuildContext context) => const AccordionPage();
 Widget _buildAlertPage(BuildContext context) => const AlertPage();
 Widget _buildBadgePage(BuildContext context) => const BadgePage();
