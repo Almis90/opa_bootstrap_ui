@@ -9,6 +9,7 @@ export 'src/bs_button_style.dart';
 export 'src/bs_card.dart';
 export 'src/bs_carousel.dart';
 export 'src/bs_close_button.dart';
+export 'src/bs_collapse.dart';
 export 'src/bs_color_utils.dart';
 export 'src/bs_colors.dart';
 export 'src/bs_grid.dart';
