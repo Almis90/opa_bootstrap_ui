@@ -19,6 +19,7 @@ import 'list_group_page.dart';
 import 'modal_page.dart';
 import 'nav_page.dart';
 import 'navbar_page.dart';
+import 'offcanvas_page.dart';
 import 'pagination_page.dart';
 import 'placeholder_page.dart';
 import 'popover_page.dart';
@@ -80,6 +81,7 @@ const _pages = [
   _PageEntry('Modal', _buildModalPage),
   _PageEntry('Navbar', _buildNavbarPage),
   _PageEntry('Navs and tabs', _buildNavPage),
+  _PageEntry('Offcanvas', _buildOffcanvasPage),
   _PageEntry('Pagination', _buildPaginationPage),
   _PageEntry('Placeholders', _buildPlaceholderPage),
   _PageEntry('Popovers', _buildPopoverPage),
@@ -102,6 +104,7 @@ Widget _buildListGroupPage(BuildContext context) => const ListGroupPage();
 Widget _buildModalPage(BuildContext context) => const ModalPage();
 Widget _buildNavbarPage(BuildContext context) => const NavbarPage();
 Widget _buildNavPage(BuildContext context) => const NavPage();
+Widget _buildOffcanvasPage(BuildContext context) => const OffcanvasPage();
 Widget _buildPaginationPage(BuildContext context) => const PaginationPage();
 Widget _buildPlaceholderPage(BuildContext context) => const PlaceholderPage();
 Widget _buildPopoverPage(BuildContext context) => const PopoverPage();

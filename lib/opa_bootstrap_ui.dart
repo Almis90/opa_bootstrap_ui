@@ -19,6 +19,7 @@ export 'src/bs_list_group.dart';
 export 'src/bs_modal.dart';
 export 'src/bs_nav.dart';
 export 'src/bs_navbar.dart';
+export 'src/bs_offcanvas.dart';
 export 'src/bs_pagination.dart';
 export 'src/bs_placeholder.dart';
 export 'src/bs_popover.dart';
