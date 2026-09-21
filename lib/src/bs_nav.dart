@@ -82,8 +82,12 @@ class BsNav extends StatelessWidget {
         _BsNavLinkWidget(item: item, variant: variant, style: style, expand: fill && !vertical),
     ];
 
+    // IntrinsicWidth bounds the column's width (to its widest item) so
+    // crossAxisAlignment.stretch can stretch every item to match — a bare
+    // Column would otherwise inherit the unbounded width of an enclosing
+    // Row and crash.
     final Widget nav = vertical
-        ? Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: children)
+        ? IntrinsicWidth(child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: children))
         : Row(crossAxisAlignment: CrossAxisAlignment.end, children: children);
 
     if (!isTabs) return nav;
