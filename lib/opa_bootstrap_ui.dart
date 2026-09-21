@@ -14,6 +14,7 @@ export 'src/bs_color_utils.dart';
 export 'src/bs_colors.dart';
 export 'src/bs_container.dart';
 export 'src/bs_dropdown.dart';
+export 'src/bs_figure.dart';
 export 'src/bs_grid.dart';
 export 'src/bs_list_group.dart';
 export 'src/bs_modal.dart';
