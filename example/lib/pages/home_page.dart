@@ -30,6 +30,7 @@ import 'spinner_page.dart';
 import 'table_page.dart';
 import 'toast_page.dart';
 import 'tooltip_page.dart';
+import 'typography_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -94,6 +95,7 @@ const _pages = [
   _PageEntry('Tables', _buildTablePage),
   _PageEntry('Toasts', _buildToastPage),
   _PageEntry('Tooltips', _buildTooltipPage),
+  _PageEntry('Typography', _buildTypographyPage),
 ];
 
 Widget _buildButtonPage(BuildContext context) => const ButtonPage();
@@ -119,6 +121,7 @@ Widget _buildSpinnerPage(BuildContext context) => const SpinnerPage();
 Widget _buildTablePage(BuildContext context) => const TablePage();
 Widget _buildToastPage(BuildContext context) => const ToastPage();
 Widget _buildTooltipPage(BuildContext context) => const TooltipPage();
+Widget _buildTypographyPage(BuildContext context) => const TypographyPage();
 Widget _buildAccordionPage(BuildContext context) => const AccordionPage();
 Widget _buildAlertPage(BuildContext context) => const AlertPage();
 Widget _buildBadgePage(BuildContext context) => const BadgePage();
