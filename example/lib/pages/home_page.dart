@@ -13,6 +13,7 @@ import 'close_button_page.dart';
 import 'collapse_page.dart';
 import 'demo_page.dart';
 import 'dropdown_page.dart';
+import 'list_group_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -59,6 +60,7 @@ const _pages = [
   _PageEntry('Close button', _buildCloseButtonPage),
   _PageEntry('Collapse', _buildCollapsePage),
   _PageEntry('Dropdown', _buildDropdownPage),
+  _PageEntry('List group', _buildListGroupPage),
 ];
 
 Widget _buildButtonPage(BuildContext context) => const ButtonPage();
@@ -68,6 +70,7 @@ Widget _buildCarouselPage(BuildContext context) => const CarouselPage();
 Widget _buildCloseButtonPage(BuildContext context) => const CloseButtonPage();
 Widget _buildCollapsePage(BuildContext context) => const CollapsePage();
 Widget _buildDropdownPage(BuildContext context) => const DropdownPage();
+Widget _buildListGroupPage(BuildContext context) => const ListGroupPage();
 Widget _buildAccordionPage(BuildContext context) => const AccordionPage();
 Widget _buildAlertPage(BuildContext context) => const AlertPage();
 Widget _buildBadgePage(BuildContext context) => const BadgePage();
