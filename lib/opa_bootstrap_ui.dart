@@ -16,6 +16,7 @@ export 'src/bs_dropdown.dart';
 export 'src/bs_grid.dart';
 export 'src/bs_list_group.dart';
 export 'src/bs_modal.dart';
+export 'src/bs_navbar.dart';
 export 'src/bs_responsive_value.dart';
 export 'src/bs_size.dart';
 export 'src/bs_spacing.dart';
