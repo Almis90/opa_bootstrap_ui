@@ -12,6 +12,7 @@ import 'card_page.dart';
 import 'carousel_page.dart';
 import 'close_button_page.dart';
 import 'collapse_page.dart';
+import 'container_page.dart';
 import 'demo_page.dart';
 import 'dropdown_page.dart';
 import 'list_group_page.dart';
@@ -41,7 +42,8 @@ class HomePage extends StatelessWidget {
               outline: true,
               onPressed: () => Navigator.of(context).push(
                 PageRouteBuilder(
-                  pageBuilder: (context, animation, secondaryAnimation) => entry.builder(context),
+                  pageBuilder: (context, animation, secondaryAnimation) =>
+                      entry.builder(context),
                 ),
               ),
               child: SizedBox(width: 200, child: Text(entry.title)),
@@ -71,6 +73,7 @@ const _pages = [
   _PageEntry('Carousel', _buildCarouselPage),
   _PageEntry('Close button', _buildCloseButtonPage),
   _PageEntry('Collapse', _buildCollapsePage),
+  _PageEntry('Container', _buildContainerPage),
   _PageEntry('Dropdown', _buildDropdownPage),
   _PageEntry('List group', _buildListGroupPage),
   _PageEntry('Modal', _buildModalPage),
@@ -91,6 +94,7 @@ Widget _buildCardPage(BuildContext context) => const CardPage();
 Widget _buildCarouselPage(BuildContext context) => const CarouselPage();
 Widget _buildCloseButtonPage(BuildContext context) => const CloseButtonPage();
 Widget _buildCollapsePage(BuildContext context) => const CollapsePage();
+Widget _buildContainerPage(BuildContext context) => const ContainerPage();
 Widget _buildDropdownPage(BuildContext context) => const DropdownPage();
 Widget _buildListGroupPage(BuildContext context) => const ListGroupPage();
 Widget _buildModalPage(BuildContext context) => const ModalPage();
