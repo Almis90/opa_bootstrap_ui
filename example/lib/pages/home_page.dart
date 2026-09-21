@@ -22,6 +22,7 @@ import 'placeholder_page.dart';
 import 'popover_page.dart';
 import 'scrollspy_page.dart';
 import 'spinner_page.dart';
+import 'toast_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -77,6 +78,7 @@ const _pages = [
   _PageEntry('Popovers', _buildPopoverPage),
   _PageEntry('Scrollspy', _buildScrollspyPage),
   _PageEntry('Spinners', _buildSpinnerPage),
+  _PageEntry('Toasts', _buildToastPage),
 ];
 
 Widget _buildButtonPage(BuildContext context) => const ButtonPage();
@@ -95,6 +97,7 @@ Widget _buildPlaceholderPage(BuildContext context) => const PlaceholderPage();
 Widget _buildPopoverPage(BuildContext context) => const PopoverPage();
 Widget _buildScrollspyPage(BuildContext context) => const ScrollspyPage();
 Widget _buildSpinnerPage(BuildContext context) => const SpinnerPage();
+Widget _buildToastPage(BuildContext context) => const ToastPage();
 Widget _buildAccordionPage(BuildContext context) => const AccordionPage();
 Widget _buildAlertPage(BuildContext context) => const AlertPage();
 Widget _buildBadgePage(BuildContext context) => const BadgePage();
