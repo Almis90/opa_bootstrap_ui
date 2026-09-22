@@ -28,6 +28,7 @@ class BsFormControl extends StatefulWidget {
     this.keyboardType,
     this.size = BsFormControlSize.normal,
     this.valid,
+    this.showBorder = true,
     this.onChanged,
     this.onSubmitted,
     this.style,
@@ -63,6 +64,10 @@ class BsFormControl extends StatefulWidget {
   /// `.is-valid`/`.is-invalid`: tints the border [BsFormStyle.validColor] or
   /// [BsFormStyle.invalidColor]. Null renders neither.
   final bool? valid;
+
+  /// Set false inside a `BsInputGroup`, which draws one shared border
+  /// around the whole group instead.
+  final bool showBorder;
 
   final ValueChanged<String>? onChanged;
 
@@ -143,12 +148,20 @@ class _BsFormControlState extends State<BsFormControl> {
             ? (style.inputBackground ?? BsFormStyle.defaultInputBackground)
             : (style.inputDisabledBackground ??
                   BsFormStyle.defaultInputDisabledBackground),
-        border: Border.all(
-          color: borderColor,
-          width: style.inputBorderWidth ?? BsFormStyle.defaultInputBorderWidth,
-        ),
-        borderRadius: BorderRadius.circular(borderRadius),
-        boxShadow: focused ? style.inputFocusBoxShadow : style.inputBoxShadow,
+        border: widget.showBorder
+            ? Border.all(
+                color: borderColor,
+                width:
+                    style.inputBorderWidth ??
+                    BsFormStyle.defaultInputBorderWidth,
+              )
+            : null,
+        borderRadius: widget.showBorder
+            ? BorderRadius.circular(borderRadius)
+            : null,
+        boxShadow: widget.showBorder
+            ? (focused ? style.inputFocusBoxShadow : style.inputBoxShadow)
+            : null,
       ),
       child: Padding(
         padding: padding,

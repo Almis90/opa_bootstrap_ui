@@ -109,6 +109,37 @@ class _FormPageState extends State<FormPage> {
           ),
         ),
         DemoSection(
+          title: 'Input group',
+          child: Column(
+            children: [
+              const BsInputGroup(
+                children: [
+                  BsInputGroupText(child: Text('@')),
+                  Expanded(
+                    child: BsFormControl(
+                      showBorder: false,
+                      placeholder: 'Username',
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              const BsInputGroup(
+                children: [
+                  BsInputGroupText(child: Text(r'$')),
+                  Expanded(
+                    child: BsFormControl(
+                      showBorder: false,
+                      placeholder: 'Amount',
+                    ),
+                  ),
+                  BsInputGroupText(child: Text('.00')),
+                ],
+              ),
+            ],
+          ),
+        ),
+        DemoSection(
           title: 'Select',
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
