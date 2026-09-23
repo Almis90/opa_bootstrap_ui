@@ -108,6 +108,16 @@ class _FormPageState extends State<FormPage> {
             ],
           ),
         ),
+        const DemoSection(
+          title: 'Floating labels',
+          child: Column(
+            children: [
+              BsFormFloating(label: Text('Email address')),
+              SizedBox(height: 8),
+              BsFormFloating(label: Text('Password'), obscureText: true),
+            ],
+          ),
+        ),
         DemoSection(
           title: 'Input group',
           child: Column(

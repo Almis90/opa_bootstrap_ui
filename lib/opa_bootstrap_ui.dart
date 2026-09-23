@@ -19,6 +19,7 @@ export 'src/bs_dropdown.dart';
 export 'src/bs_figure.dart';
 export 'src/bs_form_check.dart';
 export 'src/bs_form_control.dart';
+export 'src/bs_form_floating.dart';
 export 'src/bs_form_label.dart';
 export 'src/bs_form_range.dart';
 export 'src/bs_form_select.dart';
