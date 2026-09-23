@@ -49,18 +49,7 @@ class DocApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WidgetsApp(
-      color: BsColors.blue,
-      builder: (context, child) => DefaultTextStyle(
-        style: const TextStyle(color: BsColors.gray900, fontFamily: 'Roboto'),
-        child: child!,
-      ),
-      home: DocShell(sections: _sections),
-      pageRouteBuilder: <T>(settings, builder) => PageRouteBuilder<T>(
-        settings: settings,
-        pageBuilder: (context, animation, secondaryAnimation) => builder(context),
-      ),
-    );
+    return BsApp(home: DocShell(sections: _sections));
   }
 }
 

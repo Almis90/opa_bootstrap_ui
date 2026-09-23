@@ -1,6 +1,7 @@
 export 'src/bs_accordion.dart';
 export 'src/bs_alert.dart';
 export 'src/bs_anchor.dart';
+export 'src/bs_app.dart';
 export 'src/bs_badge.dart';
 export 'src/bs_breadcrumb.dart';
 export 'src/bs_breakpoint.dart';
