@@ -38,31 +38,52 @@ class _BsCloseButtonState extends State<BsCloseButton> {
       opacity = style.opacity ?? BsCloseButtonStyle.defaultOpacity;
     }
 
-    return MouseRegion(
-      cursor: enabled ? SystemMouseCursors.click : SystemMouseCursors.basic,
-      onEnter: enabled ? (_) => setState(() => _hovered = true) : null,
-      onExit: enabled ? (_) => setState(() => _hovered = false) : null,
-      child: Focus(
-        onFocusChange: (focused) => setState(() => _focused = focused),
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: widget.onPressed,
-          child: AnimatedOpacity(
-            duration: const Duration(milliseconds: 150),
-            opacity: opacity,
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 150),
-              decoration: BoxDecoration(
-                boxShadow: [
-                  if (_focused)
-                    BoxShadow(color: BsFocusRing.color(), spreadRadius: BsCloseButtonStyle.defaultFocusRingWidth),
-                ],
-              ),
-              child: Padding(
-                padding: style.padding ?? BsCloseButtonStyle.defaultPadding,
-                child: CustomPaint(
-                  size: Size.square(style.size ?? BsCloseButtonStyle.defaultSize),
-                  painter: _BsCloseGlyphPainter(style.color ?? BsCloseButtonStyle.defaultColor),
+    // Bootstrap's `.btn-close` is a fixed 1em x 1em inline-block that never
+    // stretches. A plain SizedBox can't guarantee that on its own — a parent
+    // that hands down *tight* constraints (e.g. a `Container(width:
+    // double.infinity)` wrapping this directly, with no Center/Align/Row of
+    // its own) still clamps SizedBox's requested size to the tight value.
+    // UnconstrainedBox breaks out of that by giving its child loose
+    // constraints regardless of what the parent forces, so the button always
+    // renders at its natural size instead of getting stretched — which,
+    // combined with the glyph painter scaling off `size.width` for both
+    // axes, used to draw the "×" at coordinates far outside the visible
+    // area.
+    final glyphSize = style.size ?? BsCloseButtonStyle.defaultSize;
+    final padding = style.padding ?? BsCloseButtonStyle.defaultPadding;
+    final resolvedPadding = padding.resolve(Directionality.of(context));
+
+    return UnconstrainedBox(
+      child: SizedBox(
+        width: glyphSize + resolvedPadding.horizontal,
+        height: glyphSize + resolvedPadding.vertical,
+        child: MouseRegion(
+          cursor: enabled ? SystemMouseCursors.click : SystemMouseCursors.basic,
+          onEnter: enabled ? (_) => setState(() => _hovered = true) : null,
+          onExit: enabled ? (_) => setState(() => _hovered = false) : null,
+          child: Focus(
+            onFocusChange: (focused) => setState(() => _focused = focused),
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: widget.onPressed,
+              child: AnimatedOpacity(
+                duration: const Duration(milliseconds: 150),
+                opacity: opacity,
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 150),
+                  decoration: BoxDecoration(
+                    boxShadow: [
+                      if (_focused)
+                        BoxShadow(color: BsFocusRing.color(), spreadRadius: BsCloseButtonStyle.defaultFocusRingWidth),
+                    ],
+                  ),
+                  child: Padding(
+                    padding: padding,
+                    child: CustomPaint(
+                      size: Size.square(glyphSize),
+                      painter: _BsCloseGlyphPainter(style.color ?? BsCloseButtonStyle.defaultColor),
+                    ),
+                  ),
                 ),
               ),
             ),
