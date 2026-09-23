@@ -17,18 +17,27 @@ class DocPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(40, 32, 40, 64),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title, style: const TextStyle(fontSize: 32, fontWeight: FontWeight.w600, color: BsColors.gray900)),
-          const SizedBox(height: 12),
-          Text(lead, style: const TextStyle(fontSize: 18, color: BsColors.gray700, height: 1.5)),
-          const SizedBox(height: 32),
-          ...examples,
-        ],
-      ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isMobile = constraints.maxWidth < BsBreakpoint.md.minWidth;
+        final horizontalPadding = isMobile ? 16.0 : 40.0;
+        return SingleChildScrollView(
+          padding: EdgeInsets.fromLTRB(horizontalPadding, isMobile ? 20 : 32, horizontalPadding, 48),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: TextStyle(fontSize: isMobile ? 26 : 32, fontWeight: FontWeight.w600, color: BsColors.gray900),
+              ),
+              const SizedBox(height: 12),
+              Text(lead, style: const TextStyle(fontSize: 18, color: BsColors.gray700, height: 1.5)),
+              const SizedBox(height: 32),
+              ...examples,
+            ],
+          ),
+        );
+      },
     );
   }
 }

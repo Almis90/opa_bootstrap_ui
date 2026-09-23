@@ -35,6 +35,8 @@ class _DocExampleState extends State<DocExample> {
 
   @override
   Widget build(BuildContext context) {
+    final isMobile = MediaQuery.sizeOf(context).width < BsBreakpoint.md.minWidth;
+    final previewPadding = isMobile ? 12.0 : 24.0;
     return Padding(
       padding: const EdgeInsets.only(bottom: 40),
       child: Column(
@@ -53,7 +55,7 @@ class _DocExampleState extends State<DocExample> {
           ],
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.all(24),
+            padding: EdgeInsets.all(previewPadding),
             decoration: BoxDecoration(
               border: Border.all(color: BsBorders.color),
               borderRadius: BorderRadius.circular(BsBorders.radius),

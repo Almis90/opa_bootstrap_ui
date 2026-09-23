@@ -8,17 +8,30 @@ import 'doc_nav.dart';
 /// Mirrors `DocsSidebar.astro`: a scrollable list of section headings, each
 /// followed by its pages, with the active page highlighted.
 class DocSidebar extends StatelessWidget {
-  const DocSidebar({super.key, required this.sections, required this.selected, required this.onSelect});
+  const DocSidebar({
+    super.key,
+    required this.sections,
+    required this.selected,
+    required this.onSelect,
+    this.shrinkWrap = false,
+  });
 
   final List<DocNavSection> sections;
   final DocNavPage selected;
   final ValueChanged<DocNavPage> onSelect;
+
+  /// True when nested inside another scrollable (the mobile offcanvas body,
+  /// which is already a `SingleChildScrollView`) instead of filling a fixed
+  /// height itself.
+  final bool shrinkWrap;
 
   @override
   Widget build(BuildContext context) {
     return ColoredBox(
       color: BsColors.gray100,
       child: ListView(
+        shrinkWrap: shrinkWrap,
+        physics: shrinkWrap ? const NeverScrollableScrollPhysics() : null,
         padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
         children: [
           for (final section in sections) ...[
