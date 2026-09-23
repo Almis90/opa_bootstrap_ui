@@ -1,0 +1,22 @@
+name: doc_site
+description: "Documentation site for opa_bootstrap_ui, structured after getbootstrap.com's docs."
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: ^3.13.4
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  opa_bootstrap_ui:
+    path: ../
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: false
