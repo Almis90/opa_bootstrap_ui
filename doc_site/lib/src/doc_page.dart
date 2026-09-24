@@ -4,16 +4,22 @@ import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 import 'doc_example.dart';
 
 /// The template shared by every docs page: a title, a one- or two-sentence
-/// lead paragraph, and a list of [DocExample]s.
+/// lead paragraph, and either a list of [DocExample]s or arbitrary
+/// [children] (for pages like Introduction that don't fit the
+/// live-preview-plus-code-toggle shape).
 ///
 /// Mirrors Bootstrap's docs page layout (`<h1>` + `.lead` + a series of
 /// `.bd-example` blocks) from `DocsLayout.astro`.
 class DocPage extends StatelessWidget {
-  const DocPage({super.key, required this.title, required this.lead, this.examples = const []});
+  const DocPage({super.key, required this.title, required this.lead, this.examples = const [], this.children = const []});
 
   final String title;
   final String lead;
   final List<DocExample> examples;
+
+  /// Extra content appended after [examples], for pages that need something
+  /// other than a `DocExample`.
+  final List<Widget> children;
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +40,7 @@ class DocPage extends StatelessWidget {
               Text(lead, style: const TextStyle(fontSize: 18, color: BsColors.gray700, height: 1.5)),
               const SizedBox(height: 32),
               ...examples,
+              ...children,
             ],
           ),
         );

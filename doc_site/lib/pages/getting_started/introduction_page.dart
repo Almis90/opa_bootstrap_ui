@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 
-import '../../src/doc_example.dart';
 import '../../src/doc_page.dart';
 
 class IntroductionPage extends StatelessWidget {
@@ -14,14 +13,24 @@ class IntroductionPage extends StatelessWidget {
       lead:
           'opa_bootstrap_ui ports Bootstrap 5 components to Flutter as a family of Bs*-prefixed '
           'widgets, built directly on flutter/widgets.dart with no Material or Cupertino dependency.',
-      examples: [
-        DocExample(
-          title: 'Quick start',
-          description:
-              'Add the package to pubspec.yaml, then wrap your app in a WidgetsApp (not '
-              'MaterialApp) — the package renders on raw widgets, so no design system is pulled '
-              'in for free, and none is required.',
-          code: '''
+      children: const [
+        _QuickStartStep(
+          number: 1,
+          title: 'Install',
+          blocks: [
+            _CodeBlock(label: 'pubspec.yaml', code: 'dependencies:\n  opa_bootstrap_ui: ^1.0.0'),
+            _CodeBlock(label: 'or via the command line', code: 'flutter pub add opa_bootstrap_ui'),
+          ],
+        ),
+        _QuickStartStep(
+          number: 2,
+          title: 'Set up main.dart',
+          blocks: [
+            _CodeBlock(
+              code: '''
+import 'package:flutter/widgets.dart';
+import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
+
 void main() {
   runApp(const MainApp());
 }
@@ -31,56 +40,90 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WidgetsApp(
-      color: BsColors.blue,
-      builder: (context, child) => DefaultTextStyle(
-        style: const TextStyle(color: BsColors.gray900),
-        child: child!,
-      ),
-      home: const HomePage(),
-      pageRouteBuilder: <T>(settings, builder) => PageRouteBuilder<T>(
-        settings: settings,
-        pageBuilder: (context, animation, secondaryAnimation) => builder(context),
-      ),
-    );
+    return const BsApp(home: HomePage());
   }
 }''',
-          preview: const _QuickStartPreview(),
+            ),
+          ],
         ),
-        DocExample(
-          title: 'Variants, sizes, and styles',
-          description:
-              'Components that carry Bootstrap contextual colors expose a variant enum '
-              '(BsVariant), and most accept a style override built on the same tokens used '
-              'internally, so a whole component can be recolored without subclassing it.',
-          code: '''
-BsButton(
-  variant: BsVariant.success,
-  onPressed: () {},
-  child: const Text('Saved'),
-)''',
-          preview: Wrap(
-            spacing: 12,
-            children: [
-              BsButton(variant: BsVariant.success, onPressed: () {}, child: const Text('Saved')),
-              BsButton(variant: BsVariant.danger, outline: true, onPressed: () {}, child: const Text('Delete')),
-            ],
-          ),
+        _QuickStartStep(
+          number: 3,
+          title: 'Hello, world',
+          blocks: [
+            _CodeBlock(
+              code: '''
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: Text('Hello, opa_bootstrap_ui!'));
+  }
+}''',
+            ),
+          ],
         ),
       ],
     );
   }
 }
 
-class _QuickStartPreview extends StatelessWidget {
-  const _QuickStartPreview();
+class _CodeBlock {
+  const _CodeBlock({this.label, required this.code});
+
+  final String? label;
+  final String code;
+}
+
+class _QuickStartStep extends StatelessWidget {
+  const _QuickStartStep({required this.number, required this.title, required this.blocks});
+
+  final int number;
+  final String title;
+  final List<_CodeBlock> blocks;
 
   @override
   Widget build(BuildContext context) {
-    return const Text(
-      'Every Bs* widget renders standalone — no ancestor app widget is required to preview one, '
-      'as this page demonstrates.',
-      style: TextStyle(color: BsColors.gray700),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 32),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                width: 28,
+                height: 28,
+                alignment: Alignment.center,
+                decoration: const BoxDecoration(color: BsColors.blue, shape: BoxShape.circle),
+                child: Text(
+                  '$number',
+                  style: const TextStyle(color: BsColors.white, fontWeight: FontWeight.w600, fontSize: 14),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(title, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: BsColors.gray900)),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          for (final block in blocks) ...[
+            if (block.label != null) ...[
+              Text(block.label!, style: const TextStyle(fontSize: 13, color: BsColors.gray600)),
+              const SizedBox(height: 4),
+            ],
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(color: BsColors.gray900, borderRadius: BorderRadius.circular(BsBorders.radius)),
+              child: BsPre(style: const BsCodeStyle(preColor: BsColors.gray100), child: Text(block.code)),
+            ),
+            const SizedBox(height: 12),
+          ],
+        ],
+      ),
     );
   }
 }
