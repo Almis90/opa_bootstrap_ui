@@ -77,6 +77,7 @@ class BsPre extends StatelessWidget {
       style: TextStyle(
         fontFamily: BsTypography.fontFamilyMonospace.first,
         fontFamilyFallback: BsTypography.fontFamilyMonospace.skip(1).toList(),
+        fontSize: style.codeFontSize ?? BsCodeStyle.defaultCodeFontSize,
         color: style.preColor,
       ),
       child: child,

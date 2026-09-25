@@ -5,7 +5,9 @@ import 'tokens/bs_placeholder_style.dart';
 
 /// Which Bootstrap `.placeholder` animation, if any, a [BsPlaceholder] runs.
 enum BsPlaceholderAnimation {
-  /// Static, at [BsPlaceholderStyle.opacityMin].
+  /// Static, at [BsPlaceholderStyle.opacityMax] (Bootstrap's base
+  /// `.placeholder` rule sets `opacity: $placeholder-opacity-max` even
+  /// with no animation class applied).
   none,
 
   /// `.placeholder-glow`: opacity breathes between
@@ -121,7 +123,11 @@ class _BsPlaceholderState extends State<BsPlaceholder> with SingleTickerProvider
       );
     }
 
-    return Opacity(opacity: minOpacity, child: bar);
+    // Bootstrap's base `.placeholder` rule is `opacity: $placeholder-opacity-max`;
+    // `.placeholder-glow` is the only variant that dips down to
+    // `$placeholder-opacity-min` (via its keyframe animation). Both the
+    // static (`none`) and `wave` variants rest at the max opacity.
+    return Opacity(opacity: maxOpacity, child: bar);
   }
 }
 
