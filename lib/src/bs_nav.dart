@@ -95,9 +95,22 @@ class BsNav extends StatelessWidget {
     // crossAxisAlignment.stretch can stretch every item to match — a bare
     // Column would otherwise inherit the unbounded width of an enclosing
     // Row and crash.
+    //
+    // The horizontal Row only takes MainAxisSize.max when fill stretches
+    // its items to share the available width (`.nav-fill`/`.nav-justified`,
+    // which needs that space to divide up); otherwise a real `.nav` sizes
+    // to its content like any other unstretched flex item, so the Row
+    // matches that with MainAxisSize.min — without it, a bare BsNav placed
+    // next to a sibling (e.g. in a Wrap or a Row) would always claim the
+    // rest of that shared row's width for itself instead of just its own
+    // links, pushing the sibling onto its own line/row.
     final Widget nav = vertical
         ? IntrinsicWidth(child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: children))
-        : Row(crossAxisAlignment: CrossAxisAlignment.end, children: children);
+        : Row(
+            mainAxisSize: fill ? MainAxisSize.max : MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: children,
+          );
 
     if (!isTabs) return nav;
 
