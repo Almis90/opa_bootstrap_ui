@@ -162,7 +162,10 @@ class _BsPaginationItemWidgetState extends State<_BsPaginationItemWidget> {
               borderRadius: widget.borderRadius,
               boxShadow: [
                 if (_focused)
-                  BoxShadow(color: BsFocusRing.color(), spreadRadius: BsPaginationStyle.defaultFocusRingWidth),
+                  BoxShadow(
+                    color: style.focusRingColor ?? BsFocusRing.color(),
+                    spreadRadius: style.focusRingWidth ?? BsPaginationStyle.defaultFocusRingWidth,
+                  ),
               ],
             ),
             child: Padding(

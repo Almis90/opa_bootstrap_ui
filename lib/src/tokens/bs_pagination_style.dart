@@ -22,6 +22,8 @@ class BsPaginationStyle {
     this.borderColor,
     this.focusColor,
     this.focusBackground,
+    this.focusRingColor,
+    this.focusRingWidth,
     this.hoverColor,
     this.hoverBackground,
     this.hoverBorderColor,
@@ -60,6 +62,13 @@ class BsPaginationStyle {
 
   /// `$pagination-focus-bg` (`var(--bs-secondary-bg)`).
   final Color? focusBackground;
+
+  /// `$pagination-focus-box-shadow` (`$focus-ring-box-shadow`)'s color.
+  final Color? focusRingColor;
+
+  /// The width of [focusRingColor]'s ring, per `$focus-ring-width`
+  /// (`.25rem`, i.e. `4` at the default `16px` root font size).
+  final double? focusRingWidth;
 
   /// `$pagination-hover-color` (`var(--bs-link-hover-color)`).
   final Color? hoverColor;
@@ -103,6 +112,8 @@ class BsPaginationStyle {
       borderColor: other.borderColor ?? borderColor,
       focusColor: other.focusColor ?? focusColor,
       focusBackground: other.focusBackground ?? focusBackground,
+      focusRingColor: other.focusRingColor ?? focusRingColor,
+      focusRingWidth: other.focusRingWidth ?? focusRingWidth,
       hoverColor: other.hoverColor ?? hoverColor,
       hoverBackground: other.hoverBackground ?? hoverBackground,
       hoverBorderColor: other.hoverBorderColor ?? hoverBorderColor,
@@ -133,6 +144,7 @@ class BsPaginationStyle {
 
   /// `$pagination-focus-box-shadow` (`$focus-ring-box-shadow`).
   static const double defaultFocusRingWidth = BsFocusRing.width;
+  static Color get defaultFocusRingColor => BsFocusRing.color();
 
   static BsPaginationStyle get defaults => BsPaginationStyle(
     padding: defaultPadding,
@@ -144,6 +156,8 @@ class BsPaginationStyle {
     borderColor: defaultBorderColor,
     focusColor: defaultColor,
     focusBackground: defaultFocusBackground,
+    focusRingColor: defaultFocusRingColor,
+    focusRingWidth: defaultFocusRingWidth,
     hoverColor: defaultColor,
     hoverBackground: defaultHoverBackground,
     hoverBorderColor: defaultBorderColor,

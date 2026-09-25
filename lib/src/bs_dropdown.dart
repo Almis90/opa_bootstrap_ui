@@ -186,10 +186,16 @@ class _BsDropdownMenu extends StatelessWidget {
           borderRadius: borderRadius,
           child: Padding(
             padding: style.padding ?? BsDropdownStyle.defaultPadding,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [for (final entry in items) _buildEntry(entry)],
+            child: DefaultTextStyle.merge(
+              style: TextStyle(
+                color: style.color ?? BsDropdownStyle.defaultColor,
+                fontSize: style.fontSize ?? BsDropdownStyle.defaultFontSize,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [for (final entry in items) _buildEntry(entry)],
+              ),
             ),
           ),
         ),
@@ -235,7 +241,7 @@ class _BsDropdownItemWidgetState extends State<_BsDropdownItemWidget> {
       color = style.linkActiveColor ?? BsDropdownStyle.defaultLinkActiveColor;
     } else if (_hovered && enabled) {
       background = style.linkHoverBackground ?? BsDropdownStyle.defaultLinkHoverBackground;
-      color = style.linkColor ?? BsDropdownStyle.defaultColor;
+      color = style.linkHoverColor ?? style.linkColor ?? BsDropdownStyle.defaultColor;
     } else {
       background = const Color(0x00000000);
       color = enabled

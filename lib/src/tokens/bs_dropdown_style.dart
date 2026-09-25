@@ -26,6 +26,7 @@ class BsDropdownStyle {
     this.dividerMarginY,
     this.boxShadow,
     this.linkColor,
+    this.linkHoverColor,
     this.linkHoverBackground,
     this.linkActiveColor,
     this.linkActiveBackground,
@@ -74,6 +75,11 @@ class BsDropdownStyle {
   /// `$dropdown-link-color` (`var(--bs-body-color)`).
   final Color? linkColor;
 
+  /// `$dropdown-link-hover-color` (`$dropdown-link-color` in the light
+  /// palette, but `$white` in [dark] — unlike most other hover colors,
+  /// this genuinely differs between the two, hence its own field).
+  final Color? linkHoverColor;
+
   /// `$dropdown-link-hover-bg` (`var(--bs-tertiary-bg)`).
   final Color? linkHoverBackground;
 
@@ -111,6 +117,7 @@ class BsDropdownStyle {
       dividerMarginY: other.dividerMarginY ?? dividerMarginY,
       boxShadow: other.boxShadow ?? boxShadow,
       linkColor: other.linkColor ?? linkColor,
+      linkHoverColor: other.linkHoverColor ?? linkHoverColor,
       linkHoverBackground: other.linkHoverBackground ?? linkHoverBackground,
       linkActiveColor: other.linkActiveColor ?? linkActiveColor,
       linkActiveBackground: other.linkActiveBackground ?? linkActiveBackground,
@@ -154,6 +161,7 @@ class BsDropdownStyle {
     dividerMarginY: defaultDividerMarginY,
     boxShadow: defaultBoxShadow,
     linkColor: defaultColor,
+    linkHoverColor: defaultColor,
     linkHoverBackground: defaultLinkHoverBackground,
     linkActiveColor: defaultLinkActiveColor,
     linkActiveBackground: defaultLinkActiveBackground,
@@ -169,6 +177,7 @@ class BsDropdownStyle {
     background: BsColors.gray800,
     borderColor: defaultBorderColor,
     linkColor: BsColors.gray300,
+    linkHoverColor: BsColors.white,
     linkHoverBackground: const Color(0x26FFFFFF),
     linkActiveColor: defaultLinkActiveColor,
     linkActiveBackground: defaultLinkActiveBackground,

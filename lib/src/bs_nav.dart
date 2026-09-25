@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 
-import 'bs_colors.dart';
 import 'tokens/bs_nav_style.dart';
 import 'tokens/bs_transitions.dart';
 
@@ -76,10 +75,18 @@ class BsNav extends StatelessWidget {
 
     final style = BsNavStyle.defaults.merge(this.style);
     final isTabs = variant == BsNavVariant.tabs;
+    final isUnderline = variant == BsNavVariant.underline;
 
-    final children = [
-      for (final item in items)
-        _BsNavLinkWidget(item: item, variant: variant, style: style, expand: fill && !vertical),
+    // `.nav-underline` applies a flex `gap` between items, on top of each
+    // link's own padding — the other variants rely on padding alone.
+    final gap = style.underlineGap ?? BsNavStyle.defaultUnderlineGap;
+    final gapWidget = vertical ? SizedBox(height: gap) : SizedBox(width: gap);
+
+    final children = <Widget>[
+      for (var i = 0; i < items.length; i++) ...[
+        if (isUnderline && i > 0) gapWidget,
+        _BsNavLinkWidget(item: items[i], variant: variant, style: style, expand: fill && !vertical),
+      ],
     ];
 
     // IntrinsicWidth bounds the column's width (to its widest item) so
@@ -120,13 +127,17 @@ class _BsNavLinkWidget extends StatefulWidget {
 
 class _BsNavLinkWidgetState extends State<_BsNavLinkWidget> {
   bool _hovered = false;
+  bool _focused = false;
 
   @override
   Widget build(BuildContext context) {
     final item = widget.item;
     final style = widget.style;
     final enabled = item.onTap != null && !item.disabled;
-    final borderRadius = BorderRadius.circular(style.tabsBorderRadius ?? BsNavStyle.defaultTabsBorderRadius);
+    final radius = widget.variant == BsNavVariant.pills
+        ? style.pillsBorderRadius ?? BsNavStyle.defaultPillsBorderRadius
+        : style.tabsBorderRadius ?? BsNavStyle.defaultTabsBorderRadius;
+    final borderRadius = BorderRadius.circular(radius);
 
     Color? color;
     Color background = const Color(0x00000000);
@@ -155,7 +166,7 @@ class _BsNavLinkWidgetState extends State<_BsNavLinkWidget> {
           } else {
             color = _hovered ? hoverColor : restColor;
             if (_hovered) {
-              border = Border.all(color: BsColors.gray200);
+              border = Border.all(color: style.tabsLinkHoverBorderColor ?? BsNavStyle.defaultTabsLinkHoverBorderColor);
             }
           }
         case BsNavVariant.pills:
@@ -185,6 +196,13 @@ class _BsNavLinkWidgetState extends State<_BsNavLinkWidget> {
         color: background,
         border: border,
         borderRadius: widget.variant == BsNavVariant.pills || widget.variant == BsNavVariant.tabs ? borderRadius : null,
+        boxShadow: [
+          if (_focused)
+            BoxShadow(
+              color: style.linkFocusRingColor ?? BsNavStyle.defaultLinkFocusRingColor,
+              spreadRadius: style.linkFocusRingWidth ?? BsNavStyle.defaultLinkFocusRingWidth,
+            ),
+        ],
       ),
       child: Padding(
         padding: style.linkPadding ?? BsNavStyle.defaultLinkPadding,
@@ -200,7 +218,10 @@ class _BsNavLinkWidgetState extends State<_BsNavLinkWidget> {
       cursor: enabled ? SystemMouseCursors.click : SystemMouseCursors.basic,
       onEnter: enabled ? (_) => setState(() => _hovered = true) : null,
       onExit: enabled ? (_) => setState(() => _hovered = false) : null,
-      child: GestureDetector(behavior: HitTestBehavior.opaque, onTap: enabled ? item.onTap : null, child: content),
+      child: Focus(
+        onFocusChange: enabled ? (focused) => setState(() => _focused = focused) : null,
+        child: GestureDetector(behavior: HitTestBehavior.opaque, onTap: enabled ? item.onTap : null, child: content),
+      ),
     );
 
     return widget.expand ? Expanded(child: link) : link;

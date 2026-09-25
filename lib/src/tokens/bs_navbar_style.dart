@@ -3,6 +3,7 @@ import 'package:flutter/painting.dart';
 
 import '../bs_colors.dart';
 import 'bs_borders.dart';
+import 'bs_focus_ring.dart';
 
 /// A Bootstrap `.navbar`'s visual variables, for one color scheme
 /// ([light]/[dark] factories mirror `.navbar-light`/`.navbar-dark`).
@@ -20,11 +21,15 @@ class BsNavbarStyle {
     this.togglerPadding,
     this.togglerFontSize,
     this.togglerBorderRadius,
+    this.togglerFocusRingWidth,
+    this.togglerFocusRingColor,
+    this.togglerTransitionDuration,
     this.color,
     this.hoverColor,
     this.activeColor,
     this.disabledColor,
     this.togglerBorderColor,
+    this.iconColor,
     this.brandColor,
     this.brandHoverColor,
   });
@@ -50,6 +55,16 @@ class BsNavbarStyle {
   /// `$navbar-toggler-border-radius` (`$btn-border-radius`).
   final double? togglerBorderRadius;
 
+  /// `$navbar-toggler-focus-width` (`$btn-focus-width`), the toggle
+  /// button's focus-ring spread.
+  final double? togglerFocusRingWidth;
+
+  /// The toggler's focus ring color, per `$focus-ring-color`.
+  final Color? togglerFocusRingColor;
+
+  /// `$navbar-toggler-transition` (`box-shadow .15s ease-in-out`).
+  final Duration? togglerTransitionDuration;
+
   /// `$navbar-light-color`/`$navbar-dark-color`.
   final Color? color;
 
@@ -64,6 +79,11 @@ class BsNavbarStyle {
 
   /// `$navbar-light-toggler-border-color`/`$navbar-dark-toggler-border-color`.
   final Color? togglerBorderColor;
+
+  /// `$navbar-light-icon-color`/`$navbar-dark-icon-color`: the color fed to
+  /// the toggler's hamburger-icon painter (independent from [color], which
+  /// tints the nav links themselves).
+  final Color? iconColor;
 
   /// `$navbar-light-brand-color`/`$navbar-dark-brand-color` (`activeColor`).
   final Color? brandColor;
@@ -81,11 +101,15 @@ class BsNavbarStyle {
       togglerPadding: other.togglerPadding ?? togglerPadding,
       togglerFontSize: other.togglerFontSize ?? togglerFontSize,
       togglerBorderRadius: other.togglerBorderRadius ?? togglerBorderRadius,
+      togglerFocusRingWidth: other.togglerFocusRingWidth ?? togglerFocusRingWidth,
+      togglerFocusRingColor: other.togglerFocusRingColor ?? togglerFocusRingColor,
+      togglerTransitionDuration: other.togglerTransitionDuration ?? togglerTransitionDuration,
       color: other.color ?? color,
       hoverColor: other.hoverColor ?? hoverColor,
       activeColor: other.activeColor ?? activeColor,
       disabledColor: other.disabledColor ?? disabledColor,
       togglerBorderColor: other.togglerBorderColor ?? togglerBorderColor,
+      iconColor: other.iconColor ?? iconColor,
       brandColor: other.brandColor ?? brandColor,
       brandHoverColor: other.brandHoverColor ?? brandHoverColor,
     );
@@ -99,6 +123,12 @@ class BsNavbarStyle {
   static const double defaultTogglerFontSize = 20;
   static const double defaultTogglerBorderRadius = BsBorders.radius;
 
+  /// `$navbar-toggler-focus-width` (`$btn-focus-width`).
+  static const double defaultTogglerFocusRingWidth = BsFocusRing.width;
+
+  /// `$navbar-toggler-transition` (`box-shadow .15s ease-in-out`).
+  static const Duration defaultTogglerTransitionDuration = Duration(milliseconds: 150);
+
   /// `$navbar-light-color: rgba($emphasis-color-rgb, .65)`, resolved
   /// against `$gray-900`.
   static const Color lightColor = Color(0xA6212529);
@@ -107,13 +137,20 @@ class BsNavbarStyle {
   static const Color lightDisabledColor = Color(0x4D212529);
   static const Color lightTogglerBorderColor = Color(0x26212529);
 
+  /// `$navbar-light-icon-color: rgba($body-color, .75)`, resolved against
+  /// `$gray-900` (`$body-color`'s default).
+  static const Color lightIconColor = Color(0xBF212529);
+
   static const Color darkColor = Color(0x8CFFFFFF);
   static const Color darkHoverColor = Color(0xBFFFFFFF);
   static const Color darkActiveColor = BsColors.white;
   static const Color darkDisabledColor = Color(0x40FFFFFF);
   static const Color darkTogglerBorderColor = Color(0x1AFFFFFF);
 
-  static const BsNavbarStyle _shared = BsNavbarStyle(
+  /// `$navbar-dark-icon-color: $navbar-dark-color` (i.e. same as [darkColor]).
+  static const Color darkIconColor = darkColor;
+
+  static BsNavbarStyle get _shared => BsNavbarStyle(
     padding: defaultPadding,
     navLinkPaddingX: defaultNavLinkPaddingX,
     brandFontSize: defaultBrandFontSize,
@@ -121,6 +158,9 @@ class BsNavbarStyle {
     togglerPadding: defaultTogglerPadding,
     togglerFontSize: defaultTogglerFontSize,
     togglerBorderRadius: defaultTogglerBorderRadius,
+    togglerFocusRingWidth: defaultTogglerFocusRingWidth,
+    togglerFocusRingColor: BsFocusRing.color(),
+    togglerTransitionDuration: defaultTogglerTransitionDuration,
   );
 
   /// `.navbar-light` defaults.
@@ -131,6 +171,7 @@ class BsNavbarStyle {
       activeColor: lightActiveColor,
       disabledColor: lightDisabledColor,
       togglerBorderColor: lightTogglerBorderColor,
+      iconColor: lightIconColor,
       brandColor: lightActiveColor,
       brandHoverColor: lightActiveColor,
     ),
@@ -144,6 +185,7 @@ class BsNavbarStyle {
       activeColor: darkActiveColor,
       disabledColor: darkDisabledColor,
       togglerBorderColor: darkTogglerBorderColor,
+      iconColor: darkIconColor,
       brandColor: darkActiveColor,
       brandHoverColor: darkActiveColor,
     ),

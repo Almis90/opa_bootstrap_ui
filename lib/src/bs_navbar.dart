@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 
 import 'bs_breakpoint.dart';
 import 'bs_collapse.dart';
+import 'tokens/bs_focus_ring.dart';
 import 'tokens/bs_navbar_style.dart';
 
 /// `.navbar-light`/`.navbar-dark`: which color scheme a [BsNavbar] uses for
@@ -246,33 +247,47 @@ class _BsNavbarToggler extends StatefulWidget {
 
 class _BsNavbarTogglerState extends State<_BsNavbarToggler> {
   bool _hovered = false;
+  bool _focused = false;
 
   @override
   Widget build(BuildContext context) {
     final style = widget.style;
-    final color = style.color ?? BsNavbarStyle.lightColor;
+    final iconColor = style.iconColor ?? BsNavbarStyle.lightIconColor;
 
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       onEnter: (_) => setState(() => _hovered = true),
       onExit: (_) => setState(() => _hovered = false),
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: widget.onTap,
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: (style.togglerBorderColor ?? BsNavbarStyle.lightTogglerBorderColor).withValues(
-                alpha: _hovered ? 1 : 0.6,
+      child: Focus(
+        onFocusChange: (focused) => setState(() => _focused = focused),
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: widget.onTap,
+          child: AnimatedContainer(
+            duration: style.togglerTransitionDuration ?? BsNavbarStyle.defaultTogglerTransitionDuration,
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: (style.togglerBorderColor ?? BsNavbarStyle.lightTogglerBorderColor).withValues(
+                  alpha: _hovered ? 1 : 0.6,
+                ),
               ),
+              borderRadius: BorderRadius.circular(
+                style.togglerBorderRadius ?? BsNavbarStyle.defaultTogglerBorderRadius,
+              ),
+              boxShadow: [
+                if (_focused)
+                  BoxShadow(
+                    color: style.togglerFocusRingColor ?? BsFocusRing.color(),
+                    spreadRadius: style.togglerFocusRingWidth ?? BsNavbarStyle.defaultTogglerFocusRingWidth,
+                  ),
+              ],
             ),
-            borderRadius: BorderRadius.circular(style.togglerBorderRadius ?? BsNavbarStyle.defaultTogglerBorderRadius),
-          ),
-          child: Padding(
-            padding: style.togglerPadding ?? BsNavbarStyle.defaultTogglerPadding,
-            child: CustomPaint(
-              size: Size.square(style.togglerFontSize ?? BsNavbarStyle.defaultTogglerFontSize),
-              painter: _BsNavbarTogglerIconPainter(color),
+            child: Padding(
+              padding: style.togglerPadding ?? BsNavbarStyle.defaultTogglerPadding,
+              child: CustomPaint(
+                size: Size.square(style.togglerFontSize ?? BsNavbarStyle.defaultTogglerFontSize),
+                painter: _BsNavbarTogglerIconPainter(iconColor),
+              ),
             ),
           ),
         ),
