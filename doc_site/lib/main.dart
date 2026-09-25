@@ -44,12 +44,28 @@ void main() {
   runApp(const DocApp());
 }
 
-class DocApp extends StatelessWidget {
+class DocApp extends StatefulWidget {
   const DocApp({super.key});
 
   @override
+  State<DocApp> createState() => _DocAppState();
+}
+
+class _DocAppState extends State<DocApp> {
+  Brightness _brightness = Brightness.light;
+
+  void _toggleBrightness() {
+    setState(() {
+      _brightness = _brightness == Brightness.light ? Brightness.dark : Brightness.light;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return BsApp(home: DocShell(sections: _sections));
+    return BsApp(
+      brightness: _brightness,
+      home: DocShell(sections: _sections, brightness: _brightness, onToggleBrightness: _toggleBrightness),
+    );
   }
 }
 

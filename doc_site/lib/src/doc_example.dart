@@ -45,19 +45,19 @@ class _DocExampleState extends State<DocExample> {
           if (widget.title != null) ...[
             Text(
               widget.title!,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: BsColors.gray900),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: BsBody.colorOf(context)),
             ),
             const SizedBox(height: 4),
           ],
           if (widget.description != null) ...[
-            Text(widget.description!, style: const TextStyle(fontSize: 14, color: BsColors.gray700, height: 1.5)),
+            Text(widget.description!, style: TextStyle(fontSize: 14, color: BsBody.secondaryColorOf(context), height: 1.5)),
             const SizedBox(height: 12),
           ],
           Container(
             width: double.infinity,
             padding: EdgeInsets.all(previewPadding),
             decoration: BoxDecoration(
-              border: Border.all(color: BsBorders.color),
+              border: Border.all(color: BsBorders.colorOf(context)),
               borderRadius: BorderRadius.circular(BsBorders.radius),
             ),
             child: widget.preview,
@@ -68,11 +68,11 @@ class _DocExampleState extends State<DocExample> {
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
               decoration: BoxDecoration(
-                color: BsColors.gray100,
+                color: BsBody.tertiaryBackgroundOf(context),
                 border: Border(
-                  left: BorderSide(color: BsBorders.color),
-                  right: BorderSide(color: BsBorders.color),
-                  bottom: BorderSide(color: BsBorders.color),
+                  left: BorderSide(color: BsBorders.colorOf(context)),
+                  right: BorderSide(color: BsBorders.colorOf(context)),
+                  bottom: BorderSide(color: BsBorders.colorOf(context)),
                 ),
                 borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(BsBorders.radius),

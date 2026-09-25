@@ -13,9 +13,16 @@ import 'doc_sidebar.dart';
 /// moves into a [BsOffcanvas] opened from a hamburger button in the header —
 /// the same collapse Bootstrap's own docs site does on mobile.
 class DocShell extends StatefulWidget {
-  const DocShell({super.key, required this.sections});
+  const DocShell({super.key, required this.sections, required this.brightness, required this.onToggleBrightness});
 
   final List<DocNavSection> sections;
+
+  /// The app's current [BsTheme] brightness, mirrored from [BsApp.brightness]
+  /// so the header toggle can show the right icon/label.
+  final Brightness brightness;
+
+  /// Flips [brightness] between light and dark.
+  final VoidCallback onToggleBrightness;
 
   @override
   State<DocShell> createState() => _DocShellState();
@@ -72,12 +79,17 @@ class _DocShellState extends State<DocShell> {
                       style: TextStyle(color: BsColors.white, fontSize: 18, fontWeight: FontWeight.w600),
                     ),
                   ),
+                  _BrightnessToggle(
+                    key: const Key('doc-shell-brightness-toggle'),
+                    brightness: widget.brightness,
+                    onTap: widget.onToggleBrightness,
+                  ),
                 ],
               ),
             ),
             Expanded(
               child: isMobile
-                  ? ColoredBox(color: BsColors.white, child: Builder(builder: _selected.builder))
+                  ? ColoredBox(color: BsBody.backgroundOf(context), child: Builder(builder: _selected.builder))
                   : Row(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
@@ -85,9 +97,12 @@ class _DocShellState extends State<DocShell> {
                           width: 260,
                           child: DocSidebar(sections: widget.sections, selected: _selected, onSelect: _select),
                         ),
-                        Container(width: 1, color: BsBorders.color),
+                        Container(width: 1, color: BsBorders.colorOf(context)),
                         Expanded(
-                          child: ColoredBox(color: BsColors.white, child: Builder(builder: _selected.builder)),
+                          child: ColoredBox(
+                            color: BsBody.backgroundOf(context),
+                            child: Builder(builder: _selected.builder),
+                          ),
                         ),
                       ],
                     ),
@@ -95,6 +110,44 @@ class _DocShellState extends State<DocShell> {
           ],
         );
       },
+    );
+  }
+}
+
+/// A sun/moon toggle in the header that flips the app's [BsTheme]
+/// brightness — Bootstrap's docs site has the same control in its navbar.
+class _BrightnessToggle extends StatelessWidget {
+  const _BrightnessToggle({super.key, required this.brightness, required this.onTap});
+
+  final Brightness brightness;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = brightness == Brightness.dark;
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          decoration: BoxDecoration(
+            border: Border.all(color: BsColors.gray700),
+            borderRadius: BorderRadius.circular(BsBorders.radiusPill),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(isDark ? '☀' : '☽', style: const TextStyle(color: BsColors.white, fontSize: 14)),
+              const SizedBox(width: 6),
+              Text(
+                isDark ? 'Light' : 'Dark',
+                style: const TextStyle(color: BsColors.white, fontSize: 13, fontWeight: FontWeight.w500),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

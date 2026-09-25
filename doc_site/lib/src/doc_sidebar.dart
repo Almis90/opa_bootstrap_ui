@@ -28,7 +28,7 @@ class DocSidebar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ColoredBox(
-      color: BsColors.gray100,
+      color: BsBody.tertiaryBackgroundOf(context),
       child: ListView(
         shrinkWrap: shrinkWrap,
         physics: shrinkWrap ? const NeverScrollableScrollPhysics() : null,
@@ -39,7 +39,12 @@ class DocSidebar extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(12, 16, 12, 8),
               child: Text(
                 section.title.toUpperCase(),
-                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: BsColors.gray600, letterSpacing: 0.5),
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  color: BsBody.secondaryColorOf(context),
+                  letterSpacing: 0.5,
+                ),
               ),
             ),
             for (final page in section.pages) _SidebarLink(page: page, active: page == selected, onTap: () => onSelect(page)),
@@ -74,7 +79,7 @@ class _SidebarLink extends StatelessWidget {
             page.title,
             style: TextStyle(
               fontSize: 14,
-              color: active ? BsColors.blue : BsColors.gray700,
+              color: active ? BsColors.blue : BsBody.colorOf(context),
               fontWeight: active ? FontWeight.w600 : FontWeight.w400,
             ),
           ),

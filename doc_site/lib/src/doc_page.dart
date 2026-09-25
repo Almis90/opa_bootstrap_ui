@@ -34,10 +34,10 @@ class DocPage extends StatelessWidget {
             children: [
               Text(
                 title,
-                style: TextStyle(fontSize: isMobile ? 26 : 32, fontWeight: FontWeight.w600, color: BsColors.gray900),
+                style: TextStyle(fontSize: isMobile ? 26 : 32, fontWeight: FontWeight.w600, color: BsBody.colorOf(context)),
               ),
               const SizedBox(height: 12),
-              Text(lead, style: const TextStyle(fontSize: 18, color: BsColors.gray700, height: 1.5)),
+              Text(lead, style: TextStyle(fontSize: 18, color: BsBody.secondaryColorOf(context), height: 1.5)),
               const SizedBox(height: 32),
               ...examples,
               ...children,
