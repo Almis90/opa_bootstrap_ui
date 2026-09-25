@@ -88,29 +88,16 @@ class BsProgress extends StatelessWidget {
           ),
         ];
 
-    var remaining = 1.0;
-    final segments = <Widget>[];
-    for (final bar in bars) {
-      final fraction = ((bar.value - bar.min) / (bar.max - bar.min)).clamp(
-        0.0,
-        1.0,
-      );
-      remaining -= fraction;
-      segments.add(
-        Expanded(
-          flex: (fraction * 10000).round().clamp(0, 10000),
-          child: fraction == 0 ? const SizedBox.shrink() : bar,
-        ),
-      );
-    }
-    if (remaining > 0) {
-      segments.add(
-        Expanded(
-          flex: (remaining * 10000).round().clamp(0, 10000),
-          child: const SizedBox.shrink(),
-        ),
-      );
-    }
+    final fractions = [
+      for (final bar in bars)
+        ((bar.value - bar.min) / (bar.max - bar.min)).clamp(0.0, 1.0),
+    ];
+    // `$progress-bar-transition` (`width .6s ease`): each segment's width
+    // eases toward its new value rather than jumping, the same as the
+    // CSS `transition: width` on `.progress-bar`.
+    final transitionDuration =
+        style.barTransitionDuration ??
+        BsProgressStyle.defaultBarTransitionDuration;
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(borderRadius),
@@ -121,7 +108,24 @@ class BsProgress extends StatelessWidget {
         ),
         child: SizedBox(
           height: height ?? style.height,
-          child: Row(children: segments),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final totalWidth = constraints.maxWidth;
+              return Row(
+                children: [
+                  for (var i = 0; i < bars.length; i++)
+                    AnimatedContainer(
+                      duration: transitionDuration,
+                      curve: Curves.easeInOut,
+                      width: totalWidth * fractions[i],
+                      child: fractions[i] == 0
+                          ? const SizedBox.shrink()
+                          : bars[i],
+                    ),
+                ],
+              );
+            },
+          ),
         ),
       ),
     );

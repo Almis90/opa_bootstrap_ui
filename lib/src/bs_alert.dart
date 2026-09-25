@@ -74,6 +74,11 @@ class _BsAlertState extends State<BsAlert> {
     final borderRadius = style.borderRadius ?? BsAlertStyle.defaultBorderRadius;
     final padding = style.padding ?? BsAlertStyle.defaultPadding;
     final resolvedPadding = padding.resolve(TextDirection.ltr);
+    // `.alert-link`'s `--bs-alert-link-color` (defaults to `color`, the
+    // same "alert-color" custom property) and `$alert-link-font-weight`,
+    // handed down to any [BsAlertLink] nested in [widget.child].
+    final linkColor = style.linkColor ?? color;
+    final linkFontWeight = style.linkFontWeight ?? BsAlertStyle.defaultLinkFontWeight;
 
     return AnimatedOpacity(
       duration: _duration,
@@ -107,7 +112,14 @@ class _BsAlertState extends State<BsAlert> {
                               ),
                             )
                           : padding,
-                      child: DefaultTextStyle.merge(style: TextStyle(color: color), child: widget.child),
+                      child: DefaultTextStyle.merge(
+                        style: TextStyle(color: color),
+                        child: _BsAlertScope(
+                          linkColor: linkColor,
+                          linkFontWeight: linkFontWeight,
+                          child: widget.child,
+                        ),
+                      ),
                     ),
                     if (widget.dismissible)
                       Positioned.fill(
@@ -124,5 +136,61 @@ class _BsAlertState extends State<BsAlert> {
               ),
       ),
     );
+  }
+}
+
+/// Propagates the enclosing [BsAlert]'s resolved `--bs-alert-link-color`/
+/// `$alert-link-font-weight` to any [BsAlertLink] nested in its [child].
+class _BsAlertScope extends InheritedWidget {
+  const _BsAlertScope({
+    required this.linkColor,
+    required this.linkFontWeight,
+    required super.child,
+  });
+
+  final Color linkColor;
+  final FontWeight linkFontWeight;
+
+  static _BsAlertScope? maybeOf(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<_BsAlertScope>();
+
+  @override
+  bool updateShouldNotify(_BsAlertScope oldWidget) =>
+      linkColor != oldWidget.linkColor || linkFontWeight != oldWidget.linkFontWeight;
+}
+
+/// `.alert-link`: a link styled to match the enclosing [BsAlert]'s
+/// contextual color, in [BsAlertStyle.defaultLinkFontWeight]. Nest this
+/// inside a [BsAlert]'s `child` around any tappable text that should read
+/// as a link, e.g. `BsAlert(child: Text.rich(TextSpan(children: [
+/// TextSpan(text: 'An example link'), ])))` — wrap just the link's span
+/// in a [BsAlertLink].
+class BsAlertLink extends StatelessWidget {
+  const BsAlertLink({super.key, required this.child, this.onTap});
+
+  /// Typically a [Text].
+  final Widget child;
+
+  /// Called on tap. [BsAlertLink] itself only supplies Bootstrap's
+  /// `.alert-link` color/weight, not `<a>`'s navigation behavior.
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final scope = _BsAlertScope.maybeOf(context);
+    final color = scope?.linkColor ?? BsVariant.primary.textEmphasis;
+    final fontWeight = scope?.linkFontWeight ?? BsAlertStyle.defaultLinkFontWeight;
+
+    final styledChild = DefaultTextStyle.merge(
+      style: TextStyle(color: color, fontWeight: fontWeight),
+      child: child,
+    );
+
+    return onTap == null
+        ? styledChild
+        : GestureDetector(
+            onTap: onTap,
+            child: MouseRegion(cursor: SystemMouseCursors.click, child: styledChild),
+          );
   }
 }
