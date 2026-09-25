@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
 
 import '../bs_colors.dart';
+import 'bs_body.dart';
 import 'bs_borders.dart';
 import 'bs_shadows.dart';
 
@@ -88,14 +89,39 @@ class BsToastStyle {
   static const double defaultMaxWidth = 350;
   static const EdgeInsets defaultPadding = EdgeInsets.symmetric(horizontal: 12, vertical: 8);
   static const double defaultFontSize = 14;
+
+  /// `$toast-background-color: rgba(var(--bs-body-bg-rgb), .85)`.
   static const Color defaultBackground = Color(0xD9FFFFFF);
+
+  /// [defaultBackground] resolved against `--bs-body-bg-rgb` in
+  /// `[data-bs-theme="dark"]`.
+  static const Color defaultDarkBackground = Color(0xD9212529);
+
   static const double defaultBorderWidth = BsBorders.width;
   static const Color defaultBorderColor = BsBorders.colorTranslucent;
+
+  /// [defaultBorderColor] resolved against `--bs-border-color-translucent`
+  /// in `[data-bs-theme="dark"]`.
+  static const Color defaultDarkBorderColor = BsBorders.darkColorTranslucent;
+
   static const double defaultBorderRadius = BsBorders.radius;
   static const List<BoxShadow> defaultBoxShadow = BsShadows.shadow;
   static const double defaultSpacing = 24;
+
+  /// `$toast-header-color` (`var(--bs-secondary-color)`).
   static const Color defaultHeaderColor = BsColors.gray600;
+
+  /// [defaultHeaderColor] resolved against `--bs-secondary-color` in
+  /// `[data-bs-theme="dark"]`.
+  static const Color defaultDarkHeaderColor = BsBody.darkSecondaryColor;
+
+  /// `$toast-header-background-color: rgba(var(--bs-body-bg-rgb), .85)`
+  /// (same formula as [defaultBackground]).
   static const Color defaultHeaderBackground = Color(0xD9FFFFFF);
+
+  /// [defaultHeaderBackground] resolved against `--bs-body-bg-rgb` in
+  /// `[data-bs-theme="dark"]`.
+  static const Color defaultDarkHeaderBackground = Color(0xD9212529);
 
   static const BsToastStyle defaults = BsToastStyle(
     maxWidth: defaultMaxWidth,
@@ -110,5 +136,24 @@ class BsToastStyle {
     headerColor: defaultHeaderColor,
     headerBackground: defaultHeaderBackground,
     headerBorderColor: defaultBorderColor,
+  );
+
+  /// [defaults], with every brightness-sensitive field swapped for its
+  /// `[data-bs-theme="dark"]` counterpart. Pick this as the base to
+  /// [merge] a caller's [BsToastStyle] override against when
+  /// `BsTheme.of(context) == Brightness.dark`.
+  static const BsToastStyle darkDefaults = BsToastStyle(
+    maxWidth: defaultMaxWidth,
+    padding: defaultPadding,
+    fontSize: defaultFontSize,
+    background: defaultDarkBackground,
+    borderWidth: defaultBorderWidth,
+    borderColor: defaultDarkBorderColor,
+    borderRadius: defaultBorderRadius,
+    boxShadow: defaultBoxShadow,
+    spacing: defaultSpacing,
+    headerColor: defaultDarkHeaderColor,
+    headerBackground: defaultDarkHeaderBackground,
+    headerBorderColor: defaultDarkBorderColor,
   );
 }

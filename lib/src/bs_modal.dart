@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import 'bs_close_button.dart';
+import 'bs_theme.dart';
 import 'tokens/bs_modal_style.dart';
 
 /// `$modal-sm`/`$modal-md` (implicit default)/`$modal-lg`/`$modal-xl`: how
@@ -73,7 +74,8 @@ class BsModalDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = BsModalStyle.defaults.merge(this.style);
+    final isDark = BsTheme.of(context) == Brightness.dark;
+    final style = (isDark ? BsModalStyle.darkDefaults : BsModalStyle.defaults).merge(this.style);
     final maxWidth = switch (size) {
       BsModalSize.small => style.smallSize ?? BsModalStyle.defaultSmallSize,
       BsModalSize.medium => style.mediumSize ?? BsModalStyle.defaultMediumSize,
@@ -121,7 +123,8 @@ class BsModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = BsModalStyle.defaults.merge(this.style);
+    final isDark = BsTheme.of(context) == Brightness.dark;
+    final style = (isDark ? BsModalStyle.darkDefaults : BsModalStyle.defaults).merge(this.style);
     final borderRadius = BorderRadius.circular(style.contentBorderRadius ?? BsModalStyle.defaultContentBorderRadius);
 
     return DecoratedBox(
@@ -167,7 +170,8 @@ class BsModalHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = BsModalStyle.defaults.merge(this.style);
+    final isDark = BsTheme.of(context) == Brightness.dark;
+    final style = (isDark ? BsModalStyle.darkDefaults : BsModalStyle.defaults).merge(this.style);
 
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -210,7 +214,8 @@ class BsModalBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = BsModalStyle.defaults.merge(this.style);
+    final isDark = BsTheme.of(context) == Brightness.dark;
+    final style = (isDark ? BsModalStyle.darkDefaults : BsModalStyle.defaults).merge(this.style);
     return Padding(padding: EdgeInsets.all(style.innerPadding ?? BsModalStyle.defaultInnerPadding), child: child);
   }
 }
@@ -224,7 +229,8 @@ class BsModalFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = BsModalStyle.defaults.merge(this.style);
+    final isDark = BsTheme.of(context) == Brightness.dark;
+    final style = (isDark ? BsModalStyle.darkDefaults : BsModalStyle.defaults).merge(this.style);
     final gap = style.footerMarginBetween ?? BsModalStyle.defaultFooterMarginBetween;
 
     return DecoratedBox(

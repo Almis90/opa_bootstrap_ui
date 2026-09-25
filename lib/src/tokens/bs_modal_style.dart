@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
 
 import '../bs_colors.dart';
+import 'bs_body.dart';
 import 'bs_borders.dart';
 import 'bs_shadows.dart';
 
@@ -135,14 +136,37 @@ class BsModalStyle {
   static const double defaultDialogMargin = 8;
   static const double defaultTitleLineHeight = 1.5;
   static const Color defaultContentColor = BsColors.gray900;
+
+  /// [defaultContentColor] resolved against `--bs-body-color` in
+  /// `[data-bs-theme="dark"]`.
+  static const Color defaultDarkContentColor = BsBody.darkColor;
+
   static const Color defaultContentBackground = BsColors.white;
+
+  /// [defaultContentBackground] resolved against `--bs-body-bg` in
+  /// `[data-bs-theme="dark"]`.
+  static const Color defaultDarkContentBackground = BsBody.darkBackground;
+
   static const Color defaultContentBorderColor = BsBorders.colorTranslucent;
+
+  /// [defaultContentBorderColor] resolved against
+  /// `--bs-border-color-translucent` in `[data-bs-theme="dark"]`.
+  static const Color defaultDarkContentBorderColor = BsBorders.darkColorTranslucent;
+
   static const double defaultContentBorderWidth = BsBorders.width;
   static const double defaultContentBorderRadius = BsBorders.radiusLg;
   static const List<BoxShadow> defaultContentBoxShadow = BsShadows.shadow;
+
+  /// `$modal-backdrop-bg: $black` — a literal with no `-dark` override,
+  /// unchanged in both themes (a backdrop is always a dark scrim).
   static const Color defaultBackdropColor = BsColors.black;
   static const double defaultBackdropOpacity = 0.5;
+
   static const Color defaultHeaderBorderColor = BsBorders.color;
+
+  /// [defaultHeaderBorderColor] resolved against `--bs-border-color` in
+  /// `[data-bs-theme="dark"]`.
+  static const Color defaultDarkHeaderBorderColor = BsBorders.darkColor;
   static const double defaultSmallSize = 300;
   static const double defaultMediumSize = 500;
   static const double defaultLargeSize = 800;
@@ -165,6 +189,37 @@ class BsModalStyle {
     headerBorderColor: defaultHeaderBorderColor,
     headerBorderWidth: defaultContentBorderWidth,
     footerBorderColor: defaultHeaderBorderColor,
+    footerBorderWidth: defaultContentBorderWidth,
+    smallSize: defaultSmallSize,
+    mediumSize: defaultMediumSize,
+    largeSize: defaultLargeSize,
+    extraLargeSize: defaultExtraLargeSize,
+    transitionDuration: defaultTransitionDuration,
+  );
+
+  /// [defaults], with [contentColor]/[contentBackground]/
+  /// [contentBorderColor]/[headerBorderColor]/[footerBorderColor] swapped
+  /// for their `[data-bs-theme="dark"]` counterparts. [backdropColor]/
+  /// [backdropOpacity] are unchanged (no `-dark` override exists — a
+  /// backdrop stays the same dark scrim regardless of page theme). Pick
+  /// this as the base to [merge] a caller's [BsModalStyle] override
+  /// against when `BsTheme.of(context) == Brightness.dark`.
+  static const BsModalStyle darkDefaults = BsModalStyle(
+    innerPadding: defaultInnerPadding,
+    footerMarginBetween: defaultFooterMarginBetween,
+    dialogMargin: defaultDialogMargin,
+    titleLineHeight: defaultTitleLineHeight,
+    contentColor: defaultDarkContentColor,
+    contentBackground: defaultDarkContentBackground,
+    contentBorderColor: defaultDarkContentBorderColor,
+    contentBorderWidth: defaultContentBorderWidth,
+    contentBorderRadius: defaultContentBorderRadius,
+    contentBoxShadow: defaultContentBoxShadow,
+    backdropColor: defaultBackdropColor,
+    backdropOpacity: defaultBackdropOpacity,
+    headerBorderColor: defaultDarkHeaderBorderColor,
+    headerBorderWidth: defaultContentBorderWidth,
+    footerBorderColor: defaultDarkHeaderBorderColor,
     footerBorderWidth: defaultContentBorderWidth,
     smallSize: defaultSmallSize,
     mediumSize: defaultMediumSize,

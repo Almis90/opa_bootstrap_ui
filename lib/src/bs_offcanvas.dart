@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import 'bs_close_button.dart';
+import 'bs_theme.dart';
 import 'tokens/bs_offcanvas_style.dart';
 
 /// `.offcanvas-start`/`-end`/`-top`/`-bottom`: which viewport edge a
@@ -131,7 +132,8 @@ class BsOffcanvas extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = BsOffcanvasStyle.defaults.merge(this.style);
+    final isDark = BsTheme.of(context) == Brightness.dark;
+    final style = (isDark ? BsOffcanvasStyle.darkDefaults : BsOffcanvasStyle.defaults).merge(this.style);
     final borderSide = BorderSide(
       color: style.borderColor ?? BsOffcanvasStyle.defaultBorderColor,
       width: style.borderWidth ?? BsOffcanvasStyle.defaultBorderWidth,
@@ -182,7 +184,8 @@ class BsOffcanvasHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = BsOffcanvasStyle.defaults.merge(this.style);
+    final isDark = BsTheme.of(context) == Brightness.dark;
+    final style = (isDark ? BsOffcanvasStyle.darkDefaults : BsOffcanvasStyle.defaults).merge(this.style);
 
     return Padding(
       padding: style.padding ?? BsOffcanvasStyle.defaultPadding,
@@ -219,7 +222,8 @@ class BsOffcanvasBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = BsOffcanvasStyle.defaults.merge(this.style);
+    final isDark = BsTheme.of(context) == Brightness.dark;
+    final style = (isDark ? BsOffcanvasStyle.darkDefaults : BsOffcanvasStyle.defaults).merge(this.style);
     return Padding(
       padding: style.padding ?? BsOffcanvasStyle.defaultPadding,
       child: SingleChildScrollView(child: child),

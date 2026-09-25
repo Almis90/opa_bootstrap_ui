@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 
 import 'bs_close_button.dart';
+import 'bs_theme.dart';
 import 'tokens/bs_close_button_style.dart';
 import 'tokens/bs_toast_style.dart';
 
@@ -187,7 +188,8 @@ class BsToast extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = BsToastStyle.defaults.merge(this.style);
+    final isDark = BsTheme.of(context) == Brightness.dark;
+    final style = (isDark ? BsToastStyle.darkDefaults : BsToastStyle.defaults).merge(this.style);
     final borderRadius = BorderRadius.circular(style.borderRadius ?? BsToastStyle.defaultBorderRadius);
 
     return ConstrainedBox(
@@ -239,7 +241,8 @@ class BsToastHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = BsToastStyle.defaults.merge(this.style);
+    final isDark = BsTheme.of(context) == Brightness.dark;
+    final style = (isDark ? BsToastStyle.darkDefaults : BsToastStyle.defaults).merge(this.style);
 
     return DecoratedBox(
       decoration: BoxDecoration(

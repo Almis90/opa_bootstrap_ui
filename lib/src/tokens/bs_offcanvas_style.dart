@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
 
 import '../bs_colors.dart';
+import 'bs_body.dart';
 import 'bs_borders.dart';
 import 'bs_shadows.dart';
 
@@ -85,11 +86,29 @@ class BsOffcanvasStyle {
   static const double defaultVerticalHeightFraction = 0.3;
   static const Duration defaultTransitionDuration = Duration(milliseconds: 300);
   static const Color defaultBorderColor = BsBorders.colorTranslucent;
+
+  /// [defaultBorderColor] resolved against `--bs-border-color-translucent`
+  /// in `[data-bs-theme="dark"]` (via `$modal-content-border-color`).
+  static const Color defaultDarkBorderColor = BsBorders.darkColorTranslucent;
+
   static const double defaultBorderWidth = BsBorders.width;
   static const double defaultTitleLineHeight = 1.5;
   static const Color defaultBackground = BsColors.white;
+
+  /// [defaultBackground] resolved against `--bs-body-bg` in
+  /// `[data-bs-theme="dark"]`.
+  static const Color defaultDarkBackground = BsBody.darkBackground;
+
   static const Color defaultColor = BsColors.gray900;
+
+  /// [defaultColor] resolved against `--bs-body-color` in
+  /// `[data-bs-theme="dark"]`.
+  static const Color defaultDarkColor = BsBody.darkColor;
+
   static const List<BoxShadow> defaultBoxShadow = BsShadows.shadowSm;
+
+  /// `$offcanvas-backdrop-bg` (`$modal-backdrop-bg`, i.e. `$black`) — a
+  /// literal with no `-dark` override, unchanged in both themes.
   static const Color defaultBackdropColor = BsColors.black;
   static const double defaultBackdropOpacity = 0.5;
 
@@ -103,6 +122,25 @@ class BsOffcanvasStyle {
     titleLineHeight: defaultTitleLineHeight,
     background: defaultBackground,
     color: defaultColor,
+    boxShadow: defaultBoxShadow,
+    backdropColor: defaultBackdropColor,
+    backdropOpacity: defaultBackdropOpacity,
+  );
+
+  /// [defaults], with [borderColor]/[background]/[color] swapped for their
+  /// `[data-bs-theme="dark"]` counterparts. Pick this as the base to
+  /// [merge] a caller's [BsOffcanvasStyle] override against when
+  /// `BsTheme.of(context) == Brightness.dark`.
+  static const BsOffcanvasStyle darkDefaults = BsOffcanvasStyle(
+    padding: defaultPadding,
+    horizontalWidth: defaultHorizontalWidth,
+    verticalHeightFraction: defaultVerticalHeightFraction,
+    transitionDuration: defaultTransitionDuration,
+    borderColor: defaultDarkBorderColor,
+    borderWidth: defaultBorderWidth,
+    titleLineHeight: defaultTitleLineHeight,
+    background: defaultDarkBackground,
+    color: defaultDarkColor,
     boxShadow: defaultBoxShadow,
     backdropColor: defaultBackdropColor,
     backdropOpacity: defaultBackdropOpacity,
