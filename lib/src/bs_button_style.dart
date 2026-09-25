@@ -130,18 +130,30 @@ class BsButtonStyle {
   /// The button's default resting shadow, per `$btn-box-shadow: inset 0 1px
   /// 0 rgba($white, .15), 0 1px 1px rgba($black, .075)`.
   static const List<BoxShadow> defaultBoxShadow = [
-    BoxShadow(color: Color(0x26FFFFFF), offset: Offset(0, 1), blurStyle: BlurStyle.inner),
+    BoxShadow(
+      color: Color(0x26FFFFFF),
+      offset: Offset(0, 1),
+      blurStyle: BlurStyle.inner,
+    ),
     BoxShadow(color: Color(0x13000000), offset: Offset(0, 1), blurRadius: 1),
   ];
 
   /// The button's pressed-state shadow, per `$btn-active-box-shadow: inset
   /// 0 3px 5px rgba($black, .125)`.
   static const List<BoxShadow> defaultActiveShadow = [
-    BoxShadow(color: Color(0x20000000), offset: Offset(0, 3), blurRadius: 5, blurStyle: BlurStyle.inner),
+    BoxShadow(
+      color: Color(0x20000000),
+      offset: Offset(0, 3),
+      blurRadius: 5,
+      blurStyle: BlurStyle.inner,
+    ),
   ];
 
   /// The default `.btn` typography, per `$btn-font-weight`/`$btn-line-height`.
-  static const TextStyle defaultTextStyle = TextStyle(fontWeight: FontWeight.normal, height: 1.5);
+  static const TextStyle defaultTextStyle = TextStyle(
+    fontWeight: FontWeight.normal,
+    height: 1.5,
+  );
 
   /// `$btn-border-width` / `$border-width` (assuming the default `16px` root
   /// font size).
@@ -178,6 +190,18 @@ class BsButtonStyle {
   static const double fontSizeBase = 16;
   static const double fontSizeLg = 20;
 
+  /// `$btn-padding-x-sm`/`$btn-padding-x`/`$btn-padding-x-lg`, at the
+  /// default `16px` root font size.
+  static const double paddingXSm = 8;
+  static const double paddingXBase = 12;
+  static const double paddingXLg = 16;
+
+  /// `$btn-padding-y-sm`/`$btn-padding-y`/`$btn-padding-y-lg`, at the
+  /// default `16px` root font size.
+  static const double paddingYSm = 4;
+  static const double paddingYBase = 6;
+  static const double paddingYLg = 8;
+
   /// `$border-radius-sm`/`$border-radius`/`$border-radius-lg`, at the
   /// default `16px` root font size.
   static const double borderRadiusSm = 4;
@@ -193,7 +217,11 @@ class BsButtonStyle {
   /// the automatic light/dark choice for the `light` and `dark` variants
   /// (so `light` still visibly darkens on hover, and `dark` still visibly
   /// lightens); pass [forceTint] to replicate that override.
-  factory BsButtonStyle.solid(Color background, {Color? borderColor, bool? forceTint}) {
+  factory BsButtonStyle.solid(
+    Color background, {
+    Color? borderColor,
+    bool? forceTint,
+  }) {
     final border = borderColor ?? background;
     final color = BsColorUtils.contrast(background);
     // Bootstrap's default: dark (light-text) buttons shade on hover/active,
@@ -201,12 +229,25 @@ class BsButtonStyle {
     // Bootstrap does for the `light`/`dark` theme colors specifically.
     final tint = forceTint ?? (color != const Color(0xFFFFFFFF));
 
-    Color mix(Color c, double weight) => tint ? BsColorUtils.tint(c, weight) : BsColorUtils.shade(c, weight);
+    Color mix(Color c, double weight) =>
+        tint ? BsColorUtils.tint(c, weight) : BsColorUtils.shade(c, weight);
 
-    final hoverBackground = mix(background, tint ? hoverBgTintAmount : hoverBgShadeAmount);
-    final hoverBorderColor = mix(border, tint ? hoverBorderTintAmount : hoverBorderShadeAmount);
-    final activeBackground = mix(background, tint ? activeBgTintAmount : activeBgShadeAmount);
-    final activeBorderColor = mix(border, tint ? activeBorderTintAmount : activeBorderShadeAmount);
+    final hoverBackground = mix(
+      background,
+      tint ? hoverBgTintAmount : hoverBgShadeAmount,
+    );
+    final hoverBorderColor = mix(
+      border,
+      tint ? hoverBorderTintAmount : hoverBorderShadeAmount,
+    );
+    final activeBackground = mix(
+      background,
+      tint ? activeBgTintAmount : activeBgShadeAmount,
+    );
+    final activeBorderColor = mix(
+      border,
+      tint ? activeBorderTintAmount : activeBorderShadeAmount,
+    );
 
     return BsButtonStyle(
       color: color,
@@ -263,19 +304,28 @@ class BsButtonStyle {
     switch (size) {
       case BsSize.sm:
         return const BsButtonStyle(
-          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          padding: EdgeInsets.symmetric(
+            horizontal: paddingXSm,
+            vertical: paddingYSm,
+          ),
           textStyle: TextStyle(fontSize: fontSizeSm),
           borderRadius: BorderRadius.all(Radius.circular(borderRadiusSm)),
         );
       case BsSize.normal:
         return const BsButtonStyle(
-          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          padding: EdgeInsets.symmetric(
+            horizontal: paddingXBase,
+            vertical: paddingYBase,
+          ),
           textStyle: TextStyle(fontSize: fontSizeBase),
           borderRadius: BorderRadius.all(Radius.circular(borderRadiusBase)),
         );
       case BsSize.lg:
         return const BsButtonStyle(
-          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: EdgeInsets.symmetric(
+            horizontal: paddingXLg,
+            vertical: paddingYLg,
+          ),
           textStyle: TextStyle(fontSize: fontSizeLg),
           borderRadius: BorderRadius.all(Radius.circular(borderRadiusLg)),
         );
@@ -285,7 +335,11 @@ class BsButtonStyle {
   /// The default `.btn-{variant}`/`.btn-outline-{variant}` style for
   /// [variant] at [size], replicating Bootstrap's `$theme-colors` Sass loop
   /// (`scss/_buttons.scss`), including its explicit light/dark overrides.
-  factory BsButtonStyle.forVariant(BsVariant variant, {bool outline = false, BsSize size = BsSize.normal}) {
+  factory BsButtonStyle.forVariant(
+    BsVariant variant, {
+    bool outline = false,
+    BsSize size = BsSize.normal,
+  }) {
     final BsButtonStyle colors;
     if (outline) {
       colors = BsButtonStyle.outline(variant.color);

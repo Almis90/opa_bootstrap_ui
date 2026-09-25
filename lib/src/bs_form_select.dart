@@ -109,6 +109,10 @@ class BsFormSelect<T> extends StatelessWidget {
                     BsFormStyle.defaultInputBorderWidth,
               ),
               borderRadius: BorderRadius.circular(borderRadius),
+              boxShadow: isOpen
+                  ? (style.inputFocusBoxShadow ??
+                        BsFormStyle.defaultInputFocusBoxShadow)
+                  : null,
             ),
             child: Row(
               children: [
@@ -116,6 +120,9 @@ class BsFormSelect<T> extends StatelessWidget {
                   child: DefaultTextStyle.merge(
                     style: TextStyle(
                       fontSize: fontSize,
+                      fontWeight:
+                          style.inputFontWeight ??
+                          BsFormStyle.defaultInputFontWeight,
                       color: style.inputColor ?? BsFormStyle.defaultInputColor,
                     ),
                     child: displayed,

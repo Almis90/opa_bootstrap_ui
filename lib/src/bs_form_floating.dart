@@ -101,6 +101,14 @@ class _BsFormFloatingState extends State<BsFormFloating> {
         style.inputPlaceholderColor ?? BsFormStyle.defaultInputPlaceholderColor;
     final floatedOpacity =
         style.floatingLabelOpacity ?? BsFormStyle.defaultFloatingLabelOpacity;
+    final inputPaddingTop =
+        style.floatingInputPaddingTop ?? BsFormStyle.defaultFloatingInputPaddingTop;
+    final inputPaddingBottom =
+        style.floatingInputPaddingBottom ?? BsFormStyle.defaultFloatingInputPaddingBottom;
+    final lineHeight =
+        style.floatingLineHeight ?? BsFormStyle.defaultFloatingLineHeight;
+    final disabledLabelColor =
+        style.floatingLabelDisabledColor ?? BsFormStyle.defaultFloatingLabelDisabledColor;
 
     return SizedBox(
       height: height,
@@ -124,10 +132,11 @@ class _BsFormFloatingState extends State<BsFormFloating> {
               style: BsFormStyle(
                 inputPadding: EdgeInsets.fromLTRB(
                   horizontalPadding,
-                  height * 0.4,
+                  inputPaddingTop,
                   horizontalPadding,
-                  0,
+                  inputPaddingBottom,
                 ),
+                inputLineHeight: lineHeight,
               ),
             ),
           ),
@@ -147,7 +156,9 @@ class _BsFormFloatingState extends State<BsFormFloating> {
                   curve: Curves.easeOut,
                   style: TextStyle(
                     fontSize: _floated ? fontSize * 0.85 : fontSize,
-                    color: _floated
+                    color: !widget.enabled
+                        ? disabledLabelColor
+                        : _floated
                         ? labelColor.withValues(alpha: floatedOpacity)
                         : labelColor,
                   ),

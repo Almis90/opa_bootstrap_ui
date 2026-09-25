@@ -112,7 +112,13 @@ class _BsFormRangeState extends State<BsFormRange> {
                     height: thumbSize,
                     decoration: BoxDecoration(
                       color: thumbColor,
-                      shape: BoxShape.circle,
+                      borderRadius: BorderRadius.circular(
+                        style.rangeThumbBorderRadius ??
+                            BsFormStyle.defaultRangeThumbBorderRadius,
+                      ),
+                      boxShadow:
+                          style.rangeThumbBoxShadow ??
+                          BsFormStyle.defaultRangeThumbBoxShadow,
                     ),
                   ),
                 ),

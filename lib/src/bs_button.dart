@@ -114,14 +114,19 @@ class _BsButtonState extends State<BsButton> {
       color = style.color!;
     }
 
-    final opacity = enabled ? 1.0 : (style.disabledOpacity ?? BsButtonStyle.defaultDisabledOpacity);
+    final opacity = enabled
+        ? 1.0
+        : (style.disabledOpacity ?? BsButtonStyle.defaultDisabledOpacity);
 
     final boxShadow = <BoxShadow>[
       ...?(isActive ? style.activeShadow : style.boxShadow),
       if (_focused)
         BoxShadow(
-          color: (style.focusRingColor ?? style.borderColor)!.withValues(alpha: 0.5),
-          spreadRadius: style.focusRingWidth ?? BsButtonStyle.defaultFocusRingWidth,
+          color: (style.focusRingColor ?? style.borderColor)!.withValues(
+            alpha: 0.5,
+          ),
+          spreadRadius:
+              style.focusRingWidth ?? BsButtonStyle.defaultFocusRingWidth,
         ),
     ];
 
@@ -141,12 +146,22 @@ class _BsButtonState extends State<BsButton> {
           child: Opacity(
             opacity: opacity,
             child: AnimatedContainer(
-              duration: style.transitionDuration ?? BsButtonStyle.defaultTransitionDuration,
-              curve: style.transitionCurve ?? BsButtonStyle.defaultTransitionCurve,
-              padding: style.padding ?? const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              duration:
+                  style.transitionDuration ??
+                  BsButtonStyle.defaultTransitionDuration,
+              curve:
+                  style.transitionCurve ?? BsButtonStyle.defaultTransitionCurve,
+              padding:
+                  style.padding ??
+                  const EdgeInsets.symmetric(
+                    horizontal: BsButtonStyle.paddingXBase,
+                    vertical: BsButtonStyle.paddingYBase,
+                  ),
               decoration: BoxDecoration(
                 color: background,
-                borderRadius: style.borderRadius ?? BorderRadius.circular(BsButtonStyle.borderRadiusBase),
+                borderRadius:
+                    style.borderRadius ??
+                    BorderRadius.circular(BsButtonStyle.borderRadiusBase),
                 border: Border.all(
                   color: borderColor,
                   width: style.borderWidth ?? BsButtonStyle.defaultBorderWidth,
@@ -154,10 +169,15 @@ class _BsButtonState extends State<BsButton> {
                 boxShadow: boxShadow.isEmpty ? null : boxShadow,
               ),
               child: DefaultTextStyle(
-                style: (style.textStyle ?? const TextStyle()).copyWith(color: color),
+                style: (style.textStyle ?? const TextStyle()).copyWith(
+                  color: color,
+                ),
                 textAlign: TextAlign.center,
                 child: widget.noWrap
-                    ? Row(mainAxisSize: MainAxisSize.min, children: [widget.child])
+                    ? Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [widget.child],
+                      )
                     : widget.child,
               ),
             ),

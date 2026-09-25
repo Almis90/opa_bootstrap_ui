@@ -88,6 +88,8 @@ class BsInputGroupText extends StatelessWidget {
                   style.inputGroupAddonColor ??
                   BsFormStyle.defaultInputGroupAddonColor,
               fontSize: style.inputFontSize ?? BsFormStyle.defaultInputFontSize,
+              fontWeight:
+                  style.inputFontWeight ?? BsFormStyle.defaultInputFontWeight,
             ),
             child: child,
           ),

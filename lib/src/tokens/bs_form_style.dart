@@ -31,6 +31,7 @@ class BsFormStyle {
     this.inputFontSize,
     this.inputFontSizeSm,
     this.inputFontSizeLg,
+    this.inputFontWeight,
     this.inputLineHeight,
     this.inputColor,
     this.inputBackground,
@@ -79,14 +80,20 @@ class BsFormStyle {
     this.rangeThumbBackground,
     this.rangeThumbActiveBackground,
     this.rangeThumbDisabledBackground,
+    this.rangeThumbBorderRadius,
+    this.rangeThumbBoxShadow,
     // File
     this.fileButtonColor,
     this.fileButtonBackground,
     this.fileButtonHoverBackground,
     // Floating labels
     this.floatingHeight,
+    this.floatingLineHeight,
     this.floatingPadding,
+    this.floatingInputPaddingTop,
+    this.floatingInputPaddingBottom,
     this.floatingLabelOpacity,
+    this.floatingLabelDisabledColor,
     // Validation
     this.validColor,
     this.invalidColor,
@@ -121,6 +128,9 @@ class BsFormStyle {
 
   /// `$input-font-size-lg` (`$font-size-lg`).
   final double? inputFontSizeLg;
+
+  /// `$input-font-weight` (`$font-weight-base`).
+  final FontWeight? inputFontWeight;
 
   /// `$input-line-height` (`$line-height-base`).
   final double? inputLineHeight;
@@ -251,6 +261,12 @@ class BsFormStyle {
   /// `$form-range-thumb-disabled-bg` (`var(--bs-secondary-color)`).
   final Color? rangeThumbDisabledBackground;
 
+  /// `$form-range-thumb-border-radius` (`1rem`).
+  final double? rangeThumbBorderRadius;
+
+  /// `$form-range-thumb-box-shadow` (`0 .1rem .25rem rgba($black, .1)`).
+  final List<BoxShadow>? rangeThumbBoxShadow;
+
   /// `$form-file-button-color` (`$input-color`).
   final Color? fileButtonColor;
 
@@ -263,11 +279,26 @@ class BsFormStyle {
   /// `$form-floating-height` (`add(3.5rem, $input-height-border)`).
   final double? floatingHeight;
 
+  /// `$form-floating-line-height` (`1.25`), applied to the wrapped
+  /// [BsFormControl] in place of [inputLineHeight].
+  final double? floatingLineHeight;
+
   /// `$form-floating-padding-y`/`$form-floating-padding-x` (`1rem`/`$input-padding-x`).
   final EdgeInsetsGeometry? floatingPadding;
 
+  /// `$form-floating-input-padding-t` (`1.625rem`): the wrapped control's
+  /// top padding, which makes room for the floated label above the text.
+  final double? floatingInputPaddingTop;
+
+  /// `$form-floating-input-padding-b` (`.625rem`): the wrapped control's
+  /// bottom padding.
+  final double? floatingInputPaddingBottom;
+
   /// `$form-floating-label-opacity` (`.65`).
   final double? floatingLabelOpacity;
+
+  /// `$form-floating-label-disabled-color` (`$gray-600`).
+  final Color? floatingLabelDisabledColor;
 
   /// `$form-valid-color`/`$form-valid-border-color` (`$success`).
   final Color? validColor;
@@ -288,55 +319,82 @@ class BsFormStyle {
       inputFontSize: other.inputFontSize ?? inputFontSize,
       inputFontSizeSm: other.inputFontSizeSm ?? inputFontSizeSm,
       inputFontSizeLg: other.inputFontSizeLg ?? inputFontSizeLg,
+      inputFontWeight: other.inputFontWeight ?? inputFontWeight,
       inputLineHeight: other.inputLineHeight ?? inputLineHeight,
       inputColor: other.inputColor ?? inputColor,
       inputBackground: other.inputBackground ?? inputBackground,
-      inputDisabledBackground: other.inputDisabledBackground ?? inputDisabledBackground,
+      inputDisabledBackground:
+          other.inputDisabledBackground ?? inputDisabledBackground,
       inputBorderColor: other.inputBorderColor ?? inputBorderColor,
       inputBorderWidth: other.inputBorderWidth ?? inputBorderWidth,
       inputBoxShadow: other.inputBoxShadow ?? inputBoxShadow,
       inputBorderRadius: other.inputBorderRadius ?? inputBorderRadius,
       inputBorderRadiusSm: other.inputBorderRadiusSm ?? inputBorderRadiusSm,
       inputBorderRadiusLg: other.inputBorderRadiusLg ?? inputBorderRadiusLg,
-      inputFocusBorderColor: other.inputFocusBorderColor ?? inputFocusBorderColor,
+      inputFocusBorderColor:
+          other.inputFocusBorderColor ?? inputFocusBorderColor,
       inputFocusBoxShadow: other.inputFocusBoxShadow ?? inputFocusBoxShadow,
-      inputPlaceholderColor: other.inputPlaceholderColor ?? inputPlaceholderColor,
+      inputPlaceholderColor:
+          other.inputPlaceholderColor ?? inputPlaceholderColor,
       inputHeight: other.inputHeight ?? inputHeight,
       inputHeightSm: other.inputHeightSm ?? inputHeightSm,
       inputHeightLg: other.inputHeightLg ?? inputHeightLg,
-      inputTransitionDuration: other.inputTransitionDuration ?? inputTransitionDuration,
+      inputTransitionDuration:
+          other.inputTransitionDuration ?? inputTransitionDuration,
       checkInputSize: other.checkInputSize ?? checkInputSize,
       checkPaddingStart: other.checkPaddingStart ?? checkPaddingStart,
       checkMarginBottom: other.checkMarginBottom ?? checkMarginBottom,
       checkInputBorder: other.checkInputBorder ?? checkInputBorder,
-      checkInputBorderRadius: other.checkInputBorderRadius ?? checkInputBorderRadius,
-      checkRadioBorderRadius: other.checkRadioBorderRadius ?? checkRadioBorderRadius,
-      checkInputCheckedColor: other.checkInputCheckedColor ?? checkInputCheckedColor,
-      checkInputCheckedBackground: other.checkInputCheckedBackground ?? checkInputCheckedBackground,
-      checkInputDisabledOpacity: other.checkInputDisabledOpacity ?? checkInputDisabledOpacity,
+      checkInputBorderRadius:
+          other.checkInputBorderRadius ?? checkInputBorderRadius,
+      checkRadioBorderRadius:
+          other.checkRadioBorderRadius ?? checkRadioBorderRadius,
+      checkInputCheckedColor:
+          other.checkInputCheckedColor ?? checkInputCheckedColor,
+      checkInputCheckedBackground:
+          other.checkInputCheckedBackground ?? checkInputCheckedBackground,
+      checkInputDisabledOpacity:
+          other.checkInputDisabledOpacity ?? checkInputDisabledOpacity,
       checkInlineMarginEnd: other.checkInlineMarginEnd ?? checkInlineMarginEnd,
       switchWidth: other.switchWidth ?? switchWidth,
       switchColor: other.switchColor ?? switchColor,
       switchBorderRadius: other.switchBorderRadius ?? switchBorderRadius,
-      switchTransitionDuration: other.switchTransitionDuration ?? switchTransitionDuration,
-      inputGroupAddonPadding: other.inputGroupAddonPadding ?? inputGroupAddonPadding,
+      switchTransitionDuration:
+          other.switchTransitionDuration ?? switchTransitionDuration,
+      inputGroupAddonPadding:
+          other.inputGroupAddonPadding ?? inputGroupAddonPadding,
       inputGroupAddonColor: other.inputGroupAddonColor ?? inputGroupAddonColor,
-      inputGroupAddonBackground: other.inputGroupAddonBackground ?? inputGroupAddonBackground,
+      inputGroupAddonBackground:
+          other.inputGroupAddonBackground ?? inputGroupAddonBackground,
       selectIndicatorColor: other.selectIndicatorColor ?? selectIndicatorColor,
       selectBackgroundSize: other.selectBackgroundSize ?? selectBackgroundSize,
       rangeTrackHeight: other.rangeTrackHeight ?? rangeTrackHeight,
       rangeTrackBackground: other.rangeTrackBackground ?? rangeTrackBackground,
-      rangeTrackBorderRadius: other.rangeTrackBorderRadius ?? rangeTrackBorderRadius,
+      rangeTrackBorderRadius:
+          other.rangeTrackBorderRadius ?? rangeTrackBorderRadius,
       rangeThumbSize: other.rangeThumbSize ?? rangeThumbSize,
       rangeThumbBackground: other.rangeThumbBackground ?? rangeThumbBackground,
-      rangeThumbActiveBackground: other.rangeThumbActiveBackground ?? rangeThumbActiveBackground,
-      rangeThumbDisabledBackground: other.rangeThumbDisabledBackground ?? rangeThumbDisabledBackground,
+      rangeThumbActiveBackground:
+          other.rangeThumbActiveBackground ?? rangeThumbActiveBackground,
+      rangeThumbDisabledBackground:
+          other.rangeThumbDisabledBackground ?? rangeThumbDisabledBackground,
+      rangeThumbBorderRadius:
+          other.rangeThumbBorderRadius ?? rangeThumbBorderRadius,
+      rangeThumbBoxShadow: other.rangeThumbBoxShadow ?? rangeThumbBoxShadow,
       fileButtonColor: other.fileButtonColor ?? fileButtonColor,
       fileButtonBackground: other.fileButtonBackground ?? fileButtonBackground,
-      fileButtonHoverBackground: other.fileButtonHoverBackground ?? fileButtonHoverBackground,
+      fileButtonHoverBackground:
+          other.fileButtonHoverBackground ?? fileButtonHoverBackground,
       floatingHeight: other.floatingHeight ?? floatingHeight,
+      floatingLineHeight: other.floatingLineHeight ?? floatingLineHeight,
       floatingPadding: other.floatingPadding ?? floatingPadding,
+      floatingInputPaddingTop:
+          other.floatingInputPaddingTop ?? floatingInputPaddingTop,
+      floatingInputPaddingBottom:
+          other.floatingInputPaddingBottom ?? floatingInputPaddingBottom,
       floatingLabelOpacity: other.floatingLabelOpacity ?? floatingLabelOpacity,
+      floatingLabelDisabledColor:
+          other.floatingLabelDisabledColor ?? floatingLabelDisabledColor,
       validColor: other.validColor ?? validColor,
       invalidColor: other.invalidColor ?? invalidColor,
     );
@@ -347,12 +405,22 @@ class BsFormStyle {
   static const Color defaultTextColor = BsColors.gray600;
   static const double defaultLabelMarginBottom = 8;
 
-  static const EdgeInsets defaultInputPadding = EdgeInsets.symmetric(horizontal: 12, vertical: 6);
-  static const EdgeInsets defaultInputPaddingSm = EdgeInsets.symmetric(horizontal: 8, vertical: 4);
-  static const EdgeInsets defaultInputPaddingLg = EdgeInsets.symmetric(horizontal: 16, vertical: 8);
+  static const EdgeInsets defaultInputPadding = EdgeInsets.symmetric(
+    horizontal: 12,
+    vertical: 6,
+  );
+  static const EdgeInsets defaultInputPaddingSm = EdgeInsets.symmetric(
+    horizontal: 8,
+    vertical: 4,
+  );
+  static const EdgeInsets defaultInputPaddingLg = EdgeInsets.symmetric(
+    horizontal: 16,
+    vertical: 8,
+  );
   static const double defaultInputFontSize = 16;
   static const double defaultInputFontSizeSm = 14;
   static const double defaultInputFontSizeLg = 20;
+  static const FontWeight defaultInputFontWeight = FontWeight.normal;
   static const double defaultInputLineHeight = 1.5;
   static const Color defaultInputColor = BsColors.gray900;
   static const Color defaultInputBackground = BsColors.white;
@@ -369,16 +437,30 @@ class BsFormStyle {
   static const double defaultInputHeightBorder = defaultInputBorderWidth * 2;
 
   /// `$input-height`: `$input-line-height * 1em + $input-padding-y * 2 + border`.
-  static const double defaultInputHeight = defaultInputLineHeight * defaultInputFontSize + 12 + defaultInputHeightBorder;
-  static const double defaultInputHeightSm = defaultInputLineHeight * defaultInputFontSize + 8 + defaultInputHeightBorder;
-  static const double defaultInputHeightLg = defaultInputLineHeight * defaultInputFontSize + 16 + defaultInputHeightBorder;
+  static const double defaultInputHeight =
+      defaultInputLineHeight * defaultInputFontSize +
+      12 +
+      defaultInputHeightBorder;
+  static const double defaultInputHeightSm =
+      defaultInputLineHeight * defaultInputFontSize +
+      8 +
+      defaultInputHeightBorder;
+  static const double defaultInputHeightLg =
+      defaultInputLineHeight * defaultInputFontSize +
+      16 +
+      defaultInputHeightBorder;
 
-  static const Duration defaultInputTransitionDuration = Duration(milliseconds: 150);
+  static const Duration defaultInputTransitionDuration = Duration(
+    milliseconds: 150,
+  );
 
   static const double defaultCheckInputSize = 16;
   static const double defaultCheckPaddingStart = defaultCheckInputSize + 8;
   static const double defaultCheckMarginBottom = 2;
-  static const BorderSide defaultCheckInputBorder = BorderSide(color: defaultInputBorderColor, width: defaultInputBorderWidth);
+  static const BorderSide defaultCheckInputBorder = BorderSide(
+    color: defaultInputBorderColor,
+    width: defaultInputBorderWidth,
+  );
   static const double defaultCheckInputBorderRadius = 4;
   static const double defaultCheckRadioBorderRadius = 800;
   static const Color defaultCheckInputCheckedColor = BsColors.white;
@@ -388,7 +470,9 @@ class BsFormStyle {
   static const double defaultSwitchWidth = 32;
   static const Color defaultSwitchColor = Color(0x40000000);
   static const double defaultSwitchBorderRadius = defaultSwitchWidth;
-  static const Duration defaultSwitchTransitionDuration = Duration(milliseconds: 150);
+  static const Duration defaultSwitchTransitionDuration = Duration(
+    milliseconds: 150,
+  );
 
   static const EdgeInsets defaultInputGroupAddonPadding = defaultInputPadding;
   static const Color defaultInputGroupAddonColor = defaultInputColor;
@@ -403,23 +487,61 @@ class BsFormStyle {
   static const double defaultRangeThumbSize = 16;
   static const Color defaultRangeThumbDisabledBackground = BsColors.gray600;
 
+  /// `$form-range-thumb-border-radius` (`1rem`).
+  static const double defaultRangeThumbBorderRadius = 16;
+
+  /// `$form-range-thumb-box-shadow: 0 .1rem .25rem rgba($black, .1)`.
+  static const List<BoxShadow> defaultRangeThumbBoxShadow = [
+    BoxShadow(color: Color(0x1A000000), offset: Offset(0, 1.6), blurRadius: 4),
+  ];
+
   static const Color defaultFileButtonColor = defaultInputColor;
   static const Color defaultFileButtonBackground = BsColors.gray100;
   static const Color defaultFileButtonHoverBackground = BsColors.gray200;
 
   /// `$form-floating-height` (`add(3.5rem, $input-height-border)`).
   static const double defaultFloatingHeight = 56 + defaultInputHeightBorder;
-  static const EdgeInsets defaultFloatingPadding = EdgeInsets.symmetric(horizontal: 12, vertical: 16);
+
+  /// `$form-floating-line-height` (`1.25`).
+  static const double defaultFloatingLineHeight = 1.25;
+
+  static const EdgeInsets defaultFloatingPadding = EdgeInsets.symmetric(
+    horizontal: 12,
+    vertical: 16,
+  );
+
+  /// `$form-floating-input-padding-t` (`1.625rem`).
+  static const double defaultFloatingInputPaddingTop = 26;
+
+  /// `$form-floating-input-padding-b` (`.625rem`).
+  static const double defaultFloatingInputPaddingBottom = 10;
+
   static const double defaultFloatingLabelOpacity = 0.65;
+
+  /// `$form-floating-label-disabled-color` (`$gray-600`).
+  static const Color defaultFloatingLabelDisabledColor = BsColors.gray600;
 
   static Color get defaultValidColor => BsVariant.success.color;
   static Color get defaultInvalidColor => BsVariant.danger.color;
 
-  static Color get defaultInputFocusBorderColor => _tint(BsVariant.primary.color, 0.5);
-  static Color get defaultRangeThumbBackground => BsVariant.primary.color;
-  static Color get defaultRangeThumbActiveBackground => _tint(BsVariant.primary.color, 0.7);
+  static Color get defaultInputFocusBorderColor =>
+      _tint(BsVariant.primary.color, 0.5);
 
-  static Color _tint(Color color, double weight) => Color.lerp(color, const Color(0xFFFFFFFF), weight)!;
+  /// `$input-focus-box-shadow` (`$input-btn-focus-box-shadow` /
+  /// `$focus-ring-box-shadow`): `0 0 0 .25rem rgba($primary, .25)`.
+  static List<BoxShadow> get defaultInputFocusBoxShadow => [
+    BoxShadow(
+      color: BsVariant.primary.color.withValues(alpha: 0.25),
+      spreadRadius: 4,
+    ),
+  ];
+
+  static Color get defaultRangeThumbBackground => BsVariant.primary.color;
+  static Color get defaultRangeThumbActiveBackground =>
+      _tint(BsVariant.primary.color, 0.7);
+
+  static Color _tint(Color color, double weight) =>
+      Color.lerp(color, const Color(0xFFFFFFFF), weight)!;
 
   static BsFormStyle get defaults => BsFormStyle(
     textMarginTop: defaultTextMarginTop,
@@ -432,6 +554,7 @@ class BsFormStyle {
     inputFontSize: defaultInputFontSize,
     inputFontSizeSm: defaultInputFontSizeSm,
     inputFontSizeLg: defaultInputFontSizeLg,
+    inputFontWeight: defaultInputFontWeight,
     inputLineHeight: defaultInputLineHeight,
     inputColor: defaultInputColor,
     inputBackground: defaultInputBackground,
@@ -443,6 +566,7 @@ class BsFormStyle {
     inputBorderRadiusSm: defaultInputBorderRadiusSm,
     inputBorderRadiusLg: defaultInputBorderRadiusLg,
     inputFocusBorderColor: defaultInputFocusBorderColor,
+    inputFocusBoxShadow: defaultInputFocusBoxShadow,
     inputPlaceholderColor: defaultInputPlaceholderColor,
     inputHeight: defaultInputHeight,
     inputHeightSm: defaultInputHeightSm,
@@ -474,12 +598,18 @@ class BsFormStyle {
     rangeThumbBackground: defaultRangeThumbBackground,
     rangeThumbActiveBackground: defaultRangeThumbActiveBackground,
     rangeThumbDisabledBackground: defaultRangeThumbDisabledBackground,
+    rangeThumbBorderRadius: defaultRangeThumbBorderRadius,
+    rangeThumbBoxShadow: defaultRangeThumbBoxShadow,
     fileButtonColor: defaultFileButtonColor,
     fileButtonBackground: defaultFileButtonBackground,
     fileButtonHoverBackground: defaultFileButtonHoverBackground,
     floatingHeight: defaultFloatingHeight,
+    floatingLineHeight: defaultFloatingLineHeight,
     floatingPadding: defaultFloatingPadding,
+    floatingInputPaddingTop: defaultFloatingInputPaddingTop,
+    floatingInputPaddingBottom: defaultFloatingInputPaddingBottom,
     floatingLabelOpacity: defaultFloatingLabelOpacity,
+    floatingLabelDisabledColor: defaultFloatingLabelDisabledColor,
     validColor: defaultValidColor,
     invalidColor: defaultInvalidColor,
   );

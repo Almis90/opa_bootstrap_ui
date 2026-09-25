@@ -173,6 +173,8 @@ class _BsFormControlState extends State<BsFormControl> {
                 widget.placeholder!,
                 style: TextStyle(
                   fontSize: fontSize,
+                  fontWeight:
+                      style.inputFontWeight ?? BsFormStyle.defaultInputFontWeight,
                   color:
                       style.inputPlaceholderColor ??
                       BsFormStyle.defaultInputPlaceholderColor,
@@ -192,6 +194,8 @@ class _BsFormControlState extends State<BsFormControl> {
                       : TextInputType.multiline),
               style: TextStyle(
                 fontSize: fontSize,
+                fontWeight:
+                    style.inputFontWeight ?? BsFormStyle.defaultInputFontWeight,
                 color: style.inputColor ?? BsFormStyle.defaultInputColor,
                 height:
                     style.inputLineHeight ?? BsFormStyle.defaultInputLineHeight,
