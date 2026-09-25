@@ -24,6 +24,7 @@ class BsCardStyle {
     this.capColor,
     this.color,
     this.background,
+    this.boxShadow,
     this.imgOverlayPadding,
     this.groupMargin,
   });
@@ -67,6 +68,9 @@ class BsCardStyle {
   /// `$card-bg` (`var(--bs-body-bg)`).
   final Color? background;
 
+  /// `$card-box-shadow` (`null`, no shadow by default).
+  final List<BoxShadow>? boxShadow;
+
   /// `$card-img-overlay-padding` (`$spacer`).
   final double? imgOverlayPadding;
 
@@ -89,6 +93,7 @@ class BsCardStyle {
       capColor: other.capColor ?? capColor,
       color: other.color ?? color,
       background: other.background ?? background,
+      boxShadow: other.boxShadow ?? boxShadow,
       imgOverlayPadding: other.imgOverlayPadding ?? imgOverlayPadding,
       groupMargin: other.groupMargin ?? groupMargin,
     );

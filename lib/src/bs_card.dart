@@ -79,6 +79,7 @@ class BsCard extends StatelessWidget {
             left: _groupLeftJoin ? BorderSide.none : BorderSide(color: borderColor, width: borderWidth),
           ),
           borderRadius: outerBorderRadius,
+          boxShadow: style.boxShadow,
         ),
         child: ClipRRect(
           borderRadius: outerBorderRadius,

@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 
-import 'bs_colors.dart';
 import 'bs_variant.dart';
 import 'tokens/bs_body.dart';
 import 'tokens/bs_list_group_style.dart';
@@ -180,11 +179,11 @@ class _BsListGroupItemWidgetState extends State<_BsListGroupItemWidget> {
       background = style.activeBackground ?? BsListGroupStyle.defaultActiveBackground;
       color = style.activeColor ?? BsListGroupStyle.defaultActiveColor;
     } else if (_pressed && enabled) {
-      background = style.actionActiveBackground ?? style.hoverBackground ?? BsListGroupStyle.defaultHoverBackground;
+      background = style.actionActiveBackground ?? BsListGroupStyle.defaultActionActiveBackground;
       color = style.actionActiveColor ?? BsBody.color;
     } else if (_hovered && enabled) {
       background = style.hoverBackground ?? BsListGroupStyle.defaultHoverBackground;
-      color = style.actionHoverColor ?? BsColors.black;
+      color = style.actionHoverColor ?? BsListGroupStyle.defaultActionHoverColor;
     } else if (item.variant != null) {
       background = item.variant!.bgSubtle;
       color = item.variant!.textEmphasis;

@@ -111,6 +111,12 @@ class BsListGroupStyle {
   static Color get defaultDisabledBackground => defaultBackground;
   static const Color defaultActionColor = BsColors.gray600;
 
+  /// `$list-group-action-hover-color` (`var(--bs-emphasis-color)`).
+  static const Color defaultActionHoverColor = BsColors.black;
+
+  /// `$list-group-action-active-bg` (`var(--bs-secondary-bg)`).
+  static const Color defaultActionActiveBackground = BsColors.gray200;
+
   static BsListGroupStyle get defaults => BsListGroupStyle(
     background: defaultBackground,
     borderColor: defaultBorderColor,
@@ -123,5 +129,7 @@ class BsListGroupStyle {
     activeBorderColor: defaultActiveBackground,
     disabledBackground: defaultDisabledBackground,
     actionColor: defaultActionColor,
+    actionHoverColor: defaultActionHoverColor,
+    actionActiveBackground: defaultActionActiveBackground,
   );
 }
