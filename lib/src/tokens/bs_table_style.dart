@@ -24,6 +24,7 @@ class BsTableStyle {
     this.hoverBackgroundOpacity,
     this.borderWidth,
     this.borderColor,
+    this.captionColor,
   });
 
   /// `$table-cell-padding-y`/`$table-cell-padding-x` (`.5rem`).
@@ -66,6 +67,9 @@ class BsTableStyle {
   /// `$table-border-color` (`var(--bs-border-color)`).
   final Color? borderColor;
 
+  /// `$table-caption-color` (`var(--bs-secondary-color)`).
+  final Color? captionColor;
+
   BsTableStyle merge(BsTableStyle? other) {
     if (other == null) return this;
     return BsTableStyle(
@@ -82,6 +86,7 @@ class BsTableStyle {
       hoverBackgroundOpacity: other.hoverBackgroundOpacity ?? hoverBackgroundOpacity,
       borderWidth: other.borderWidth ?? borderWidth,
       borderColor: other.borderColor ?? borderColor,
+      captionColor: other.captionColor ?? captionColor,
     );
   }
 
@@ -95,6 +100,7 @@ class BsTableStyle {
   static const double defaultHoverBackgroundOpacity = 0.075;
   static const double defaultBorderWidth = BsBorders.width;
   static const Color defaultBorderColor = BsBorders.color;
+  static const Color defaultCaptionColor = BsColors.gray600;
 
   static const BsTableStyle defaults = BsTableStyle(
     cellPadding: defaultCellPadding,
@@ -110,5 +116,6 @@ class BsTableStyle {
     hoverBackgroundOpacity: defaultHoverBackgroundOpacity,
     borderWidth: defaultBorderWidth,
     borderColor: defaultBorderColor,
+    captionColor: defaultCaptionColor,
   );
 }

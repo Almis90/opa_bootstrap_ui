@@ -37,6 +37,7 @@ class BsTable extends StatefulWidget {
     this.small = false,
     this.dark = false,
     this.columnWidths,
+    this.caption,
     this.style,
   });
 
@@ -72,6 +73,11 @@ class BsTable extends StatefulWidget {
   /// [IntrinsicColumnWidth] for every column, like an unstyled HTML table.
   final Map<int, TableColumnWidth>? columnWidths;
 
+  /// `<caption>`: an optional summary rendered below the table (Bootstrap's
+  /// default `caption-side: bottom`), tinted with
+  /// [BsTableStyle.captionColor].
+  final Widget? caption;
+
   /// Style overrides layered on top of [BsTableStyle.defaults].
   final BsTableStyle? style;
 
@@ -100,6 +106,8 @@ class _BsTableState extends State<BsTable> {
     final color = widget.dark
         ? BsColors.white
         : (style.color ?? BsTableStyle.defaultColor);
+    final accentBackground =
+        style.accentBackground ?? BsTableStyle.defaultAccentBackground;
 
     final border = widget.borderless
         ? const TableBorder()
@@ -115,7 +123,9 @@ class _BsTableState extends State<BsTable> {
     final rows = <TableRow>[
       if (widget.columns != null)
         TableRow(
-          decoration: BoxDecoration(color: background),
+          decoration: BoxDecoration(
+            color: Color.alphaBlend(accentBackground, background),
+          ),
           children: [
             for (final cell in widget.columns!)
               _cell(cell, padding: padding, fontWeight: FontWeight.bold),
@@ -125,7 +135,7 @@ class _BsTableState extends State<BsTable> {
         _buildRow(i, widget.rows[i], style, background, padding),
     ];
 
-    return DefaultTextStyle.merge(
+    final table = DefaultTextStyle.merge(
       style: TextStyle(color: color),
       child: Table(
         border: border,
@@ -133,6 +143,30 @@ class _BsTableState extends State<BsTable> {
         columnWidths: widget.columnWidths,
         children: rows,
       ),
+    );
+
+    if (widget.caption == null) return table;
+
+    // `<caption>`: rendered below the table (Bootstrap's default
+    // `caption-side: bottom`), padded by `$table-cell-padding-y` and tinted
+    // with `$table-caption-color`.
+    final captionPaddingY = padding.vertical / 2;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        table,
+        Padding(
+          padding: EdgeInsets.symmetric(vertical: captionPaddingY),
+          child: DefaultTextStyle.merge(
+            style: TextStyle(
+              color: style.captionColor ?? BsTableStyle.defaultCaptionColor,
+            ),
+            textAlign: TextAlign.left,
+            child: widget.caption!,
+          ),
+        ),
+      ],
     );
   }
 
@@ -169,6 +203,10 @@ class _BsTableState extends State<BsTable> {
             BsTableStyle.defaultActiveBackgroundOpacity,
       );
     }
+    rowColor = Color.alphaBlend(
+      style.accentBackground ?? BsTableStyle.defaultAccentBackground,
+      rowColor,
+    );
 
     return TableRow(
       decoration: BoxDecoration(color: rowColor),
