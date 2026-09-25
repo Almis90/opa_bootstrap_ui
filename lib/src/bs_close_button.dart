@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import 'bs_theme.dart';
 import 'tokens/bs_close_button_style.dart';
 import 'tokens/bs_focus_ring.dart';
 
@@ -24,7 +25,8 @@ class _BsCloseButtonState extends State<BsCloseButton> {
 
   @override
   Widget build(BuildContext context) {
-    final style = BsCloseButtonStyle.defaults.merge(widget.style);
+    final isDark = BsTheme.of(context) == Brightness.dark;
+    final style = (isDark ? BsCloseButtonStyle.darkDefaults : BsCloseButtonStyle.defaults).merge(widget.style);
     final enabled = widget.onPressed != null;
 
     final double opacity;

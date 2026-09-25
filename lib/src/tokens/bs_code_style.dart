@@ -1,7 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
 
+import '../bs_color_utils.dart';
 import '../bs_colors.dart';
+import 'bs_body.dart';
 
 /// `code`/`kbd`/`pre` visual variables.
 ///
@@ -56,11 +58,29 @@ class BsCodeStyle {
 
   /// `$small-font-size` (`.875em`, assuming a `16px` root font size).
   static const double defaultCodeFontSize = 14;
+
+  /// `$code-color` (`$pink`).
   static const Color defaultCodeColor = BsColors.pink;
+
+  /// `$code-color-dark` (`tint-color($code-color, 40%)`).
+  static Color get defaultDarkCodeColor => BsColorUtils.tint(defaultCodeColor, 0.4);
+
   static const EdgeInsets defaultKbdPadding = EdgeInsets.symmetric(horizontal: 6, vertical: 3);
   static const double defaultKbdFontSize = defaultCodeFontSize;
+
+  /// `$kbd-color` (`var(--bs-body-bg)`).
   static const Color defaultKbdColor = BsColors.white;
+
+  /// [defaultKbdColor] resolved against `--bs-body-bg` in
+  /// `[data-bs-theme="dark"]`.
+  static const Color defaultDarkKbdColor = BsBody.darkBackground;
+
+  /// `$kbd-bg` (`var(--bs-body-color)`).
   static const Color defaultKbdBackground = BsColors.gray900;
+
+  /// [defaultKbdBackground] resolved against `--bs-body-color` in
+  /// `[data-bs-theme="dark"]`.
+  static const Color defaultDarkKbdBackground = BsBody.darkColor;
 
   static const BsCodeStyle defaults = BsCodeStyle(
     codeFontSize: defaultCodeFontSize,
@@ -69,5 +89,18 @@ class BsCodeStyle {
     kbdFontSize: defaultKbdFontSize,
     kbdColor: defaultKbdColor,
     kbdBackground: defaultKbdBackground,
+  );
+
+  /// [defaults], with every brightness-sensitive field swapped for its
+  /// `[data-bs-theme="dark"]` counterpart. Pick this as the base to
+  /// [merge] a caller's [BsCodeStyle] override against when
+  /// `BsTheme.of(context) == Brightness.dark`.
+  static BsCodeStyle get darkDefaults => BsCodeStyle(
+    codeFontSize: defaultCodeFontSize,
+    codeColor: defaultDarkCodeColor,
+    kbdPadding: defaultKbdPadding,
+    kbdFontSize: defaultKbdFontSize,
+    kbdColor: defaultDarkKbdColor,
+    kbdBackground: defaultDarkKbdBackground,
   );
 }

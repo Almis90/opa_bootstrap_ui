@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import 'bs_colors.dart';
+import 'bs_theme.dart';
 import 'bs_variant.dart';
 import 'tokens/bs_table_style.dart';
 
@@ -94,7 +95,8 @@ class _BsTableState extends State<BsTable> {
 
   @override
   Widget build(BuildContext context) {
-    final style = BsTableStyle.defaults.merge(widget.style);
+    final isDark = BsTheme.of(context) == Brightness.dark;
+    final style = (isDark ? BsTableStyle.darkDefaults : BsTableStyle.defaults).merge(widget.style);
     final padding = widget.small
         ? (style.cellPaddingSm ?? BsTableStyle.defaultCellPaddingSm)
         : (style.cellPadding ?? BsTableStyle.defaultCellPadding);
@@ -132,7 +134,7 @@ class _BsTableState extends State<BsTable> {
           ],
         ),
       for (var i = 0; i < widget.rows.length; i++)
-        _buildRow(i, widget.rows[i], style, background, padding),
+        _buildRow(i, widget.rows[i], style, background, padding, isDark),
     ];
 
     final table = DefaultTextStyle.merge(
@@ -176,9 +178,12 @@ class _BsTableState extends State<BsTable> {
     BsTableStyle style,
     Color background,
     EdgeInsetsGeometry padding,
+    bool isDark,
   ) {
     var rowColor = background;
-    if (row.variant != null) rowColor = row.variant!.bgSubtle;
+    if (row.variant != null) {
+      rowColor = isDark ? row.variant!.darkBgSubtle : row.variant!.bgSubtle;
+    }
     if (widget.striped && index.isEven) {
       rowColor = _blend(
         rowColor,

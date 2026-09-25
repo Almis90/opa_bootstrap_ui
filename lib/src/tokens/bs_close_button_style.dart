@@ -57,7 +57,16 @@ class BsCloseButtonStyle {
 
   static const double defaultSize = 16;
   static const EdgeInsets defaultPadding = EdgeInsets.all(4);
+
+  /// `$btn-close-color` (`$black`).
   static const Color defaultColor = BsColors.black;
+
+  /// `[data-bs-theme="dark"] .btn-close`'s `filter: $btn-close-white-filter`
+  /// (`invert(1) grayscale(100%)`) — this port paints the glyph with a
+  /// literal color rather than a CSS filter, so the dark-mode equivalent is
+  /// simply white.
+  static const Color defaultDarkColor = BsColors.white;
+
   static const double defaultOpacity = 0.5;
   static const double defaultHoverOpacity = 0.75;
   static const double defaultFocusOpacity = 1;
@@ -70,6 +79,20 @@ class BsCloseButtonStyle {
     size: defaultSize,
     padding: defaultPadding,
     color: defaultColor,
+    opacity: defaultOpacity,
+    hoverOpacity: defaultHoverOpacity,
+    focusOpacity: defaultFocusOpacity,
+    disabledOpacity: defaultDisabledOpacity,
+  );
+
+  /// [defaults], with [color] swapped for its `[data-bs-theme="dark"]`
+  /// counterpart. Pick this as the base to [merge] a caller's
+  /// [BsCloseButtonStyle] override against when
+  /// `BsTheme.of(context) == Brightness.dark`.
+  static const BsCloseButtonStyle darkDefaults = BsCloseButtonStyle(
+    size: defaultSize,
+    padding: defaultPadding,
+    color: defaultDarkColor,
     opacity: defaultOpacity,
     hoverOpacity: defaultHoverOpacity,
     focusOpacity: defaultFocusOpacity,

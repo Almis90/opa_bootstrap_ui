@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 
 import 'bs_color_utils.dart';
 import 'bs_colors.dart';
+import 'bs_theme.dart';
 import 'tokens/bs_typography.dart';
 
 /// `h1`-`h6`: which [BsTypography] heading size/weight/line-height a
@@ -99,19 +100,24 @@ class BsLead extends StatelessWidget {
 /// Bootstrap's `$mark-bg` isn't in [BsTypography] (it has no dedicated
 /// SCSS variable group), so this mirrors the actual default — a light tint
 /// of [BsColors.yellow], the same `tint-color()` formula [BsVariant.bgSubtle]
-/// uses — directly.
+/// uses — directly. `$mark-color` inherits the ambient text color in both
+/// themes (already brightness-aware via [BsApp]'s `DefaultTextStyle`), so
+/// only the background needs to swap for `$mark-bg-dark`
+/// (`shade-color($yellow, 60%)`).
 class BsMark extends StatelessWidget {
   const BsMark({super.key, required this.child});
 
   final Widget child;
 
   static final Color _background = BsColorUtils.tint(BsColors.yellow, 0.8);
+  static final Color _darkBackground = BsColorUtils.shade(BsColors.yellow, 0.6);
 
   @override
   Widget build(BuildContext context) {
+    final isDark = BsTheme.of(context) == Brightness.dark;
     return Container(
       padding: const EdgeInsets.all(BsTypography.markPadding),
-      color: _background,
+      color: isDark ? _darkBackground : _background,
       child: child,
     );
   }

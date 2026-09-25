@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import 'bs_theme.dart';
 import 'tokens/bs_figure_style.dart';
 
 /// A Bootstrap figure (`<figure class="figure">`): an [image] with an
@@ -34,7 +35,8 @@ class BsFigureCaption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = BsFigureStyle.defaults.merge(this.style);
+    final isDark = BsTheme.of(context) == Brightness.dark;
+    final style = (isDark ? BsFigureStyle.darkDefaults : BsFigureStyle.defaults).merge(this.style);
     return DefaultTextStyle.merge(
       style: TextStyle(
         fontSize: style.captionFontSize ?? BsFigureStyle.defaultCaptionFontSize,

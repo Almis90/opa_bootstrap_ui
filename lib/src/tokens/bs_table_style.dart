@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
 
 import '../bs_colors.dart';
+import 'bs_body.dart';
 import 'bs_borders.dart';
 
 /// A Bootstrap `.table`'s visual variables.
@@ -92,15 +93,40 @@ class BsTableStyle {
 
   static const EdgeInsets defaultCellPadding = EdgeInsets.all(8);
   static const EdgeInsets defaultCellPaddingSm = EdgeInsets.all(4);
+
+  /// `$table-color` (`var(--bs-emphasis-color)`).
   static const Color defaultColor = BsColors.black;
+
+  /// [defaultColor] resolved against `--bs-emphasis-color` in
+  /// `[data-bs-theme="dark"]`.
+  static const Color defaultDarkColor = BsBody.darkEmphasisColor;
+
+  /// `$table-bg` (`var(--bs-body-bg)`).
   static const Color defaultBackground = BsColors.white;
+
+  /// [defaultBackground] resolved against `--bs-body-bg` in
+  /// `[data-bs-theme="dark"]`.
+  static const Color defaultDarkBackground = BsBody.darkBackground;
+
   static const Color defaultAccentBackground = Color(0x00000000);
   static const double defaultStripedBackgroundOpacity = 0.05;
   static const double defaultActiveBackgroundOpacity = 0.1;
   static const double defaultHoverBackgroundOpacity = 0.075;
   static const double defaultBorderWidth = BsBorders.width;
+
+  /// `$table-border-color` (`var(--bs-border-color)`).
   static const Color defaultBorderColor = BsBorders.color;
+
+  /// [defaultBorderColor] resolved against `--bs-border-color` in
+  /// `[data-bs-theme="dark"]`.
+  static const Color defaultDarkBorderColor = BsBorders.darkColor;
+
+  /// `$table-caption-color` (`var(--bs-secondary-color)`).
   static const Color defaultCaptionColor = BsColors.gray600;
+
+  /// [defaultCaptionColor] resolved against `--bs-secondary-color` in
+  /// `[data-bs-theme="dark"]`.
+  static const Color defaultDarkCaptionColor = BsBody.darkSecondaryColor;
 
   static const BsTableStyle defaults = BsTableStyle(
     cellPadding: defaultCellPadding,
@@ -117,5 +143,26 @@ class BsTableStyle {
     borderWidth: defaultBorderWidth,
     borderColor: defaultBorderColor,
     captionColor: defaultCaptionColor,
+  );
+
+  /// [defaults], with every brightness-sensitive field swapped for its
+  /// `[data-bs-theme="dark"]` counterpart. Pick this as the base to
+  /// [merge] a caller's [BsTableStyle] override against when
+  /// `BsTheme.of(context) == Brightness.dark`.
+  static const BsTableStyle darkDefaults = BsTableStyle(
+    cellPadding: defaultCellPadding,
+    cellPaddingSm: defaultCellPaddingSm,
+    color: defaultDarkColor,
+    background: defaultDarkBackground,
+    accentBackground: defaultAccentBackground,
+    stripedColor: defaultDarkColor,
+    stripedBackgroundOpacity: defaultStripedBackgroundOpacity,
+    activeColor: defaultDarkColor,
+    activeBackgroundOpacity: defaultActiveBackgroundOpacity,
+    hoverColor: defaultDarkColor,
+    hoverBackgroundOpacity: defaultHoverBackgroundOpacity,
+    borderWidth: defaultBorderWidth,
+    borderColor: defaultDarkBorderColor,
+    captionColor: defaultDarkCaptionColor,
   );
 }

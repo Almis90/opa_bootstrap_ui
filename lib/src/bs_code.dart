@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import 'bs_theme.dart';
 import 'tokens/bs_borders.dart';
 import 'tokens/bs_code_style.dart';
 import 'tokens/bs_typography.dart';
@@ -15,7 +16,8 @@ class BsCode extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = BsCodeStyle.defaults.merge(this.style);
+    final isDark = BsTheme.of(context) == Brightness.dark;
+    final style = (isDark ? BsCodeStyle.darkDefaults : BsCodeStyle.defaults).merge(this.style);
     return DefaultTextStyle.merge(
       style: TextStyle(
         fontFamily: BsTypography.fontFamilyMonospace.first,
@@ -40,7 +42,8 @@ class BsKbd extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = BsCodeStyle.defaults.merge(this.style);
+    final isDark = BsTheme.of(context) == Brightness.dark;
+    final style = (isDark ? BsCodeStyle.darkDefaults : BsCodeStyle.defaults).merge(this.style);
     return Container(
       padding: style.kbdPadding ?? BsCodeStyle.defaultKbdPadding,
       decoration: BoxDecoration(
