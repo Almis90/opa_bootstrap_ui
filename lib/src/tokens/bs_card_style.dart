@@ -127,8 +127,21 @@ class BsCardStyle {
   /// `$body-color: $gray-900`.
   static const Color defaultCapBackground = Color(0x08212529);
 
+  /// `$card-cap-bg` resolved against `$body-color-dark: $gray-300` — this
+  /// has no explicit `-dark` override in Bootstrap's SCSS because it reads
+  /// the live `--bs-body-color-rgb` custom property, which the CSS cascade
+  /// already swaps for dark mode; here we compute the same result.
+  static const Color defaultDarkCapBackground = Color(0x08DEE2E6);
+
   /// `$card-bg` (`var(--bs-body-bg)`).
   static const Color defaultBackground = BsColors.white;
+
+  /// `$card-bg` resolved against `$body-bg-dark: $gray-900`.
+  static const Color defaultDarkBackground = BsColors.gray900;
+
+  /// `$card-border-color` resolved against
+  /// `$border-color-translucent-dark: rgba($white, .15)`.
+  static const Color defaultDarkBorderColor = BsBorders.darkColorTranslucent;
 
   /// `$card-img-overlay-padding`.
   static const double defaultImgOverlayPadding = spacer;
@@ -146,6 +159,25 @@ class BsCardStyle {
     capPadding: defaultCapPadding,
     capBackground: defaultCapBackground,
     background: defaultBackground,
+    imgOverlayPadding: defaultImgOverlayPadding,
+    groupMargin: defaultGroupMargin,
+  );
+
+  /// [defaults], with [background]/[borderColor]/[capBackground] swapped for
+  /// their `[data-bs-theme="dark"]` counterparts. Pick this as the base to
+  /// [merge] a caller's [BsCardStyle] override against when
+  /// `BsTheme.of(context) == Brightness.dark` — every other field is
+  /// brightness-independent, so it's identical to [defaults].
+  static const BsCardStyle darkDefaults = BsCardStyle(
+    spacing: defaultSpacing,
+    titleSpacerY: defaultTitleSpacerY,
+    borderWidth: defaultBorderWidth,
+    borderColor: defaultDarkBorderColor,
+    borderRadius: defaultBorderRadius,
+    innerBorderRadius: defaultInnerBorderRadius,
+    capPadding: defaultCapPadding,
+    capBackground: defaultDarkCapBackground,
+    background: defaultDarkBackground,
     imgOverlayPadding: defaultImgOverlayPadding,
     groupMargin: defaultGroupMargin,
   );

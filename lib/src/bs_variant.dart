@@ -53,4 +53,30 @@ enum BsVariant {
     BsVariant.dark => BsColors.gray500,
     _ => BsColorUtils.tint(color, 0.6),
   };
+
+  /// `$#{variant}-text-emphasis-dark` (`_variables-dark.scss`): the
+  /// `[data-bs-theme="dark"]` counterpart of [textEmphasis] — a *tint*
+  /// rather than a shade of [color], since dark surfaces need lighter text.
+  Color get darkTextEmphasis => switch (this) {
+    BsVariant.light => BsColors.gray100,
+    BsVariant.dark => BsColors.gray300,
+    _ => BsColorUtils.tint(color, 0.4),
+  };
+
+  /// `$#{variant}-bg-subtle-dark`: the `[data-bs-theme="dark"]` counterpart
+  /// of [bgSubtle] — a heavy *shade* rather than a tint, so it reads as a
+  /// dark surface.
+  Color get darkBgSubtle => switch (this) {
+    BsVariant.light => BsColors.gray800,
+    BsVariant.dark => BsColorUtils.mix(BsColors.gray800, BsColors.black, 0.5),
+    _ => BsColorUtils.shade(color, 0.8),
+  };
+
+  /// `$#{variant}-border-subtle-dark`: the `[data-bs-theme="dark"]`
+  /// counterpart of [borderSubtle] — a shade rather than a tint.
+  Color get darkBorderSubtle => switch (this) {
+    BsVariant.light => BsColors.gray700,
+    BsVariant.dark => BsColors.gray800,
+    _ => BsColorUtils.shade(color, 0.4),
+  };
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import 'bs_colors.dart';
+import 'bs_theme.dart';
 import 'tokens/bs_body.dart';
 import 'tokens/bs_typography.dart';
 
@@ -12,8 +13,10 @@ import 'tokens/bs_typography.dart';
 /// package never has to reference [WidgetsApp], Material, or Cupertino
 /// directly. It fixes [WidgetsApp.pageRouteBuilder] to a plain
 /// [PageRouteBuilder] (the boilerplate every hand-rolled `WidgetsApp` in this
-/// repo repeated) and defaults [color] and [textStyle] to
-/// [BsColors.blue]/[BsBody] + [BsTypography], both overridable.
+/// repo repeated), installs a [BsTheme] from [brightness] so every `Bs*`
+/// widget beneath it can resolve dark-mode colors, and defaults [color] and
+/// [textStyle] to [BsColors.blue]/[BsBody] + [BsTypography] (both
+/// overridable, and both brightness-aware unless [textStyle] is set).
 ///
 /// Only wraps [WidgetsApp]'s `Navigator`-based constructor — there's no
 /// `BsApp.router` equivalent to `MaterialApp.router` yet, since nothing in
@@ -34,6 +37,7 @@ class BsApp extends StatelessWidget {
     this.onGenerateTitle,
     this.textStyle,
     this.color,
+    this.brightness = Brightness.light,
     this.locale,
     this.localizationsDelegates,
     this.localeListResolutionCallback,
@@ -60,13 +64,20 @@ class BsApp extends StatelessWidget {
   final String? title;
   final GenerateAppTitle? onGenerateTitle;
 
-  /// Defaults to [BsBody.color] on [BsTypography.fontFamilySansSerif] at
-  /// [BsTypography.fontSizeBase]/[BsTypography.fontWeightBase].
+  /// Defaults to [BsBody.colorOf] (light or dark depending on [brightness])
+  /// on [BsTypography.fontFamilySansSerif] at
+  /// [BsTypography.fontSizeBase]/[BsTypography.fontWeightBase]. Set this to
+  /// opt out of the brightness-aware default.
   final TextStyle? textStyle;
 
   /// Defaults to [BsColors.blue]. Only affects the OS task-switcher entry —
   /// this package has no `ThemeData`-style primary color to derive from.
   final Color? color;
+
+  /// Bootstrap's `data-bs-theme`: `Brightness.light` (the default) or
+  /// `Brightness.dark`. Installed as a [BsTheme] ancestor, so every `Bs*`
+  /// widget beneath [home] resolves its dark-mode colors from this.
+  final Brightness brightness;
 
   final Locale? locale;
   final Iterable<LocalizationsDelegate<dynamic>>? localizationsDelegates;
@@ -81,9 +92,9 @@ class BsApp extends StatelessWidget {
   final Map<Type, Action<Intent>>? actions;
   final String? restorationScopeId;
 
-  static TextStyle _defaultTextStyle() {
+  static TextStyle _defaultTextStyle(BuildContext context) {
     return TextStyle(
-      color: BsBody.color,
+      color: BsBody.colorOf(context),
       fontFamily: BsTypography.fontFamilySansSerif.first,
       fontFamilyFallback: BsTypography.fontFamilySansSerif.skip(1).toList(),
       fontSize: BsTypography.fontSizeBase,
@@ -106,10 +117,20 @@ class BsApp extends StatelessWidget {
         settings: settings,
         pageBuilder: (context, animation, secondaryAnimation) => pageBuilder(context),
       ),
-      builder: builder,
+      builder: (context, child) => BsTheme(
+        brightness: brightness,
+        child: Builder(
+          builder: (context) {
+            final styled = DefaultTextStyle(
+              style: textStyle ?? _defaultTextStyle(context),
+              child: child!,
+            );
+            return builder == null ? styled : builder!(context, styled);
+          },
+        ),
+      ),
       title: title,
       onGenerateTitle: onGenerateTitle,
-      textStyle: textStyle ?? _defaultTextStyle(),
       color: color ?? BsColors.blue,
       locale: locale,
       localizationsDelegates: localizationsDelegates,

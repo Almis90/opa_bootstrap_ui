@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import 'bs_breakpoint.dart';
+import 'bs_theme.dart';
 import 'tokens/bs_card_style.dart';
 import 'tokens/bs_link.dart';
 
@@ -53,10 +54,12 @@ class BsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = BsCardStyle.defaults.merge(this.style);
+    final isDark = BsTheme.of(context) == Brightness.dark;
+    final style = (isDark ? BsCardStyle.darkDefaults : BsCardStyle.defaults).merge(this.style);
     final borderWidth = style.borderWidth ?? BsCardStyle.defaultBorderWidth;
     final borderRadius = style.borderRadius ?? BsCardStyle.defaultBorderRadius;
     final borderColor = style.borderColor ?? BsCardStyle.defaultBorderColor;
+    final background = style.background ?? BsCardStyle.defaultBackground;
     final radius = Radius.circular(borderRadius);
     final outerBorderRadius = BorderRadius.only(
       topLeft: _groupLeftJoin ? Radius.zero : radius,
@@ -71,7 +74,7 @@ class BsCard extends StatelessWidget {
       groupRightJoin: _groupRightJoin,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: style.background ?? BsCardStyle.defaultBackground,
+          color: background,
           border: Border(
             top: BorderSide(color: borderColor, width: borderWidth),
             right: BorderSide(color: borderColor, width: borderWidth),
@@ -131,7 +134,8 @@ class BsCardHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scope = _BsCardScope._maybeScopeOf(context);
-    final style = scope?.style ?? BsCardStyle.defaults;
+    final isDark = BsTheme.of(context) == Brightness.dark;
+    final style = scope?.style ?? (isDark ? BsCardStyle.darkDefaults : BsCardStyle.defaults);
     final innerRadius = style.innerBorderRadius ?? BsCardStyle.defaultInnerBorderRadius;
     final radius = Radius.circular(innerRadius);
 
@@ -166,7 +170,8 @@ class BsCardFooter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scope = _BsCardScope._maybeScopeOf(context);
-    final style = scope?.style ?? BsCardStyle.defaults;
+    final isDark = BsTheme.of(context) == Brightness.dark;
+    final style = scope?.style ?? (isDark ? BsCardStyle.darkDefaults : BsCardStyle.defaults);
     final innerRadius = style.innerBorderRadius ?? BsCardStyle.defaultInnerBorderRadius;
     final radius = Radius.circular(innerRadius);
 
