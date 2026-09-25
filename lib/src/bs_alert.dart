@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import 'bs_close_button.dart';
+import 'bs_theme.dart';
 import 'bs_variant.dart';
 import 'tokens/bs_alert_style.dart';
 
@@ -66,10 +67,15 @@ class _BsAlertState extends State<BsAlert> {
   @override
   Widget build(BuildContext context) {
     final style = BsAlertStyle.defaults.merge(widget.style);
+    final isDark = BsTheme.of(context) == Brightness.dark;
 
-    final color = style.color ?? widget.variant.textEmphasis;
-    final background = style.background ?? widget.variant.bgSubtle;
-    final borderColor = style.borderColor ?? widget.variant.borderSubtle;
+    // No -dark override exists for $alert-bg-scale/-border-scale/-color-scale
+    // in Bootstrap's SCSS — alerts get dark mode entirely through
+    // BsVariant's own dark getters (the same var(--bs-*-text-emphasis)/
+    // -bg-subtle/-border-subtle custom properties the CSS cascade swaps).
+    final color = style.color ?? (isDark ? widget.variant.darkTextEmphasis : widget.variant.textEmphasis);
+    final background = style.background ?? (isDark ? widget.variant.darkBgSubtle : widget.variant.bgSubtle);
+    final borderColor = style.borderColor ?? (isDark ? widget.variant.darkBorderSubtle : widget.variant.borderSubtle);
     final borderWidth = style.borderWidth ?? BsAlertStyle.defaultBorderWidth;
     final borderRadius = style.borderRadius ?? BsAlertStyle.defaultBorderRadius;
     final padding = style.padding ?? BsAlertStyle.defaultPadding;

@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import 'bs_form_control.dart';
+import 'bs_theme.dart';
 import 'tokens/bs_form_style.dart';
 
 /// A Bootstrap floating label (`.form-floating`): a [label] that sits over
@@ -90,7 +91,8 @@ class _BsFormFloatingState extends State<BsFormFloating> {
 
   @override
   Widget build(BuildContext context) {
-    final style = BsFormStyle.defaults.merge(widget.style);
+    final isDark = BsTheme.of(context) == Brightness.dark;
+    final style = (isDark ? BsFormStyle.darkDefaults : BsFormStyle.defaults).merge(widget.style);
     final height = style.floatingHeight ?? BsFormStyle.defaultFloatingHeight;
     final horizontalPadding =
         (style.floatingPadding ?? BsFormStyle.defaultFloatingPadding)

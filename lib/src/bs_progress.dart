@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import 'bs_theme.dart';
 import 'bs_variant.dart';
 import 'tokens/bs_progress_style.dart';
 
@@ -71,7 +72,8 @@ class BsProgress extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = BsProgressStyle.defaults.merge(this.style);
+    final isDark = BsTheme.of(context) == Brightness.dark;
+    final style = (isDark ? BsProgressStyle.darkDefaults : BsProgressStyle.defaults).merge(this.style);
     final borderRadius =
         style.borderRadius ?? BsProgressStyle.defaultBorderRadius;
     final bars =

@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import 'bs_form_control.dart';
+import 'bs_theme.dart';
 import 'tokens/bs_form_style.dart';
 
 /// A Bootstrap input group (`.input-group`): a row of [children] — typically
@@ -29,7 +30,8 @@ class BsInputGroup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = BsFormStyle.defaults.merge(this.style);
+    final isDark = BsTheme.of(context) == Brightness.dark;
+    final style = (isDark ? BsFormStyle.darkDefaults : BsFormStyle.defaults).merge(this.style);
     final borderRadius = switch (size) {
       BsFormControlSize.small =>
         style.inputBorderRadiusSm ?? BsFormStyle.defaultInputBorderRadiusSm,
@@ -72,7 +74,8 @@ class BsInputGroupText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = BsFormStyle.defaults.merge(this.style);
+    final isDark = BsTheme.of(context) == Brightness.dark;
+    final style = (isDark ? BsFormStyle.darkDefaults : BsFormStyle.defaults).merge(this.style);
     return ColoredBox(
       color:
           style.inputGroupAddonBackground ??

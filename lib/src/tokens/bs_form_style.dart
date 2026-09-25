@@ -1,8 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
 
+import '../bs_color_utils.dart';
 import '../bs_colors.dart';
 import '../bs_variant.dart';
+import 'bs_body.dart';
 import 'bs_borders.dart';
 import 'bs_shadows.dart';
 
@@ -402,7 +404,14 @@ class BsFormStyle {
 
   static const double defaultTextMarginTop = 4;
   static const double defaultTextFontSize = 14;
+
+  /// `$form-text-color` (`var(--bs-secondary-color)`).
   static const Color defaultTextColor = BsColors.gray600;
+
+  /// [defaultTextColor] resolved against `--bs-secondary-color` in
+  /// `[data-bs-theme="dark"]`.
+  static const Color defaultDarkTextColor = BsBody.darkSecondaryColor;
+
   static const double defaultLabelMarginBottom = 8;
 
   static const EdgeInsets defaultInputPadding = EdgeInsets.symmetric(
@@ -423,15 +432,39 @@ class BsFormStyle {
   static const FontWeight defaultInputFontWeight = FontWeight.normal;
   static const double defaultInputLineHeight = 1.5;
   static const Color defaultInputColor = BsColors.gray900;
+
+  /// [defaultInputColor] resolved against `--bs-body-color` in
+  /// `[data-bs-theme="dark"]`.
+  static const Color defaultDarkInputColor = BsBody.darkColor;
+
   static const Color defaultInputBackground = BsColors.white;
+
+  /// [defaultInputBackground] resolved against `--bs-body-bg` in
+  /// `[data-bs-theme="dark"]`.
+  static const Color defaultDarkInputBackground = BsBody.darkBackground;
+
   static const Color defaultInputDisabledBackground = BsColors.gray200;
+
+  /// [defaultInputDisabledBackground] resolved against `--bs-secondary-bg`
+  /// in `[data-bs-theme="dark"]`.
+  static const Color defaultDarkInputDisabledBackground = BsBody.darkSecondaryBackground;
+
   static const Color defaultInputBorderColor = BsBorders.color;
+
+  /// [defaultInputBorderColor] resolved against `--bs-border-color` in
+  /// `[data-bs-theme="dark"]`.
+  static const Color defaultDarkInputBorderColor = BsBorders.darkColor;
+
   static const double defaultInputBorderWidth = BsBorders.width;
   static const List<BoxShadow> defaultInputBoxShadow = BsShadows.shadowInset;
   static const double defaultInputBorderRadius = BsBorders.radius;
   static const double defaultInputBorderRadiusSm = BsBorders.radiusSm;
   static const double defaultInputBorderRadiusLg = BsBorders.radiusLg;
   static const Color defaultInputPlaceholderColor = BsColors.gray600;
+
+  /// [defaultInputPlaceholderColor] resolved against `--bs-secondary-color`
+  /// in `[data-bs-theme="dark"]`.
+  static const Color defaultDarkInputPlaceholderColor = BsBody.darkSecondaryColor;
 
   /// `$input-height-border` (`$input-border-width * 2`).
   static const double defaultInputHeightBorder = defaultInputBorderWidth * 2;
@@ -461,31 +494,78 @@ class BsFormStyle {
     color: defaultInputBorderColor,
     width: defaultInputBorderWidth,
   );
+
+  /// [defaultCheckInputBorder] resolved against `--bs-border-color` in
+  /// `[data-bs-theme="dark"]`.
+  static const BorderSide defaultDarkCheckInputBorder = BorderSide(
+    color: defaultDarkInputBorderColor,
+    width: defaultInputBorderWidth,
+  );
+
   static const double defaultCheckInputBorderRadius = 4;
   static const double defaultCheckRadioBorderRadius = 800;
+
+  /// `$form-check-input-checked-color` (`$component-active-color`, i.e.
+  /// `$white` — a literal with no `-dark` override, unchanged in both
+  /// themes).
   static const Color defaultCheckInputCheckedColor = BsColors.white;
+
   static const double defaultCheckInputDisabledOpacity = 0.5;
   static const double defaultCheckInlineMarginEnd = 16;
 
   static const double defaultSwitchWidth = 32;
+
+  /// `$form-switch-color: rgba($black, .25)`, the unchecked thumb color.
   static const Color defaultSwitchColor = Color(0x40000000);
+
+  /// `$form-switch-color-dark: rgba($white, .25)`.
+  static const Color defaultDarkSwitchColor = Color(0x40FFFFFF);
+
   static const double defaultSwitchBorderRadius = defaultSwitchWidth;
   static const Duration defaultSwitchTransitionDuration = Duration(
     milliseconds: 150,
   );
 
   static const EdgeInsets defaultInputGroupAddonPadding = defaultInputPadding;
+
+  /// `$input-group-addon-color` (`$input-color`).
   static const Color defaultInputGroupAddonColor = defaultInputColor;
+
+  /// [defaultInputGroupAddonColor] resolved against `--bs-body-color` in
+  /// `[data-bs-theme="dark"]`.
+  static const Color defaultDarkInputGroupAddonColor = defaultDarkInputColor;
+
   static const Color defaultInputGroupAddonBackground = BsColors.gray100;
 
+  /// [defaultInputGroupAddonBackground] resolved against
+  /// `--bs-tertiary-bg` in `[data-bs-theme="dark"]`.
+  static Color get defaultDarkInputGroupAddonBackground => BsBody.darkTertiaryBackground;
+
+  /// `$form-select-indicator-color` (`$gray-800`).
   static const Color defaultSelectIndicatorColor = BsColors.gray800;
+
+  /// `$form-select-indicator-color-dark` (`$body-color-dark`) — unlike the
+  /// light default, this one *is* explicitly overridden by Bootstrap.
+  static const Color defaultDarkSelectIndicatorColor = BsBody.darkColor;
+
   static const Size defaultSelectBackgroundSize = Size(16, 12);
 
   static const double defaultRangeTrackHeight = 8;
   static const Color defaultRangeTrackBackground = BsColors.gray200;
+
+  /// [defaultRangeTrackBackground] resolved against `--bs-secondary-bg`
+  /// in `[data-bs-theme="dark"]`.
+  static const Color defaultDarkRangeTrackBackground = BsBody.darkSecondaryBackground;
+
   static const double defaultRangeTrackBorderRadius = 16;
   static const double defaultRangeThumbSize = 16;
+
+  /// `$form-range-thumb-disabled-bg` (`var(--bs-secondary-color)`).
   static const Color defaultRangeThumbDisabledBackground = BsColors.gray600;
+
+  /// [defaultRangeThumbDisabledBackground] resolved against
+  /// `--bs-secondary-color` in `[data-bs-theme="dark"]`.
+  static const Color defaultDarkRangeThumbDisabledBackground = BsBody.darkSecondaryColor;
 
   /// `$form-range-thumb-border-radius` (`1rem`).
   static const double defaultRangeThumbBorderRadius = 16;
@@ -496,8 +576,22 @@ class BsFormStyle {
   ];
 
   static const Color defaultFileButtonColor = defaultInputColor;
+
+  /// [defaultFileButtonColor] resolved against `--bs-body-color` in
+  /// `[data-bs-theme="dark"]`.
+  static const Color defaultDarkFileButtonColor = defaultDarkInputColor;
+
   static const Color defaultFileButtonBackground = BsColors.gray100;
+
+  /// [defaultFileButtonBackground] resolved against `--bs-tertiary-bg` in
+  /// `[data-bs-theme="dark"]`.
+  static Color get defaultDarkFileButtonBackground => BsBody.darkTertiaryBackground;
+
   static const Color defaultFileButtonHoverBackground = BsColors.gray200;
+
+  /// [defaultFileButtonHoverBackground] resolved against
+  /// `--bs-secondary-bg` in `[data-bs-theme="dark"]`.
+  static const Color defaultDarkFileButtonHoverBackground = BsBody.darkSecondaryBackground;
 
   /// `$form-floating-height` (`add(3.5rem, $input-height-border)`).
   static const double defaultFloatingHeight = 56 + defaultInputHeightBorder;
@@ -521,8 +615,19 @@ class BsFormStyle {
   /// `$form-floating-label-disabled-color` (`$gray-600`).
   static const Color defaultFloatingLabelDisabledColor = BsColors.gray600;
 
+  /// `$form-valid-color`/`$form-valid-border-color` (`$success`).
   static Color get defaultValidColor => BsVariant.success.color;
+
+  /// `$form-valid-color-dark`/`$form-valid-border-color-dark`
+  /// (`$green-300`, i.e. `tint-color($green, 40%)`).
+  static Color get defaultDarkValidColor => BsColorUtils.tint(BsVariant.success.color, 0.4);
+
+  /// `$form-invalid-color`/`$form-invalid-border-color` (`$danger`).
   static Color get defaultInvalidColor => BsVariant.danger.color;
+
+  /// `$form-invalid-color-dark`/`$form-invalid-border-color-dark`
+  /// (`$red-300`, i.e. `tint-color($red, 40%)`).
+  static Color get defaultDarkInvalidColor => BsColorUtils.tint(BsVariant.danger.color, 0.4);
 
   static Color get defaultInputFocusBorderColor =>
       _tint(BsVariant.primary.color, 0.5);
@@ -612,5 +717,82 @@ class BsFormStyle {
     floatingLabelDisabledColor: defaultFloatingLabelDisabledColor,
     validColor: defaultValidColor,
     invalidColor: defaultInvalidColor,
+  );
+
+  /// [defaults], with every brightness-sensitive field swapped for its
+  /// `[data-bs-theme="dark"]` counterpart. Pick this as the base to
+  /// [merge] a caller's [BsFormStyle] override against when
+  /// `BsTheme.of(context) == Brightness.dark`.
+  static BsFormStyle get darkDefaults => BsFormStyle(
+    textMarginTop: defaultTextMarginTop,
+    textFontSize: defaultTextFontSize,
+    textColor: defaultDarkTextColor,
+    labelMarginBottom: defaultLabelMarginBottom,
+    inputPadding: defaultInputPadding,
+    inputPaddingSm: defaultInputPaddingSm,
+    inputPaddingLg: defaultInputPaddingLg,
+    inputFontSize: defaultInputFontSize,
+    inputFontSizeSm: defaultInputFontSizeSm,
+    inputFontSizeLg: defaultInputFontSizeLg,
+    inputFontWeight: defaultInputFontWeight,
+    inputLineHeight: defaultInputLineHeight,
+    inputColor: defaultDarkInputColor,
+    inputBackground: defaultDarkInputBackground,
+    inputDisabledBackground: defaultDarkInputDisabledBackground,
+    inputBorderColor: defaultDarkInputBorderColor,
+    inputBorderWidth: defaultInputBorderWidth,
+    inputBoxShadow: defaultInputBoxShadow,
+    inputBorderRadius: defaultInputBorderRadius,
+    inputBorderRadiusSm: defaultInputBorderRadiusSm,
+    inputBorderRadiusLg: defaultInputBorderRadiusLg,
+    inputFocusBorderColor: defaultInputFocusBorderColor,
+    inputFocusBoxShadow: defaultInputFocusBoxShadow,
+    inputPlaceholderColor: defaultDarkInputPlaceholderColor,
+    inputHeight: defaultInputHeight,
+    inputHeightSm: defaultInputHeightSm,
+    inputHeightLg: defaultInputHeightLg,
+    inputTransitionDuration: defaultInputTransitionDuration,
+    checkInputSize: defaultCheckInputSize,
+    checkPaddingStart: defaultCheckPaddingStart,
+    checkMarginBottom: defaultCheckMarginBottom,
+    checkInputBorder: defaultDarkCheckInputBorder,
+    checkInputBorderRadius: defaultCheckInputBorderRadius,
+    checkRadioBorderRadius: defaultCheckRadioBorderRadius,
+    checkInputCheckedColor: defaultCheckInputCheckedColor,
+    checkInputCheckedBackground: BsVariant.primary.color,
+    checkInputDisabledOpacity: defaultCheckInputDisabledOpacity,
+    checkInlineMarginEnd: defaultCheckInlineMarginEnd,
+    switchWidth: defaultSwitchWidth,
+    switchColor: defaultDarkSwitchColor,
+    switchBorderRadius: defaultSwitchBorderRadius,
+    switchTransitionDuration: defaultSwitchTransitionDuration,
+    inputGroupAddonPadding: defaultInputGroupAddonPadding,
+    inputGroupAddonColor: defaultDarkInputGroupAddonColor,
+    inputGroupAddonBackground: defaultDarkInputGroupAddonBackground,
+    selectIndicatorColor: defaultDarkSelectIndicatorColor,
+    selectBackgroundSize: defaultSelectBackgroundSize,
+    rangeTrackHeight: defaultRangeTrackHeight,
+    rangeTrackBackground: defaultDarkRangeTrackBackground,
+    rangeTrackBorderRadius: defaultRangeTrackBorderRadius,
+    rangeThumbSize: defaultRangeThumbSize,
+    rangeThumbBackground: defaultRangeThumbBackground,
+    rangeThumbActiveBackground: defaultRangeThumbActiveBackground,
+    rangeThumbDisabledBackground: defaultDarkRangeThumbDisabledBackground,
+    rangeThumbBorderRadius: defaultRangeThumbBorderRadius,
+    rangeThumbBoxShadow: defaultRangeThumbBoxShadow,
+    fileButtonColor: defaultDarkFileButtonColor,
+    fileButtonBackground: defaultDarkFileButtonBackground,
+    fileButtonHoverBackground: defaultDarkFileButtonHoverBackground,
+    floatingHeight: defaultFloatingHeight,
+    floatingLineHeight: defaultFloatingLineHeight,
+    floatingPadding: defaultFloatingPadding,
+    floatingInputPaddingTop: defaultFloatingInputPaddingTop,
+    floatingInputPaddingBottom: defaultFloatingInputPaddingBottom,
+    floatingLabelOpacity: defaultFloatingLabelOpacity,
+    // `$form-floating-label-disabled-color` has no `-dark` override in
+    // Bootstrap's SCSS — unchanged in both themes.
+    floatingLabelDisabledColor: defaultFloatingLabelDisabledColor,
+    validColor: defaultDarkValidColor,
+    invalidColor: defaultDarkInvalidColor,
   );
 }

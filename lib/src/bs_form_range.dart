@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import 'bs_theme.dart';
 import 'tokens/bs_form_style.dart';
 
 /// A Bootstrap range slider (`.form-range`).
@@ -41,7 +42,8 @@ class _BsFormRangeState extends State<BsFormRange> {
 
   @override
   Widget build(BuildContext context) {
-    final style = BsFormStyle.defaults.merge(widget.style);
+    final isDark = BsTheme.of(context) == Brightness.dark;
+    final style = (isDark ? BsFormStyle.darkDefaults : BsFormStyle.defaults).merge(widget.style);
     final trackHeight =
         style.rangeTrackHeight ?? BsFormStyle.defaultRangeTrackHeight;
     final thumbSize = style.rangeThumbSize ?? BsFormStyle.defaultRangeThumbSize;

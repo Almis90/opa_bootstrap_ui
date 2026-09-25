@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import 'bs_theme.dart';
 import 'tokens/bs_form_style.dart';
 
 /// `.form-check-input[type=checkbox]`/`[type=radio]`/`.form-switch`: how a
@@ -42,7 +43,8 @@ class BsFormCheck extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = BsFormStyle.defaults.merge(this.style);
+    final isDark = BsTheme.of(context) == Brightness.dark;
+    final style = (isDark ? BsFormStyle.darkDefaults : BsFormStyle.defaults).merge(this.style);
     final enabled = onChanged != null;
     final onTap = enabled ? () => onChanged!(!value) : null;
 

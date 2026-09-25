@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import 'bs_colors.dart';
+import 'bs_theme.dart';
 import 'tokens/bs_form_style.dart';
 
 /// `.form-control-sm`/(implicit default)/`.form-control-lg`: how tall and
@@ -107,7 +108,8 @@ class _BsFormControlState extends State<BsFormControl> {
 
   @override
   Widget build(BuildContext context) {
-    final style = BsFormStyle.defaults.merge(widget.style);
+    final isDark = BsTheme.of(context) == Brightness.dark;
+    final style = (isDark ? BsFormStyle.darkDefaults : BsFormStyle.defaults).merge(widget.style);
     final padding = switch (widget.size) {
       BsFormControlSize.small =>
         style.inputPaddingSm ?? BsFormStyle.defaultInputPaddingSm,

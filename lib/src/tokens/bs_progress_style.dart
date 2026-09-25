@@ -3,6 +3,7 @@ import 'package:flutter/painting.dart';
 
 import '../bs_colors.dart';
 import '../bs_variant.dart';
+import 'bs_body.dart';
 import 'bs_borders.dart';
 import 'bs_shadows.dart';
 
@@ -69,10 +70,21 @@ class BsProgressStyle {
   static const double defaultHeight = 16;
   static const double defaultFontSize = 12;
   static const Color defaultBackground = BsColors.gray200;
+
+  /// [defaultBackground] resolved against `--bs-secondary-bg` in
+  /// `[data-bs-theme="dark"]`.
+  static const Color defaultDarkBackground = BsBody.darkSecondaryBackground;
+
   static const double defaultBorderRadius = BsBorders.radius;
   static const List<BoxShadow> defaultBoxShadow = BsShadows.shadowInset;
+
+  /// `$progress-bar-color: $white` — a literal with no `-dark` override,
+  /// unchanged in both themes.
   static const Color defaultBarColor = BsColors.white;
+
+  /// `$progress-bar-bg: $primary` — also unchanged in both themes.
   static Color get defaultBarBackground => BsVariant.primary.color;
+
   static const Duration defaultBarAnimationDuration = Duration(seconds: 1);
   static const Duration defaultBarTransitionDuration = Duration(milliseconds: 600);
 
@@ -80,6 +92,22 @@ class BsProgressStyle {
     height: defaultHeight,
     fontSize: defaultFontSize,
     background: defaultBackground,
+    borderRadius: defaultBorderRadius,
+    boxShadow: defaultBoxShadow,
+    barColor: defaultBarColor,
+    barBackground: defaultBarBackground,
+    barAnimationDuration: defaultBarAnimationDuration,
+    barTransitionDuration: defaultBarTransitionDuration,
+  );
+
+  /// [defaults], with [background] swapped for its
+  /// `[data-bs-theme="dark"]` counterpart. Pick this as the base to
+  /// [merge] a caller's [BsProgressStyle] override against when
+  /// `BsTheme.of(context) == Brightness.dark`.
+  static BsProgressStyle get darkDefaults => BsProgressStyle(
+    height: defaultHeight,
+    fontSize: defaultFontSize,
+    background: defaultDarkBackground,
     borderRadius: defaultBorderRadius,
     boxShadow: defaultBoxShadow,
     barColor: defaultBarColor,
