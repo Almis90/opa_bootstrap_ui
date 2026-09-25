@@ -110,7 +110,7 @@ class BsMark extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+      padding: const EdgeInsets.all(BsTypography.markPadding),
       color: _background,
       child: child,
     );
@@ -129,16 +129,19 @@ class BsBlockquote extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        DefaultTextStyle.merge(
-          style: const TextStyle(fontSize: BsTypography.blockquoteFontSize),
-          child: child,
-        ),
-        ?footer,
-      ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: BsTypography.blockquoteMarginY),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          DefaultTextStyle.merge(
+            style: const TextStyle(fontSize: BsTypography.blockquoteFontSize),
+            child: child,
+          ),
+          ?footer,
+        ],
+      ),
     );
   }
 }
@@ -155,8 +158,8 @@ class BsBlockquoteFooter extends StatelessWidget {
   Widget build(BuildContext context) {
     return DefaultTextStyle.merge(
       style: const TextStyle(
-        fontSize: BsTypography.fontSizeSm,
-        color: BsColors.gray600,
+        fontSize: BsTypography.blockquoteFooterFontSize,
+        color: BsTypography.blockquoteFooterColor,
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

@@ -109,4 +109,17 @@ abstract final class BsTypography {
 
   /// `$paragraph-margin-bottom` (`1rem`).
   static const double paragraphMarginBottom = 16;
+
+  /// `$blockquote-margin-y` (`$spacer`, i.e. `1rem`).
+  static const double blockquoteMarginY = 16;
+
+  /// `$blockquote-footer-color` (`$gray-600`).
+  static const Color blockquoteFooterColor = Color(0xFF6C757D);
+
+  /// `$blockquote-footer-font-size` (`$small-font-size`).
+  static const double blockquoteFooterFontSize = fontSizeSm;
+
+  /// `$mark-padding` (`.1875em`, assuming a `16px` root font size). Applied
+  /// uniformly on all sides, matching Bootstrap's single-value `padding`.
+  static const double markPadding = 3;
 }
