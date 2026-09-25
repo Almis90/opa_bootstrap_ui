@@ -26,6 +26,7 @@ class BsModalStyle {
     this.backdropOpacity,
     this.headerBorderColor,
     this.headerBorderWidth,
+    this.footerBackground,
     this.footerBorderColor,
     this.footerBorderWidth,
     this.smallSize,
@@ -77,6 +78,9 @@ class BsModalStyle {
   /// `$modal-header-border-width` (`$modal-content-border-width`).
   final double? headerBorderWidth;
 
+  /// `$modal-footer-bg` (`null`, inherits [contentBackground]).
+  final Color? footerBackground;
+
   /// `$modal-footer-border-color` (`$modal-header-border-color`).
   final Color? footerBorderColor;
 
@@ -115,6 +119,7 @@ class BsModalStyle {
       backdropOpacity: other.backdropOpacity ?? backdropOpacity,
       headerBorderColor: other.headerBorderColor ?? headerBorderColor,
       headerBorderWidth: other.headerBorderWidth ?? headerBorderWidth,
+      footerBackground: other.footerBackground ?? footerBackground,
       footerBorderColor: other.footerBorderColor ?? footerBorderColor,
       footerBorderWidth: other.footerBorderWidth ?? footerBorderWidth,
       smallSize: other.smallSize ?? smallSize,
@@ -129,6 +134,7 @@ class BsModalStyle {
   static const double defaultFooterMarginBetween = 8;
   static const double defaultDialogMargin = 8;
   static const double defaultTitleLineHeight = 1.5;
+  static const Color defaultContentColor = BsColors.gray900;
   static const Color defaultContentBackground = BsColors.white;
   static const Color defaultContentBorderColor = BsBorders.colorTranslucent;
   static const double defaultContentBorderWidth = BsBorders.width;
@@ -148,6 +154,7 @@ class BsModalStyle {
     footerMarginBetween: defaultFooterMarginBetween,
     dialogMargin: defaultDialogMargin,
     titleLineHeight: defaultTitleLineHeight,
+    contentColor: defaultContentColor,
     contentBackground: defaultContentBackground,
     contentBorderColor: defaultContentBorderColor,
     contentBorderWidth: defaultContentBorderWidth,

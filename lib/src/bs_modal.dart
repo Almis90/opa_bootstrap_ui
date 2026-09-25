@@ -229,6 +229,7 @@ class BsModalFooter extends StatelessWidget {
 
     return DecoratedBox(
       decoration: BoxDecoration(
+        color: style.footerBackground,
         border: Border(
           top: BorderSide(
             color: style.footerBorderColor ?? BsModalStyle.defaultHeaderBorderColor,

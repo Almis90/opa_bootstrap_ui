@@ -150,7 +150,7 @@ class BsOffcanvas extends StatelessWidget {
         boxShadow: style.boxShadow ?? BsOffcanvasStyle.defaultBoxShadow,
       ),
       child: DefaultTextStyle.merge(
-        style: TextStyle(color: style.color),
+        style: TextStyle(color: style.color ?? BsOffcanvasStyle.defaultColor),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [

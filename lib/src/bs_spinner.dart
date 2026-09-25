@@ -81,13 +81,21 @@ class _BsSpinnerBorderState extends State<BsSpinnerBorder>
         DefaultTextStyle.of(context).style.color ??
         const Color(0xFF212529);
 
-    final spinner = RotationTransition(
-      turns: _controller,
-      child: CustomPaint(
-        size: Size.square(size),
-        painter: _BsSpinnerBorderPainter(
-          color: color,
-          strokeWidth: borderWidth,
+    final verticalAlign =
+        style.verticalAlign ?? BsSpinnerStyle.defaultVerticalAlign;
+
+    final spinner = Transform.translate(
+      // `$spinner-vertical-align` (`-.125em`): nudges the spinner down
+      // from the baseline it would otherwise sit on next to inline text.
+      offset: Offset(0, -verticalAlign),
+      child: RotationTransition(
+        turns: _controller,
+        child: CustomPaint(
+          size: Size.square(size),
+          painter: _BsSpinnerBorderPainter(
+            color: color,
+            strokeWidth: borderWidth,
+          ),
         ),
       ),
     );
@@ -201,13 +209,20 @@ class _BsSpinnerGrowState extends State<BsSpinnerGrow>
         DefaultTextStyle.of(context).style.color ??
         const Color(0xFF212529);
 
-    final spinner = ScaleTransition(
-      scale: _growth,
-      child: FadeTransition(
-        opacity: _growth,
-        child: DecoratedBox(
-          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-          child: SizedBox.square(dimension: size),
+    final verticalAlign = style.verticalAlign ?? BsSpinnerStyle.defaultVerticalAlign;
+
+    final spinner = Transform.translate(
+      // `$spinner-vertical-align` (`-.125em`): nudges the spinner down
+      // from the baseline it would otherwise sit on next to inline text.
+      offset: Offset(0, -verticalAlign),
+      child: ScaleTransition(
+        scale: _growth,
+        child: FadeTransition(
+          opacity: _growth,
+          child: DecoratedBox(
+            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+            child: SizedBox.square(dimension: size),
+          ),
         ),
       ),
     );

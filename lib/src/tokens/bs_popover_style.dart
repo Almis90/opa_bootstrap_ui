@@ -105,6 +105,7 @@ class BsPopoverStyle {
   static const double defaultHeaderFontSize = 16;
   static const Color defaultHeaderBackground = BsColors.gray200;
   static const EdgeInsets defaultHeaderPadding = EdgeInsets.symmetric(horizontal: 16, vertical: 8);
+  static const Color defaultBodyColor = BsColors.gray900;
   static const EdgeInsets defaultBodyPadding = EdgeInsets.all(16);
   static const double defaultArrowWidth = 16;
   static const double defaultArrowHeight = 8;
@@ -120,6 +121,7 @@ class BsPopoverStyle {
     headerFontSize: defaultHeaderFontSize,
     headerBackground: defaultHeaderBackground,
     headerPadding: defaultHeaderPadding,
+    bodyColor: defaultBodyColor,
     bodyPadding: defaultBodyPadding,
     arrowWidth: defaultArrowWidth,
     arrowHeight: defaultArrowHeight,

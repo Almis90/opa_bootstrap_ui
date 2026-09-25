@@ -88,6 +88,7 @@ class BsOffcanvasStyle {
   static const double defaultBorderWidth = BsBorders.width;
   static const double defaultTitleLineHeight = 1.5;
   static const Color defaultBackground = BsColors.white;
+  static const Color defaultColor = BsColors.gray900;
   static const List<BoxShadow> defaultBoxShadow = BsShadows.shadowSm;
   static const Color defaultBackdropColor = BsColors.black;
   static const double defaultBackdropOpacity = 0.5;
@@ -101,6 +102,7 @@ class BsOffcanvasStyle {
     borderWidth: defaultBorderWidth,
     titleLineHeight: defaultTitleLineHeight,
     background: defaultBackground,
+    color: defaultColor,
     boxShadow: defaultBoxShadow,
     backdropColor: defaultBackdropColor,
     backdropOpacity: defaultBackdropOpacity,

@@ -90,9 +90,11 @@ class _BsToastManager {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            for (final record in records)
+            for (final (index, record) in records.indexed)
               Padding(
-                padding: const EdgeInsets.only(bottom: 8),
+                padding: EdgeInsets.only(
+                  bottom: index == records.length - 1 ? 0 : BsToastStyle.defaultSpacing,
+                ),
                 child: _BsToastItem(
                   key: record.key,
                   duration: record.duration,

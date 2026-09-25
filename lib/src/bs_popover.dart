@@ -156,7 +156,10 @@ class _BsPopoverContent extends StatelessWidget {
               Padding(
                 padding: style.bodyPadding ?? BsPopoverStyle.defaultBodyPadding,
                 child: DefaultTextStyle.merge(
-                  style: TextStyle(fontSize: style.fontSize ?? BsPopoverStyle.defaultFontSize, color: style.bodyColor),
+                  style: TextStyle(
+                    fontSize: style.fontSize ?? BsPopoverStyle.defaultFontSize,
+                    color: style.bodyColor ?? BsPopoverStyle.defaultBodyColor,
+                  ),
                   child: content,
                 ),
               ),
