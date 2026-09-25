@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import 'bs_theme.dart';
 import 'tokens/bs_accordion_style.dart';
 
 /// Controls which [BsAccordion] items are expanded, for programmatic
@@ -292,7 +293,8 @@ class _BsAccordionState extends State<BsAccordion> {
 
   @override
   Widget build(BuildContext context) {
-    final style = BsAccordionStyle.defaults.merge(widget.style);
+    final isDark = BsTheme.of(context) == Brightness.dark;
+    final style = (isDark ? BsAccordionStyle.darkDefaults : BsAccordionStyle.defaults).merge(widget.style);
     _controller.detachedIndices = _detachedIndices;
 
     return Column(

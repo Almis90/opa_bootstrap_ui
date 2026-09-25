@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
 
 import '../bs_colors.dart';
+import 'bs_body.dart';
 import 'bs_borders.dart';
 import 'bs_shadows.dart';
 
@@ -96,16 +97,44 @@ class BsPopoverStyle {
   }
 
   static const double defaultFontSize = 14;
+
+  /// `$popover-bg: var(--bs-body-bg)`.
   static const Color defaultBackground = BsColors.white;
+
+  /// `$popover-bg` resolved against `--bs-body-bg` in
+  /// `[data-bs-theme="dark"]`.
+  static const Color defaultDarkBackground = BsBody.darkBackground;
+
   static const double defaultMaxWidth = 276;
   static const double defaultBorderWidth = BsBorders.width;
+
+  /// `$popover-border-color: var(--bs-border-color-translucent)`.
   static const Color defaultBorderColor = BsBorders.colorTranslucent;
+
+  /// `$popover-border-color` resolved against
+  /// `--bs-border-color-translucent` in `[data-bs-theme="dark"]`.
+  static const Color defaultDarkBorderColor = BsBorders.darkColorTranslucent;
+
   static const double defaultBorderRadius = BsBorders.radiusLg;
   static const List<BoxShadow> defaultBoxShadow = BsShadows.shadow;
   static const double defaultHeaderFontSize = 16;
+
+  /// `$popover-header-bg: var(--bs-secondary-bg)`.
   static const Color defaultHeaderBackground = BsColors.gray200;
+
+  /// `$popover-header-bg` resolved against `--bs-secondary-bg` in
+  /// `[data-bs-theme="dark"]`.
+  static const Color defaultDarkHeaderBackground = BsBody.darkSecondaryBackground;
+
   static const EdgeInsets defaultHeaderPadding = EdgeInsets.symmetric(horizontal: 16, vertical: 8);
+
+  /// `$popover-body-color: var(--bs-body-color)`.
   static const Color defaultBodyColor = BsColors.gray900;
+
+  /// `$popover-body-color` resolved against `--bs-body-color` in
+  /// `[data-bs-theme="dark"]`.
+  static const Color defaultDarkBodyColor = BsBody.darkColor;
+
   static const EdgeInsets defaultBodyPadding = EdgeInsets.all(16);
   static const double defaultArrowWidth = 16;
   static const double defaultArrowHeight = 8;
@@ -122,6 +151,30 @@ class BsPopoverStyle {
     headerBackground: defaultHeaderBackground,
     headerPadding: defaultHeaderPadding,
     bodyColor: defaultBodyColor,
+    bodyPadding: defaultBodyPadding,
+    arrowWidth: defaultArrowWidth,
+    arrowHeight: defaultArrowHeight,
+  );
+
+  /// [defaults], with [background]/[borderColor]/[headerBackground]/
+  /// [bodyColor] swapped for their `[data-bs-theme="dark"]` counterparts.
+  /// Pick this as the base to [merge] a caller's [BsPopoverStyle] override
+  /// against when `BsTheme.of(context) == Brightness.dark` — every other
+  /// field (including [boxShadow], which has no `-dark` override in
+  /// Bootstrap's SCSS) is brightness-independent, so it's identical to
+  /// [defaults].
+  static const BsPopoverStyle darkDefaults = BsPopoverStyle(
+    fontSize: defaultFontSize,
+    background: defaultDarkBackground,
+    maxWidth: defaultMaxWidth,
+    borderWidth: defaultBorderWidth,
+    borderColor: defaultDarkBorderColor,
+    borderRadius: defaultBorderRadius,
+    boxShadow: defaultBoxShadow,
+    headerFontSize: defaultHeaderFontSize,
+    headerBackground: defaultDarkHeaderBackground,
+    headerPadding: defaultHeaderPadding,
+    bodyColor: defaultDarkBodyColor,
     bodyPadding: defaultBodyPadding,
     arrowWidth: defaultArrowWidth,
     arrowHeight: defaultArrowHeight,

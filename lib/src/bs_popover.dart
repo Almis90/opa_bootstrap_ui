@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import 'bs_theme.dart';
 import 'tokens/bs_popover_style.dart';
 
 /// Which side of the trigger a [BsPopover]'s bubble opens on, with its
@@ -74,7 +75,8 @@ class _BsPopoverState extends State<BsPopover> {
 
   @override
   Widget build(BuildContext context) {
-    final style = BsPopoverStyle.defaults.merge(widget.style);
+    final isDark = BsTheme.of(context) == Brightness.dark;
+    final style = (isDark ? BsPopoverStyle.darkDefaults : BsPopoverStyle.defaults).merge(widget.style);
 
     return CompositedTransformTarget(
       link: _link,

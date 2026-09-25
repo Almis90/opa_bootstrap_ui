@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 
+import 'bs_theme.dart';
 import 'tokens/bs_tooltip_style.dart';
 
 /// Which side of [BsTooltip.child] the bubble opens on, with its arrow
@@ -118,7 +119,8 @@ class _BsTooltipState extends State<BsTooltip> with SingleTickerProviderStateMix
 
   @override
   Widget build(BuildContext context) {
-    final style = BsTooltipStyle.defaults.merge(widget.style);
+    final isDark = BsTheme.of(context) == Brightness.dark;
+    final style = (isDark ? BsTooltipStyle.darkDefaults : BsTooltipStyle.defaults).merge(widget.style);
 
     return CompositedTransformTarget(
       link: _link,
