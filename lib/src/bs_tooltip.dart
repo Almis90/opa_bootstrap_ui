@@ -126,19 +126,23 @@ class _BsTooltipState extends State<BsTooltip> with SingleTickerProviderStateMix
       link: _link,
       child: OverlayPortal(
         controller: _overlayController,
-        overlayChildBuilder: (context) => IgnorePointer(
-          child: CompositedTransformFollower(
-            link: _link,
-            targetAnchor: _targetAnchor,
-            followerAnchor: _followerAnchor,
-            child: FadeTransition(
-              opacity: _fadeController,
-              child: Opacity(
-                opacity: style.opacity ?? BsTooltipStyle.defaultOpacity,
-                child: _BsTooltipContent(message: widget.message, placement: widget.placement, style: style),
+        overlayChildBuilder: (context) => Stack(
+          children: [
+            IgnorePointer(
+              child: CompositedTransformFollower(
+                link: _link,
+                targetAnchor: _targetAnchor,
+                followerAnchor: _followerAnchor,
+                child: FadeTransition(
+                  opacity: _fadeController,
+                  child: Opacity(
+                    opacity: style.opacity ?? BsTooltipStyle.defaultOpacity,
+                    child: _BsTooltipContent(message: widget.message, placement: widget.placement, style: style),
+                  ),
+                ),
               ),
             ),
-          ),
+          ],
         ),
         child: MouseRegion(
           onEnter: (_) => _scheduleShow(),
