@@ -62,7 +62,17 @@ class BsBreadcrumbStyle {
   static const double defaultItemSpacing = 8;
   static const double defaultMarginBottom = 16;
   static const Color defaultDividerColor = BsBody.secondaryColor;
+
+  /// [defaultDividerColor] resolved against `--bs-secondary-color` in
+  /// `[data-bs-theme="dark"]`.
+  static const Color defaultDarkDividerColor = BsBody.darkSecondaryColor;
+
   static const Color defaultActiveColor = BsBody.secondaryColor;
+
+  /// [defaultActiveColor] resolved against `--bs-secondary-color` in
+  /// `[data-bs-theme="dark"]`.
+  static const Color defaultDarkActiveColor = BsBody.darkSecondaryColor;
+
   static const String defaultDivider = '/';
 
   static const BsBreadcrumbStyle defaults = BsBreadcrumbStyle(
@@ -71,6 +81,19 @@ class BsBreadcrumbStyle {
     marginBottom: defaultMarginBottom,
     dividerColor: defaultDividerColor,
     activeColor: defaultActiveColor,
+    divider: defaultDivider,
+  );
+
+  /// [defaults], with [dividerColor]/[activeColor] swapped for their
+  /// `[data-bs-theme="dark"]` counterparts. Pick this as the base to
+  /// [merge] a caller's [BsBreadcrumbStyle] override against when
+  /// `BsTheme.of(context) == Brightness.dark`.
+  static const BsBreadcrumbStyle darkDefaults = BsBreadcrumbStyle(
+    padding: defaultPadding,
+    itemSpacing: defaultItemSpacing,
+    marginBottom: defaultMarginBottom,
+    dividerColor: defaultDarkDividerColor,
+    activeColor: defaultDarkActiveColor,
     divider: defaultDivider,
   );
 }

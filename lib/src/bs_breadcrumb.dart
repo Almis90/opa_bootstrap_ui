@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import 'bs_theme.dart';
 import 'tokens/bs_breadcrumb_style.dart';
 import 'tokens/bs_link.dart';
 
@@ -41,7 +42,8 @@ class BsBreadcrumb extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = BsBreadcrumbStyle.defaults.merge(this.style);
+    final isDark = BsTheme.of(context) == Brightness.dark;
+    final style = (isDark ? BsBreadcrumbStyle.darkDefaults : BsBreadcrumbStyle.defaults).merge(this.style);
     final itemSpacing = style.itemSpacing ?? BsBreadcrumbStyle.defaultItemSpacing;
     final dividerColor = style.dividerColor ?? BsBreadcrumbStyle.defaultDividerColor;
     final divider = style.divider ?? BsBreadcrumbStyle.defaultDivider;

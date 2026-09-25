@@ -3,6 +3,7 @@ import 'package:flutter/painting.dart';
 
 import '../bs_colors.dart';
 import '../bs_variant.dart';
+import 'bs_body.dart';
 import 'bs_borders.dart';
 
 /// A Bootstrap `.list-group`'s visual variables.
@@ -101,21 +102,54 @@ class BsListGroupStyle {
   }
 
   static const Color defaultBackground = BsColors.white;
+
+  /// [defaultBackground] resolved against `--bs-body-bg` in
+  /// `[data-bs-theme="dark"]`.
+  static const Color defaultDarkBackground = BsBody.darkBackground;
+
   static const Color defaultBorderColor = BsBorders.color;
+
+  /// [defaultBorderColor] resolved against `--bs-border-color` in
+  /// `[data-bs-theme="dark"]`.
+  static const Color defaultDarkBorderColor = BsBorders.darkColor;
+
   static const double defaultBorderWidth = BsBorders.width;
   static const double defaultBorderRadius = BsBorders.radius;
   static const EdgeInsets defaultItemPadding = EdgeInsets.symmetric(horizontal: 16, vertical: 8);
+
+  /// `$list-group-hover-bg` (`var(--bs-tertiary-bg)`).
   static const Color defaultHoverBackground = BsColors.gray100;
+
+  /// [defaultHoverBackground] resolved against `--bs-tertiary-bg` in
+  /// `[data-bs-theme="dark"]`.
+  static Color get defaultDarkHoverBackground => BsBody.darkTertiaryBackground;
+
+  /// `$list-group-active-color` (`$component-active-color`, i.e. `$white`
+  /// — a literal with no `-dark` override, unchanged in both themes).
   static const Color defaultActiveColor = BsColors.white;
+
+  /// `$list-group-active-bg` (`$component-active-bg`, i.e. `$primary` —
+  /// also unchanged in both themes, since `$primary` itself isn't
+  /// re-themed).
   static Color get defaultActiveBackground => BsVariant.primary.color;
+
   static Color get defaultDisabledBackground => defaultBackground;
+  static Color get defaultDarkDisabledBackground => defaultDarkBackground;
   static const Color defaultActionColor = BsColors.gray600;
 
   /// `$list-group-action-hover-color` (`var(--bs-emphasis-color)`).
   static const Color defaultActionHoverColor = BsColors.black;
 
+  /// [defaultActionHoverColor] resolved against `--bs-emphasis-color` in
+  /// `[data-bs-theme="dark"]`.
+  static const Color defaultDarkActionHoverColor = BsBody.darkEmphasisColor;
+
   /// `$list-group-action-active-bg` (`var(--bs-secondary-bg)`).
   static const Color defaultActionActiveBackground = BsColors.gray200;
+
+  /// [defaultActionActiveBackground] resolved against `--bs-secondary-bg`
+  /// in `[data-bs-theme="dark"]`.
+  static const Color defaultDarkActionActiveBackground = BsBody.darkSecondaryBackground;
 
   static BsListGroupStyle get defaults => BsListGroupStyle(
     background: defaultBackground,
@@ -131,5 +165,26 @@ class BsListGroupStyle {
     actionColor: defaultActionColor,
     actionHoverColor: defaultActionHoverColor,
     actionActiveBackground: defaultActionActiveBackground,
+  );
+
+  /// [defaults], with [background]/[borderColor]/[hoverBackground]/
+  /// [disabledBackground]/[actionHoverColor]/[actionActiveBackground]
+  /// swapped for their `[data-bs-theme="dark"]` counterparts. Pick this as
+  /// the base to [merge] a caller's [BsListGroupStyle] override against
+  /// when `BsTheme.of(context) == Brightness.dark`.
+  static BsListGroupStyle get darkDefaults => BsListGroupStyle(
+    background: defaultDarkBackground,
+    borderColor: defaultDarkBorderColor,
+    borderWidth: defaultBorderWidth,
+    borderRadius: defaultBorderRadius,
+    itemPadding: defaultItemPadding,
+    hoverBackground: defaultDarkHoverBackground,
+    activeColor: defaultActiveColor,
+    activeBackground: defaultActiveBackground,
+    activeBorderColor: defaultActiveBackground,
+    disabledBackground: defaultDarkDisabledBackground,
+    actionColor: defaultActionColor,
+    actionHoverColor: defaultDarkActionHoverColor,
+    actionActiveBackground: defaultDarkActionActiveBackground,
   );
 }

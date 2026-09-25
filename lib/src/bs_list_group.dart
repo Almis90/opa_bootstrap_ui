@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import 'bs_theme.dart';
 import 'bs_variant.dart';
 import 'tokens/bs_body.dart';
 import 'tokens/bs_list_group_style.dart';
@@ -70,7 +71,8 @@ class BsListGroup extends StatelessWidget {
   Widget build(BuildContext context) {
     if (items.isEmpty) return const SizedBox.shrink();
 
-    final style = BsListGroupStyle.defaults.merge(this.style);
+    final isDark = BsTheme.of(context) == Brightness.dark;
+    final style = (isDark ? BsListGroupStyle.darkDefaults : BsListGroupStyle.defaults).merge(this.style);
     final horizontal = orientation == BsListGroupOrientation.horizontal;
 
     final children = [
