@@ -75,11 +75,21 @@ BsTooltip(
     style: TextStyle(decoration: TextDecoration.underline),
   ),
 )''',
-          preview: BsTooltip(
-            message: const Text('This is an example tooltip.'),
-            child: const Text(
-              'I have a tooltip.',
-              style: TextStyle(decoration: TextDecoration.underline),
+          // DocExample's preview area stretches to the full example width
+          // (so full-width children like the "Basic" button above size
+          // correctly); without Align here, the underlined Text itself
+          // would inherit that full width, and BsTooltip's target anchor
+          // (which tracks its child's actual layout box, not just the
+          // glyphs painted inside it) would center over the whole card
+          // instead of the short run of text.
+          preview: const Align(
+            alignment: Alignment.centerLeft,
+            child: BsTooltip(
+              message: Text('This is an example tooltip.'),
+              child: Text(
+                'I have a tooltip.',
+                style: TextStyle(decoration: TextDecoration.underline),
+              ),
             ),
           ),
         ),
