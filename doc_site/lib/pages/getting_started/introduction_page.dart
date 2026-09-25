@@ -104,20 +104,27 @@ class _QuickStartStep extends StatelessWidget {
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: Text(title, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: BsColors.gray900)),
+                child: Text(
+                  title,
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: BsBody.colorOf(context)),
+                ),
               ),
             ],
           ),
           const SizedBox(height: 12),
           for (final block in blocks) ...[
             if (block.label != null) ...[
-              Text(block.label!, style: const TextStyle(fontSize: 13, color: BsColors.gray600)),
+              Text(block.label!, style: TextStyle(fontSize: 13, color: BsBody.secondaryColorOf(context))),
               const SizedBox(height: 4),
             ],
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(color: BsColors.gray900, borderRadius: BorderRadius.circular(BsBorders.radius)),
+              decoration: BoxDecoration(
+                color: BsColors.gray900,
+                border: Border.all(color: BsBorders.colorOf(context)),
+                borderRadius: BorderRadius.circular(BsBorders.radius),
+              ),
               child: BsPre(style: const BsCodeStyle(preColor: BsColors.gray100), child: Text(block.code)),
             ),
             const SizedBox(height: 12),

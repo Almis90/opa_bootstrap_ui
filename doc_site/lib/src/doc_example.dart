@@ -89,7 +89,18 @@ class _DocExampleState extends State<DocExample> {
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(16),
-              decoration: const BoxDecoration(color: BsColors.gray900),
+              decoration: BoxDecoration(
+                color: BsColors.gray900,
+                border: Border(
+                  left: BorderSide(color: BsBorders.colorOf(context)),
+                  right: BorderSide(color: BsBorders.colorOf(context)),
+                  bottom: BorderSide(color: BsBorders.colorOf(context)),
+                ),
+                borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(BsBorders.radius),
+                  bottomRight: Radius.circular(BsBorders.radius),
+                ),
+              ),
               child: BsPre(
                 style: const BsCodeStyle(preColor: BsColors.gray100),
                 child: Text(widget.code),
