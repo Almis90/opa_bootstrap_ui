@@ -3,6 +3,7 @@ import 'package:flutter/painting.dart';
 
 import '../bs_colors.dart';
 import '../bs_variant.dart';
+import 'bs_body.dart';
 import 'bs_borders.dart';
 import 'bs_shadows.dart';
 
@@ -166,6 +167,40 @@ class BsDropdownStyle {
     linkActiveColor: defaultLinkActiveColor,
     linkActiveBackground: defaultLinkActiveBackground,
     linkDisabledColor: defaultLinkDisabledColor,
+    itemPadding: defaultItemPadding,
+    headerColor: defaultHeaderColor,
+    headerPadding: defaultHeaderPadding,
+  );
+
+  /// [defaults], with every field that reads a `var(--bs-*)` custom
+  /// property (which the `[data-bs-theme="dark"]` cascade swaps
+  /// automatically, even though most have no explicit entry in
+  /// `_variables-dark.scss`) resolved to its dark value. **Not** the same
+  /// as [dark] — that's Bootstrap's separately-authored, manually-opted-in
+  /// `.dropdown-menu-dark` palette (deliberately different literals like
+  /// `$gray-800` rather than the ambient `$body-bg-dark: $gray-900`), for
+  /// a dropdown you want to force dark regardless of page theme. Pick
+  /// *this* getter as the base to [merge] a caller's [BsDropdownStyle]
+  /// against when `BsTheme.of(context) == Brightness.dark`.
+  static BsDropdownStyle get darkDefaults => BsDropdownStyle(
+    minWidth: defaultMinWidth,
+    padding: defaultPadding,
+    spacer: defaultSpacer,
+    fontSize: defaultFontSize,
+    color: BsBody.darkColor,
+    background: BsBody.darkBackground,
+    borderColor: BsBorders.darkColorTranslucent,
+    borderRadius: defaultBorderRadius,
+    borderWidth: defaultBorderWidth,
+    dividerColor: BsBorders.darkColorTranslucent,
+    dividerMarginY: defaultDividerMarginY,
+    boxShadow: defaultBoxShadow,
+    linkColor: BsBody.darkColor,
+    linkHoverColor: BsBody.darkColor,
+    linkHoverBackground: BsBody.darkTertiaryBackground,
+    linkActiveColor: defaultLinkActiveColor,
+    linkActiveBackground: defaultLinkActiveBackground,
+    linkDisabledColor: BsBody.darkTertiaryColor,
     itemPadding: defaultItemPadding,
     headerColor: defaultHeaderColor,
     headerPadding: defaultHeaderPadding,

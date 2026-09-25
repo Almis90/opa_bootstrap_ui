@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import 'bs_theme.dart';
 import 'tokens/bs_focus_ring.dart';
 import 'tokens/bs_pagination_style.dart';
 
@@ -71,7 +72,8 @@ class BsPagination extends StatelessWidget {
   Widget build(BuildContext context) {
     if (items.isEmpty) return const SizedBox.shrink();
 
-    final style = BsPaginationStyle.defaults.merge(this.style);
+    final isDark = BsTheme.of(context) == Brightness.dark;
+    final style = (isDark ? BsPaginationStyle.darkDefaults : BsPaginationStyle.defaults).merge(this.style);
     final borderWidth = style.borderWidth ?? BsPaginationStyle.defaultBorderWidth;
     final radius = Radius.circular(style.borderRadius ?? BsPaginationStyle.defaultBorderRadius);
 

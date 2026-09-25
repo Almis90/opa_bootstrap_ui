@@ -3,6 +3,7 @@ import 'package:flutter/painting.dart';
 
 import '../bs_colors.dart';
 import '../bs_variant.dart';
+import 'bs_body.dart';
 import 'bs_borders.dart';
 import 'bs_focus_ring.dart';
 
@@ -131,15 +132,45 @@ class BsPaginationStyle {
   static const double defaultFontSize = 16;
   static Color get defaultColor => BsVariant.primary.color;
   static const Color defaultBackground = BsColors.white;
+
+  /// [defaultBackground] resolved against `--bs-body-bg` in
+  /// `[data-bs-theme="dark"]`.
+  static const Color defaultDarkBackground = BsBody.darkBackground;
+
   static const double defaultBorderRadius = BsBorders.radius;
   static const double defaultBorderWidth = BsBorders.width;
   static const Color defaultBorderColor = BsBorders.color;
+
+  /// [defaultBorderColor] resolved against `--bs-border-color` in
+  /// `[data-bs-theme="dark"]`.
+  static const Color defaultDarkBorderColor = BsBorders.darkColor;
+
   static const Color defaultFocusBackground = BsColors.gray200;
+
+  /// [defaultFocusBackground] resolved against `--bs-secondary-bg` in
+  /// `[data-bs-theme="dark"]`.
+  static const Color defaultDarkFocusBackground = BsBody.darkSecondaryBackground;
+
   static const Color defaultHoverBackground = BsColors.gray100;
+
+  /// [defaultHoverBackground] resolved against `--bs-tertiary-bg` in
+  /// `[data-bs-theme="dark"]`.
+  static Color get defaultDarkHoverBackground => BsBody.darkTertiaryBackground;
+
   static const Color defaultActiveColor = BsColors.white;
   static Color get defaultActiveBackground => BsVariant.primary.color;
   static const Color defaultDisabledColor = BsColors.gray600;
+
+  /// [defaultDisabledColor] resolved against `--bs-secondary-color` in
+  /// `[data-bs-theme="dark"]`.
+  static const Color defaultDarkDisabledColor = BsBody.darkSecondaryColor;
+
   static const Color defaultDisabledBackground = BsColors.gray200;
+
+  /// [defaultDisabledBackground] resolved against `--bs-secondary-bg` in
+  /// `[data-bs-theme="dark"]`.
+  static const Color defaultDarkDisabledBackground = BsBody.darkSecondaryBackground;
+
   static const Duration defaultTransitionDuration = Duration(milliseconds: 150);
 
   /// `$pagination-focus-box-shadow` (`$focus-ring-box-shadow`).
@@ -167,6 +198,37 @@ class BsPaginationStyle {
     disabledColor: defaultDisabledColor,
     disabledBackground: defaultDisabledBackground,
     disabledBorderColor: defaultBorderColor,
+    transitionDuration: defaultTransitionDuration,
+  );
+
+  /// [defaults], with every brightness-sensitive field swapped for its
+  /// `[data-bs-theme="dark"]` counterpart. [color]/[focusColor]/
+  /// [hoverColor]/[focusRingColor]/[activeColor]/[activeBackground] are
+  /// unchanged (they're literal `$primary`/`$white` values that don't
+  /// re-theme). Pick this as the base to [merge] a caller's
+  /// [BsPaginationStyle] override against when
+  /// `BsTheme.of(context) == Brightness.dark`.
+  static BsPaginationStyle get darkDefaults => BsPaginationStyle(
+    padding: defaultPadding,
+    fontSize: defaultFontSize,
+    color: defaultColor,
+    background: defaultDarkBackground,
+    borderRadius: defaultBorderRadius,
+    borderWidth: defaultBorderWidth,
+    borderColor: defaultDarkBorderColor,
+    focusColor: defaultColor,
+    focusBackground: defaultDarkFocusBackground,
+    focusRingColor: defaultFocusRingColor,
+    focusRingWidth: defaultFocusRingWidth,
+    hoverColor: defaultColor,
+    hoverBackground: defaultDarkHoverBackground,
+    hoverBorderColor: defaultDarkBorderColor,
+    activeColor: defaultActiveColor,
+    activeBackground: defaultActiveBackground,
+    activeBorderColor: defaultActiveBackground,
+    disabledColor: defaultDarkDisabledColor,
+    disabledBackground: defaultDarkDisabledBackground,
+    disabledBorderColor: defaultDarkBorderColor,
     transitionDuration: defaultTransitionDuration,
   );
 }

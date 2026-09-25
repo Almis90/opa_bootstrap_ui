@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import 'bs_theme.dart';
 import 'tokens/bs_nav_style.dart';
 import 'tokens/bs_transitions.dart';
 
@@ -73,7 +74,8 @@ class BsNav extends StatelessWidget {
   Widget build(BuildContext context) {
     if (items.isEmpty) return const SizedBox.shrink();
 
-    final style = BsNavStyle.defaults.merge(this.style);
+    final isDark = BsTheme.of(context) == Brightness.dark;
+    final style = (isDark ? BsNavStyle.darkDefaults : BsNavStyle.defaults).merge(this.style);
     final isTabs = variant == BsNavVariant.tabs;
     final isUnderline = variant == BsNavVariant.underline;
 

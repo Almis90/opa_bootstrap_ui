@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import 'bs_theme.dart';
 import 'tokens/bs_dropdown_style.dart';
 
 /// Which side of the toggle a [BsDropdown]'s menu opens on.
@@ -119,7 +120,8 @@ class _BsDropdownState extends State<BsDropdown> {
 
   @override
   Widget build(BuildContext context) {
-    final style = BsDropdownStyle.defaults.merge(widget.style);
+    final isDark = BsTheme.of(context) == Brightness.dark;
+    final style = (isDark ? BsDropdownStyle.darkDefaults : BsDropdownStyle.defaults).merge(widget.style);
 
     return CompositedTransformTarget(
       link: _link,
