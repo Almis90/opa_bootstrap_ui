@@ -45,7 +45,8 @@ BsDropdown(
         ),
         DocExample(
           title: 'Header, divider and disabled item',
-          description: 'BsDropdownHeader labels a group, BsDropdownDivider separates groups, and disabled: true mutes an item.',
+          description:
+              'BsDropdownHeader labels a group, BsDropdownDivider separates groups, and disabled: true mutes an item.',
           code: '''
 BsDropdown(
   toggleBuilder: (context, toggle, isOpen) => BsButton(onPressed: toggle, child: ...),
@@ -84,8 +85,12 @@ BsDropdown(
             alignment: Alignment.centerRight,
             child: BsDropdown(
               alignEnd: true,
-              toggleBuilder: (context, toggle, isOpen) => BsButton(onPressed: toggle, child: _toggleLabel('End-aligned')),
-              items: const [BsDropdownItem(child: Text('Action')), BsDropdownItem(child: Text('Another action'))],
+              toggleBuilder: (context, toggle, isOpen) =>
+                  BsButton(onPressed: toggle, child: _toggleLabel('End-aligned')),
+              items: const [
+                BsDropdownItem(child: Text('Action')),
+                BsDropdownItem(child: Text('Another action')),
+              ],
             ),
           ),
         ),
@@ -128,7 +133,8 @@ BsDropdown(
 )''',
           preview: BsDropdown(
             style: BsDropdownStyle.dark,
-            toggleBuilder: (context, toggle, isOpen) => BsButton(onPressed: toggle, child: _toggleLabel('Dark dropdown')),
+            toggleBuilder: (context, toggle, isOpen) =>
+                BsButton(onPressed: toggle, child: _toggleLabel('Dark dropdown')),
             items: const [
               BsDropdownItem(child: Text('Action'), active: true),
               BsDropdownItem(child: Text('Another action')),
@@ -136,6 +142,65 @@ BsDropdown(
               BsDropdownItem(child: Text('Something else here')),
             ],
           ),
+        ),
+        DocExample(
+          title: 'Programmatic control',
+          description:
+              'A BsDropdownController lets code outside the dropdown show(), hide(), toggle(), enable()/disable() '
+              'it, and override its items or direction with setItems()/setDirection() — all independent of the '
+              "dropdown's own toggle. Clicking any button below while the menu is open closes it first, the same "
+              'as clicking anywhere else outside it would — the change still applies, so Show it again afterward '
+              'to see it.',
+          code: '''
+final controller = BsDropdownController();
+
+Column(
+  children: [
+    Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: [
+        BsButton(onPressed: controller.show, child: Text('Show')),
+        BsButton(onPressed: controller.hide, child: Text('Hide')),
+        BsButton(onPressed: controller.toggle, child: Text('Toggle')),
+        BsButton(onPressed: controller.disable, child: Text('Disable')),
+        BsButton(onPressed: controller.enable, child: Text('Enable')),
+        BsButton(
+          onPressed: () => controller.setItems([BsDropdownItem(child: Text('Updated item'))]),
+          child: Text('Change items'),
+        ),
+        BsButton(
+          onPressed: () => controller.setDirection(BsDropdownDirection.up),
+          child: Text('Change direction'),
+        ),
+      ],
+    ),
+    BsDropdown(
+      controller: controller,
+      items: [BsDropdownItem(child: Text('Original item'))],
+      toggleBuilder: (context, toggle, isOpen) =>
+          BsButton(onPressed: toggle, child: Text('Click, or use the buttons above')),
+    ),
+  ],
+)''',
+          preview: const _ControllerDemo(),
+        ),
+        DocExample(
+          title: 'Events',
+          description:
+              'onShow/onHide fire immediately once an open or close is triggered; onShown/onHidden fire right '
+              'after — BsDropdown has no open/close animation to wait on — mirroring Bootstrap\'s '
+              "show.bs.dropdown/shown.bs.dropdown/hide.bs.dropdown/hidden.bs.dropdown.",
+          code: '''
+BsDropdown(
+  items: [BsDropdownItem(child: Text('Item'))],
+  onShow: () => log('show'),
+  onShown: () => log('shown'),
+  onHide: () => log('hide'),
+  onHidden: () => log('hidden'),
+  toggleBuilder: (context, toggle, isOpen) => BsButton(onPressed: toggle, child: Text('Click me')),
+)''',
+          preview: const _EventsDemo(),
         ),
       ],
     );
@@ -145,14 +210,138 @@ BsDropdown(
     return BsDropdown(
       direction: direction,
       toggleBuilder: (context, toggle, isOpen) => BsButton(onPressed: toggle, child: _toggleLabel(label)),
-      items: const [BsDropdownItem(child: Text('Action')), BsDropdownItem(child: Text('Another action'))],
+      items: const [
+        BsDropdownItem(child: Text('Action')),
+        BsDropdownItem(child: Text('Another action')),
+      ],
     );
   }
 
   static Widget _toggleLabel(String text) {
     return Row(
       mainAxisSize: MainAxisSize.min,
-      children: [Text(text), const SizedBox(width: 8), const BsDropdownCaret(color: BsColors.white)],
+      children: [
+        Text(text),
+        const SizedBox(width: 8),
+        const BsDropdownCaret(color: BsColors.white),
+      ],
+    );
+  }
+}
+
+class _ControllerDemo extends StatefulWidget {
+  const _ControllerDemo();
+
+  @override
+  State<_ControllerDemo> createState() => _ControllerDemoState();
+}
+
+class _ControllerDemoState extends State<_ControllerDemo> {
+  late final BsDropdownController _controller = BsDropdownController();
+  bool _itemsChanged = false;
+  int _directionIndex = 0;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _toggleItems() {
+    _itemsChanged = !_itemsChanged;
+    _controller.setItems(_itemsChanged ? const [BsDropdownItem(child: Text('Updated item'))] : null);
+  }
+
+  void _cycleDirection() {
+    _directionIndex = (_directionIndex + 1) % BsDropdownDirection.values.length;
+    _controller.setDirection(BsDropdownDirection.values[_directionIndex]);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            BsButton(size: BsSize.sm, onPressed: _controller.show, child: const Text('Show')),
+            BsButton(size: BsSize.sm, onPressed: _controller.hide, child: const Text('Hide')),
+            BsButton(size: BsSize.sm, onPressed: _controller.toggle, child: const Text('Toggle')),
+            BsButton(
+              size: BsSize.sm,
+              variant: BsVariant.secondary,
+              onPressed: _controller.disable,
+              child: const Text('Disable'),
+            ),
+            BsButton(
+              size: BsSize.sm,
+              variant: BsVariant.secondary,
+              onPressed: _controller.enable,
+              child: const Text('Enable'),
+            ),
+            BsButton(
+              size: BsSize.sm,
+              variant: BsVariant.secondary,
+              onPressed: _toggleItems,
+              child: const Text('Change items'),
+            ),
+            BsButton(
+              size: BsSize.sm,
+              variant: BsVariant.secondary,
+              onPressed: _cycleDirection,
+              child: const Text('Change direction'),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        BsDropdown(
+          controller: _controller,
+          items: const [BsDropdownItem(child: Text('Original item'))],
+          toggleBuilder: (context, toggle, isOpen) =>
+              BsButton(onPressed: toggle, child: const Text('Click, or use the buttons above')),
+        ),
+      ],
+    );
+  }
+}
+
+class _EventsDemo extends StatefulWidget {
+  const _EventsDemo();
+
+  @override
+  State<_EventsDemo> createState() => _EventsDemoState();
+}
+
+class _EventsDemoState extends State<_EventsDemo> {
+  final _events = <String>[];
+
+  void _log(String event) => setState(() => _events.add(event));
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        BsDropdown(
+          items: const [BsDropdownItem(child: Text('Item'))],
+          onShow: () => _log('show'),
+          onShown: () => _log('shown'),
+          onHide: () => _log('hide'),
+          onHidden: () => _log('hidden'),
+          toggleBuilder: (context, toggle, isOpen) => BsButton(onPressed: toggle, child: const Text('Click me')),
+        ),
+        const SizedBox(height: 16),
+        if (_events.isEmpty)
+          Text('No events yet — click the button above.', style: TextStyle(color: BsBody.secondaryColorOf(context)))
+        else
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [for (final event in _events) BsBadge(variant: BsVariant.secondary, child: Text(event))],
+          ),
+      ],
     );
   }
 }
