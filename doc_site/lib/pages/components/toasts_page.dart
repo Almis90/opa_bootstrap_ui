@@ -99,6 +99,53 @@ for (var i = 1; i <= 3; i++) {
             child: const Text('Show three at once'),
           ),
         ),
+        DocExample(
+          title: 'Programmatic control',
+          description:
+              'showBsToast returns a BsToastController — hold onto it to hide() that specific toast early, '
+              'instead of waiting for its own auto-dismiss timer or close button. Mirrors '
+              "Bootstrap's own bootstrap.Toast.getInstance(el).hide().",
+          code: '''
+BsToastController? controller;
+
+Wrap(
+  spacing: 8,
+  children: [
+    BsButton(
+      onPressed: () => controller = showBsToast(
+        context,
+        builder: (context, dismiss) => BsToast(
+          header: BsToastHeader(title: Text('Bootstrap'), onClose: dismiss),
+          body: Text('Driven by an external BsToastController.'),
+        ),
+      ),
+      child: Text('Show toast'),
+    ),
+    BsButton(onPressed: () => controller?.hide(), child: Text('Dismiss')),
+  ],
+)''',
+          preview: const _ControllerDemo(),
+        ),
+        DocExample(
+          title: 'Events',
+          description:
+              'onShow/onHide fire immediately once a show or dismissal is triggered; onShown/onHidden fire once '
+              "the fade animation actually finishes — mirroring Bootstrap's show.bs.toast/shown.bs.toast/"
+              'hide.bs.toast/hidden.bs.toast.',
+          code: '''
+showBsToast(
+  context,
+  onShow: () => log('show'),
+  onShown: () => log('shown'),
+  onHide: () => log('hide'),
+  onHidden: () => log('hidden'),
+  builder: (context, dismiss) => BsToast(
+    header: BsToastHeader(title: Text('Bootstrap'), onClose: dismiss),
+    body: Text('Close this (or wait) to see the events logged below.'),
+  ),
+)''',
+          preview: const _EventsDemo(),
+        ),
       ],
     );
   }
@@ -118,6 +165,105 @@ for (var i = 1; i <= 3; i++) {
     showBsToast(
       context,
       builder: (context, dismiss) => const BsToast(body: Text('This toast has no header, just plain text.')),
+    );
+  }
+}
+
+class _ControllerDemo extends StatefulWidget {
+  const _ControllerDemo();
+
+  @override
+  State<_ControllerDemo> createState() => _ControllerDemoState();
+}
+
+class _ControllerDemoState extends State<_ControllerDemo> {
+  BsToastController? _controller;
+
+  void _show() {
+    setState(() {
+      _controller = showBsToast(
+        context,
+        builder: (context, dismiss) => BsToast(
+          header: BsToastHeader(title: const Text('Bootstrap'), onClose: dismiss),
+          body: const Text('Driven by an external BsToastController.'),
+        ),
+      );
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: [
+        BsButton(size: BsSize.sm, onPressed: _show, child: const Text('Show toast')),
+        BsButton(
+          size: BsSize.sm,
+          variant: BsVariant.secondary,
+          onPressed: () => _controller?.hide(),
+          child: const Text('Dismiss'),
+        ),
+      ],
+    );
+  }
+}
+
+class _EventsDemo extends StatefulWidget {
+  const _EventsDemo();
+
+  @override
+  State<_EventsDemo> createState() => _EventsDemoState();
+}
+
+class _EventsDemoState extends State<_EventsDemo> {
+  BsToastController? _controller;
+  final _events = <String>[];
+
+  void _log(String event) => setState(() => _events.add(event));
+
+  void _show() {
+    _controller = showBsToast(
+      context,
+      onShow: () => _log('show'),
+      onShown: () => _log('shown'),
+      onHide: () => _log('hide'),
+      onHidden: () => _log('hidden'),
+      builder: (context, dismiss) => BsToast(
+        header: BsToastHeader(title: const Text('Bootstrap'), onClose: dismiss),
+        body: const Text('Close this (or wait) to see the events logged below.'),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            BsButton(size: BsSize.sm, onPressed: _show, child: const Text('Show toast')),
+            BsButton(
+              size: BsSize.sm,
+              variant: BsVariant.secondary,
+              onPressed: () => _controller?.hide(),
+              child: const Text('Dismiss'),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        if (_events.isEmpty)
+          Text('No events yet — show a toast above.', style: TextStyle(color: BsBody.secondaryColorOf(context)))
+        else
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [for (final event in _events) BsBadge(variant: BsVariant.secondary, child: Text(event))],
+          ),
+      ],
     );
   }
 }
