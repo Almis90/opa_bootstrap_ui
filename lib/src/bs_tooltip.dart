@@ -9,17 +9,16 @@ import 'tokens/bs_tooltip_style.dart';
 /// pointing back at it.
 enum BsTooltipPlacement { top, bottom, start, end }
 
-/// Programmatic on/off switch for a [BsTooltip], independent of its
-/// hover/long-press triggers — mirrors Bootstrap's own
-/// `tooltip.enable()`/`.disable()`/`.toggleEnabled()` API. A disabled
-/// tooltip ignores hover and long-press entirely, and hides immediately if
-/// it's currently showing.
+/// Programmatic control of a [BsTooltip], independent of its hover/
+/// long-press triggers — mirrors Bootstrap's own `tooltip.enable()`/
+/// `.disable()`/`.toggleEnabled()` and `.show()`/`.hide()`/`.toggle()` API.
 class BsTooltipController extends ChangeNotifier {
   BsTooltipController({bool enabled = true}) {
     _enabled = enabled;
   }
 
   late bool _enabled;
+  bool _shown = false;
 
   /// Whether the tooltip currently responds to hover/long-press.
   bool get enabled => _enabled;
@@ -34,6 +33,29 @@ class BsTooltipController extends ChangeNotifier {
   void _setEnabled(bool value) {
     if (value == _enabled) return;
     _enabled = value;
+    if (!value) _shown = false;
+    notifyListeners();
+  }
+
+  /// Whether the tooltip bubble is currently visible.
+  bool get isShown => _shown;
+
+  /// Shows the tooltip bubble immediately, bypassing [BsTooltip.waitDuration].
+  /// Does nothing while [enabled] is false.
+  void show() {
+    if (!_enabled) return;
+    _setShown(true);
+  }
+
+  /// Hides the tooltip bubble immediately, bypassing [BsTooltip.showDuration].
+  void hide() => _setShown(false);
+
+  /// Shows the tooltip if it's hidden, hides it if it's shown.
+  void toggle() => _shown ? hide() : show();
+
+  void _setShown(bool value) {
+    if (value == _shown) return;
+    _shown = value;
     notifyListeners();
   }
 }
@@ -71,8 +93,9 @@ class BsTooltip extends StatefulWidget {
 
   final BsTooltipPlacement placement;
 
-  /// Programmatic enable/disable switch. Defaults to an internally-owned
-  /// controller (always enabled) when null.
+  /// Programmatic enable/disable and show/hide. Defaults to an
+  /// internally-owned controller (always enabled, initially hidden) when
+  /// null.
   final BsTooltipController? controller;
 
   /// How long the pointer must hover before the tooltip appears.
@@ -109,9 +132,12 @@ class _BsTooltipState extends State<BsTooltip> with SingleTickerProviderStateMix
   }
 
   void _handleControllerChanged() {
-    if (!_controller.enabled) {
-      _waitTimer?.cancel();
-      _hideAfter(Duration.zero);
+    _waitTimer?.cancel();
+    if (_controller.isShown) {
+      if (!_overlayController.isShowing) _overlayController.show();
+      _fadeController.forward();
+    } else {
+      _fadeOut();
     }
   }
 
@@ -147,28 +173,23 @@ class _BsTooltipState extends State<BsTooltip> with SingleTickerProviderStateMix
     _autoHideTimer?.cancel();
     _waitTimer?.cancel();
     if (widget.waitDuration == Duration.zero) {
-      _show();
+      _controller.show();
     } else {
-      _waitTimer = Timer(widget.waitDuration, _show);
+      _waitTimer = Timer(widget.waitDuration, _controller.show);
     }
-  }
-
-  void _show() {
-    if (!_overlayController.isShowing) _overlayController.show();
-    _fadeController.forward();
   }
 
   void _hideAfter(Duration duration) {
     _waitTimer?.cancel();
     _autoHideTimer?.cancel();
     if (duration == Duration.zero) {
-      _hide();
+      _controller.hide();
     } else {
-      _autoHideTimer = Timer(duration, _hide);
+      _autoHideTimer = Timer(duration, _controller.hide);
     }
   }
 
-  Future<void> _hide() async {
+  Future<void> _fadeOut() async {
     await _fadeController.reverse();
     if (mounted) _overlayController.hide();
   }

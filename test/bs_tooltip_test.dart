@@ -117,4 +117,47 @@ void main() {
     await tester.pump(const Duration(milliseconds: 200));
     expect(find.text('Tooltip message'), findsOneWidget);
   });
+
+  testWidgets('BsTooltipController show/hide/toggle work without any hover', (tester) async {
+    final controller = BsTooltipController();
+    addTearDown(controller.dispose);
+
+    await tester.pumpWidget(
+      BsApp(
+        home: Center(
+          child: BsTooltip(
+            controller: controller,
+            message: const Text('Tooltip message'),
+            child: BsButton(onPressed: () {}, child: const Text('Btn')),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Tooltip message'), findsNothing);
+
+    controller.show();
+    await tester.pumpAndSettle();
+    expect(find.text('Tooltip message'), findsOneWidget);
+    expect(controller.isShown, isTrue);
+
+    controller.hide();
+    await tester.pumpAndSettle();
+    expect(find.text('Tooltip message'), findsNothing);
+    expect(controller.isShown, isFalse);
+
+    controller.toggle();
+    await tester.pumpAndSettle();
+    expect(find.text('Tooltip message'), findsOneWidget);
+
+    controller.toggle();
+    await tester.pumpAndSettle();
+    expect(find.text('Tooltip message'), findsNothing);
+
+    // show() is a no-op while disabled.
+    controller.disable();
+    controller.show();
+    await tester.pumpAndSettle();
+    expect(find.text('Tooltip message'), findsNothing);
+  });
 }
