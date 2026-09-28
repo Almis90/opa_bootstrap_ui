@@ -282,4 +282,35 @@ void main() {
     await tester.pumpAndSettle();
     expect(events, ['show', 'shown', 'hide', 'hidden']);
   });
+
+  testWidgets('setContent/setPlacement while shown do not re-fire onShow/onShown', (tester) async {
+    final controller = BsTooltipController();
+    addTearDown(controller.dispose);
+    final events = <String>[];
+
+    await tester.pumpWidget(
+      BsApp(
+        home: Center(
+          child: BsTooltip(
+            controller: controller,
+            message: const Text('Tooltip message'),
+            onShow: () => events.add('show'),
+            onShown: () => events.add('shown'),
+            onHide: () => events.add('hide'),
+            onHidden: () => events.add('hidden'),
+            child: BsButton(onPressed: () {}, child: const Text('Btn')),
+          ),
+        ),
+      ),
+    );
+
+    controller.show();
+    await tester.pumpAndSettle();
+    expect(events, ['show', 'shown']);
+
+    controller.setContent(const Text('Updated'));
+    controller.setPlacement(BsTooltipPlacement.bottom);
+    await tester.pumpAndSettle();
+    expect(events, ['show', 'shown']);
+  });
 }

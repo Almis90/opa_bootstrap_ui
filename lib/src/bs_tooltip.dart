@@ -168,6 +168,7 @@ class _BsTooltipState extends State<BsTooltip> with SingleTickerProviderStateMix
   Timer? _waitTimer;
   Timer? _autoHideTimer;
   BsTooltipController? _ownedController;
+  bool _wasShown = false;
 
   BsTooltipController get _controller => widget.controller ?? (_ownedController ??= BsTooltipController());
 
@@ -180,7 +181,13 @@ class _BsTooltipState extends State<BsTooltip> with SingleTickerProviderStateMix
   void _handleControllerChanged() {
     _waitTimer?.cancel();
     setState(() {}); // picks up content/placement changes even while already shown
-    if (_controller.isShown) {
+    final isShown = _controller.isShown;
+    // A setContent()/setPlacement() call while already shown (or hidden)
+    // notifies too, but that's not a show/hide transition — nothing to
+    // fire or (re-)animate.
+    if (isShown == _wasShown) return;
+    _wasShown = isShown;
+    if (isShown) {
       if (!_overlayController.isShowing) _overlayController.show();
       widget.onShow?.call();
       _fadeIn();
