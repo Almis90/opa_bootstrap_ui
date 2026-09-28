@@ -5,6 +5,27 @@ import 'bs_theme.dart';
 import 'bs_variant.dart';
 import 'tokens/bs_alert_style.dart';
 
+/// Programmatic control of a [BsAlert]'s dismissal — mirrors Bootstrap's
+/// `bootstrap.Alert.getInstance(element).close()`. [BsAlert] only ever
+/// closes once, with no reopening, so unlike its sibling controllers
+/// there's no `enable`/`disable` or `show` — just [close].
+class BsAlertController extends ChangeNotifier {
+  bool _closed = false;
+
+  /// Whether the alert has been dismissed (or is currently fading/
+  /// collapsing out after [close] was called).
+  bool get isClosed => _closed;
+
+  /// Dismisses the alert the same way tapping its own close button would —
+  /// fires [BsAlert.onClose] immediately and [BsAlert.onDismissed] once the
+  /// fade/collapse animation finishes. Does nothing if already closed.
+  void close() {
+    if (_closed) return;
+    _closed = true;
+    notifyListeners();
+  }
+}
+
 /// A Bootstrap alert (`.alert`): a contextual, dismissible message box.
 ///
 /// Colors are derived from [variant] via [BsVariant.textEmphasis]/
@@ -21,6 +42,7 @@ class BsAlert extends StatefulWidget {
     this.onClose,
     this.onDismissed,
     this.style,
+    this.controller,
   });
 
   /// The alert's content, typically a [Text] or a [Column] mixing text and
@@ -33,19 +55,25 @@ class BsAlert extends StatefulWidget {
   /// Whether to show a close button (`.alert-dismissible`).
   final bool dismissible;
 
-  /// Called immediately when the close button is tapped, before the fade/
-  /// collapse animation starts — mirrors Bootstrap's `close.bs.alert` event.
+  /// Called immediately when the close button is tapped (or [controller]'s
+  /// [BsAlertController.close] is called), before the fade/collapse
+  /// animation starts — mirrors Bootstrap's `close.bs.alert` event.
   final VoidCallback? onClose;
 
-  /// Called once the alert has finished fading/collapsing out, after a tap
-  /// on the close button — mirrors Bootstrap's `closed.bs.alert` event
-  /// (and Flutter's own [Dismissible.onDismissed], which fires at the same
-  /// point in its own dismiss animation). The caller is responsible for
-  /// actually removing the alert (e.g. from a list) at that point.
+  /// Called once the alert has finished fading/collapsing out — mirrors
+  /// Bootstrap's `closed.bs.alert` event (and Flutter's own
+  /// [Dismissible.onDismissed], which fires at the same point in its own
+  /// dismiss animation). The caller is responsible for actually removing
+  /// the alert (e.g. from a list) at that point.
   final VoidCallback? onDismissed;
 
   /// Style overrides layered on top of [BsAlertStyle.defaults].
   final BsAlertStyle? style;
+
+  /// Lets code outside dismiss the alert programmatically, the same way
+  /// tapping its own close button would. Defaults to an internally-owned
+  /// controller when null.
+  final BsAlertController? controller;
 
   @override
   State<BsAlert> createState() => _BsAlertState();
@@ -54,14 +82,35 @@ class BsAlert extends StatefulWidget {
 class _BsAlertState extends State<BsAlert> {
   static const _duration = Duration(milliseconds: 150);
 
+  BsAlertController? _ownedController;
   bool _dismissed = false;
 
-  void _dismiss() {
+  BsAlertController get _controller => widget.controller ?? (_ownedController ??= BsAlertController());
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(_handleControllerChanged);
+    // Handles a controller already closed before this alert ever mounted
+    // (e.g. reused across a rebuilt widget). No animation to play from —
+    // just start in the already-dismissed state.
+    _dismissed = _controller.isClosed;
+  }
+
+  void _handleControllerChanged() {
+    if (!_controller.isClosed || _dismissed) return;
     widget.onClose?.call();
     setState(() => _dismissed = true);
     Future.delayed(_duration, () {
       if (mounted) widget.onDismissed?.call();
     });
+  }
+
+  @override
+  void dispose() {
+    _controller.removeListener(_handleControllerChanged);
+    _ownedController?.dispose();
+    super.dispose();
   }
 
   @override
@@ -120,11 +169,7 @@ class _BsAlertState extends State<BsAlert> {
                           : padding,
                       child: DefaultTextStyle.merge(
                         style: TextStyle(color: color),
-                        child: _BsAlertScope(
-                          linkColor: linkColor,
-                          linkFontWeight: linkFontWeight,
-                          child: widget.child,
-                        ),
+                        child: _BsAlertScope(linkColor: linkColor, linkFontWeight: linkFontWeight, child: widget.child),
                       ),
                     ),
                     if (widget.dismissible)
@@ -133,7 +178,7 @@ class _BsAlertState extends State<BsAlert> {
                           alignment: AlignmentDirectional.centerEnd,
                           child: Padding(
                             padding: EdgeInsets.symmetric(horizontal: resolvedPadding.right),
-                            child: BsCloseButton(onPressed: _dismiss),
+                            child: BsCloseButton(onPressed: _controller.close),
                           ),
                         ),
                       ),
@@ -148,17 +193,12 @@ class _BsAlertState extends State<BsAlert> {
 /// Propagates the enclosing [BsAlert]'s resolved `--bs-alert-link-color`/
 /// `$alert-link-font-weight` to any [BsAlertLink] nested in its [child].
 class _BsAlertScope extends InheritedWidget {
-  const _BsAlertScope({
-    required this.linkColor,
-    required this.linkFontWeight,
-    required super.child,
-  });
+  const _BsAlertScope({required this.linkColor, required this.linkFontWeight, required super.child});
 
   final Color linkColor;
   final FontWeight linkFontWeight;
 
-  static _BsAlertScope? maybeOf(BuildContext context) =>
-      context.dependOnInheritedWidgetOfExactType<_BsAlertScope>();
+  static _BsAlertScope? maybeOf(BuildContext context) => context.dependOnInheritedWidgetOfExactType<_BsAlertScope>();
 
   @override
   bool updateShouldNotify(_BsAlertScope oldWidget) =>
