@@ -87,23 +87,31 @@ class _BsToastManager {
       alignment: _alignmentFor(position),
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            for (final (index, record) in records.indexed)
-              Padding(
-                padding: EdgeInsets.only(
-                  bottom: index == records.length - 1 ? 0 : BsToastStyle.defaultSpacing,
+        // Without IntrinsicWidth, the Column below's `crossAxisAlignment:
+        // stretch` would stretch it out to the overlay Stack's full
+        // (screen-sized) loose width instead of shrinking to the toasts'
+        // own content width — see the identical fix and explanation on
+        // BsDropdown's `_BsDropdownMenu`. With the Column already spanning
+        // edge to edge, this Align's start/center/end all looked the same;
+        // only top/bottom (the Column's own shrink-wrapped main axis) ever
+        // visibly differed.
+        child: IntrinsicWidth(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              for (final (index, record) in records.indexed)
+                Padding(
+                  padding: EdgeInsets.only(bottom: index == records.length - 1 ? 0 : BsToastStyle.defaultSpacing),
+                  child: _BsToastItem(
+                    key: record.key,
+                    duration: record.duration,
+                    builder: record.builder,
+                    onDismissed: () => _remove(position, record),
+                  ),
                 ),
-                child: _BsToastItem(
-                  key: record.key,
-                  duration: record.duration,
-                  builder: record.builder,
-                  onDismissed: () => _remove(position, record),
-                ),
-              ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -261,7 +269,10 @@ class BsToastHeader extends StatelessWidget {
           children: [
             Expanded(
               child: DefaultTextStyle.merge(
-                style: TextStyle(fontWeight: FontWeight.bold, color: style.headerColor ?? BsToastStyle.defaultHeaderColor),
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: style.headerColor ?? BsToastStyle.defaultHeaderColor,
+                ),
                 child: title,
               ),
             ),
