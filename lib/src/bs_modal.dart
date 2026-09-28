@@ -15,13 +15,27 @@ enum BsModalSize { small, medium, large, extraLarge }
 ///
 /// [builder] typically returns a [BsModalDialog] wrapping a [BsModal].
 /// Dismiss by popping the route (e.g. `Navigator.of(context).pop()`), the
-/// same as any other Flutter dialog.
+/// same as any other Flutter dialog — or drive it through a
+/// [BsModalController] instead, for [BsModalController.hide] plus
+/// [onShow]/[onShown]/[onHide]/[onHidden] lifecycle events.
+///
+/// [onShow] fires synchronously, right here, before the route is even
+/// pushed. [onShown] fires once the fade-in transition completes, [onHide]
+/// once the route starts fading back out — for whatever reason (this
+/// covers every dismissal path: [BsModalController.hide], `Navigator.pop`,
+/// an outside tap on [barrierDismissible], the system back button) — and
+/// [onHidden] once it's fully gone, mirroring Bootstrap's
+/// `show.bs.modal`/`shown.bs.modal`/`hide.bs.modal`/`hidden.bs.modal`.
 Future<T?> showBsModal<T>({
   required BuildContext context,
   required WidgetBuilder builder,
   bool barrierDismissible = true,
   String barrierLabel = 'Dismiss',
   BsModalStyle? style,
+  VoidCallback? onShow,
+  VoidCallback? onShown,
+  VoidCallback? onHide,
+  VoidCallback? onHidden,
 }) {
   final resolvedStyle = BsModalStyle.defaults.merge(style);
   final backdropOpacity = resolvedStyle.backdropOpacity ?? BsModalStyle.defaultBackdropOpacity;
@@ -29,13 +43,37 @@ Future<T?> showBsModal<T>({
     alpha: backdropOpacity,
   );
 
+  onShow?.call();
   return showGeneralDialog<T>(
     context: context,
     barrierDismissible: barrierDismissible,
     barrierLabel: barrierLabel,
     barrierColor: backdropColor,
     transitionDuration: resolvedStyle.transitionDuration ?? BsModalStyle.defaultTransitionDuration,
-    pageBuilder: (context, animation, secondaryAnimation) => builder(context),
+    // Registered here rather than in transitionBuilder below, and driven by
+    // AnimationStatus rather than the route's own returned Future — see
+    // the identical setup and explanation on showBsOffcanvas.
+    pageBuilder: (context, animation, secondaryAnimation) {
+      if (onShown != null || onHide != null || onHidden != null) {
+        var hasFiredHide = false;
+        animation.addStatusListener((status) {
+          switch (status) {
+            case AnimationStatus.completed:
+              onShown?.call();
+            case AnimationStatus.reverse:
+              if (!hasFiredHide) {
+                hasFiredHide = true;
+                onHide?.call();
+              }
+            case AnimationStatus.dismissed:
+              if (hasFiredHide) onHidden?.call();
+            case AnimationStatus.forward:
+              break;
+          }
+        });
+      }
+      return builder(context);
+    },
     transitionBuilder: (context, animation, secondaryAnimation, child) {
       final curved = CurvedAnimation(parent: animation, curve: Curves.easeOut);
       return FadeTransition(
@@ -48,6 +86,114 @@ Future<T?> showBsModal<T>({
       );
     },
   );
+}
+
+/// Programmatic control of [showBsModal], tracking whether one is currently
+/// open — mirrors [BsOffcanvasController] (see its own doc comment for the
+/// full rationale, which applies here unchanged: [show]/[hide] take a
+/// [BuildContext] since [showBsModal] pushes a route rather than driving a
+/// persistent widget, there's no `setContent`/`setPlacement` override, and
+/// [disable] can only prevent a *future* [show] — it can't force-close a
+/// modal already open, since that needs a [BuildContext] this method isn't
+/// given).
+class BsModalController extends ChangeNotifier {
+  BsModalController({bool enabled = true}) {
+    _enabled = enabled;
+  }
+
+  late bool _enabled;
+  bool _shown = false;
+
+  /// Whether [show] currently does anything.
+  bool get enabled => _enabled;
+
+  void enable() => _setEnabled(true);
+
+  void disable() => _setEnabled(false);
+
+  /// Flips [enabled], or sets it to [value] if given.
+  void toggleEnabled([bool? value]) => _setEnabled(value ?? !_enabled);
+
+  void _setEnabled(bool value) {
+    if (value == _enabled) return;
+    _enabled = value;
+    notifyListeners();
+  }
+
+  /// Whether a modal opened through this controller is currently on
+  /// screen. Stays false for one opened via a bare [showBsModal] call this
+  /// controller wasn't passed to.
+  bool get isShown => _shown;
+
+  /// Calls [showBsModal] with these arguments, tracking [isShown] around
+  /// it. Does nothing (returns null immediately) while [enabled] is false,
+  /// or while one opened through this controller is already shown.
+  Future<T?>? show<T>({
+    required BuildContext context,
+    required WidgetBuilder builder,
+    bool barrierDismissible = true,
+    String barrierLabel = 'Dismiss',
+    BsModalStyle? style,
+    VoidCallback? onShow,
+    VoidCallback? onShown,
+    VoidCallback? onHide,
+    VoidCallback? onHidden,
+  }) {
+    if (!_enabled || _shown) return null;
+    _shown = true;
+    notifyListeners();
+    return showBsModal<T>(
+      context: context,
+      builder: builder,
+      barrierDismissible: barrierDismissible,
+      barrierLabel: barrierLabel,
+      style: style,
+      onShow: onShow,
+      onShown: onShown,
+      onHide: onHide,
+      onHidden: onHidden,
+    ).then((result) {
+      _shown = false;
+      notifyListeners();
+      return result;
+    });
+  }
+
+  /// Pops the modal this controller opened, if any.
+  void hide(BuildContext context) {
+    if (!_shown) return;
+    Navigator.of(context).maybePop();
+  }
+
+  /// Calls [hide] if one opened through this controller is shown, [show]
+  /// (with the same arguments) otherwise.
+  Future<T?>? toggle<T>({
+    required BuildContext context,
+    required WidgetBuilder builder,
+    bool barrierDismissible = true,
+    String barrierLabel = 'Dismiss',
+    BsModalStyle? style,
+    VoidCallback? onShow,
+    VoidCallback? onShown,
+    VoidCallback? onHide,
+    VoidCallback? onHidden,
+  }) {
+    if (_shown) {
+      hide(context);
+      return null;
+    }
+    return show<T>(
+      context: context,
+      builder: builder,
+      barrierDismissible: barrierDismissible,
+      barrierLabel: barrierLabel,
+      style: style,
+      onShow: onShow,
+      onShown: onShown,
+      onHide: onHide,
+      onHidden: onHidden,
+    );
+  }
 }
 
 /// `.modal-dialog`: sizes, centers, and (optionally) internally scrolls a
@@ -89,10 +235,7 @@ class BsModalDialog extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: margin, horizontal: margin),
         child: ConstrainedBox(
-          constraints: BoxConstraints(
-            maxWidth: maxWidth,
-            maxHeight: MediaQuery.sizeOf(context).height - margin * 2,
-          ),
+          constraints: BoxConstraints(maxWidth: maxWidth, maxHeight: MediaQuery.sizeOf(context).height - margin * 2),
           child: child,
         ),
       ),
