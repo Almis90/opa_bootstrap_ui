@@ -34,6 +34,8 @@ void main() {
     final topStart = tester.getRect(find.text('topStart'));
     final topCenter = tester.getRect(find.text('topCenter'));
     final topEnd = tester.getRect(find.text('topEnd'));
+    final centerStart = tester.getRect(find.text('centerStart'));
+    final centerEnd = tester.getRect(find.text('centerEnd'));
     final bottomStart = tester.getRect(find.text('bottomStart'));
     final bottomCenter = tester.getRect(find.text('bottomCenter'));
     final bottomEnd = tester.getRect(find.text('bottomEnd'));
@@ -51,6 +53,13 @@ void main() {
     expect(bottomCenter.left, lessThan(bottomEnd.left));
     expect(bottomStart.left, lessThan(screenWidth / 4));
     expect(bottomEnd.right, greaterThan(screenWidth * 3 / 4));
+
+    // centerStart/centerEnd hug the left/right edge too, vertically
+    // between the top and bottom rows.
+    expect(centerStart.left, lessThan(screenWidth / 4));
+    expect(centerEnd.right, greaterThan(screenWidth * 3 / 4));
+    expect(centerStart.top, greaterThan(topStart.bottom));
+    expect(centerStart.bottom, lessThan(bottomStart.top));
 
     // Top row stays above the bottom row.
     expect(topStart.bottom, lessThan(bottomStart.top));

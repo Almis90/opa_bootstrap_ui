@@ -7,9 +7,12 @@ import 'bs_theme.dart';
 import 'tokens/bs_close_button_style.dart';
 import 'tokens/bs_toast_style.dart';
 
-/// Which corner (or top/bottom edge center) a toast stack anchors to,
-/// matching the placements shown in Bootstrap's own toast docs.
-enum BsToastPosition { topStart, topCenter, topEnd, bottomStart, bottomCenter, bottomEnd }
+/// Which corner (or edge center) a toast stack anchors to. The six
+/// top/bottom placements match Bootstrap's own toast docs; [centerStart]/
+/// [centerEnd] (vertically centered against the left/right edge) have no
+/// Bootstrap equivalent there, but round out the set the same way a
+/// SnackBar/notification rail on the side of the screen would.
+enum BsToastPosition { topStart, topCenter, topEnd, centerStart, centerEnd, bottomStart, bottomCenter, bottomEnd }
 
 /// Shows a Bootstrap toast (`.toast`), stacking it with any other toasts
 /// already showing at the same [position] — the same corner-stack
@@ -121,6 +124,8 @@ class _BsToastManager {
     BsToastPosition.topStart => Alignment.topLeft,
     BsToastPosition.topCenter => Alignment.topCenter,
     BsToastPosition.topEnd => Alignment.topRight,
+    BsToastPosition.centerStart => Alignment.centerLeft,
+    BsToastPosition.centerEnd => Alignment.centerRight,
     BsToastPosition.bottomStart => Alignment.bottomLeft,
     BsToastPosition.bottomCenter => Alignment.bottomCenter,
     BsToastPosition.bottomEnd => Alignment.bottomRight,

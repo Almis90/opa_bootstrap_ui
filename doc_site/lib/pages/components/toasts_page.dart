@@ -30,10 +30,7 @@ showBsToast(
     body: Text('Hello, world! This is a toast message.'),
   ),
 )''',
-          preview: BsButton(
-            onPressed: () => _showBasic(context),
-            child: const Text('Show live toast'),
-          ),
+          preview: BsButton(onPressed: () => _showBasic(context), child: const Text('Show live toast')),
         ),
         DocExample(
           title: 'Without a header',
@@ -45,14 +42,13 @@ showBsToast(
     body: Text('This toast has no header, just plain text.'),
   ),
 )''',
-          preview: BsButton(
-            onPressed: () => _showBodyOnly(context),
-            child: const Text('Show headerless toast'),
-          ),
+          preview: BsButton(onPressed: () => _showBodyOnly(context), child: const Text('Show headerless toast')),
         ),
         DocExample(
           title: 'Placement',
-          description: 'position picks which screen corner (or top/bottom center) the toast stack anchors to.',
+          description:
+              'position picks which screen corner (or edge center) the toast stack anchors to — including '
+              'centerStart/centerEnd, which have no Bootstrap toast equivalent.',
           code: '''
 showBsToast(
   context,
@@ -67,6 +63,8 @@ showBsToast(
                 'Top start': BsToastPosition.topStart,
                 'Top center': BsToastPosition.topCenter,
                 'Top end': BsToastPosition.topEnd,
+                'Center start': BsToastPosition.centerStart,
+                'Center end': BsToastPosition.centerEnd,
                 'Bottom start': BsToastPosition.bottomStart,
                 'Bottom center': BsToastPosition.bottomCenter,
                 'Bottom end': BsToastPosition.bottomEnd,
@@ -110,11 +108,7 @@ for (var i = 1; i <= 3; i++) {
       context,
       position: position,
       builder: (context, dismiss) => BsToast(
-        header: BsToastHeader(
-          title: Text(title ?? 'Bootstrap'),
-          meta: const Text('11 mins ago'),
-          onClose: dismiss,
-        ),
+        header: BsToastHeader(title: Text(title ?? 'Bootstrap'), meta: const Text('11 mins ago'), onClose: dismiss),
         body: const Text('Hello, world! This is a toast message.'),
       ),
     );

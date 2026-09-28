@@ -13,17 +13,11 @@ class ToastPage extends StatelessWidget {
       children: [
         DemoSection(
           title: 'Basic',
-          child: BsButton(
-            onPressed: () => _showBasic(context),
-            child: const Text('Show live toast'),
-          ),
+          child: BsButton(onPressed: () => _showBasic(context), child: const Text('Show live toast')),
         ),
         DemoSection(
           title: 'Without a header',
-          child: BsButton(
-            onPressed: () => _showBodyOnly(context),
-            child: const Text('Show headerless toast'),
-          ),
+          child: BsButton(onPressed: () => _showBodyOnly(context), child: const Text('Show headerless toast')),
         ),
         DemoSection(
           title: 'Placement',
@@ -35,6 +29,8 @@ class ToastPage extends StatelessWidget {
                 'Top start': BsToastPosition.topStart,
                 'Top center': BsToastPosition.topCenter,
                 'Top end': BsToastPosition.topEnd,
+                'Center start': BsToastPosition.centerStart,
+                'Center end': BsToastPosition.centerEnd,
                 'Bottom start': BsToastPosition.bottomStart,
                 'Bottom center': BsToastPosition.bottomCenter,
                 'Bottom end': BsToastPosition.bottomEnd,
@@ -67,11 +63,7 @@ class ToastPage extends StatelessWidget {
       context,
       position: position,
       builder: (context, dismiss) => BsToast(
-        header: BsToastHeader(
-          title: Text(title ?? 'Bootstrap'),
-          meta: const Text('11 mins ago'),
-          onClose: dismiss,
-        ),
+        header: BsToastHeader(title: Text(title ?? 'Bootstrap'), meta: const Text('11 mins ago'), onClose: dismiss),
         body: const Text('Hello, world! This is a toast message.'),
       ),
     );
