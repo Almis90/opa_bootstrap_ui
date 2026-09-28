@@ -7,6 +7,87 @@ import 'tokens/bs_popover_style.dart';
 /// arrow pointing back at the trigger.
 enum BsPopoverPlacement { top, bottom, start, end }
 
+/// Programmatic control of a [BsPopover], independent of its
+/// [BsPopover.triggerBuilder]-driven open/close — mirrors Bootstrap's own
+/// `popover.enable()`/`.disable()`/`.toggleEnabled()`, `.show()`/`.hide()`/
+/// `.toggle()`, and `.setContent()` API, plus a `setPlacement` with no
+/// Bootstrap equivalent (see [BsTooltipController], which this mirrors).
+///
+/// Only overrides [BsPopover.content] — not [BsPopover.title] — since
+/// unlike `content`, `title` is already nullable on the widget itself, so a
+/// controller override couldn't tell "no override" apart from "override to
+/// no title" the way [setContent]'s null does.
+class BsPopoverController extends ChangeNotifier {
+  BsPopoverController({bool enabled = true}) {
+    _enabled = enabled;
+  }
+
+  late bool _enabled;
+  bool _shown = false;
+  Widget? _content;
+  BsPopoverPlacement? _placement;
+
+  /// Whether the popover currently responds to its trigger.
+  bool get enabled => _enabled;
+
+  void enable() => _setEnabled(true);
+
+  void disable() => _setEnabled(false);
+
+  /// Flips [enabled], or sets it to [value] if given.
+  void toggleEnabled([bool? value]) => _setEnabled(value ?? !_enabled);
+
+  void _setEnabled(bool value) {
+    if (value == _enabled) return;
+    _enabled = value;
+    if (!value) _shown = false;
+    notifyListeners();
+  }
+
+  /// Whether the popover bubble is currently open.
+  bool get isShown => _shown;
+
+  /// Opens the popover immediately. Does nothing while [enabled] is false.
+  void show() {
+    if (!_enabled) return;
+    _setShown(true);
+  }
+
+  /// Closes the popover immediately.
+  void hide() => _setShown(false);
+
+  /// Opens the popover if it's closed, closes it if it's open.
+  void toggle() => _shown ? hide() : show();
+
+  void _setShown(bool value) {
+    if (value == _shown) return;
+    _shown = value;
+    notifyListeners();
+  }
+
+  /// Overrides [BsPopover.content]. Null (the default) falls back to it.
+  Widget? get content => _content;
+
+  /// Replaces the displayed body, e.g. to update a popover already on
+  /// screen without rebuilding the [BsPopover] itself. Pass null to fall
+  /// back to [BsPopover.content] again.
+  void setContent(Widget? content) {
+    _content = content;
+    notifyListeners();
+  }
+
+  /// Overrides [BsPopover.placement]. Null (the default) falls back to it.
+  BsPopoverPlacement? get placement => _placement;
+
+  /// Moves the bubble to a different side of the trigger, e.g. to flip it
+  /// away from a screen edge, without rebuilding the [BsPopover] itself.
+  /// Pass null to fall back to [BsPopover.placement] again.
+  void setPlacement(BsPopoverPlacement? placement) {
+    _placement = placement;
+    notifyListeners();
+  }
+}
+
 /// A Bootstrap popover (`.popover`): a bordered bubble with an optional
 /// [title] and [content], pointed at its trigger by a small arrow.
 ///
@@ -28,6 +109,11 @@ class BsPopover extends StatefulWidget {
     this.placement = BsPopoverPlacement.top,
     this.style,
     this.onOpenChanged,
+    this.controller,
+    this.onShow,
+    this.onShown,
+    this.onHide,
+    this.onHidden,
   });
 
   /// Builds the trigger widget. Call `toggle` from it to open/close the
@@ -48,6 +134,29 @@ class BsPopover extends StatefulWidget {
 
   final ValueChanged<bool>? onOpenChanged;
 
+  /// Programmatic enable/disable and show/hide. Defaults to an
+  /// internally-owned controller (always enabled, initially closed) when
+  /// null.
+  final BsPopoverController? controller;
+
+  /// Called as soon as the popover is triggered to open. Mirrors
+  /// Bootstrap's `show.bs.popover`.
+  final VoidCallback? onShow;
+
+  /// Called once the popover has finished opening. [BsPopover] has no
+  /// open/close animation, so this fires right after [onShow].
+  /// Mirrors Bootstrap's `shown.bs.popover`.
+  final VoidCallback? onShown;
+
+  /// Called as soon as the popover is triggered to close. Mirrors
+  /// Bootstrap's `hide.bs.popover`.
+  final VoidCallback? onHide;
+
+  /// Called once the popover has finished closing. [BsPopover] has no
+  /// open/close animation, so this fires right after [onHide]. Mirrors
+  /// Bootstrap's `hidden.bs.popover`.
+  final VoidCallback? onHidden;
+
   @override
   State<BsPopover> createState() => _BsPopoverState();
 }
@@ -55,23 +164,54 @@ class BsPopover extends StatefulWidget {
 class _BsPopoverState extends State<BsPopover> {
   final _link = LayerLink();
   final _overlayController = OverlayPortalController();
-  bool _isOpen = false;
+  BsPopoverController? _ownedController;
+  bool _wasShown = false;
 
-  void _open() {
-    if (_isOpen) return;
-    setState(() => _isOpen = true);
-    _overlayController.show();
-    widget.onOpenChanged?.call(true);
+  BsPopoverController get _controller => widget.controller ?? (_ownedController ??= BsPopoverController());
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(_handleControllerChanged);
   }
 
-  void _close() {
-    if (!_isOpen) return;
-    setState(() => _isOpen = false);
-    _overlayController.hide();
-    widget.onOpenChanged?.call(false);
+  void _handleControllerChanged() {
+    setState(() {}); // picks up content/placement changes even while already open
+    final isShown = _controller.isShown;
+    // A setContent()/setPlacement() call while already open (or closed)
+    // notifies too, but that's not an open/close transition.
+    if (isShown == _wasShown) return;
+    _wasShown = isShown;
+    if (isShown) {
+      widget.onShow?.call();
+      if (!_overlayController.isShowing) _overlayController.show();
+      widget.onShown?.call();
+      widget.onOpenChanged?.call(true);
+    } else {
+      widget.onHide?.call();
+      if (_overlayController.isShowing) _overlayController.hide();
+      widget.onHidden?.call();
+      widget.onOpenChanged?.call(false);
+    }
   }
 
-  void _toggle() => _isOpen ? _close() : _open();
+  void _toggle() {
+    if (!_controller.enabled) return;
+    _controller.toggle();
+  }
+
+  @override
+  void dispose() {
+    _controller.removeListener(_handleControllerChanged);
+    _ownedController?.dispose();
+    super.dispose();
+  }
+
+  /// [BsPopover.content], unless overridden by [BsPopoverController.setContent].
+  Widget get _effectiveContent => _controller.content ?? widget.content;
+
+  /// [BsPopover.placement], unless overridden by [BsPopoverController.setPlacement].
+  BsPopoverPlacement get _effectivePlacement => _controller.placement ?? widget.placement;
 
   @override
   Widget build(BuildContext context) {
@@ -83,13 +223,13 @@ class _BsPopoverState extends State<BsPopover> {
       child: OverlayPortal(
         controller: _overlayController,
         overlayChildBuilder: (context) => _buildOverlay(style),
-        child: widget.triggerBuilder(context, _toggle, _isOpen),
+        child: widget.triggerBuilder(context, _toggle, _controller.isShown),
       ),
     );
   }
 
   Widget _buildOverlay(BsPopoverStyle style) {
-    final (Alignment targetAnchor, Alignment followerAnchor) = switch (widget.placement) {
+    final (Alignment targetAnchor, Alignment followerAnchor) = switch (_effectivePlacement) {
       BsPopoverPlacement.top => (Alignment.topCenter, Alignment.bottomCenter),
       BsPopoverPlacement.bottom => (Alignment.bottomCenter, Alignment.topCenter),
       BsPopoverPlacement.start => (Alignment.centerLeft, Alignment.centerRight),
@@ -98,12 +238,17 @@ class _BsPopoverState extends State<BsPopover> {
 
     return Stack(
       children: [
-        Positioned.fill(child: GestureDetector(behavior: HitTestBehavior.opaque, onTap: _close)),
+        Positioned.fill(child: GestureDetector(behavior: HitTestBehavior.opaque, onTap: _controller.hide)),
         CompositedTransformFollower(
           link: _link,
           targetAnchor: targetAnchor,
           followerAnchor: followerAnchor,
-          child: _BsPopoverContent(title: widget.title, content: widget.content, placement: widget.placement, style: style),
+          child: _BsPopoverContent(
+            title: widget.title,
+            content: _effectiveContent,
+            placement: _effectivePlacement,
+            style: style,
+          ),
         ),
       ],
     );
