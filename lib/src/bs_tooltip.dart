@@ -65,6 +65,19 @@ class _BsTooltipState extends State<BsTooltip> with SingleTickerProviderStateMix
   Timer? _waitTimer;
   Timer? _autoHideTimer;
 
+  /// Mirrors Bootstrap's own behavior of never initializing a tooltip whose
+  /// `title` is empty: an empty/whitespace-only [Text] (the overwhelmingly
+  /// common [BsTooltip.message]) is treated the same way.
+  bool get _hasContent {
+    final message = widget.message;
+    if (message is Text) {
+      final data = message.data;
+      if (data != null) return data.trim().isNotEmpty;
+      return message.textSpan?.toPlainText().trim().isNotEmpty ?? false;
+    }
+    return true;
+  }
+
   Alignment get _targetAnchor => switch (widget.placement) {
     BsTooltipPlacement.top => Alignment.topCenter,
     BsTooltipPlacement.bottom => Alignment.bottomCenter,
@@ -119,6 +132,8 @@ class _BsTooltipState extends State<BsTooltip> with SingleTickerProviderStateMix
 
   @override
   Widget build(BuildContext context) {
+    if (!_hasContent) return widget.child;
+
     final isDark = BsTheme.of(context) == Brightness.dark;
     final style = (isDark ? BsTooltipStyle.darkDefaults : BsTooltipStyle.defaults).merge(widget.style);
 
