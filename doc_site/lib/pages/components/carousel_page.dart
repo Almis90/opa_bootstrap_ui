@@ -157,6 +157,167 @@ BsCarousel(
             ),
           ),
         ),
+        DocExample(
+          title: 'Programmatic control',
+          description:
+              'A BsCarouselController lets code outside next()/previous()/goTo() the carousel, or pause()/cycle() '
+              'autoplay independently of pauseOnHover — needs itemCount up front (the same tradeoff '
+              "Flutter's own TabController makes with length) since navigation resolves wraparound.",
+          code: '''
+final controller = BsCarouselController(itemCount: 3);
+
+Column(
+  children: [
+    Wrap(
+      spacing: 8,
+      children: [
+        BsButton(onPressed: controller.previous, child: Text('Previous')),
+        BsButton(onPressed: controller.next, child: Text('Next')),
+        BsButton(onPressed: controller.pause, child: Text('Pause')),
+        BsButton(onPressed: controller.cycle, child: Text('Resume')),
+      ],
+    ),
+    SizedBox(
+      height: 220,
+      child: BsCarousel(
+        controller: controller,
+        items: [
+          BsCarouselItem(child: ColoredBox(color: Color(0xFF495057))),
+          BsCarouselItem(child: ColoredBox(color: Color(0xFF6C757D))),
+          BsCarouselItem(child: ColoredBox(color: Color(0xFFADB5BD))),
+        ],
+      ),
+    ),
+  ],
+)''',
+          preview: const _ControllerDemo(),
+        ),
+        DocExample(
+          title: 'Events',
+          description:
+              'onSlide fires as soon as a transition to a new slide is triggered — by autoplay, a control, an '
+              'indicator, or a swipe — before it starts animating; onSlid fires once it visually finishes. '
+              "Mirrors Bootstrap's slide.bs.carousel/slid.bs.carousel.",
+          code: '''
+BsCarousel(
+  interval: null,
+  onSlide: () => log('slide'),
+  onSlid: () => log('slid'),
+  items: [
+    BsCarouselItem(child: ColoredBox(color: Color(0xFF495057))),
+    BsCarouselItem(child: ColoredBox(color: Color(0xFF6C757D))),
+    BsCarouselItem(child: ColoredBox(color: Color(0xFFADB5BD))),
+  ],
+)''',
+          preview: const _EventsDemo(),
+        ),
+      ],
+    );
+  }
+}
+
+class _ControllerDemo extends StatefulWidget {
+  const _ControllerDemo();
+
+  @override
+  State<_ControllerDemo> createState() => _ControllerDemoState();
+}
+
+class _ControllerDemoState extends State<_ControllerDemo> {
+  late final BsCarouselController _controller = BsCarouselController(itemCount: 3);
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            BsButton(size: BsSize.sm, onPressed: _controller.previous, child: const Text('Previous')),
+            BsButton(size: BsSize.sm, onPressed: _controller.next, child: const Text('Next')),
+            BsButton(
+              size: BsSize.sm,
+              variant: BsVariant.secondary,
+              onPressed: _controller.pause,
+              child: const Text('Pause'),
+            ),
+            BsButton(
+              size: BsSize.sm,
+              variant: BsVariant.secondary,
+              onPressed: _controller.cycle,
+              child: const Text('Resume'),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        SizedBox(
+          height: 220,
+          width: double.infinity,
+          child: BsCarousel(
+            controller: _controller,
+            items: const [
+              BsCarouselItem(child: ColoredBox(color: Color(0xFF495057))),
+              BsCarouselItem(child: ColoredBox(color: Color(0xFF6C757D))),
+              BsCarouselItem(child: ColoredBox(color: Color(0xFFADB5BD))),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _EventsDemo extends StatefulWidget {
+  const _EventsDemo();
+
+  @override
+  State<_EventsDemo> createState() => _EventsDemoState();
+}
+
+class _EventsDemoState extends State<_EventsDemo> {
+  final _events = <String>[];
+
+  void _log(String event) => setState(() => _events.add(event));
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          height: 220,
+          width: double.infinity,
+          child: BsCarousel(
+            interval: null,
+            onSlide: () => _log('slide'),
+            onSlid: () => _log('slid'),
+            items: const [
+              BsCarouselItem(child: ColoredBox(color: Color(0xFF495057))),
+              BsCarouselItem(child: ColoredBox(color: Color(0xFF6C757D))),
+              BsCarouselItem(child: ColoredBox(color: Color(0xFFADB5BD))),
+            ],
+          ),
+        ),
+        const SizedBox(height: 12),
+        if (_events.isEmpty)
+          Text(
+            'No events yet — use the controls or swipe above.',
+            style: TextStyle(color: BsBody.secondaryColorOf(context)),
+          )
+        else
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [for (final event in _events) BsBadge(variant: BsVariant.secondary, child: Text(event))],
+          ),
       ],
     );
   }
