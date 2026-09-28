@@ -108,6 +108,10 @@ class BsTooltip extends StatefulWidget {
     this.showDuration = const Duration(seconds: 2),
     this.style,
     this.controller,
+    this.onShow,
+    this.onShown,
+    this.onHide,
+    this.onHidden,
   });
 
   /// Typically a [Text].
@@ -133,6 +137,22 @@ class BsTooltip extends StatefulWidget {
 
   /// Style overrides layered on top of [BsTooltipStyle.defaults].
   final BsTooltipStyle? style;
+
+  /// Called as soon as the tooltip is triggered to show, before the
+  /// fade-in animation starts. Mirrors Bootstrap's `show.bs.tooltip`.
+  final VoidCallback? onShow;
+
+  /// Called once the tooltip has finished fading in and is fully visible.
+  /// Mirrors Bootstrap's `shown.bs.tooltip`.
+  final VoidCallback? onShown;
+
+  /// Called as soon as the tooltip is triggered to hide, before the
+  /// fade-out animation starts. Mirrors Bootstrap's `hide.bs.tooltip`.
+  final VoidCallback? onHide;
+
+  /// Called once the tooltip has finished fading out and is fully hidden.
+  /// Mirrors Bootstrap's `hidden.bs.tooltip`.
+  final VoidCallback? onHidden;
 
   @override
   State<BsTooltip> createState() => _BsTooltipState();
@@ -162,10 +182,17 @@ class _BsTooltipState extends State<BsTooltip> with SingleTickerProviderStateMix
     setState(() {}); // picks up content/placement changes even while already shown
     if (_controller.isShown) {
       if (!_overlayController.isShowing) _overlayController.show();
-      _fadeController.forward();
+      widget.onShow?.call();
+      _fadeIn();
     } else {
+      widget.onHide?.call();
       _fadeOut();
     }
+  }
+
+  Future<void> _fadeIn() async {
+    await _fadeController.forward();
+    if (mounted && _controller.isShown) widget.onShown?.call();
   }
 
   /// [BsTooltip.message], unless overridden by [BsTooltipController.setContent].
@@ -224,7 +251,10 @@ class _BsTooltipState extends State<BsTooltip> with SingleTickerProviderStateMix
 
   Future<void> _fadeOut() async {
     await _fadeController.reverse();
-    if (mounted) _overlayController.hide();
+    if (mounted && !_controller.isShown) {
+      _overlayController.hide();
+      widget.onHidden?.call();
+    }
   }
 
   @override

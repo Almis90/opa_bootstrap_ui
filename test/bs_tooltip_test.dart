@@ -250,4 +250,36 @@ void main() {
     messageRect = tester.getRect(find.text('Tooltip message'));
     expect(messageRect.bottom, lessThanOrEqualTo(targetRect.top));
   });
+
+  testWidgets('BsTooltip fires onShow/onShown/onHide/onHidden in order', (tester) async {
+    final controller = BsTooltipController();
+    addTearDown(controller.dispose);
+    final events = <String>[];
+
+    await tester.pumpWidget(
+      BsApp(
+        home: Center(
+          child: BsTooltip(
+            controller: controller,
+            message: const Text('Tooltip message'),
+            onShow: () => events.add('show'),
+            onShown: () => events.add('shown'),
+            onHide: () => events.add('hide'),
+            onHidden: () => events.add('hidden'),
+            child: BsButton(onPressed: () {}, child: const Text('Btn')),
+          ),
+        ),
+      ),
+    );
+
+    controller.show();
+    expect(events, ['show']);
+    await tester.pumpAndSettle();
+    expect(events, ['show', 'shown']);
+
+    controller.hide();
+    expect(events, ['show', 'shown', 'hide']);
+    await tester.pumpAndSettle();
+    expect(events, ['show', 'shown', 'hide', 'hidden']);
+  });
 }
