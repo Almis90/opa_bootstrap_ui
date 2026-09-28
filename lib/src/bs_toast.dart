@@ -14,6 +14,34 @@ import 'tokens/bs_toast_style.dart';
 /// SnackBar/notification rail on the side of the screen would.
 enum BsToastPosition { topStart, topCenter, topEnd, centerStart, centerEnd, bottomStart, bottomCenter, bottomEnd }
 
+/// Programmatic control of a single toast shown via [showBsToast] —
+/// mirrors Bootstrap's own `bootstrap.Toast` JS plugin: [hide] (its
+/// `show()`/`hide()`, minus `show()` since a [BsToastController] always
+/// starts already shown — there's no separate "create it hidden, then show
+/// it later" step the way a fresh Bootstrap `Toast` instance has). No
+/// `enable`/`disable` either, matching Bootstrap's own Toast plugin.
+///
+/// Unlike this package's other controllers, [showBsToast] always hands one
+/// back as its return value (creating one internally if you don't pass
+/// your own) rather than keeping it purely internal — so, deliberately,
+/// nothing here ever calls [dispose] on it. It's yours from the moment
+/// [showBsToast] returns.
+class BsToastController extends ChangeNotifier {
+  bool _shown = true;
+
+  /// Whether the toast is currently on screen (or fading out after
+  /// [hide]).
+  bool get isShown => _shown;
+
+  /// Dismisses the toast the same way its own close button (or the
+  /// auto-dismiss timer) would. Does nothing if already hidden.
+  void hide() {
+    if (!_shown) return;
+    _shown = false;
+    notifyListeners();
+  }
+}
+
 /// Shows a Bootstrap toast (`.toast`), stacking it with any other toasts
 /// already showing at the same [position] — the same corner-stack
 /// behavior Material's `ScaffoldMessenger`/`SnackBar` doesn't attempt
@@ -23,14 +51,38 @@ enum BsToastPosition { topStart, topCenter, topEnd, centerStart, centerEnd, bott
 ///
 /// [builder] mirrors [BsDropdown.toggleBuilder]: it's handed a `dismiss`
 /// callback to wire up to the toast's own close button, if any. Each toast
-/// auto-dismisses after [duration] regardless.
-void showBsToast(
+/// auto-dismisses after [duration] regardless, or can be dismissed early
+/// through the returned [BsToastController] (or one passed via
+/// [controller]).
+///
+/// [onShow] fires synchronously, right here. [onShown] fires once the
+/// fade-in finishes, [onHide] as soon as a dismissal is triggered — by the
+/// timer, the close button, or [BsToastController.hide] — and [onHidden]
+/// once the fade-out finishes, mirroring Bootstrap's
+/// `show.bs.toast`/`shown.bs.toast`/`hide.bs.toast`/`hidden.bs.toast`.
+BsToastController showBsToast(
   BuildContext context, {
   required Widget Function(BuildContext context, VoidCallback dismiss) builder,
   BsToastPosition position = BsToastPosition.bottomEnd,
   Duration duration = const Duration(seconds: 5),
+  BsToastController? controller,
+  VoidCallback? onShow,
+  VoidCallback? onShown,
+  VoidCallback? onHide,
+  VoidCallback? onHidden,
 }) {
-  _managerFor(context).show(builder: builder, position: position, duration: duration);
+  final resolvedController = controller ?? BsToastController();
+  onShow?.call();
+  _managerFor(context).show(
+    builder: builder,
+    position: position,
+    duration: duration,
+    controller: resolvedController,
+    onShown: onShown,
+    onHide: onHide,
+    onHidden: onHidden,
+  );
+  return resolvedController;
 }
 
 final _managers = Expando<_BsToastManager>();
@@ -41,10 +93,21 @@ _BsToastManager _managerFor(BuildContext context) {
 }
 
 class _BsToastRecord {
-  _BsToastRecord({required this.builder, required this.duration});
+  _BsToastRecord({
+    required this.builder,
+    required this.duration,
+    required this.controller,
+    this.onShown,
+    this.onHide,
+    this.onHidden,
+  });
 
   final Widget Function(BuildContext context, VoidCallback dismiss) builder;
   final Duration duration;
+  final BsToastController controller;
+  final VoidCallback? onShown;
+  final VoidCallback? onHide;
+  final VoidCallback? onHidden;
   final GlobalKey<_BsToastItemState> key = GlobalKey<_BsToastItemState>();
 }
 
@@ -59,8 +122,19 @@ class _BsToastManager {
     required Widget Function(BuildContext context, VoidCallback dismiss) builder,
     required BsToastPosition position,
     required Duration duration,
+    required BsToastController controller,
+    VoidCallback? onShown,
+    VoidCallback? onHide,
+    VoidCallback? onHidden,
   }) {
-    final record = _BsToastRecord(builder: builder, duration: duration);
+    final record = _BsToastRecord(
+      builder: builder,
+      duration: duration,
+      controller: controller,
+      onShown: onShown,
+      onHide: onHide,
+      onHidden: onHidden,
+    );
     (_records[position] ??= []).add(record);
 
     if (_overlayEntry == null) {
@@ -110,6 +184,10 @@ class _BsToastManager {
                     key: record.key,
                     duration: record.duration,
                     builder: record.builder,
+                    controller: record.controller,
+                    onShown: record.onShown,
+                    onHide: record.onHide,
+                    onHidden: record.onHidden,
                     onDismissed: () => _remove(position, record),
                   ),
                 ),
@@ -133,10 +211,23 @@ class _BsToastManager {
 }
 
 class _BsToastItem extends StatefulWidget {
-  const _BsToastItem({super.key, required this.duration, required this.builder, required this.onDismissed});
+  const _BsToastItem({
+    super.key,
+    required this.duration,
+    required this.builder,
+    required this.controller,
+    this.onShown,
+    this.onHide,
+    this.onHidden,
+    required this.onDismissed,
+  });
 
   final Duration duration;
   final Widget Function(BuildContext context, VoidCallback dismiss) builder;
+  final BsToastController controller;
+  final VoidCallback? onShown;
+  final VoidCallback? onHide;
+  final VoidCallback? onHidden;
   final VoidCallback onDismissed;
 
   @override
@@ -144,7 +235,7 @@ class _BsToastItem extends StatefulWidget {
 }
 
 class _BsToastItemState extends State<_BsToastItem> with SingleTickerProviderStateMixin {
-  late final AnimationController _controller = AnimationController(
+  late final AnimationController _fadeController = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 200),
   );
@@ -154,31 +245,52 @@ class _BsToastItemState extends State<_BsToastItem> with SingleTickerProviderSta
   @override
   void initState() {
     super.initState();
-    _controller.forward();
+    widget.controller.addListener(_handleControllerChanged);
+    // controller.hide() called between showBsToast() returning and this
+    // widget actually mounting (e.g. synchronously, right after the call)
+    // would otherwise be lost — nothing was listening yet to notice it.
+    if (!widget.controller.isShown) {
+      dismiss();
+      return;
+    }
+    _fadeController.forward().then((_) {
+      if (mounted) widget.onShown?.call();
+    });
     _autoDismissTimer = Timer(widget.duration, dismiss);
+  }
+
+  void _handleControllerChanged() {
+    if (!widget.controller.isShown) dismiss();
   }
 
   Future<void> dismiss() async {
     if (_dismissing) return;
     _dismissing = true;
     _autoDismissTimer?.cancel();
-    await _controller.reverse();
+    widget.controller.hide(); // no-op if already hidden via this same path
+    widget.onHide?.call();
+    await _fadeController.reverse();
+    if (mounted) widget.onHidden?.call();
+    // Unconditional even if unmounted by then (e.g. the whole overlay
+    // tore down mid-animation) — this is what tells the manager to drop
+    // the record; skipping it would leak it there forever.
     widget.onDismissed();
   }
 
   @override
   void dispose() {
+    widget.controller.removeListener(_handleControllerChanged);
     _autoDismissTimer?.cancel();
-    _controller.dispose();
+    _fadeController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return FadeTransition(
-      opacity: _controller,
+      opacity: _fadeController,
       child: SizeTransition(
-        sizeFactor: _controller,
+        sizeFactor: _fadeController,
         alignment: Alignment.topCenter,
         child: widget.builder(context, dismiss),
       ),
