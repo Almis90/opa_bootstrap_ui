@@ -34,11 +34,13 @@ import 'pages/forms/form_control_page.dart';
 import 'pages/forms/input_group_page.dart';
 import 'pages/forms/range_page.dart';
 import 'pages/forms/select_page.dart';
+import 'pages/examples/headers_example_page.dart';
 import 'pages/getting_started/introduction_page.dart';
 import 'pages/layout/breakpoints_page.dart';
 import 'pages/layout/containers_page.dart';
 import 'src/doc_nav.dart';
 import 'src/doc_shell.dart';
+import 'src/example_entry.dart';
 
 void main() {
   runApp(const DocApp());
@@ -64,7 +66,12 @@ class _DocAppState extends State<DocApp> {
   Widget build(BuildContext context) {
     return BsApp(
       brightness: _brightness,
-      home: DocShell(sections: _sections, brightness: _brightness, onToggleBrightness: _toggleBrightness),
+      home: DocShell(
+        sections: _sections,
+        examples: _examples,
+        brightness: _brightness,
+        onToggleBrightness: _toggleBrightness,
+      ),
     );
   }
 }
@@ -114,4 +121,12 @@ final _sections = [
     DocNavPage('Toasts', (_) => const ToastsPage()),
     DocNavPage('Tooltips', (_) => const TooltipsPage()),
   ]),
+];
+
+final _examples = [
+  ExampleEntry(
+    title: 'Headers',
+    description: 'Six header/nav bar layouts, from a bare brand-and-nav bar to a dark navbar with a search box.',
+    builder: (_) => const HeadersExamplePage(),
+  ),
 ];
