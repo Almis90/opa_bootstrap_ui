@@ -160,4 +160,60 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Tooltip message'), findsNothing);
   });
+
+  testWidgets('BsTooltipController.setContent updates an already-shown tooltip', (tester) async {
+    final controller = BsTooltipController();
+    addTearDown(controller.dispose);
+
+    await tester.pumpWidget(
+      BsApp(
+        home: Center(
+          child: BsTooltip(
+            controller: controller,
+            message: const Text('Original'),
+            child: BsButton(onPressed: () {}, child: const Text('Btn')),
+          ),
+        ),
+      ),
+    );
+
+    controller.show();
+    await tester.pumpAndSettle();
+    expect(find.text('Original'), findsOneWidget);
+
+    controller.setContent(const Text('Updated'));
+    await tester.pump();
+    expect(find.text('Original'), findsNothing);
+    expect(find.text('Updated'), findsOneWidget);
+
+    controller.setContent(null);
+    await tester.pump();
+    expect(find.text('Original'), findsOneWidget);
+  });
+
+  testWidgets('BsTooltipController.setContent makes an originally-empty tooltip interactive', (tester) async {
+    final controller = BsTooltipController();
+    addTearDown(controller.dispose);
+
+    await tester.pumpWidget(
+      BsApp(
+        home: Center(
+          child: BsTooltip(
+            controller: controller,
+            message: const Text(''),
+            child: BsButton(onPressed: () {}, child: const Text('Btn')),
+          ),
+        ),
+      ),
+    );
+
+    controller.show();
+    await tester.pumpAndSettle();
+    expect(find.text('Filled in'), findsNothing);
+
+    controller.setContent(const Text('Filled in'));
+    controller.show();
+    await tester.pumpAndSettle();
+    expect(find.text('Filled in'), findsOneWidget);
+  });
 }

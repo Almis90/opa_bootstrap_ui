@@ -11,7 +11,8 @@ enum BsTooltipPlacement { top, bottom, start, end }
 
 /// Programmatic control of a [BsTooltip], independent of its hover/
 /// long-press triggers — mirrors Bootstrap's own `tooltip.enable()`/
-/// `.disable()`/`.toggleEnabled()` and `.show()`/`.hide()`/`.toggle()` API.
+/// `.disable()`/`.toggleEnabled()`, `.show()`/`.hide()`/`.toggle()`, and
+/// `.setContent()` API.
 class BsTooltipController extends ChangeNotifier {
   BsTooltipController({bool enabled = true}) {
     _enabled = enabled;
@@ -19,6 +20,7 @@ class BsTooltipController extends ChangeNotifier {
 
   late bool _enabled;
   bool _shown = false;
+  Widget? _content;
 
   /// Whether the tooltip currently responds to hover/long-press.
   bool get enabled => _enabled;
@@ -56,6 +58,17 @@ class BsTooltipController extends ChangeNotifier {
   void _setShown(bool value) {
     if (value == _shown) return;
     _shown = value;
+    notifyListeners();
+  }
+
+  /// Overrides [BsTooltip.message]. Null (the default) falls back to it.
+  Widget? get content => _content;
+
+  /// Replaces the displayed message, e.g. to update a tooltip already on
+  /// screen without rebuilding the [BsTooltip] itself. Pass null to fall
+  /// back to [BsTooltip.message] again.
+  void setContent(Widget? content) {
+    _content = content;
     notifyListeners();
   }
 }
@@ -133,6 +146,7 @@ class _BsTooltipState extends State<BsTooltip> with SingleTickerProviderStateMix
 
   void _handleControllerChanged() {
     _waitTimer?.cancel();
+    setState(() {}); // picks up content changes even while already shown
     if (_controller.isShown) {
       if (!_overlayController.isShowing) _overlayController.show();
       _fadeController.forward();
@@ -141,11 +155,14 @@ class _BsTooltipState extends State<BsTooltip> with SingleTickerProviderStateMix
     }
   }
 
+  /// [BsTooltip.message], unless overridden by [BsTooltipController.setContent].
+  Widget get _effectiveMessage => _controller.content ?? widget.message;
+
   /// Mirrors Bootstrap's own behavior of never initializing a tooltip whose
   /// `title` is empty: an empty/whitespace-only [Text] (the overwhelmingly
   /// common [BsTooltip.message]) is treated the same way.
   bool get _hasContent {
-    final message = widget.message;
+    final message = _effectiveMessage;
     if (message is Text) {
       final data = message.data;
       if (data != null) return data.trim().isNotEmpty;
@@ -226,7 +243,7 @@ class _BsTooltipState extends State<BsTooltip> with SingleTickerProviderStateMix
                   opacity: _fadeController,
                   child: Opacity(
                     opacity: style.opacity ?? BsTooltipStyle.defaultOpacity,
-                    child: _BsTooltipContent(message: widget.message, placement: widget.placement, style: style),
+                    child: _BsTooltipContent(message: _effectiveMessage, placement: widget.placement, style: style),
                   ),
                 ),
               ),
