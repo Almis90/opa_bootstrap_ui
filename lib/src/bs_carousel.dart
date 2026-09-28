@@ -15,6 +15,84 @@ enum BsCarouselTransition {
   fade,
 }
 
+/// Programmatic control of a [BsCarousel] — mirrors Bootstrap's own
+/// `bootstrap.Carousel` JS plugin: `next()`/`prev()`/`to()`/`pause()`/
+/// `cycle()`. Needs [itemCount] up front (the same tradeoff Flutter's own
+/// `TabController` makes with `length`) since [next]/[previous] resolve
+/// wraparound — keep it (and [wrap]) in sync with [BsCarousel.items].length/
+/// [BsCarousel.wrap] via their setters if those can change; [BsCarousel]
+/// itself does this automatically for an internally-owned controller.
+class BsCarouselController extends ChangeNotifier {
+  BsCarouselController({required int itemCount, this.wrap = true, int initialIndex = 0})
+    : assert(itemCount > 0, 'BsCarouselController requires at least one item'),
+      _itemCount = itemCount,
+      _index = initialIndex.clamp(0, itemCount - 1);
+
+  int _itemCount;
+
+  /// How many slides [next]/[previous]/[goTo] resolve wraparound against.
+  int get itemCount => _itemCount;
+  set itemCount(int value) {
+    if (value == _itemCount) return;
+    _itemCount = value;
+    if (_index >= value) _setIndex(value == 0 ? 0 : value - 1);
+  }
+
+  /// Whether [next]/[previous] (and autoplay) cycle past the first/last
+  /// slide back around to the other end.
+  bool wrap;
+
+  int _index;
+
+  /// The currently active slide index.
+  int get index => _index;
+
+  bool _paused = false;
+
+  /// Whether autoplay is currently paused via [pause] — independent of
+  /// [BsCarousel.pauseOnHover]'s own automatic pausing.
+  bool get isPaused => _paused;
+
+  /// Advances to the next slide, wrapping per [wrap].
+  void next() => goTo(_index + 1);
+
+  /// Returns to the previous slide, wrapping per [wrap].
+  void previous() => goTo(_index - 1);
+
+  /// Jumps to a specific slide index, wrapping (or clamping, if [wrap] is
+  /// false) out-of-range values.
+  void goTo(int target) {
+    if (_itemCount == 0) return;
+    final resolved = wrap ? (target % _itemCount + _itemCount) % _itemCount : target.clamp(0, _itemCount - 1);
+    _setIndex(resolved);
+  }
+
+  /// Stops autoplay until [cycle] resumes it.
+  void pause() => _setPaused(true);
+
+  /// Resumes autoplay after [pause]. Mirrors Bootstrap's own `cycle()`
+  /// naming (also used to start autoplay in the first place there, though
+  /// [BsCarousel] already starts cycling on its own per [BsCarousel.interval]).
+  void cycle() => _setPaused(false);
+
+  void _setIndex(int value) {
+    if (value == _index) return;
+    _index = value;
+    notifyListeners();
+  }
+
+  void _setPaused(bool value) {
+    if (value == _paused) return;
+    _paused = value;
+    notifyListeners();
+  }
+
+  /// Syncs [index] after an organic touch-swipe settles on a new page,
+  /// bypassing [next]/[previous]/[goTo] entirely. Called by [BsCarousel]
+  /// itself — no need to call this directly.
+  void syncIndexFromSwipe(int index) => _setIndex(index);
+}
+
 /// A single slide in a [BsCarousel].
 class BsCarouselItem {
   const BsCarouselItem({required this.child, this.caption});
@@ -47,6 +125,9 @@ class BsCarousel extends StatefulWidget {
     this.wrap = true,
     this.style,
     this.onIndexChanged,
+    this.controller,
+    this.onSlide,
+    this.onSlid,
   }) : assert(items.length > 0, 'BsCarousel requires at least one item');
 
   /// The slides to cycle through.
@@ -82,6 +163,21 @@ class BsCarousel extends StatefulWidget {
   /// control, an indicator, or a swipe.
   final ValueChanged<int>? onIndexChanged;
 
+  /// Drives navigation instead of the built-in controls/indicators/swipe
+  /// gesture alone. Defaults to an internally-owned controller (seeded
+  /// from [items].length/[wrap]/[initialIndex], kept in sync with the
+  /// first two as they change) when null.
+  final BsCarouselController? controller;
+
+  /// Called as soon as a transition to a new slide is triggered — by
+  /// autoplay, a control, an indicator, [controller], or a swipe — before
+  /// it starts animating. Mirrors Bootstrap's `slide.bs.carousel`.
+  final VoidCallback? onSlide;
+
+  /// Called once the transition to a new slide finishes. Mirrors
+  /// Bootstrap's `slid.bs.carousel`.
+  final VoidCallback? onSlid;
+
   @override
   State<BsCarousel> createState() => _BsCarouselState();
 }
@@ -92,25 +188,40 @@ class _BsCarouselState extends State<BsCarousel> {
   // item count.
   static const int _virtualMultiplier = 100000;
 
-  late int _index = widget.initialIndex;
+  BsCarouselController? _ownedController;
   late final PageController _pageController = PageController(initialPage: _virtualInitialPage);
   Timer? _timer;
   bool _hovering = false;
 
+  BsCarouselController get _controller =>
+      widget.controller ??
+      (_ownedController ??= BsCarouselController(
+        itemCount: widget.items.length,
+        wrap: widget.wrap,
+        initialIndex: widget.initialIndex,
+      ));
+
   bool get _loops => widget.wrap && widget.items.length > 1;
 
   int get _virtualInitialPage =>
-      _loops ? widget.items.length * (_virtualMultiplier ~/ 2) + widget.initialIndex : widget.initialIndex;
+      _loops ? widget.items.length * (_virtualMultiplier ~/ 2) + _controller.index : _controller.index;
 
   @override
   void initState() {
     super.initState();
+    _controller.addListener(_handleControllerChanged);
     _scheduleAutoplay();
   }
 
   @override
   void didUpdateWidget(covariant BsCarousel oldWidget) {
     super.didUpdateWidget(oldWidget);
+    // items.length/wrap only drive the internally-owned controller — an
+    // explicit controller is always the source of truth once given.
+    if (widget.controller == null) {
+      _controller.itemCount = widget.items.length;
+      _controller.wrap = widget.wrap;
+    }
     if (oldWidget.interval != widget.interval || oldWidget.items.length != widget.items.length) {
       _scheduleAutoplay();
     }
@@ -118,6 +229,8 @@ class _BsCarouselState extends State<BsCarousel> {
 
   @override
   void dispose() {
+    _controller.removeListener(_handleControllerChanged);
+    _ownedController?.dispose();
     _timer?.cancel();
     _pageController.dispose();
     super.dispose();
@@ -128,53 +241,51 @@ class _BsCarouselState extends State<BsCarousel> {
     final interval = widget.interval;
     if (interval == null || widget.items.length < 2) return;
     _timer = Timer.periodic(interval, (_) {
-      if (!_hovering) _step(1);
+      if (!_hovering && !_controller.isPaused) _controller.next();
     });
   }
 
-  void _setIndex(int index) {
-    if (index == _index) return;
-    setState(() => _index = index);
-    widget.onIndexChanged?.call(index);
-  }
+  void _handleControllerChanged() {
+    widget.onIndexChanged?.call(_controller.index);
+    widget.onSlide?.call();
 
-  void _handlePageChanged(int page) {
-    final count = widget.items.length;
-    _setIndex(_loops ? page % count : page);
-  }
-
-  void _step(int delta) {
-    final count = widget.items.length;
-    if (count < 2) return;
     final duration = _resolvedStyle.transitionDuration ?? BsCarouselStyle.defaultTransitionDuration;
-
     if (widget.transition == BsCarouselTransition.slide) {
-      final next = _index + delta;
-      if (!widget.wrap && (next < 0 || next >= count)) return;
+      final count = widget.items.length;
       final currentPage = _pageController.page?.round() ?? _pageController.initialPage;
-      _pageController.animateToPage(currentPage + delta, duration: duration, curve: Curves.easeInOut);
-    } else {
-      final next = widget.wrap ? (_index + delta) % count : (_index + delta).clamp(0, count - 1);
-      _setIndex(next);
-    }
-  }
-
-  void _goTo(int target) {
-    final count = widget.items.length;
-    if (target == _index) return;
-    final duration = _resolvedStyle.transitionDuration ?? BsCarouselStyle.defaultTransitionDuration;
-
-    if (widget.transition == BsCarouselTransition.slide) {
-      final currentPage = _pageController.page?.round() ?? _pageController.initialPage;
-      var delta = target - _index;
+      final currentIndex = _loops ? currentPage % count : currentPage;
+      var delta = _controller.index - currentIndex;
       if (_loops) {
         delta %= count;
         if (delta > count ~/ 2) delta -= count;
       }
-      _pageController.animateToPage(currentPage + delta, duration: duration, curve: Curves.easeInOut);
+      // delta == 0 means the PageView is already showing this index (e.g.
+      // syncIndexFromSwipe after an organic swipe already got it there) —
+      // nothing to animate; onSlid already fires from _handlePageChanged,
+      // which is what triggered this sync in the first place.
+      if (delta != 0) {
+        _pageController.animateToPage(currentPage + delta, duration: duration, curve: Curves.easeInOut);
+      }
     } else {
-      _setIndex(target);
+      setState(() {}); // AnimatedSwitcher/KeyedSubtree picks up the new index
+      // AnimatedSwitcher has no onEnd of its own to hook onSlid off of, so
+      // this approximates it — swiping isn't possible in fade mode, so
+      // there's no organic-completion signal to unify with instead.
+      Future.delayed(duration, () {
+        if (mounted) widget.onSlid?.call();
+      });
     }
+  }
+
+  void _handlePageChanged(int page) {
+    final count = widget.items.length;
+    final resolved = _loops ? page % count : page;
+    // A no-op (idempotent) call when this confirms a transition the
+    // controller already initiated; syncs it when it's an organic swipe
+    // instead, which _handleControllerChanged above then recognizes as a
+    // delta of 0 needing no further animation.
+    _controller.syncIndexFromSwipe(resolved);
+    widget.onSlid?.call();
   }
 
   BsCarouselStyle get _resolvedStyle => BsCarouselStyle.defaults.merge(widget.style);
@@ -188,7 +299,10 @@ class _BsCarouselState extends State<BsCarousel> {
     if (widget.transition == BsCarouselTransition.fade) {
       slides = AnimatedSwitcher(
         duration: style.transitionDuration ?? BsCarouselStyle.defaultTransitionDuration,
-        child: KeyedSubtree(key: ValueKey(_index), child: _buildSlide(widget.items[_index], style)),
+        child: KeyedSubtree(
+          key: ValueKey(_controller.index),
+          child: _buildSlide(widget.items[_controller.index], style),
+        ),
       );
     } else {
       slides = PageView.builder(
@@ -206,7 +320,8 @@ class _BsCarouselState extends State<BsCarousel> {
       child: ClipRect(
         child: LayoutBuilder(
           builder: (context, constraints) {
-            final controlWidth = constraints.maxWidth * (style.controlWidthFraction ?? BsCarouselStyle.defaultControlWidthFraction);
+            final controlWidth =
+                constraints.maxWidth * (style.controlWidthFraction ?? BsCarouselStyle.defaultControlWidthFraction);
 
             return Stack(
               fit: StackFit.expand,
@@ -218,14 +333,14 @@ class _BsCarouselState extends State<BsCarousel> {
                     top: 0,
                     bottom: 0,
                     width: controlWidth,
-                    child: _BsCarouselControl(direction: -1, style: style, onPressed: () => _step(-1)),
+                    child: _BsCarouselControl(direction: -1, style: style, onPressed: _controller.previous),
                   ),
                   Positioned(
                     right: 0,
                     top: 0,
                     bottom: 0,
                     width: controlWidth,
-                    child: _BsCarouselControl(direction: 1, style: style, onPressed: () => _step(1)),
+                    child: _BsCarouselControl(direction: 1, style: style, onPressed: _controller.next),
                   ),
                 ],
                 if (widget.showIndicators && count > 1)
@@ -233,7 +348,12 @@ class _BsCarouselState extends State<BsCarousel> {
                     left: 0,
                     right: 0,
                     bottom: 0,
-                    child: _BsCarouselIndicators(count: count, activeIndex: _index, style: style, onTap: _goTo),
+                    child: _BsCarouselIndicators(
+                      count: count,
+                      activeIndex: _controller.index,
+                      style: style,
+                      onTap: _controller.goTo,
+                    ),
                   ),
               ],
             );
@@ -352,7 +472,12 @@ class _BsCarouselChevronPainter extends CustomPainter {
 
 /// The row of tappable `.carousel-indicators` dots.
 class _BsCarouselIndicators extends StatelessWidget {
-  const _BsCarouselIndicators({required this.count, required this.activeIndex, required this.style, required this.onTap});
+  const _BsCarouselIndicators({
+    required this.count,
+    required this.activeIndex,
+    required this.style,
+    required this.onTap,
+  });
 
   final int count;
   final int activeIndex;
