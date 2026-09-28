@@ -9,6 +9,35 @@ import 'tokens/bs_tooltip_style.dart';
 /// pointing back at it.
 enum BsTooltipPlacement { top, bottom, start, end }
 
+/// Programmatic on/off switch for a [BsTooltip], independent of its
+/// hover/long-press triggers — mirrors Bootstrap's own
+/// `tooltip.enable()`/`.disable()`/`.toggleEnabled()` API. A disabled
+/// tooltip ignores hover and long-press entirely, and hides immediately if
+/// it's currently showing.
+class BsTooltipController extends ChangeNotifier {
+  BsTooltipController({bool enabled = true}) {
+    _enabled = enabled;
+  }
+
+  late bool _enabled;
+
+  /// Whether the tooltip currently responds to hover/long-press.
+  bool get enabled => _enabled;
+
+  void enable() => _setEnabled(true);
+
+  void disable() => _setEnabled(false);
+
+  /// Flips [enabled], or sets it to [value] if given.
+  void toggleEnabled([bool? value]) => _setEnabled(value ?? !_enabled);
+
+  void _setEnabled(bool value) {
+    if (value == _enabled) return;
+    _enabled = value;
+    notifyListeners();
+  }
+}
+
 /// A Bootstrap tooltip (`.tooltip`): a small, non-interactive text bubble
 /// revealed on hover (or long-press, on touch devices) — the same
 /// hover/long-press dual trigger Flutter's own Material `Tooltip` uses,
@@ -30,6 +59,7 @@ class BsTooltip extends StatefulWidget {
     this.waitDuration = Duration.zero,
     this.showDuration = const Duration(seconds: 2),
     this.style,
+    this.controller,
   });
 
   /// Typically a [Text].
@@ -40,6 +70,10 @@ class BsTooltip extends StatefulWidget {
   final Widget child;
 
   final BsTooltipPlacement placement;
+
+  /// Programmatic enable/disable switch. Defaults to an internally-owned
+  /// controller (always enabled) when null.
+  final BsTooltipController? controller;
 
   /// How long the pointer must hover before the tooltip appears.
   final Duration waitDuration;
@@ -64,6 +98,22 @@ class _BsTooltipState extends State<BsTooltip> with SingleTickerProviderStateMix
   );
   Timer? _waitTimer;
   Timer? _autoHideTimer;
+  BsTooltipController? _ownedController;
+
+  BsTooltipController get _controller => widget.controller ?? (_ownedController ??= BsTooltipController());
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(_handleControllerChanged);
+  }
+
+  void _handleControllerChanged() {
+    if (!_controller.enabled) {
+      _waitTimer?.cancel();
+      _hideAfter(Duration.zero);
+    }
+  }
 
   /// Mirrors Bootstrap's own behavior of never initializing a tooltip whose
   /// `title` is empty: an empty/whitespace-only [Text] (the overwhelmingly
@@ -93,6 +143,7 @@ class _BsTooltipState extends State<BsTooltip> with SingleTickerProviderStateMix
   };
 
   void _scheduleShow() {
+    if (!_controller.enabled) return;
     _autoHideTimer?.cancel();
     _waitTimer?.cancel();
     if (widget.waitDuration == Duration.zero) {
@@ -126,6 +177,8 @@ class _BsTooltipState extends State<BsTooltip> with SingleTickerProviderStateMix
   void dispose() {
     _waitTimer?.cancel();
     _autoHideTimer?.cancel();
+    _controller.removeListener(_handleControllerChanged);
+    _ownedController?.dispose();
     _fadeController.dispose();
     super.dispose();
   }

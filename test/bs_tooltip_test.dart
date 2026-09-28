@@ -71,4 +71,50 @@ void main() {
       }
     });
   }
+
+  testWidgets('BsTooltipController disables hover and hides an already-shown tooltip', (tester) async {
+    final controller = BsTooltipController();
+    addTearDown(controller.dispose);
+
+    await tester.pumpWidget(
+      BsApp(
+        home: Center(
+          child: BsTooltip(
+            controller: controller,
+            message: const Text('Tooltip message'),
+            child: BsButton(onPressed: () {}, child: const Text('Btn')),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    await gesture.addPointer(location: Offset.zero);
+    addTearDown(gesture.removePointer);
+    await tester.pump();
+    await gesture.moveTo(tester.getCenter(find.text('Btn')));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 200));
+
+    expect(find.text('Tooltip message'), findsOneWidget);
+
+    controller.disable();
+    await tester.pumpAndSettle();
+    expect(find.text('Tooltip message'), findsNothing);
+
+    // Disabled: hovering again must not bring it back.
+    await gesture.moveTo(Offset.zero);
+    await tester.pump();
+    await gesture.moveTo(tester.getCenter(find.text('Btn')));
+    await tester.pump(const Duration(milliseconds: 200));
+    expect(find.text('Tooltip message'), findsNothing);
+
+    controller.enable();
+    await gesture.moveTo(Offset.zero);
+    await tester.pump();
+    await gesture.moveTo(tester.getCenter(find.text('Btn')));
+    await tester.pump(const Duration(milliseconds: 200));
+    expect(find.text('Tooltip message'), findsOneWidget);
+  });
 }
