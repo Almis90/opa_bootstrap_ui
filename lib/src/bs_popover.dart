@@ -122,50 +122,57 @@ class _BsPopoverContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final borderRadius = BorderRadius.circular(style.borderRadius ?? BsPopoverStyle.defaultBorderRadius);
 
-    final box = ConstrainedBox(
-      constraints: BoxConstraints(maxWidth: style.maxWidth ?? BsPopoverStyle.defaultMaxWidth),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: style.background ?? BsPopoverStyle.defaultBackground,
-          border: Border.all(
-            color: style.borderColor ?? BsPopoverStyle.defaultBorderColor,
-            width: style.borderWidth ?? BsPopoverStyle.defaultBorderWidth,
+    // Without IntrinsicWidth, the Column below's `crossAxisAlignment:
+    // stretch` would stretch the popover out to the overlay Stack's full
+    // (screen-sized) loose width instead of shrinking to its actual title/
+    // content width — see the identical fix and explanation on
+    // BsDropdown's `_BsDropdownMenu`.
+    final box = IntrinsicWidth(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxWidth: style.maxWidth ?? BsPopoverStyle.defaultMaxWidth),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: style.background ?? BsPopoverStyle.defaultBackground,
+            border: Border.all(
+              color: style.borderColor ?? BsPopoverStyle.defaultBorderColor,
+              width: style.borderWidth ?? BsPopoverStyle.defaultBorderWidth,
+            ),
+            borderRadius: borderRadius,
+            boxShadow: style.boxShadow ?? BsPopoverStyle.defaultBoxShadow,
           ),
-          borderRadius: borderRadius,
-          boxShadow: style.boxShadow ?? BsPopoverStyle.defaultBoxShadow,
-        ),
-        child: ClipRRect(
-          borderRadius: borderRadius,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              if (title != null)
-                DecoratedBox(
-                  decoration: BoxDecoration(color: style.headerBackground ?? BsPopoverStyle.defaultHeaderBackground),
-                  child: Padding(
-                    padding: style.headerPadding ?? BsPopoverStyle.defaultHeaderPadding,
-                    child: DefaultTextStyle.merge(
-                      style: TextStyle(
-                        fontSize: style.headerFontSize ?? BsPopoverStyle.defaultHeaderFontSize,
-                        color: style.headerColor,
-                        fontWeight: FontWeight.bold,
+          child: ClipRRect(
+            borderRadius: borderRadius,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (title != null)
+                  DecoratedBox(
+                    decoration: BoxDecoration(color: style.headerBackground ?? BsPopoverStyle.defaultHeaderBackground),
+                    child: Padding(
+                      padding: style.headerPadding ?? BsPopoverStyle.defaultHeaderPadding,
+                      child: DefaultTextStyle.merge(
+                        style: TextStyle(
+                          fontSize: style.headerFontSize ?? BsPopoverStyle.defaultHeaderFontSize,
+                          color: style.headerColor,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        child: title!,
                       ),
-                      child: title!,
                     ),
                   ),
-                ),
-              Padding(
-                padding: style.bodyPadding ?? BsPopoverStyle.defaultBodyPadding,
-                child: DefaultTextStyle.merge(
-                  style: TextStyle(
-                    fontSize: style.fontSize ?? BsPopoverStyle.defaultFontSize,
-                    color: style.bodyColor ?? BsPopoverStyle.defaultBodyColor,
+                Padding(
+                  padding: style.bodyPadding ?? BsPopoverStyle.defaultBodyPadding,
+                  child: DefaultTextStyle.merge(
+                    style: TextStyle(
+                      fontSize: style.fontSize ?? BsPopoverStyle.defaultFontSize,
+                      color: style.bodyColor ?? BsPopoverStyle.defaultBodyColor,
+                    ),
+                    child: content,
                   ),
-                  child: content,
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

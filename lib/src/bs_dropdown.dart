@@ -172,31 +172,42 @@ class _BsDropdownMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     final borderRadius = BorderRadius.circular(style.borderRadius ?? BsDropdownStyle.defaultBorderRadius);
 
-    return ConstrainedBox(
-      constraints: BoxConstraints(minWidth: style.minWidth ?? BsDropdownStyle.defaultMinWidth),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: style.background ?? BsDropdownStyle.defaultBackground,
-          border: Border.all(
-            color: style.borderColor ?? BsDropdownStyle.defaultBorderColor,
-            width: style.borderWidth ?? BsDropdownStyle.defaultBorderWidth,
+    // The overlay Stack that hosts this menu (see [_buildOverlay]) only
+    // *loosens* the tight constraints Overlay hands its entries — it
+    // doesn't bound them to the menu's own content. Without IntrinsicWidth,
+    // the Column below's `crossAxisAlignment: stretch` would stretch the
+    // whole menu out to that loose (screen-sized) width instead of its
+    // natural content width, and — for `alignEnd: true` menus, whose
+    // `topRight`/`bottomRight` follower anchor reads that bogus width to
+    // compute its horizontal offset — shift the entire menu off to the
+    // left of the toggle instead of hugging its right edge.
+    return IntrinsicWidth(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(minWidth: style.minWidth ?? BsDropdownStyle.defaultMinWidth),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: style.background ?? BsDropdownStyle.defaultBackground,
+            border: Border.all(
+              color: style.borderColor ?? BsDropdownStyle.defaultBorderColor,
+              width: style.borderWidth ?? BsDropdownStyle.defaultBorderWidth,
+            ),
+            borderRadius: borderRadius,
+            boxShadow: style.boxShadow ?? BsDropdownStyle.defaultBoxShadow,
           ),
-          borderRadius: borderRadius,
-          boxShadow: style.boxShadow ?? BsDropdownStyle.defaultBoxShadow,
-        ),
-        child: ClipRRect(
-          borderRadius: borderRadius,
-          child: Padding(
-            padding: style.padding ?? BsDropdownStyle.defaultPadding,
-            child: DefaultTextStyle.merge(
-              style: TextStyle(
-                color: style.color ?? BsDropdownStyle.defaultColor,
-                fontSize: style.fontSize ?? BsDropdownStyle.defaultFontSize,
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [for (final entry in items) _buildEntry(entry)],
+          child: ClipRRect(
+            borderRadius: borderRadius,
+            child: Padding(
+              padding: style.padding ?? BsDropdownStyle.defaultPadding,
+              child: DefaultTextStyle.merge(
+                style: TextStyle(
+                  color: style.color ?? BsDropdownStyle.defaultColor,
+                  fontSize: style.fontSize ?? BsDropdownStyle.defaultFontSize,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [for (final entry in items) _buildEntry(entry)],
+                ),
               ),
             ),
           ),
