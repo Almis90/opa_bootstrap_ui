@@ -220,10 +220,17 @@ class _BsPopoverState extends State<BsPopover> {
 
     return CompositedTransformTarget(
       link: _link,
-      child: OverlayPortal(
-        controller: _overlayController,
-        overlayChildBuilder: (context) => _buildOverlay(style),
-        child: widget.triggerBuilder(context, _toggle, _controller.isShown),
+      // Shares a groupId with the overlay content's own TapRegion below, so
+      // a tap on the trigger itself never counts as "outside" the popover
+      // (which would otherwise race with _toggle: TapRegion closes it,
+      // then the same tap reopens it via the trigger's own handler).
+      child: TapRegion(
+        groupId: this,
+        child: OverlayPortal(
+          controller: _overlayController,
+          overlayChildBuilder: (context) => _buildOverlay(style),
+          child: widget.triggerBuilder(context, _toggle, _controller.isShown),
+        ),
       ),
     );
   }
@@ -238,16 +245,25 @@ class _BsPopoverState extends State<BsPopover> {
 
     return Stack(
       children: [
-        Positioned.fill(child: GestureDetector(behavior: HitTestBehavior.opaque, onTap: _controller.hide)),
-        CompositedTransformFollower(
-          link: _link,
-          targetAnchor: targetAnchor,
-          followerAnchor: followerAnchor,
-          child: _BsPopoverContent(
-            title: widget.title,
-            content: _effectiveContent,
-            placement: _effectivePlacement,
-            style: style,
+        // TapRegion (not a full-screen hit-test barrier, unlike the
+        // Positioned.fill+opaque GestureDetector this replaced) detects an
+        // outside tap passively, without absorbing it — so closing the
+        // popover this way still lets that same tap reach whatever it
+        // actually landed on, matching Bootstrap's own document-click
+        // listener instead of swallowing clicks meant for other widgets.
+        TapRegion(
+          groupId: this,
+          onTapOutside: (_) => _controller.hide(),
+          child: CompositedTransformFollower(
+            link: _link,
+            targetAnchor: targetAnchor,
+            followerAnchor: followerAnchor,
+            child: _BsPopoverContent(
+              title: widget.title,
+              content: _effectiveContent,
+              placement: _effectivePlacement,
+              style: style,
+            ),
           ),
         ),
       ],

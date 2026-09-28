@@ -38,10 +38,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Popover content'), findsOneWidget);
 
-    // The full-screen dismiss barrier sits on top while open, so this tap
-    // actually lands on it rather than the trigger underneath — closing
-    // the popover the same way an outside tap would.
-    await tester.tap(find.text('Trigger'), warnIfMissed: false);
+    await tester.tap(find.text('Trigger'));
     await tester.pumpAndSettle();
     expect(find.text('Popover content'), findsNothing);
   });
@@ -55,6 +52,45 @@ void main() {
     await tester.tapAt(const Offset(10, 10));
     await tester.pumpAndSettle();
     expect(find.text('Popover content'), findsNothing);
+  });
+
+  testWidgets('An outside tap that lands on another widget closes the popover and still activates that widget', (
+    tester,
+  ) async {
+    var otherButtonTaps = 0;
+    final controller = BsPopoverController();
+    addTearDown(controller.dispose);
+
+    await tester.pumpWidget(
+      BsApp(
+        home: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              BsButton(onPressed: () => otherButtonTaps++, child: const Text('Other button')),
+              BsPopover(
+                controller: controller,
+                content: const Text('Popover content'),
+                triggerBuilder: (context, toggle, isOpen) => BsButton(onPressed: toggle, child: const Text('Trigger')),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    controller.show();
+    await tester.pumpAndSettle();
+    expect(find.text('Popover content'), findsOneWidget);
+
+    // Unlike a Positioned.fill hit-test barrier (which would swallow this
+    // tap), TapRegion's onTapOutside doesn't consume it — Bootstrap's own
+    // click-outside dismissal doesn't stop the click from reaching its
+    // actual target either.
+    await tester.tap(find.text('Other button'));
+    await tester.pumpAndSettle();
+    expect(find.text('Popover content'), findsNothing);
+    expect(otherButtonTaps, 1);
   });
 
   testWidgets('BsPopoverController disables the trigger and closes an already-open popover', (tester) async {
