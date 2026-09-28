@@ -23,6 +23,83 @@ sealed class BsDropdownEntry {
   const BsDropdownEntry();
 }
 
+/// Programmatic control of a [BsDropdown], independent of its
+/// [BsDropdown.toggleBuilder]-driven open/close — mirrors [BsPopoverController]
+/// (Bootstrap's dropdown JS plugin has no controller of its own to draw an
+/// API from instead): `enable()`/`disable()`/`toggleEnabled()`,
+/// `show()`/`hide()`/`toggle()`, and `setItems()`/`setDirection()`
+/// overrides.
+class BsDropdownController extends ChangeNotifier {
+  BsDropdownController({bool enabled = true}) {
+    _enabled = enabled;
+  }
+
+  late bool _enabled;
+  bool _shown = false;
+  List<BsDropdownEntry>? _items;
+  BsDropdownDirection? _direction;
+
+  /// Whether the dropdown currently responds to its toggle.
+  bool get enabled => _enabled;
+
+  void enable() => _setEnabled(true);
+
+  void disable() => _setEnabled(false);
+
+  /// Flips [enabled], or sets it to [value] if given.
+  void toggleEnabled([bool? value]) => _setEnabled(value ?? !_enabled);
+
+  void _setEnabled(bool value) {
+    if (value == _enabled) return;
+    _enabled = value;
+    if (!value) _shown = false;
+    notifyListeners();
+  }
+
+  /// Whether the menu is currently open.
+  bool get isShown => _shown;
+
+  /// Opens the menu immediately. Does nothing while [enabled] is false.
+  void show() {
+    if (!_enabled) return;
+    _setShown(true);
+  }
+
+  /// Closes the menu immediately.
+  void hide() => _setShown(false);
+
+  /// Opens the menu if it's closed, closes it if it's open.
+  void toggle() => _shown ? hide() : show();
+
+  void _setShown(bool value) {
+    if (value == _shown) return;
+    _shown = value;
+    notifyListeners();
+  }
+
+  /// Overrides [BsDropdown.items]. Null (the default) falls back to it.
+  List<BsDropdownEntry>? get items => _items;
+
+  /// Replaces the menu's rows, e.g. to update a dropdown already open
+  /// without rebuilding the [BsDropdown] itself. Pass null to fall back to
+  /// [BsDropdown.items] again.
+  void setItems(List<BsDropdownEntry>? items) {
+    _items = items;
+    notifyListeners();
+  }
+
+  /// Overrides [BsDropdown.direction]. Null (the default) falls back to it.
+  BsDropdownDirection? get direction => _direction;
+
+  /// Moves the menu to a different side of the toggle, e.g. to flip it away
+  /// from a screen edge, without rebuilding the [BsDropdown] itself. Pass
+  /// null to fall back to [BsDropdown.direction] again.
+  void setDirection(BsDropdownDirection? direction) {
+    _direction = direction;
+    notifyListeners();
+  }
+}
+
 /// `.dropdown-item`: a single actionable row.
 class BsDropdownItem extends BsDropdownEntry {
   const BsDropdownItem({required this.child, this.onTap, this.active = false, this.disabled = false});
@@ -68,6 +145,11 @@ class BsDropdown extends StatefulWidget {
     this.alignEnd = false,
     this.style,
     this.onOpenChanged,
+    this.controller,
+    this.onShow,
+    this.onShown,
+    this.onHide,
+    this.onHidden,
   });
 
   /// Builds the toggle widget. Call `toggle` from it (e.g. as a
@@ -93,6 +175,29 @@ class BsDropdown extends StatefulWidget {
   /// Called whenever the menu opens or closes.
   final ValueChanged<bool>? onOpenChanged;
 
+  /// Programmatic enable/disable and show/hide. Defaults to an
+  /// internally-owned controller (always enabled, initially closed) when
+  /// null.
+  final BsDropdownController? controller;
+
+  /// Called as soon as the menu is triggered to open. Mirrors Bootstrap's
+  /// `show.bs.dropdown`.
+  final VoidCallback? onShow;
+
+  /// Called once the menu has finished opening. [BsDropdown] has no
+  /// open/close animation, so this fires right after [onShow]. Mirrors
+  /// Bootstrap's `shown.bs.dropdown`.
+  final VoidCallback? onShown;
+
+  /// Called as soon as the menu is triggered to close. Mirrors Bootstrap's
+  /// `hide.bs.dropdown`.
+  final VoidCallback? onHide;
+
+  /// Called once the menu has finished closing. [BsDropdown] has no
+  /// open/close animation, so this fires right after [onHide]. Mirrors
+  /// Bootstrap's `hidden.bs.dropdown`.
+  final VoidCallback? onHidden;
+
   @override
   State<BsDropdown> createState() => _BsDropdownState();
 }
@@ -100,23 +205,54 @@ class BsDropdown extends StatefulWidget {
 class _BsDropdownState extends State<BsDropdown> {
   final _link = LayerLink();
   final _overlayController = OverlayPortalController();
-  bool _isOpen = false;
+  BsDropdownController? _ownedController;
+  bool _wasShown = false;
 
-  void _open() {
-    if (_isOpen) return;
-    setState(() => _isOpen = true);
-    _overlayController.show();
-    widget.onOpenChanged?.call(true);
+  BsDropdownController get _controller => widget.controller ?? (_ownedController ??= BsDropdownController());
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(_handleControllerChanged);
   }
 
-  void _close() {
-    if (!_isOpen) return;
-    setState(() => _isOpen = false);
-    _overlayController.hide();
-    widget.onOpenChanged?.call(false);
+  void _handleControllerChanged() {
+    setState(() {}); // picks up items/direction changes even while already open
+    final isShown = _controller.isShown;
+    // A setItems()/setDirection() call while already open (or closed)
+    // notifies too, but that's not an open/close transition.
+    if (isShown == _wasShown) return;
+    _wasShown = isShown;
+    if (isShown) {
+      widget.onShow?.call();
+      if (!_overlayController.isShowing) _overlayController.show();
+      widget.onShown?.call();
+      widget.onOpenChanged?.call(true);
+    } else {
+      widget.onHide?.call();
+      if (_overlayController.isShowing) _overlayController.hide();
+      widget.onHidden?.call();
+      widget.onOpenChanged?.call(false);
+    }
   }
 
-  void _toggle() => _isOpen ? _close() : _open();
+  void _toggle() {
+    if (!_controller.enabled) return;
+    _controller.toggle();
+  }
+
+  @override
+  void dispose() {
+    _controller.removeListener(_handleControllerChanged);
+    _ownedController?.dispose();
+    super.dispose();
+  }
+
+  /// [BsDropdown.items], unless overridden by [BsDropdownController.setItems].
+  List<BsDropdownEntry> get _effectiveItems => _controller.items ?? widget.items;
+
+  /// [BsDropdown.direction], unless overridden by [BsDropdownController.setDirection].
+  BsDropdownDirection get _effectiveDirection => _controller.direction ?? widget.direction;
 
   @override
   Widget build(BuildContext context) {
@@ -125,17 +261,24 @@ class _BsDropdownState extends State<BsDropdown> {
 
     return CompositedTransformTarget(
       link: _link,
-      child: OverlayPortal(
-        controller: _overlayController,
-        overlayChildBuilder: (context) => _buildOverlay(style),
-        child: widget.toggleBuilder(context, _toggle, _isOpen),
+      // Shares a groupId with the overlay menu's own TapRegion below, so a
+      // tap on the toggle itself never counts as "outside" the dropdown
+      // (which would otherwise race with _toggle: TapRegion closes it,
+      // then the same tap reopens it via the toggle's own handler).
+      child: TapRegion(
+        groupId: this,
+        child: OverlayPortal(
+          controller: _overlayController,
+          overlayChildBuilder: (context) => _buildOverlay(style),
+          child: widget.toggleBuilder(context, _toggle, _controller.isShown),
+        ),
       ),
     );
   }
 
   Widget _buildOverlay(BsDropdownStyle style) {
     final spacer = style.spacer ?? BsDropdownStyle.defaultSpacer;
-    final (Alignment targetAnchor, Alignment followerAnchor, Offset offset) = switch (widget.direction) {
+    final (Alignment targetAnchor, Alignment followerAnchor, Offset offset) = switch (_effectiveDirection) {
       BsDropdownDirection.down => widget.alignEnd
           ? (Alignment.bottomRight, Alignment.topRight, Offset(0, spacer))
           : (Alignment.bottomLeft, Alignment.topLeft, Offset(0, spacer)),
@@ -148,13 +291,19 @@ class _BsDropdownState extends State<BsDropdown> {
 
     return Stack(
       children: [
-        Positioned.fill(child: GestureDetector(behavior: HitTestBehavior.opaque, onTap: _close)),
-        CompositedTransformFollower(
-          link: _link,
-          targetAnchor: targetAnchor,
-          followerAnchor: followerAnchor,
-          offset: offset,
-          child: _BsDropdownMenu(items: widget.items, style: style, onItemTap: _close),
+        // TapRegion (not a full-screen hit-test barrier) detects an outside
+        // tap passively, without absorbing it — see the identical fix and
+        // explanation on BsPopover's outside-tap dismissal.
+        TapRegion(
+          groupId: this,
+          onTapOutside: (_) => _controller.hide(),
+          child: CompositedTransformFollower(
+            link: _link,
+            targetAnchor: targetAnchor,
+            followerAnchor: followerAnchor,
+            offset: offset,
+            child: _BsDropdownMenu(items: _effectiveItems, style: style, onItemTap: _controller.hide),
+          ),
         ),
       ],
     );
