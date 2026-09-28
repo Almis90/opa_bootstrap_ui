@@ -216,4 +216,38 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Filled in'), findsOneWidget);
   });
+
+  testWidgets('BsTooltipController.setPlacement moves an already-shown tooltip', (tester) async {
+    final controller = BsTooltipController();
+    addTearDown(controller.dispose);
+
+    await tester.pumpWidget(
+      BsApp(
+        home: Center(
+          child: BsTooltip(
+            controller: controller,
+            message: const Text('Tooltip message'),
+            child: BsButton(onPressed: () {}, child: const Text('Btn')),
+          ),
+        ),
+      ),
+    );
+
+    controller.show();
+    await tester.pumpAndSettle();
+    final targetRect = tester.getRect(find.text('Btn'));
+    var messageRect = tester.getRect(find.text('Tooltip message'));
+    // Default placement is top: the bubble sits above the target.
+    expect(messageRect.bottom, lessThanOrEqualTo(targetRect.top));
+
+    controller.setPlacement(BsTooltipPlacement.bottom);
+    await tester.pumpAndSettle();
+    messageRect = tester.getRect(find.text('Tooltip message'));
+    expect(messageRect.top, greaterThanOrEqualTo(targetRect.bottom));
+
+    controller.setPlacement(null);
+    await tester.pumpAndSettle();
+    messageRect = tester.getRect(find.text('Tooltip message'));
+    expect(messageRect.bottom, lessThanOrEqualTo(targetRect.top));
+  });
 }

@@ -12,7 +12,8 @@ enum BsTooltipPlacement { top, bottom, start, end }
 /// Programmatic control of a [BsTooltip], independent of its hover/
 /// long-press triggers — mirrors Bootstrap's own `tooltip.enable()`/
 /// `.disable()`/`.toggleEnabled()`, `.show()`/`.hide()`/`.toggle()`, and
-/// `.setContent()` API.
+/// `.setContent()` API, plus a `setPlacement` with no Bootstrap equivalent
+/// (Popper.js has no notion of a controller to expose one through).
 class BsTooltipController extends ChangeNotifier {
   BsTooltipController({bool enabled = true}) {
     _enabled = enabled;
@@ -21,6 +22,7 @@ class BsTooltipController extends ChangeNotifier {
   late bool _enabled;
   bool _shown = false;
   Widget? _content;
+  BsTooltipPlacement? _placement;
 
   /// Whether the tooltip currently responds to hover/long-press.
   bool get enabled => _enabled;
@@ -69,6 +71,17 @@ class BsTooltipController extends ChangeNotifier {
   /// back to [BsTooltip.message] again.
   void setContent(Widget? content) {
     _content = content;
+    notifyListeners();
+  }
+
+  /// Overrides [BsTooltip.placement]. Null (the default) falls back to it.
+  BsTooltipPlacement? get placement => _placement;
+
+  /// Moves the bubble to a different side of the target, e.g. to flip it
+  /// away from a screen edge without rebuilding the [BsTooltip] itself.
+  /// Pass null to fall back to [BsTooltip.placement] again.
+  void setPlacement(BsTooltipPlacement? placement) {
+    _placement = placement;
     notifyListeners();
   }
 }
@@ -146,7 +159,7 @@ class _BsTooltipState extends State<BsTooltip> with SingleTickerProviderStateMix
 
   void _handleControllerChanged() {
     _waitTimer?.cancel();
-    setState(() {}); // picks up content changes even while already shown
+    setState(() {}); // picks up content/placement changes even while already shown
     if (_controller.isShown) {
       if (!_overlayController.isShowing) _overlayController.show();
       _fadeController.forward();
@@ -157,6 +170,9 @@ class _BsTooltipState extends State<BsTooltip> with SingleTickerProviderStateMix
 
   /// [BsTooltip.message], unless overridden by [BsTooltipController.setContent].
   Widget get _effectiveMessage => _controller.content ?? widget.message;
+
+  /// [BsTooltip.placement], unless overridden by [BsTooltipController.setPlacement].
+  BsTooltipPlacement get _effectivePlacement => _controller.placement ?? widget.placement;
 
   /// Mirrors Bootstrap's own behavior of never initializing a tooltip whose
   /// `title` is empty: an empty/whitespace-only [Text] (the overwhelmingly
@@ -171,14 +187,14 @@ class _BsTooltipState extends State<BsTooltip> with SingleTickerProviderStateMix
     return true;
   }
 
-  Alignment get _targetAnchor => switch (widget.placement) {
+  Alignment get _targetAnchor => switch (_effectivePlacement) {
     BsTooltipPlacement.top => Alignment.topCenter,
     BsTooltipPlacement.bottom => Alignment.bottomCenter,
     BsTooltipPlacement.start => Alignment.centerLeft,
     BsTooltipPlacement.end => Alignment.centerRight,
   };
 
-  Alignment get _followerAnchor => switch (widget.placement) {
+  Alignment get _followerAnchor => switch (_effectivePlacement) {
     BsTooltipPlacement.top => Alignment.bottomCenter,
     BsTooltipPlacement.bottom => Alignment.topCenter,
     BsTooltipPlacement.start => Alignment.centerRight,
@@ -243,7 +259,7 @@ class _BsTooltipState extends State<BsTooltip> with SingleTickerProviderStateMix
                   opacity: _fadeController,
                   child: Opacity(
                     opacity: style.opacity ?? BsTooltipStyle.defaultOpacity,
-                    child: _BsTooltipContent(message: _effectiveMessage, placement: widget.placement, style: style),
+                    child: _BsTooltipContent(message: _effectiveMessage, placement: _effectivePlacement, style: style),
                   ),
                 ),
               ),
