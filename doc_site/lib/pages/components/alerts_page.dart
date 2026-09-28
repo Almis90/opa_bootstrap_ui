@@ -38,7 +38,8 @@ Column(
         ),
         DocExample(
           title: 'Additional content',
-          description: 'Since child accepts any widget, an alert can hold a heading, a divider, and multiple paragraphs.',
+          description:
+              'Since child accepts any widget, an alert can hold a heading, a divider, and multiple paragraphs.',
           code: '''
 BsAlert(
   variant: BsVariant.success,
@@ -78,7 +79,8 @@ BsAlert(
         ),
         DocExample(
           title: 'Dismissible',
-          description: 'dismissible: true adds a close control; onDismissed fires once the alert has finished removing itself.',
+          description:
+              'dismissible: true adds a close control; onDismissed fires once the alert has finished removing itself.',
           code: '''
 BsAlert(
   variant: BsVariant.warning,
@@ -89,8 +91,32 @@ BsAlert(
           preview: const _DismissibleDemo(),
         ),
         DocExample(
+          title: 'Programmatic control',
+          description:
+              'A BsAlertController lets code outside dismiss the alert too — here a plain button, instead of the '
+              "built-in close icon (dismissible defaults to false, so there isn't one). Mirrors Bootstrap's own "
+              'bootstrap.Alert.getInstance(el).close().',
+          code: '''
+final controller = BsAlertController();
+
+Column(
+  crossAxisAlignment: CrossAxisAlignment.start,
+  children: [
+    BsAlert(
+      controller: controller,
+      variant: BsVariant.info,
+      onDismissed: () => setState(() => _dismissed = true),
+      child: Text('This alert has no close button — dismiss it with the button below instead.'),
+    ),
+    BsButton(onPressed: controller.close, child: Text('Dismiss')),
+  ],
+)''',
+          preview: const _ControllerDemo(),
+        ),
+        DocExample(
           title: 'Custom style',
-          description: 'style overrides color, background, and borderColor directly, bypassing the BsVariant palette entirely.',
+          description:
+              'style overrides color, background, and borderColor directly, bypassing the BsVariant palette entirely.',
           code: '''
 BsAlert(
   style: BsAlertStyle(
@@ -134,6 +160,54 @@ class _DismissibleDemoState extends State<_DismissibleDemo> {
       dismissible: true,
       onDismissed: () => setState(() => _dismissed = true),
       child: const Text('Holy guacamole! You should check in on some of those fields below.'),
+    );
+  }
+}
+
+class _ControllerDemo extends StatefulWidget {
+  const _ControllerDemo();
+
+  @override
+  State<_ControllerDemo> createState() => _ControllerDemoState();
+}
+
+class _ControllerDemoState extends State<_ControllerDemo> {
+  // BsAlertController only ever closes once, so resetting the demo needs a
+  // fresh instance rather than reusing this one.
+  BsAlertController _controller = BsAlertController();
+  bool _dismissed = false;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _reset() {
+    _controller.dispose();
+    setState(() {
+      _controller = BsAlertController();
+      _dismissed = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_dismissed) {
+      return BsButton(size: BsSize.sm, onPressed: _reset, child: const Text('Show alert again'));
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        BsAlert(
+          controller: _controller,
+          variant: BsVariant.info,
+          onDismissed: () => setState(() => _dismissed = true),
+          child: const Text('This alert has no close button — dismiss it with the button below instead.'),
+        ),
+        const SizedBox(height: 12),
+        BsButton(size: BsSize.sm, onPressed: _controller.close, child: const Text('Dismiss')),
+      ],
     );
   }
 }
