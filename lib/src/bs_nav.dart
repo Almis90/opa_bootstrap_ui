@@ -243,13 +243,55 @@ class _BsNavLinkWidgetState extends State<_BsNavLinkWidget> {
   }
 }
 
+/// Programmatic control of a [BsTabView] — mirrors Bootstrap's own
+/// `bootstrap.Tab` JS plugin's `show()` method. Pair with a [BsNav] by
+/// driving each [BsNavItem.active]/[BsNavItem.onTap] from [index]/[show]
+/// yourself — [BsNav] and [BsTabView] stay as decoupled as Bootstrap's own
+/// `.nav` markup and `.tab-content` are, so a controller only wires into
+/// whichever pane view you actually use.
+class BsTabController extends ChangeNotifier {
+  BsTabController({int initialIndex = 0}) : _index = initialIndex;
+
+  int _index;
+
+  /// The currently active pane's index into [BsTabView.children].
+  int get index => _index;
+
+  /// Switches to [index], mirroring `bootstrap.Tab.show()`. A no-op if
+  /// [index] is already active.
+  void show(int index) {
+    if (index == _index) return;
+    _index = index;
+    notifyListeners();
+  }
+}
+
 /// A crossfading content swapper (`.tab-content`/`.tab-pane.fade`),
 /// typically paired with a [BsNav] whose active item picks [activeIndex].
-class BsTabView extends StatelessWidget {
-  const BsTabView({super.key, required this.activeIndex, required this.children, this.duration});
+///
+/// Controllable either way Bootstrap's own `data-bs-toggle="tab"` can be:
+/// pass [activeIndex] and flip it from the parent (e.g. a [BsNavItem]'s
+/// `onTap` calling `setState`), or pass a [controller] and call
+/// [BsTabController.show] from anywhere with access to it. [activeIndex] is
+/// ignored when [controller] is given — omit it and set [activeIndex] on
+/// the internally-owned controller instead.
+class BsTabView extends StatefulWidget {
+  const BsTabView({
+    super.key,
+    this.activeIndex,
+    required this.children,
+    this.duration,
+    this.controller,
+    this.onShow,
+    this.onShown,
+    this.onHide,
+    this.onHidden,
+  });
 
-  /// Index into [children] of the pane to show.
-  final int activeIndex;
+  /// Index into [children] of the pane to show. Ignored when [controller]
+  /// is given; only meaningful with the internally-owned controller that's
+  /// used instead.
+  final int? activeIndex;
 
   /// One entry per nav item, in the same order.
   final List<Widget> children;
@@ -257,11 +299,96 @@ class BsTabView extends StatelessWidget {
   /// `$transition-fade` override.
   final Duration? duration;
 
+  /// Drives which pane is active instead of [activeIndex]. Defaults to an
+  /// internally-owned controller (seeded from [activeIndex]) when null.
+  final BsTabController? controller;
+
+  /// Called immediately when a new pane is triggered active, before the
+  /// fade transition starts, with the newly active index. Mirrors
+  /// Bootstrap's `show.bs.tab`.
+  final ValueChanged<int>? onShow;
+
+  /// Called once the newly active pane's fade-in finishes, with its index.
+  /// Mirrors Bootstrap's `shown.bs.tab`.
+  final ValueChanged<int>? onShown;
+
+  /// Called immediately when the previously active pane starts fading out,
+  /// with its index. Mirrors Bootstrap's `hide.bs.tab`.
+  final ValueChanged<int>? onHide;
+
+  /// Called once the previously active pane's fade-out finishes, with its
+  /// index. Mirrors Bootstrap's `hidden.bs.tab`.
+  final ValueChanged<int>? onHidden;
+
+  @override
+  State<BsTabView> createState() => _BsTabViewState();
+}
+
+class _BsTabViewState extends State<BsTabView> {
+  BsTabController? _ownedController;
+  late int _lastIndex;
+  int? _pendingFrom;
+  int? _pendingTo;
+
+  BsTabController get _controller =>
+      widget.controller ?? (_ownedController ??= BsTabController(initialIndex: widget.activeIndex ?? 0));
+
+  @override
+  void initState() {
+    super.initState();
+    _lastIndex = _controller.index;
+    _controller.addListener(_handleControllerChanged);
+  }
+
+  @override
+  void didUpdateWidget(covariant BsTabView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // activeIndex only drives the internally-owned controller — an
+    // explicit controller is always the source of truth once given.
+    if (widget.controller == null && widget.activeIndex != null && widget.activeIndex != _controller.index) {
+      _controller.show(widget.activeIndex!);
+    }
+  }
+
+  void _handleControllerChanged() {
+    final newIndex = _controller.index;
+    if (newIndex != _lastIndex) {
+      final oldIndex = _lastIndex;
+      _lastIndex = newIndex;
+      _pendingFrom = oldIndex;
+      _pendingTo = newIndex;
+      widget.onHide?.call(oldIndex);
+      widget.onShow?.call(newIndex);
+
+      final duration = widget.duration ?? BsTransitions.fade;
+      Future.delayed(duration, () {
+        if (!mounted) return;
+        // Only fire if this is still the transition we scheduled it for —
+        // a rapid second switch before this fires means this one never
+        // actually completed, so reporting it would be stale.
+        if (_pendingFrom != oldIndex || _pendingTo != newIndex) return;
+        _pendingFrom = null;
+        _pendingTo = null;
+        widget.onHidden?.call(oldIndex);
+        widget.onShown?.call(newIndex);
+      });
+    }
+    setState(() {});
+  }
+
+  @override
+  void dispose() {
+    _controller.removeListener(_handleControllerChanged);
+    _ownedController?.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final index = _controller.index;
     return AnimatedSwitcher(
-      duration: duration ?? BsTransitions.fade,
-      child: KeyedSubtree(key: ValueKey(activeIndex), child: children[activeIndex]),
+      duration: widget.duration ?? BsTransitions.fade,
+      child: KeyedSubtree(key: ValueKey(index), child: widget.children[index]),
     );
   }
 }

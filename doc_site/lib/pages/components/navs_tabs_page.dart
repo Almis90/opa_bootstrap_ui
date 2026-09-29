@@ -147,6 +147,51 @@ BsNav(
             items: _demoItems(0, (_) {}),
           ),
         ),
+        DocExample(
+          title: 'Programmatic control',
+          description:
+              'A BsTabController lets code outside call show(index) directly, instead of tracking the active '
+              'index in your own state. Wire each BsNavItem.active/onTap off controller.index/controller.show '
+              'yourself — BsNav and BsTabView stay decoupled, the same as .nav and .tab-content are in Bootstrap.',
+          code: '''
+final controller = BsTabController();
+
+Column(
+  crossAxisAlignment: CrossAxisAlignment.stretch,
+  children: [
+    BsNav(
+      variant: BsNavVariant.tabs,
+      items: [
+        BsNavItem(child: Text('Home'), active: controller.index == 0, onTap: () => controller.show(0)),
+        BsNavItem(child: Text('Profile'), active: controller.index == 1, onTap: () => controller.show(1)),
+        BsNavItem(child: Text('Contact'), active: controller.index == 2, onTap: () => controller.show(2)),
+      ],
+    ),
+    BsTabView(
+      controller: controller,
+      children: [Text('Content for Home.'), Text('Content for Profile.'), Text('Content for Contact.')],
+    ),
+  ],
+)''',
+          preview: const _ControllerDemo(),
+        ),
+        DocExample(
+          title: 'Events',
+          description:
+              'onHide/onShow fire immediately, with the outgoing/incoming indices, once a switch is triggered; '
+              "onHidden/onShown fire once the cross-fade actually finishes — mirroring Bootstrap's hide.bs.tab/"
+              'show.bs.tab/hidden.bs.tab/shown.bs.tab.',
+          code: '''
+BsTabView(
+  activeIndex: activeIndex,
+  onShow: (index) => log('show \$index'),
+  onShown: (index) => log('shown \$index'),
+  onHide: (index) => log('hide \$index'),
+  onHidden: (index) => log('hidden \$index'),
+  children: [Text('Content for Home.'), Text('Content for Profile.'), Text('Content for Contact.')],
+)''',
+          preview: const _EventsDemo(),
+        ),
       ],
     );
   }
@@ -157,5 +202,111 @@ BsNav(
       for (var i = 0; i < labels.length; i++)
         BsNavItem(child: Text(labels[i]), active: i == activeIndex, onTap: () => onSelect(i)),
     ];
+  }
+}
+
+class _ControllerDemo extends StatefulWidget {
+  const _ControllerDemo();
+
+  @override
+  State<_ControllerDemo> createState() => _ControllerDemoState();
+}
+
+class _ControllerDemoState extends State<_ControllerDemo> {
+  late final BsTabController _controller = BsTabController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListenableBuilder(
+      listenable: _controller,
+      builder: (context, _) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            BsNav(
+              variant: BsNavVariant.tabs,
+              items: [
+                for (var i = 0; i < 3; i++)
+                  BsNavItem(
+                    child: Text(['Home', 'Profile', 'Contact'][i]),
+                    active: _controller.index == i,
+                    onTap: () => _controller.show(i),
+                  ),
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 16),
+              child: BsTabView(
+                controller: _controller,
+                children: const [Text('Content for Home.'), Text('Content for Profile.'), Text('Content for Contact.')],
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _EventsDemo extends StatefulWidget {
+  const _EventsDemo();
+
+  @override
+  State<_EventsDemo> createState() => _EventsDemoState();
+}
+
+class _EventsDemoState extends State<_EventsDemo> {
+  int _activeIndex = 0;
+  final _events = <String>[];
+
+  void _log(String event) => setState(() => _events.add(event));
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        BsNav(
+          variant: BsNavVariant.tabs,
+          items: [
+            for (var i = 0; i < 3; i++)
+              BsNavItem(
+                child: Text(['Home', 'Profile', 'Contact'][i]),
+                active: _activeIndex == i,
+                onTap: () => setState(() => _activeIndex = i),
+              ),
+          ],
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 16),
+          child: BsTabView(
+            activeIndex: _activeIndex,
+            onShow: (index) => _log('show $index'),
+            onShown: (index) => _log('shown $index'),
+            onHide: (index) => _log('hide $index'),
+            onHidden: (index) => _log('hidden $index'),
+            children: const [Text('Content for Home.'), Text('Content for Profile.'), Text('Content for Contact.')],
+          ),
+        ),
+        const SizedBox(height: 12),
+        if (_events.isEmpty)
+          Text(
+            'No events yet — select another tab above.',
+            style: TextStyle(color: BsBody.secondaryColorOf(context)),
+          )
+        else
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [for (final event in _events) BsBadge(variant: BsVariant.secondary, child: Text(event))],
+          ),
+      ],
+    );
   }
 }
