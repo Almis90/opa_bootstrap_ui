@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
 
 import '../bs_colors.dart';
+import 'bs_body.dart';
 import 'bs_borders.dart';
 import 'bs_shadows.dart';
 
@@ -50,11 +51,32 @@ class BsThumbnailStyle {
   static const double defaultBorderRadius = BsBorders.radius;
   static const List<BoxShadow> defaultBoxShadow = BsShadows.shadowSm;
 
+  /// [defaultBackground] resolved against `--bs-body-bg` in
+  /// `[data-bs-theme="dark"]`.
+  static const Color defaultDarkBackground = BsBody.darkBackground;
+
+  /// [defaultBorderColor] resolved against `--bs-border-color` in
+  /// `[data-bs-theme="dark"]`.
+  static const Color defaultDarkBorderColor = BsBorders.darkColor;
+
   static const BsThumbnailStyle defaults = BsThumbnailStyle(
     padding: defaultPadding,
     background: defaultBackground,
     borderWidth: defaultBorderWidth,
     borderColor: defaultBorderColor,
+    borderRadius: defaultBorderRadius,
+    boxShadow: defaultBoxShadow,
+  );
+
+  /// [defaults], with [background]/[borderColor] swapped for their
+  /// `[data-bs-theme="dark"]` counterparts. Pick this as the base to
+  /// [merge] a caller's [BsThumbnailStyle] override against when
+  /// `BsTheme.of(context) == Brightness.dark`.
+  static const BsThumbnailStyle darkDefaults = BsThumbnailStyle(
+    padding: defaultPadding,
+    background: defaultDarkBackground,
+    borderWidth: defaultBorderWidth,
+    borderColor: defaultDarkBorderColor,
     borderRadius: defaultBorderRadius,
     boxShadow: defaultBoxShadow,
   );

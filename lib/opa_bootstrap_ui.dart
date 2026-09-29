@@ -43,6 +43,7 @@ export 'src/bs_spacing.dart';
 export 'src/bs_spinner.dart';
 export 'src/bs_table.dart';
 export 'src/bs_theme.dart';
+export 'src/bs_thumbnail.dart';
 export 'src/bs_toast.dart';
 export 'src/bs_toggle_button_group.dart';
 export 'src/bs_tooltip.dart';

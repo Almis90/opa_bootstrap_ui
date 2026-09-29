@@ -27,6 +27,7 @@ import 'pages/components/toasts_page.dart';
 import 'pages/components/tooltips_page.dart';
 import 'pages/content/figures_page.dart';
 import 'pages/content/tables_page.dart';
+import 'pages/content/thumbnails_page.dart';
 import 'pages/content/typography_page.dart';
 import 'pages/forms/checks_radios_page.dart';
 import 'pages/forms/floating_labels_page.dart';
@@ -85,6 +86,7 @@ final _sections = [
   DocNavSection('Content', [
     DocNavPage('Figures', (_) => const FiguresPage()),
     DocNavPage('Tables', (_) => const TablesPage()),
+    DocNavPage('Thumbnails', (_) => const ThumbnailsPage()),
     DocNavPage('Typography', (_) => const TypographyPage()),
   ]),
   DocNavSection('Forms', [
