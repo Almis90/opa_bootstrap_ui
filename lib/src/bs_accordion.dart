@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'bs_focusable.dart';
 import 'bs_theme.dart';
 import 'tokens/bs_accordion_style.dart';
+import 'tokens/bs_transitions.dart';
 
 /// Controls which [BsAccordion] items are expanded, for programmatic
 /// show/hide — the same pattern Flutter itself uses for [TabController],
@@ -265,7 +266,10 @@ class _BsAccordionState extends State<BsAccordion> {
 
     if (widget.onExpansionEnd != null && (becameExpanded.isNotEmpty || becameCollapsed.isNotEmpty)) {
       final style = BsAccordionStyle.defaults.merge(widget.style);
-      final duration = style.transitionDuration ?? BsAccordionStyle.defaultTransitionDuration;
+      final duration = BsTransitions.resolve(
+        context,
+        style.transitionDuration ?? BsAccordionStyle.defaultTransitionDuration,
+      );
       for (final i in becameExpanded) {
         _scheduleExpansionEnd(i, true, duration);
       }
@@ -351,7 +355,10 @@ class _BsAccordionItemViewState extends State<_BsAccordionItemView> {
     final borderColor = style.borderColor ?? BsAccordionStyle.defaultBorderColor;
     final outerRadius = style.borderRadius ?? BsAccordionStyle.defaultBorderRadius;
     final background = style.background ?? BsAccordionStyle.defaultBackground;
-    final transitionDuration = style.transitionDuration ?? BsAccordionStyle.defaultTransitionDuration;
+    final transitionDuration = BsTransitions.resolve(
+      context,
+      style.transitionDuration ?? BsAccordionStyle.defaultTransitionDuration,
+    );
 
     final innerRadius = style.innerBorderRadius ?? BsAccordionStyle.defaultInnerBorderRadius;
 
@@ -436,7 +443,10 @@ class _BsAccordionItemViewState extends State<_BsAccordionItemView> {
                           turns: widget.isExpanded
                               ? (style.iconRotationTurns ?? BsAccordionStyle.defaultIconRotationTurns)
                               : 0,
-                          duration: style.iconTransitionDuration ?? BsAccordionStyle.defaultIconTransitionDuration,
+                          duration: BsTransitions.resolve(
+                            context,
+                            style.iconTransitionDuration ?? BsAccordionStyle.defaultIconTransitionDuration,
+                          ),
                           child: widget.iconBuilder?.call(context, iconColor, widget.isExpanded) ??
                               _BsChevron(
                                 size: style.iconWidth ?? BsAccordionStyle.defaultIconWidth,

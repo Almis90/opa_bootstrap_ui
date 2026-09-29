@@ -361,7 +361,7 @@ class _BsTabViewState extends State<BsTabView> {
       widget.onHide?.call(oldIndex);
       widget.onShow?.call(newIndex);
 
-      final duration = widget.duration ?? BsTransitions.fade;
+      final duration = BsTransitions.resolve(context, widget.duration ?? BsTransitions.fade);
       Future.delayed(duration, () {
         if (!mounted) return;
         // Only fire if this is still the transition we scheduled it for —
@@ -388,7 +388,7 @@ class _BsTabViewState extends State<BsTabView> {
   Widget build(BuildContext context) {
     final index = _controller.index;
     return AnimatedSwitcher(
-      duration: widget.duration ?? BsTransitions.fade,
+      duration: BsTransitions.resolve(context, widget.duration ?? BsTransitions.fade),
       child: KeyedSubtree(key: ValueKey(index), child: widget.children[index]),
     );
   }

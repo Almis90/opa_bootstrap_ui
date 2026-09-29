@@ -5,6 +5,7 @@ import 'bs_collapse.dart';
 import 'bs_focusable.dart';
 import 'tokens/bs_focus_ring.dart';
 import 'tokens/bs_navbar_style.dart';
+import 'tokens/bs_transitions.dart';
 
 /// `.navbar-light`/`.navbar-dark`: which color scheme a [BsNavbar] uses for
 /// its text (its background is set separately via [BsNavbar.background],
@@ -316,7 +317,10 @@ class _BsNavbarTogglerState extends State<_BsNavbarToggler> {
           behavior: HitTestBehavior.opaque,
           onTap: widget.onTap,
           child: AnimatedContainer(
-            duration: style.togglerTransitionDuration ?? BsNavbarStyle.defaultTogglerTransitionDuration,
+            duration: BsTransitions.resolve(
+              context,
+              style.togglerTransitionDuration ?? BsNavbarStyle.defaultTogglerTransitionDuration,
+            ),
             decoration: BoxDecoration(
               border: Border.all(
                 color: (style.togglerBorderColor ?? BsNavbarStyle.lightTogglerBorderColor).withValues(

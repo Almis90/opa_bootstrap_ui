@@ -4,6 +4,7 @@ import 'bs_focusable.dart';
 import 'bs_theme.dart';
 import 'tokens/bs_close_button_style.dart';
 import 'tokens/bs_focus_ring.dart';
+import 'tokens/bs_transitions.dart';
 
 /// A Bootstrap close button (`.btn-close`): a small "×" glyph used to
 /// dismiss alerts, modals, toasts, and offcanvas panels.
@@ -69,10 +70,10 @@ class _BsCloseButtonState extends State<BsCloseButton> {
                 behavior: HitTestBehavior.opaque,
                 onTap: widget.onPressed,
                 child: AnimatedOpacity(
-                  duration: const Duration(milliseconds: 150),
+                  duration: BsTransitions.resolve(context, const Duration(milliseconds: 150)),
                   opacity: opacity,
                   child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 150),
+                    duration: BsTransitions.resolve(context, const Duration(milliseconds: 150)),
                     decoration: BoxDecoration(
                       boxShadow: [
                         if (focused)

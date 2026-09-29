@@ -175,7 +175,7 @@ class _BsCollapseState extends State<BsCollapse> {
 
     return ClipRect(
       child: AnimatedSize(
-        duration: widget.duration ?? BsTransitions.collapse,
+        duration: BsTransitions.resolve(context, widget.duration ?? BsTransitions.collapse),
         curve: widget.curve ?? BsTransitions.collapseCurve,
         alignment: horizontal ? Alignment.centerLeft : Alignment.topCenter,
         onEnd: _handleSizeEnd,

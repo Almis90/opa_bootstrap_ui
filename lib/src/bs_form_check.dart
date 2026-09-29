@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 
 import 'bs_theme.dart';
 import 'tokens/bs_form_style.dart';
+import 'tokens/bs_transitions.dart';
 
 /// `.form-check-input[type=checkbox]`/`[type=radio]`/`.form-switch`: how a
 /// [BsFormCheck] renders and toggles.
@@ -179,11 +180,13 @@ class _BsFormSwitchGlyph extends StatelessWidget {
               BsFormStyle.defaults.checkInputCheckedBackground!)
         : (style.switchColor ?? BsFormStyle.defaultSwitchColor);
     final thumbSize = height * 0.75;
+    final transitionDuration = BsTransitions.resolve(
+      context,
+      style.switchTransitionDuration ?? BsFormStyle.defaultSwitchTransitionDuration,
+    );
 
     return AnimatedContainer(
-      duration:
-          style.switchTransitionDuration ??
-          BsFormStyle.defaultSwitchTransitionDuration,
+      duration: transitionDuration,
       width: width,
       height: height,
       padding: EdgeInsets.symmetric(horizontal: (height - thumbSize) / 2),
@@ -201,9 +204,7 @@ class _BsFormSwitchGlyph extends StatelessWidget {
         ),
       ),
       child: AnimatedAlign(
-        duration:
-            style.switchTransitionDuration ??
-            BsFormStyle.defaultSwitchTransitionDuration,
+        duration: transitionDuration,
         alignment: value ? Alignment.centerRight : Alignment.centerLeft,
         child: Container(
           width: thumbSize,

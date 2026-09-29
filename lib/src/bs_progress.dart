@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'bs_theme.dart';
 import 'bs_variant.dart';
 import 'tokens/bs_progress_style.dart';
+import 'tokens/bs_transitions.dart';
 
 /// A Bootstrap progress track (`.progress`): a rounded, height-capped bar
 /// that hosts one or more [BsProgressBar] segments.
@@ -97,9 +98,10 @@ class BsProgress extends StatelessWidget {
     // `$progress-bar-transition` (`width .6s ease`): each segment's width
     // eases toward its new value rather than jumping, the same as the
     // CSS `transition: width` on `.progress-bar`.
-    final transitionDuration =
-        style.barTransitionDuration ??
-        BsProgressStyle.defaultBarTransitionDuration;
+    final transitionDuration = BsTransitions.resolve(
+      context,
+      style.barTransitionDuration ?? BsProgressStyle.defaultBarTransitionDuration,
+    );
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(borderRadius),
@@ -183,8 +185,8 @@ class _BsProgressBarState extends State<BsProgressBar>
   AnimationController? _controller;
 
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     _syncController();
   }
 
@@ -201,12 +203,15 @@ class _BsProgressBarState extends State<BsProgressBar>
       return;
     }
     final style = BsProgressStyle.defaults.merge(widget.style);
-    _controller ??= AnimationController(
-      vsync: this,
-      duration:
-          style.barAnimationDuration ??
-          BsProgressStyle.defaultBarAnimationDuration,
-    )..repeat();
+    final duration = BsTransitions.resolve(
+      context,
+      style.barAnimationDuration ?? BsProgressStyle.defaultBarAnimationDuration,
+    );
+    if (_controller != null) {
+      _controller!.duration = duration;
+      return;
+    }
+    _controller = AnimationController(vsync: this, duration: duration)..repeat();
   }
 
   @override

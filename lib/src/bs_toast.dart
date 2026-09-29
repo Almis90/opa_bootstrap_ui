@@ -6,6 +6,7 @@ import 'bs_close_button.dart';
 import 'bs_theme.dart';
 import 'tokens/bs_close_button_style.dart';
 import 'tokens/bs_toast_style.dart';
+import 'tokens/bs_transitions.dart';
 
 /// Which corner (or edge center) a toast stack anchors to. The six
 /// top/bottom placements match Bootstrap's own toast docs; [centerStart]/
@@ -235,17 +236,28 @@ class _BsToastItem extends StatefulWidget {
 }
 
 class _BsToastItemState extends State<_BsToastItem> with SingleTickerProviderStateMixin {
-  late final AnimationController _fadeController = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: 200),
-  );
+  static const _baseFadeDuration = Duration(milliseconds: 200);
+
+  late final AnimationController _fadeController = AnimationController(vsync: this, duration: _baseFadeDuration);
   Timer? _autoDismissTimer;
   bool _dismissing = false;
+  bool _started = false;
 
   @override
   void initState() {
     super.initState();
     widget.controller.addListener(_handleControllerChanged);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _fadeController.duration = BsTransitions.resolve(context, _baseFadeDuration);
+    // MediaQuery is only readable here or in build() — the actual initial
+    // show logic only needs to run once, the first time this fires.
+    if (_started) return;
+    _started = true;
+
     // controller.hide() called between showBsToast() returning and this
     // widget actually mounting (e.g. synchronously, right after the call)
     // would otherwise be lost — nothing was listening yet to notice it.
@@ -269,6 +281,7 @@ class _BsToastItemState extends State<_BsToastItem> with SingleTickerProviderSta
     _autoDismissTimer?.cancel();
     widget.controller.hide(); // no-op if already hidden via this same path
     widget.onHide?.call();
+    _fadeController.duration = BsTransitions.resolve(context, _baseFadeDuration);
     await _fadeController.reverse();
     if (mounted) widget.onHidden?.call();
     // Unconditional even if unmounted by then (e.g. the whole overlay

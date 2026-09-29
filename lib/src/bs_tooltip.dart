@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 
 import 'bs_theme.dart';
 import 'tokens/bs_tooltip_style.dart';
+import 'tokens/bs_transitions.dart';
 
 /// Which side of [BsTooltip.child] the bubble opens on, with its arrow
 /// pointing back at it.
@@ -161,10 +162,9 @@ class BsTooltip extends StatefulWidget {
 class _BsTooltipState extends State<BsTooltip> with SingleTickerProviderStateMixin {
   final _link = LayerLink();
   final _overlayController = OverlayPortalController();
-  late final AnimationController _fadeController = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: 150),
-  );
+  static const _baseFadeDuration = Duration(milliseconds: 150);
+
+  late final AnimationController _fadeController = AnimationController(vsync: this, duration: _baseFadeDuration);
   Timer? _waitTimer;
   Timer? _autoHideTimer;
   BsTooltipController? _ownedController;
@@ -277,6 +277,8 @@ class _BsTooltipState extends State<BsTooltip> with SingleTickerProviderStateMix
   @override
   Widget build(BuildContext context) {
     if (!_hasContent) return widget.child;
+
+    _fadeController.duration = BsTransitions.resolve(context, _baseFadeDuration);
 
     final isDark = BsTheme.of(context) == Brightness.dark;
     final style = (isDark ? BsTooltipStyle.darkDefaults : BsTooltipStyle.defaults).merge(widget.style);

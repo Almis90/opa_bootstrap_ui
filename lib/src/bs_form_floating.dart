@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'bs_form_control.dart';
 import 'bs_theme.dart';
 import 'tokens/bs_form_style.dart';
+import 'tokens/bs_transitions.dart';
 
 /// A Bootstrap floating label (`.form-floating`): a [label] that sits over
 /// the control until it's focused or has content, then shrinks and floats
@@ -92,6 +93,7 @@ class _BsFormFloatingState extends State<BsFormFloating> {
   @override
   Widget build(BuildContext context) {
     final isDark = BsTheme.of(context) == Brightness.dark;
+    final duration = BsTransitions.resolve(context, _duration);
     final style = (isDark ? BsFormStyle.darkDefaults : BsFormStyle.defaults).merge(widget.style);
     final height = style.floatingHeight ?? BsFormStyle.defaultFloatingHeight;
     final horizontalPadding =
@@ -144,7 +146,7 @@ class _BsFormFloatingState extends State<BsFormFloating> {
           ),
           IgnorePointer(
             child: AnimatedAlign(
-              duration: _duration,
+              duration: duration,
               curve: Curves.easeOut,
               alignment: _floated ? Alignment.topLeft : Alignment.centerLeft,
               child: Padding(
@@ -154,7 +156,7 @@ class _BsFormFloatingState extends State<BsFormFloating> {
                   top: _floated ? height * 0.22 : 0,
                 ),
                 child: AnimatedDefaultTextStyle(
-                  duration: _duration,
+                  duration: duration,
                   curve: Curves.easeOut,
                   style: TextStyle(
                     fontSize: _floated ? fontSize * 0.85 : fontSize,

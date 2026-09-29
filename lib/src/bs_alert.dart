@@ -4,6 +4,7 @@ import 'bs_close_button.dart';
 import 'bs_theme.dart';
 import 'bs_variant.dart';
 import 'tokens/bs_alert_style.dart';
+import 'tokens/bs_transitions.dart';
 
 /// Programmatic control of a [BsAlert]'s dismissal — mirrors Bootstrap's
 /// `bootstrap.Alert.getInstance(element).close()`. [BsAlert] only ever
@@ -80,7 +81,9 @@ class BsAlert extends StatefulWidget {
 }
 
 class _BsAlertState extends State<BsAlert> {
-  static const _duration = Duration(milliseconds: 150);
+  static const _baseDuration = Duration(milliseconds: 150);
+
+  Duration get _duration => BsTransitions.resolve(context, _baseDuration);
 
   BsAlertController? _ownedController;
   bool _dismissed = false;

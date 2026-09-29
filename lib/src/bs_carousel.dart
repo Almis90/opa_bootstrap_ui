@@ -4,6 +4,7 @@ import 'dart:math' as math;
 import 'package:flutter/widgets.dart';
 
 import 'tokens/bs_carousel_style.dart';
+import 'tokens/bs_transitions.dart';
 
 /// How [BsCarousel] transitions between slides.
 enum BsCarouselTransition {
@@ -249,7 +250,10 @@ class _BsCarouselState extends State<BsCarousel> {
     widget.onIndexChanged?.call(_controller.index);
     widget.onSlide?.call();
 
-    final duration = _resolvedStyle.transitionDuration ?? BsCarouselStyle.defaultTransitionDuration;
+    final duration = BsTransitions.resolve(
+      context,
+      _resolvedStyle.transitionDuration ?? BsCarouselStyle.defaultTransitionDuration,
+    );
     if (widget.transition == BsCarouselTransition.slide) {
       final count = widget.items.length;
       final currentPage = _pageController.page?.round() ?? _pageController.initialPage;
@@ -298,7 +302,7 @@ class _BsCarouselState extends State<BsCarousel> {
     final Widget slides;
     if (widget.transition == BsCarouselTransition.fade) {
       slides = AnimatedSwitcher(
-        duration: style.transitionDuration ?? BsCarouselStyle.defaultTransitionDuration,
+        duration: BsTransitions.resolve(context, style.transitionDuration ?? BsCarouselStyle.defaultTransitionDuration),
         child: KeyedSubtree(
           key: ValueKey(_controller.index),
           child: _buildSlide(widget.items[_controller.index], style),
@@ -427,7 +431,10 @@ class _BsCarouselControlState extends State<_BsCarouselControl> {
         behavior: HitTestBehavior.opaque,
         onTap: widget.onPressed,
         child: AnimatedOpacity(
-          duration: style.controlTransitionDuration ?? BsCarouselStyle.defaultControlTransitionDuration,
+          duration: BsTransitions.resolve(
+            context,
+            style.controlTransitionDuration ?? BsCarouselStyle.defaultControlTransitionDuration,
+          ),
           opacity: opacity,
           child: Center(
             child: Transform.rotate(
@@ -524,7 +531,10 @@ class _BsCarouselIndicatorDot extends StatelessWidget {
         height: style.indicatorHitAreaHeight ?? BsCarouselStyle.defaultIndicatorHitAreaHeight,
         child: Center(
           child: AnimatedOpacity(
-            duration: style.indicatorTransitionDuration ?? BsCarouselStyle.defaultIndicatorTransitionDuration,
+            duration: BsTransitions.resolve(
+              context,
+              style.indicatorTransitionDuration ?? BsCarouselStyle.defaultIndicatorTransitionDuration,
+            ),
             opacity: opacity,
             child: ColoredBox(
               color: style.indicatorActiveBackground ?? BsCarouselStyle.defaultIndicatorActiveBackground,

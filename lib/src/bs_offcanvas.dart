@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'bs_close_button.dart';
 import 'bs_theme.dart';
 import 'tokens/bs_offcanvas_style.dart';
+import 'tokens/bs_transitions.dart';
 
 /// `.offcanvas-start`/`-end`/`-top`/`-bottom`: which viewport edge a
 /// [BsOffcanvas] slides in from.
@@ -53,7 +54,10 @@ Future<T?> showBsOffcanvas<T>({
     barrierDismissible: barrierDismissible,
     barrierLabel: barrierLabel,
     barrierColor: backdropColor,
-    transitionDuration: resolvedStyle.transitionDuration ?? BsOffcanvasStyle.defaultTransitionDuration,
+    transitionDuration: BsTransitions.resolve(
+      context,
+      resolvedStyle.transitionDuration ?? BsOffcanvasStyle.defaultTransitionDuration,
+    ),
     // Registered here rather than in transitionBuilder below: buildPage
     // (which this maps to) runs once per route, while buildTransitions
     // (transitionBuilder) reruns on every state change while visible —

@@ -4,6 +4,7 @@ import 'bs_button_style.dart';
 import 'bs_focusable.dart';
 import 'bs_size.dart';
 import 'bs_variant.dart';
+import 'tokens/bs_transitions.dart';
 
 /// A Bootstrap-styled button (`.btn`).
 ///
@@ -142,9 +143,10 @@ class _BsButtonState extends State<BsButton> {
             child: Opacity(
               opacity: opacity,
               child: AnimatedContainer(
-                duration:
-                    style.transitionDuration ??
-                    BsButtonStyle.defaultTransitionDuration,
+                duration: BsTransitions.resolve(
+                  context,
+                  style.transitionDuration ?? BsButtonStyle.defaultTransitionDuration,
+                ),
                 curve:
                     style.transitionCurve ?? BsButtonStyle.defaultTransitionCurve,
                 padding:

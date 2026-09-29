@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 
 import 'bs_colors.dart';
 import 'tokens/bs_placeholder_style.dart';
+import 'tokens/bs_transitions.dart';
 
 /// Which Bootstrap `.placeholder` animation, if any, a [BsPlaceholder] runs.
 enum BsPlaceholderAnimation {
@@ -60,11 +61,13 @@ class BsPlaceholder extends StatefulWidget {
 }
 
 class _BsPlaceholderState extends State<BsPlaceholder> with SingleTickerProviderStateMixin {
+  static const _baseDuration = Duration(seconds: 2);
+
   AnimationController? _controller;
 
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     _syncController();
   }
 
@@ -80,7 +83,12 @@ class _BsPlaceholderState extends State<BsPlaceholder> with SingleTickerProvider
       _controller = null;
       return;
     }
-    _controller ??= AnimationController(vsync: this, duration: const Duration(seconds: 2));
+    final duration = BsTransitions.resolve(context, _baseDuration);
+    if (_controller == null) {
+      _controller = AnimationController(vsync: this, duration: duration);
+    } else {
+      _controller!.duration = duration;
+    }
     if (widget.animation == BsPlaceholderAnimation.glow) {
       _controller!.repeat(reverse: true);
     } else {

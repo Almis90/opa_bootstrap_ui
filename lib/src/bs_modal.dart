@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'bs_close_button.dart';
 import 'bs_theme.dart';
 import 'tokens/bs_modal_style.dart';
+import 'tokens/bs_transitions.dart';
 
 /// `$modal-sm`/`$modal-md` (implicit default)/`$modal-lg`/`$modal-xl`: how
 /// wide a [BsModalDialog] grows.
@@ -49,7 +50,10 @@ Future<T?> showBsModal<T>({
     barrierDismissible: barrierDismissible,
     barrierLabel: barrierLabel,
     barrierColor: backdropColor,
-    transitionDuration: resolvedStyle.transitionDuration ?? BsModalStyle.defaultTransitionDuration,
+    transitionDuration: BsTransitions.resolve(
+      context,
+      resolvedStyle.transitionDuration ?? BsModalStyle.defaultTransitionDuration,
+    ),
     // Registered here rather than in transitionBuilder below, and driven by
     // AnimationStatus rather than the route's own returned Future — see
     // the identical setup and explanation on showBsOffcanvas.
