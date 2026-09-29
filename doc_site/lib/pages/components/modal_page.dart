@@ -138,7 +138,9 @@ showBsModal<void>(
               'A BsModalController lets code outside show(), hide(), toggle(), or enable()/disable() a modal. '
               'Unlike BsTooltipController/BsPopoverController/BsDropdownController, show()/hide() need a '
               "BuildContext (showBsModal pushes a route rather than driving a persistent widget), and disable() "
-              "only blocks a *future* show() — it can't force-close one already open.",
+              "only blocks a *future* show() — it can't force-close one already open. Note the footer's own Hide "
+              "button below also calls controller.hide(context) — the page's Hide button sits behind the modal's "
+              "own barrier once the modal is open, so it can't be tapped to demonstrate the same call.",
           code: '''
 final controller = BsModalController();
 
@@ -149,6 +151,9 @@ Widget buildModal(BuildContext context) => BsModalDialog(
       child: Text('Modal'),
     ),
     body: BsModalBody(child: Text('Driven by an external BsModalController.')),
+    footer: BsModalFooter(
+      children: [BsButton(onPressed: () => controller.hide(context), child: Text('Hide'))],
+    ),
   ),
 );
 
@@ -159,7 +164,6 @@ Wrap(
       onPressed: () => controller.show(context: context, builder: buildModal),
       child: Text('Show'),
     ),
-    BsButton(onPressed: () => controller.hide(context), child: Text('Hide')),
     BsButton(
       onPressed: () => controller.toggle(context: context, builder: buildModal),
       child: Text('Toggle'),
@@ -293,6 +297,9 @@ class _ControllerDemoState extends State<_ControllerDemo> {
     child: BsModal(
       header: BsModalHeader(onClose: () => Navigator.of(context).pop(), child: const Text('Modal')),
       body: const BsModalBody(child: Text('Driven by an external BsModalController.')),
+      footer: BsModalFooter(
+        children: [BsButton(onPressed: () => _controller.hide(context), child: const Text('Hide'))],
+      ),
     ),
   );
 
@@ -307,7 +314,6 @@ class _ControllerDemoState extends State<_ControllerDemo> {
           onPressed: () => _controller.show<void>(context: context, builder: _buildModal),
           child: const Text('Show'),
         ),
-        BsButton(size: BsSize.sm, onPressed: () => _controller.hide(context), child: const Text('Hide')),
         BsButton(
           size: BsSize.sm,
           onPressed: () => _controller.toggle<void>(context: context, builder: _buildModal),

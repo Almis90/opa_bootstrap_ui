@@ -53,7 +53,9 @@ for (final placement in BsOffcanvasPlacement.values)
               'A BsOffcanvasController lets code outside show(), hide(), toggle(), or enable()/disable() an '
               'offcanvas. Unlike BsTooltipController/BsPopoverController/BsDropdownController, show()/hide() need '
               'a BuildContext (showBsOffcanvas pushes a route rather than driving a persistent widget), and '
-              "disable() only blocks a *future* show() — it can't force-close one already open.",
+              "disable() only blocks a *future* show() — it can't force-close one already open. Note the body's "
+              "own Hide button below also calls controller.hide(context) — the page's Hide button sits behind "
+              "the offcanvas's own barrier once it's open, so it can't be tapped to demonstrate the same call.",
           code: '''
 final controller = BsOffcanvasController();
 
@@ -62,7 +64,15 @@ Widget buildOffcanvas(BuildContext context) => BsOffcanvas(
     onClose: () => Navigator.of(context).pop(),
     child: Text('Offcanvas'),
   ),
-  body: BsOffcanvasBody(child: Text('Driven by an external BsOffcanvasController.')),
+  body: BsOffcanvasBody(
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Driven by an external BsOffcanvasController.'),
+        BsButton(onPressed: () => controller.hide(context), child: Text('Hide')),
+      ],
+    ),
+  ),
 );
 
 Wrap(
@@ -72,7 +82,6 @@ Wrap(
       onPressed: () => controller.show(context: context, builder: buildOffcanvas),
       child: Text('Show'),
     ),
-    BsButton(onPressed: () => controller.hide(context), child: Text('Hide')),
     BsButton(
       onPressed: () => controller.toggle(context: context, builder: buildOffcanvas),
       child: Text('Toggle'),
@@ -142,7 +151,16 @@ class _ControllerDemoState extends State<_ControllerDemo> {
 
   Widget _buildOffcanvas(BuildContext context) => BsOffcanvas(
     header: BsOffcanvasHeader(onClose: () => Navigator.of(context).pop(), child: const Text('Offcanvas')),
-    body: const BsOffcanvasBody(child: Text('Driven by an external BsOffcanvasController.')),
+    body: BsOffcanvasBody(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text('Driven by an external BsOffcanvasController.'),
+          const SizedBox(height: 12),
+          BsButton(onPressed: () => _controller.hide(context), child: const Text('Hide')),
+        ],
+      ),
+    ),
   );
 
   @override
@@ -156,7 +174,6 @@ class _ControllerDemoState extends State<_ControllerDemo> {
           onPressed: () => _controller.show<void>(context: context, builder: _buildOffcanvas),
           child: const Text('Show'),
         ),
-        BsButton(size: BsSize.sm, onPressed: () => _controller.hide(context), child: const Text('Hide')),
         BsButton(
           size: BsSize.sm,
           onPressed: () => _controller.toggle<void>(context: context, builder: _buildOffcanvas),
