@@ -193,6 +193,24 @@ Column(
 )''',
           preview: const _ControllerDemo(),
         ),
+        DocExample(
+          title: 'Events',
+          description:
+              'onExpansionChanged fires immediately for every item that starts expanding or collapsing — whether '
+              'from a tap or a controller call — mirroring show.bs.collapse/hide.bs.collapse; onExpansionEnd fires '
+              'once each transition actually finishes, mirroring shown.bs.collapse/hidden.bs.collapse. Both are '
+              'called per index, since opening one item can simultaneously close another.',
+          code: '''
+BsAccordion(
+  onExpansionChanged: (index, isExpanded) => log('\$index changed: \$isExpanded'),
+  onExpansionEnd: (index, isExpanded) => log('\$index ended: \$isExpanded'),
+  items: [
+    BsAccordionItem(header: Text('Accordion Item #1'), body: Text('...')),
+    BsAccordionItem(header: Text('Accordion Item #2'), body: Text('...')),
+  ],
+)''',
+          preview: const _EventsDemo(),
+        ),
       ],
     );
   }
@@ -247,6 +265,51 @@ class _ControllerDemoState extends State<_ControllerDemo> {
             ],
           ),
         ),
+      ],
+    );
+  }
+}
+
+class _EventsDemo extends StatefulWidget {
+  const _EventsDemo();
+
+  @override
+  State<_EventsDemo> createState() => _EventsDemoState();
+}
+
+class _EventsDemoState extends State<_EventsDemo> {
+  final _events = <String>[];
+
+  void _log(String event) => setState(() => _events.add(event));
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: 400,
+          child: BsAccordion(
+            onExpansionChanged: (index, isExpanded) => _log('$index changed: $isExpanded'),
+            onExpansionEnd: (index, isExpanded) => _log('$index ended: $isExpanded'),
+            items: const [
+              BsAccordionItem(header: Text('Accordion Item #1'), body: Text('Open this to see the events logged below.')),
+              BsAccordionItem(header: Text('Accordion Item #2'), body: Text("This is the second item's accordion body.")),
+            ],
+          ),
+        ),
+        const SizedBox(height: 12),
+        if (_events.isEmpty)
+          Text(
+            'No events yet — open an item above.',
+            style: TextStyle(color: BsBody.secondaryColorOf(context)),
+          )
+        else
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [for (final event in _events) BsBadge(variant: BsVariant.secondary, child: Text(event))],
+          ),
       ],
     );
   }
