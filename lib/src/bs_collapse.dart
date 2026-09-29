@@ -177,7 +177,11 @@ class _BsCollapseState extends State<BsCollapse> {
       child: AnimatedSize(
         duration: BsTransitions.resolve(context, widget.duration ?? BsTransitions.collapse),
         curve: widget.curve ?? BsTransitions.collapseCurve,
-        alignment: horizontal ? Alignment.centerLeft : Alignment.topCenter,
+        // AnimatedSize.alignment is AlignmentGeometry, so centerStart
+        // resolves against the ambient Directionality automatically — the
+        // horizontal collapse grows from the reading-start edge outward,
+        // matching normal RTL block flow instead of always the left.
+        alignment: horizontal ? AlignmentDirectional.centerStart : Alignment.topCenter,
         onEnd: _handleSizeEnd,
         child: isExpanded
             ? widget.child

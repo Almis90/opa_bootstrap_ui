@@ -11,13 +11,13 @@ void main() {
       ),
     );
 
-    Alignment alignmentOf() => tester.widget<AnimatedAlign>(find.byType(AnimatedAlign)).alignment as Alignment;
-    expect(alignmentOf(), Alignment.centerLeft);
+    AlignmentGeometry alignmentOf() => tester.widget<AnimatedAlign>(find.byType(AnimatedAlign)).alignment;
+    expect(alignmentOf(), AlignmentDirectional.centerStart);
 
     await tester.tap(find.byType(BsFormFloating));
     await tester.pump(const Duration(milliseconds: 150));
 
-    expect(alignmentOf(), Alignment.topLeft);
+    expect(alignmentOf(), AlignmentDirectional.topStart);
     expect(tester.widget<EditableText>(find.byType(EditableText)).focusNode.hasFocus, true);
   });
 }

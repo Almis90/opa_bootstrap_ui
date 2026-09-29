@@ -221,18 +221,21 @@ class _BsTooltipState extends State<BsTooltip> with SingleTickerProviderStateMix
     return true;
   }
 
+  // CompositedTransformFollower's anchors are plain Alignment, not
+  // AlignmentGeometry, so start/end need a manual resolve() against the
+  // ambient Directionality instead of just handing it AlignmentDirectional.
   Alignment get _targetAnchor => switch (_effectivePlacement) {
     BsTooltipPlacement.top => Alignment.topCenter,
     BsTooltipPlacement.bottom => Alignment.bottomCenter,
-    BsTooltipPlacement.start => Alignment.centerLeft,
-    BsTooltipPlacement.end => Alignment.centerRight,
+    BsTooltipPlacement.start => AlignmentDirectional.centerStart.resolve(Directionality.of(context)),
+    BsTooltipPlacement.end => AlignmentDirectional.centerEnd.resolve(Directionality.of(context)),
   };
 
   Alignment get _followerAnchor => switch (_effectivePlacement) {
     BsTooltipPlacement.top => Alignment.bottomCenter,
     BsTooltipPlacement.bottom => Alignment.topCenter,
-    BsTooltipPlacement.start => Alignment.centerRight,
-    BsTooltipPlacement.end => Alignment.centerLeft,
+    BsTooltipPlacement.start => AlignmentDirectional.centerEnd.resolve(Directionality.of(context)),
+    BsTooltipPlacement.end => AlignmentDirectional.centerStart.resolve(Directionality.of(context)),
   };
 
   void _scheduleShow() {
@@ -330,6 +333,7 @@ class _BsTooltipContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textDirection = Directionality.of(context);
     final background = style.background ?? BsTooltipStyle.defaultBackground;
 
     final bubble = ConstrainedBox(
@@ -362,13 +366,31 @@ class _BsTooltipContent extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [_BsTooltipArrow(direction: _BsTooltipArrowDirection.up, color: background, style: style), bubble],
       ),
+      // Row's own child order is already logical (first child sits at the
+      // start edge, auto-flipping physical sides under RTL) — only the
+      // arrow glyph's drawn direction needs to flip along with it, so it
+      // still visually points at the target once that flip happens.
       BsTooltipPlacement.start => Row(
         mainAxisSize: MainAxisSize.min,
-        children: [bubble, _BsTooltipArrow(direction: _BsTooltipArrowDirection.right, color: background, style: style)],
+        children: [
+          bubble,
+          _BsTooltipArrow(
+            direction: textDirection == TextDirection.rtl ? _BsTooltipArrowDirection.left : _BsTooltipArrowDirection.right,
+            color: background,
+            style: style,
+          ),
+        ],
       ),
       BsTooltipPlacement.end => Row(
         mainAxisSize: MainAxisSize.min,
-        children: [_BsTooltipArrow(direction: _BsTooltipArrowDirection.left, color: background, style: style), bubble],
+        children: [
+          _BsTooltipArrow(
+            direction: textDirection == TextDirection.rtl ? _BsTooltipArrowDirection.right : _BsTooltipArrowDirection.left,
+            color: background,
+            style: style,
+          ),
+          bubble,
+        ],
       ),
     };
   }

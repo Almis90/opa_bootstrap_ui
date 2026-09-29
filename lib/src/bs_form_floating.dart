@@ -148,7 +148,7 @@ class _BsFormFloatingState extends State<BsFormFloating> {
             child: AnimatedAlign(
               duration: duration,
               curve: Curves.easeOut,
-              alignment: _floated ? Alignment.topLeft : Alignment.centerLeft,
+              alignment: _floated ? AlignmentDirectional.topStart : AlignmentDirectional.centerStart,
               child: Padding(
                 padding: EdgeInsets.only(
                   left: horizontalPadding,

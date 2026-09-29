@@ -236,11 +236,21 @@ class _BsPopoverState extends State<BsPopover> {
   }
 
   Widget _buildOverlay(BsPopoverStyle style) {
+    // CompositedTransformFollower's anchors are plain Alignment, not
+    // AlignmentGeometry, so start/end need a manual resolve() against the
+    // ambient Directionality instead of just handing it AlignmentDirectional.
+    final textDirection = Directionality.of(context);
     final (Alignment targetAnchor, Alignment followerAnchor) = switch (_effectivePlacement) {
       BsPopoverPlacement.top => (Alignment.topCenter, Alignment.bottomCenter),
       BsPopoverPlacement.bottom => (Alignment.bottomCenter, Alignment.topCenter),
-      BsPopoverPlacement.start => (Alignment.centerLeft, Alignment.centerRight),
-      BsPopoverPlacement.end => (Alignment.centerRight, Alignment.centerLeft),
+      BsPopoverPlacement.start => (
+        AlignmentDirectional.centerStart.resolve(textDirection),
+        AlignmentDirectional.centerEnd.resolve(textDirection),
+      ),
+      BsPopoverPlacement.end => (
+        AlignmentDirectional.centerEnd.resolve(textDirection),
+        AlignmentDirectional.centerStart.resolve(textDirection),
+      ),
     };
 
     return Stack(
@@ -281,6 +291,7 @@ class _BsPopoverContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textDirection = Directionality.of(context);
     final borderRadius = BorderRadius.circular(style.borderRadius ?? BsPopoverStyle.defaultBorderRadius);
 
     // Without IntrinsicWidth, the Column below's `crossAxisAlignment:
@@ -348,13 +359,29 @@ class _BsPopoverContent extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [_BsPopoverArrow(direction: _BsPopoverArrowDirection.up, style: style), box],
       ),
+      // Row's own child order is already logical (first child sits at the
+      // start edge, auto-flipping physical sides under RTL) — only the
+      // arrow glyph's drawn direction needs to flip along with it, so it
+      // still visually points at the trigger once that flip happens.
       BsPopoverPlacement.start => Row(
         mainAxisSize: MainAxisSize.min,
-        children: [box, _BsPopoverArrow(direction: _BsPopoverArrowDirection.right, style: style)],
+        children: [
+          box,
+          _BsPopoverArrow(
+            direction: textDirection == TextDirection.rtl ? _BsPopoverArrowDirection.left : _BsPopoverArrowDirection.right,
+            style: style,
+          ),
+        ],
       ),
       BsPopoverPlacement.end => Row(
         mainAxisSize: MainAxisSize.min,
-        children: [_BsPopoverArrow(direction: _BsPopoverArrowDirection.left, style: style), box],
+        children: [
+          _BsPopoverArrow(
+            direction: textDirection == TextDirection.rtl ? _BsPopoverArrowDirection.right : _BsPopoverArrowDirection.left,
+            style: style,
+          ),
+          box,
+        ],
       ),
     };
   }

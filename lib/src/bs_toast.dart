@@ -199,15 +199,20 @@ class _BsToastManager {
     );
   }
 
-  Alignment _alignmentFor(BsToastPosition position) => switch (position) {
-    BsToastPosition.topStart => Alignment.topLeft,
+  // Align.alignment is AlignmentGeometry, so AlignmentDirectional resolves
+  // against the ambient Directionality automatically — no manual
+  // resolve() needed here, unlike the CompositedTransformFollower-based
+  // overlays (BsTooltip/BsPopover/BsDropdown), whose anchors are locked to
+  // plain Alignment.
+  AlignmentGeometry _alignmentFor(BsToastPosition position) => switch (position) {
+    BsToastPosition.topStart => AlignmentDirectional.topStart,
     BsToastPosition.topCenter => Alignment.topCenter,
-    BsToastPosition.topEnd => Alignment.topRight,
-    BsToastPosition.centerStart => Alignment.centerLeft,
-    BsToastPosition.centerEnd => Alignment.centerRight,
-    BsToastPosition.bottomStart => Alignment.bottomLeft,
+    BsToastPosition.topEnd => AlignmentDirectional.topEnd,
+    BsToastPosition.centerStart => AlignmentDirectional.centerStart,
+    BsToastPosition.centerEnd => AlignmentDirectional.centerEnd,
+    BsToastPosition.bottomStart => AlignmentDirectional.bottomStart,
     BsToastPosition.bottomCenter => Alignment.bottomCenter,
-    BsToastPosition.bottomEnd => Alignment.bottomRight,
+    BsToastPosition.bottomEnd => AlignmentDirectional.bottomEnd,
   };
 }
 

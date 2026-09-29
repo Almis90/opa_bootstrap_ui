@@ -33,10 +33,16 @@ class _BsFormRangeState extends State<BsFormRange> {
   bool _dragging = false;
 
   void _updateFromLocalX(double dx, double width, double thumbSize) {
+    // Native <input type="range" dir="rtl"> mirrors itself — min on the
+    // right, dragging from the right increases the value — so the pixel
+    // math is measured from the reading-end edge instead of always the
+    // left, matching that browser behavior for Bootstrap's .form-range.
+    final isRtl = Directionality.of(context) == TextDirection.rtl;
+    final effectiveDx = isRtl ? width - dx : dx;
     final usable = width - thumbSize;
     final t = usable <= 0
         ? 0.0
-        : ((dx - thumbSize / 2) / usable).clamp(0.0, 1.0);
+        : ((effectiveDx - thumbSize / 2) / usable).clamp(0.0, 1.0);
     widget.onChanged?.call(widget.min + t * (widget.max - widget.min));
   }
 
@@ -93,7 +99,7 @@ class _BsFormRangeState extends State<BsFormRange> {
             height: thumbSize,
             width: double.infinity,
             child: Stack(
-              alignment: Alignment.centerLeft,
+              alignment: AlignmentDirectional.centerStart,
               children: [
                 Container(
                   height: trackHeight,
@@ -107,8 +113,8 @@ class _BsFormRangeState extends State<BsFormRange> {
                     ),
                   ),
                 ),
-                Positioned(
-                  left: fraction * (width - thumbSize),
+                PositionedDirectional(
+                  start: fraction * (width - thumbSize),
                   child: Container(
                     width: thumbSize,
                     height: thumbSize,

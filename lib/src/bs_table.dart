@@ -164,7 +164,7 @@ class _BsTableState extends State<BsTable> {
             style: TextStyle(
               color: style.captionColor ?? BsTableStyle.defaultCaptionColor,
             ),
-            textAlign: TextAlign.left,
+            textAlign: TextAlign.start,
             child: widget.caption!,
           ),
         ),

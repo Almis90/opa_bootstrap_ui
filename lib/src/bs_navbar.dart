@@ -222,7 +222,11 @@ class _BsNavbarBrandState extends State<_BsNavbarBrand> {
       child: GestureDetector(
         onTap: widget.onTap,
         child: Padding(
-          padding: EdgeInsets.only(right: style.brandMarginEnd ?? BsNavbarStyle.defaultBrandMarginEnd),
+          // EdgeInsetsDirectional so the field named "...MarginEnd" is
+          // actually applied to the logical end side, not always physical
+          // right — Padding.padding is EdgeInsetsGeometry, so this
+          // resolves against the ambient Directionality automatically.
+          padding: EdgeInsetsDirectional.only(end: style.brandMarginEnd ?? BsNavbarStyle.defaultBrandMarginEnd),
           child: DefaultTextStyle.merge(
             style: TextStyle(
               color: color,

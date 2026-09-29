@@ -23,7 +23,7 @@ enum BsCardImgPosition {
 /// [BsCardFooter], etc. — Bootstrap's card has no fixed structure, so this
 /// widget is just the bordered/rounded shell.
 class BsCard extends StatelessWidget {
-  const BsCard({super.key, required this.child, this.style}) : _groupLeftJoin = false, _groupRightJoin = false;
+  const BsCard({super.key, required this.child, this.style}) : _groupStartJoin = false, _groupEndJoin = false;
 
   /// Used by [BsCardGroup] to square off the corners/border shared with a
   /// neighboring card.
@@ -31,8 +31,8 @@ class BsCard extends StatelessWidget {
     super.key,
     required this.child,
     this.style,
-    required this._groupLeftJoin,
-    required this._groupRightJoin,
+    required this._groupStartJoin,
+    required this._groupEndJoin,
   });
 
   /// The card's content, typically a [Column] of header/body/footer/image
@@ -42,15 +42,17 @@ class BsCard extends StatelessWidget {
   /// Style overrides layered on top of [BsCardStyle.defaults].
   final BsCardStyle? style;
 
-  /// Whether this card shares its left edge with a preceding card in a
-  /// [BsCardGroup]: squares off the left corners and drops the left border,
-  /// so the seam reads as the neighbor's single shared border.
-  final bool _groupLeftJoin;
+  /// Whether this card shares its start edge (left in LTR, right in RTL)
+  /// with a preceding card in a [BsCardGroup]: squares off the start
+  /// corners and drops the start border, so the seam reads as the
+  /// neighbor's single shared border.
+  final bool _groupStartJoin;
 
-  /// Whether this card shares its right edge with a following card in a
-  /// [BsCardGroup]: squares off the right corners only, since this card's
-  /// own right border becomes the shared seam.
-  final bool _groupRightJoin;
+  /// Whether this card shares its end edge (right in LTR, left in RTL)
+  /// with a following card in a [BsCardGroup]: squares off the end
+  /// corners only, since this card's own end border becomes the shared
+  /// seam.
+  final bool _groupEndJoin;
 
   @override
   Widget build(BuildContext context) {
@@ -61,27 +63,47 @@ class BsCard extends StatelessWidget {
     final borderColor = style.borderColor ?? BsCardStyle.defaultBorderColor;
     final background = style.background ?? BsCardStyle.defaultBackground;
     final radius = Radius.circular(borderRadius);
-    final outerBorderRadius = BorderRadius.only(
-      topLeft: _groupLeftJoin ? Radius.zero : radius,
-      bottomLeft: _groupLeftJoin ? Radius.zero : radius,
-      topRight: _groupRightJoin ? Radius.zero : radius,
-      bottomRight: _groupRightJoin ? Radius.zero : radius,
+    // BorderRadiusDirectional/BorderDirectional so the shared seam always
+    // lands on the actual edge two adjacent cards touch — left in LTR,
+    // right in RTL — instead of assuming list order always reads left to
+    // right the way Border(left:)/Border(right:) would.
+    final outerBorderRadius = BorderRadiusDirectional.only(
+      topStart: _groupStartJoin ? Radius.zero : radius,
+      bottomStart: _groupStartJoin ? Radius.zero : radius,
+      topEnd: _groupEndJoin ? Radius.zero : radius,
+      bottomEnd: _groupEndJoin ? Radius.zero : radius,
     );
 
     return _BsCardScope(
       style: style,
-      groupLeftJoin: _groupLeftJoin,
-      groupRightJoin: _groupRightJoin,
+      groupStartJoin: _groupStartJoin,
+      groupEndJoin: _groupEndJoin,
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: background,
-          border: Border(
+          border: BorderDirectional(
             top: BorderSide(color: borderColor, width: borderWidth),
-            right: BorderSide(color: borderColor, width: borderWidth),
+            end: BorderSide(color: borderColor, width: borderWidth),
             bottom: BorderSide(color: borderColor, width: borderWidth),
-            left: _groupLeftJoin ? BorderSide.none : BorderSide(color: borderColor, width: borderWidth),
+            // BorderSide.none won't do here: unlike Border.paint(),
+            // BorderDirectional.paint() requires every side to share the
+            // same color whenever borderRadius is non-null, even sides
+            // with style: BorderStyle.none — BorderSide.none's own
+            // default color (opaque black) doesn't match borderColor, so
+            // it fails that check. An explicit color keeps it invisible
+            // (style: none) while satisfying the uniform-color rule.
+            start: _groupStartJoin
+                ? BorderSide(color: borderColor, style: BorderStyle.none)
+                : BorderSide(color: borderColor, width: borderWidth),
           ),
-          borderRadius: outerBorderRadius,
+          // A card sandwiched between two neighbors (both joined) squares
+          // off every corner, i.e. a geometrically-zero radius — but unlike
+          // Border.paint(), BorderDirectional.paint() only special-cases a
+          // *null* borderRadius for a non-uniform-style border (this one
+          // has a style: none side), not one that's merely zero-valued.
+          // Passing null instead sidesteps that assertion; visually a zero
+          // radius and no radius already look identical.
+          borderRadius: (_groupStartJoin && _groupEndJoin) ? null : outerBorderRadius,
           boxShadow: style.boxShadow,
         ),
         child: ClipRRect(
@@ -103,14 +125,14 @@ class BsCard extends StatelessWidget {
 class _BsCardScope extends InheritedWidget {
   const _BsCardScope({
     required this.style,
-    required this.groupLeftJoin,
-    required this.groupRightJoin,
+    required this.groupStartJoin,
+    required this.groupEndJoin,
     required super.child,
   });
 
   final BsCardStyle style;
-  final bool groupLeftJoin;
-  final bool groupRightJoin;
+  final bool groupStartJoin;
+  final bool groupEndJoin;
 
   static BsCardStyle? maybeOf(BuildContext context) =>
       context.dependOnInheritedWidgetOfExactType<_BsCardScope>()?.style;
@@ -121,8 +143,8 @@ class _BsCardScope extends InheritedWidget {
   @override
   bool updateShouldNotify(_BsCardScope oldWidget) =>
       style != oldWidget.style ||
-      groupLeftJoin != oldWidget.groupLeftJoin ||
-      groupRightJoin != oldWidget.groupRightJoin;
+      groupStartJoin != oldWidget.groupStartJoin ||
+      groupEndJoin != oldWidget.groupEndJoin;
 }
 
 /// `.card-header`: an optional top cap, e.g. for a title or nav.
@@ -142,9 +164,9 @@ class BsCardHeader extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: style.capBackground ?? BsCardStyle.defaultCapBackground,
-        borderRadius: BorderRadius.only(
-          topLeft: scope?.groupLeftJoin ?? false ? Radius.zero : radius,
-          topRight: scope?.groupRightJoin ?? false ? Radius.zero : radius,
+        borderRadius: BorderRadiusDirectional.only(
+          topStart: scope?.groupStartJoin ?? false ? Radius.zero : radius,
+          topEnd: scope?.groupEndJoin ?? false ? Radius.zero : radius,
         ),
         border: Border(
           bottom: BorderSide(
@@ -178,9 +200,9 @@ class BsCardFooter extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: style.capBackground ?? BsCardStyle.defaultCapBackground,
-        borderRadius: BorderRadius.only(
-          bottomLeft: scope?.groupLeftJoin ?? false ? Radius.zero : radius,
-          bottomRight: scope?.groupRightJoin ?? false ? Radius.zero : radius,
+        borderRadius: BorderRadiusDirectional.only(
+          bottomStart: scope?.groupStartJoin ?? false ? Radius.zero : radius,
+          bottomEnd: scope?.groupEndJoin ?? false ? Radius.zero : radius,
         ),
         border: Border(
           top: BorderSide(
@@ -313,15 +335,15 @@ class BsCardImg extends StatelessWidget {
     final style = scope?.style ?? BsCardStyle.defaults;
     final innerRadius = style.innerBorderRadius ?? BsCardStyle.defaultInnerBorderRadius;
     final radius = Radius.circular(innerRadius);
-    final squareLeft = scope?.groupLeftJoin ?? false;
-    final squareRight = scope?.groupRightJoin ?? false;
+    final squareStart = scope?.groupStartJoin ?? false;
+    final squareEnd = scope?.groupEndJoin ?? false;
 
     return ClipRRect(
-      borderRadius: BorderRadius.only(
-        topLeft: position != BsCardImgPosition.bottom && !squareLeft ? radius : Radius.zero,
-        topRight: position != BsCardImgPosition.bottom && !squareRight ? radius : Radius.zero,
-        bottomLeft: position != BsCardImgPosition.top && !squareLeft ? radius : Radius.zero,
-        bottomRight: position != BsCardImgPosition.top && !squareRight ? radius : Radius.zero,
+      borderRadius: BorderRadiusDirectional.only(
+        topStart: position != BsCardImgPosition.bottom && !squareStart ? radius : Radius.zero,
+        topEnd: position != BsCardImgPosition.bottom && !squareEnd ? radius : Radius.zero,
+        bottomStart: position != BsCardImgPosition.top && !squareStart ? radius : Radius.zero,
+        bottomEnd: position != BsCardImgPosition.top && !squareEnd ? radius : Radius.zero,
       ),
       child: child,
     );
@@ -401,8 +423,8 @@ class BsCardGroup extends StatelessWidget {
                   child: BsCard._grouped(
                     key: children[i].key,
                     style: children[i].style,
-                    groupLeftJoin: i != 0,
-                    groupRightJoin: i != children.length - 1,
+                    groupStartJoin: i != 0,
+                    groupEndJoin: i != children.length - 1,
                     child: children[i].child,
                   ),
                 ),

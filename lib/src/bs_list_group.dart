@@ -146,30 +146,53 @@ class _BsListGroupItemWidgetState extends State<_BsListGroupItemWidget> {
         : item.variant?.borderSubtle ?? style.borderColor ?? BsListGroupStyle.defaultBorderColor;
     final side = BorderSide(color: borderColor, width: borderWidth);
 
-    final Border border;
+    // BorderDirectional for the horizontal orientation's shared seam, so
+    // it lands on the edge two adjacent items actually touch — left in
+    // LTR, right in RTL — the same fix as BsCardGroup/BsButtonGroup. The
+    // vertical orientation doesn't need this: top/bottom aren't affected
+    // by text direction, and its left/right sides are always both drawn
+    // (the outer edges), never conditionally dropped.
+    final BoxBorder border;
     if (widget.flush) {
       final dividerSide = widget.isLast ? BorderSide.none : side;
-      border = widget.horizontal ? Border(right: dividerSide) : Border(bottom: dividerSide);
+      border = widget.horizontal ? BorderDirectional(end: dividerSide) : Border(bottom: dividerSide);
     } else if (widget.horizontal) {
-      border = Border(top: side, right: side, bottom: side, left: widget.isFirst ? side : BorderSide.none);
+      // Not BorderSide.none: BorderDirectional.paint() requires every
+      // side to share one color whenever borderRadius is non-null, even
+      // style: none ones — BorderSide.none's own color (opaque black)
+      // fails that, so it needs an explicit color match instead.
+      border = BorderDirectional(
+        top: side,
+        end: side,
+        bottom: side,
+        start: widget.isFirst ? side : BorderSide(color: borderColor, style: BorderStyle.none),
+      );
     } else {
       border = Border(left: side, right: side, bottom: side, top: widget.isFirst ? side : BorderSide.none);
     }
 
-    final BorderRadius borderRadius;
+    final BorderRadiusGeometry? borderRadius;
     if (widget.flush) {
       borderRadius = BorderRadius.zero;
+    } else if (widget.horizontal) {
+      final radius = Radius.circular(style.borderRadius ?? BsListGroupStyle.defaultBorderRadius);
+      // An item sandwiched between two neighbors squares off every
+      // corner — geometrically zero, but BorderDirectional.paint() (see
+      // above) only special-cases a *null* borderRadius for a
+      // non-uniform-style border, not one that's merely zero-valued, so
+      // this passes null instead of a zero BorderRadiusDirectional.
+      borderRadius = (!widget.isFirst && !widget.isLast)
+          ? null
+          : BorderRadiusDirectional.horizontal(
+              start: widget.isFirst ? radius : Radius.zero,
+              end: widget.isLast ? radius : Radius.zero,
+            );
     } else {
       final radius = Radius.circular(style.borderRadius ?? BsListGroupStyle.defaultBorderRadius);
-      borderRadius = widget.horizontal
-          ? BorderRadius.horizontal(
-              left: widget.isFirst ? radius : Radius.zero,
-              right: widget.isLast ? radius : Radius.zero,
-            )
-          : BorderRadius.vertical(
-              top: widget.isFirst ? radius : Radius.zero,
-              bottom: widget.isLast ? radius : Radius.zero,
-            );
+      borderRadius = BorderRadius.vertical(
+        top: widget.isFirst ? radius : Radius.zero,
+        bottom: widget.isLast ? radius : Radius.zero,
+      );
     }
 
     final Color background;

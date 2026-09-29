@@ -92,9 +92,13 @@ Future<T?> showBsOffcanvas<T>({
     },
     transitionBuilder: (context, animation, secondaryAnimation, child) {
       final curved = CurvedAnimation(parent: animation, curve: Curves.easeOut);
+      // .start/.end mirror Bootstrap's own logical placements — which
+      // physical edge they slide in from flips with Directionality, the
+      // same way .offcanvas-start/.offcanvas-end do in Bootstrap's RTL CSS.
+      final isRtl = Directionality.of(context) == TextDirection.rtl;
       final beginOffset = switch (placement) {
-        BsOffcanvasPlacement.start => const Offset(-1, 0),
-        BsOffcanvasPlacement.end => const Offset(1, 0),
+        BsOffcanvasPlacement.start => Offset(isRtl ? 1 : -1, 0),
+        BsOffcanvasPlacement.end => Offset(isRtl ? -1 : 1, 0),
         BsOffcanvasPlacement.top => const Offset(0, -1),
         BsOffcanvasPlacement.bottom => const Offset(0, 1),
       };
@@ -239,8 +243,8 @@ class _BsOffcanvasPositioned extends StatelessWidget {
     final viewport = MediaQuery.sizeOf(context);
     final horizontal = placement == BsOffcanvasPlacement.start || placement == BsOffcanvasPlacement.end;
     final alignment = switch (placement) {
-      BsOffcanvasPlacement.start => Alignment.centerLeft,
-      BsOffcanvasPlacement.end => Alignment.centerRight,
+      BsOffcanvasPlacement.start => AlignmentDirectional.centerStart,
+      BsOffcanvasPlacement.end => AlignmentDirectional.centerEnd,
       BsOffcanvasPlacement.top => Alignment.topCenter,
       BsOffcanvasPlacement.bottom => Alignment.bottomCenter,
     };
@@ -287,9 +291,14 @@ class BsOffcanvas extends StatelessWidget {
       color: style.borderColor ?? BsOffcanvasStyle.defaultBorderColor,
       width: style.borderWidth ?? BsOffcanvasStyle.defaultBorderWidth,
     );
+    // BorderDirectional for start/end so the border lands on the edge
+    // actually facing the page's content in both directions — flush
+    // against the start edge means the border belongs on the end side,
+    // and vice versa, the same as Border(right:)/Border(left:) would only
+    // happen to get right in LTR.
     final border = switch (placement) {
-      BsOffcanvasPlacement.start => Border(right: borderSide),
-      BsOffcanvasPlacement.end => Border(left: borderSide),
+      BsOffcanvasPlacement.start => BorderDirectional(end: borderSide),
+      BsOffcanvasPlacement.end => BorderDirectional(start: borderSide),
       BsOffcanvasPlacement.top => Border(bottom: borderSide),
       BsOffcanvasPlacement.bottom => Border(top: borderSide),
     };

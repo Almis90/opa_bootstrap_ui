@@ -205,7 +205,10 @@ class _BsFormSwitchGlyph extends StatelessWidget {
       ),
       child: AnimatedAlign(
         duration: transitionDuration,
-        alignment: value ? Alignment.centerRight : Alignment.centerLeft,
+        // The checked thumb migrates toward the reading-end side (matching
+        // Bootstrap's own RTLCSS-flipped background-position for
+        // .form-switch), not always physically right.
+        alignment: value ? AlignmentDirectional.centerEnd : AlignmentDirectional.centerStart,
         child: Container(
           width: thumbSize,
           height: thumbSize,

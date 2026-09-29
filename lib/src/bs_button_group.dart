@@ -47,14 +47,18 @@ class BsButtonGroup extends StatelessWidget {
 
       final isFirst = i == 0;
       final isLast = i == children.length - 1;
+      // BorderRadiusDirectional.horizontal so the group's outer rounded
+      // corners land on the actual first/last buttons regardless of
+      // Directionality — BsButtonStyle.borderRadius is
+      // BorderRadiusGeometry, so this resolves automatically.
       final borderRadius = vertical
           ? BorderRadius.vertical(
               top: isFirst ? Radius.circular(radius) : Radius.zero,
               bottom: isLast ? Radius.circular(radius) : Radius.zero,
             )
-          : BorderRadius.horizontal(
-              left: isFirst ? Radius.circular(radius) : Radius.zero,
-              right: isLast ? Radius.circular(radius) : Radius.zero,
+          : BorderRadiusDirectional.horizontal(
+              start: isFirst ? Radius.circular(radius) : Radius.zero,
+              end: isLast ? Radius.circular(radius) : Radius.zero,
             );
 
       final child = BsButton(
@@ -82,11 +86,18 @@ class BsButtonGroup extends StatelessWidget {
         cumulativeOverlap += borderWidth;
       }
 
+      // Under RTL, Row lays out each subsequent button toward the
+      // physical left instead of the right (first child = start = right
+      // in RTL) — its preceding neighbor to overlap sits on the opposite
+      // physical side from LTR, so the shift direction flips too.
+      final isRtl = !vertical && Directionality.of(context) == TextDirection.rtl;
       widgets.add(
         isFirst
             ? child
             : Transform.translate(
-                offset: vertical ? Offset(0, -cumulativeOverlap) : Offset(-cumulativeOverlap, 0),
+                offset: vertical
+                    ? Offset(0, -cumulativeOverlap)
+                    : Offset(isRtl ? cumulativeOverlap : -cumulativeOverlap, 0),
                 child: child,
               ),
       );

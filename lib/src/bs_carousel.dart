@@ -331,16 +331,20 @@ class _BsCarouselState extends State<BsCarousel> {
               fit: StackFit.expand,
               children: [
                 slides,
+                // PositionedDirectional so "previous" stays on the
+                // reading-start side (left in LTR, right in RTL) instead
+                // of always physical left, matching Bootstrap's own
+                // RTL-flipped .carousel-control-prev/-next.
                 if (widget.showControls && count > 1) ...[
-                  Positioned(
-                    left: 0,
+                  PositionedDirectional(
+                    start: 0,
                     top: 0,
                     bottom: 0,
                     width: controlWidth,
                     child: _BsCarouselControl(direction: -1, style: style, onPressed: _controller.previous),
                   ),
-                  Positioned(
-                    right: 0,
+                  PositionedDirectional(
+                    end: 0,
                     top: 0,
                     bottom: 0,
                     width: controlWidth,
@@ -438,7 +442,13 @@ class _BsCarouselControlState extends State<_BsCarouselControl> {
           opacity: opacity,
           child: Center(
             child: Transform.rotate(
-              angle: widget.direction < 0 ? math.pi : 0,
+              // The chevron should still visually point toward the
+              // reading-backward/-forward direction once PositionedDirectional
+              // flips this control's physical side under RTL, not always left
+              // for prev/right for next.
+              angle: (Directionality.of(context) == TextDirection.rtl ? widget.direction > 0 : widget.direction < 0)
+                  ? math.pi
+                  : 0,
               child: CustomPaint(
                 size: Size.square(style.controlIconSize ?? BsCarouselStyle.defaultControlIconSize),
                 painter: _BsCarouselChevronPainter(style.controlColor ?? BsCarouselStyle.defaultControlColor),

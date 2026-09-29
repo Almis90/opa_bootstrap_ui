@@ -278,15 +278,45 @@ class _BsDropdownState extends State<BsDropdown> {
 
   Widget _buildOverlay(BsDropdownStyle style) {
     final spacer = style.spacer ?? BsDropdownStyle.defaultSpacer;
+    // CompositedTransformFollower's anchors are plain Alignment, not
+    // AlignmentGeometry, so every start/end/alignEnd case needs a manual
+    // resolve() against the ambient Directionality — including the side
+    // .start/.end drop out to, which needs the Offset's sign flipped too.
+    final textDirection = Directionality.of(context);
+    final isRtl = textDirection == TextDirection.rtl;
     final (Alignment targetAnchor, Alignment followerAnchor, Offset offset) = switch (_effectiveDirection) {
       BsDropdownDirection.down => widget.alignEnd
-          ? (Alignment.bottomRight, Alignment.topRight, Offset(0, spacer))
-          : (Alignment.bottomLeft, Alignment.topLeft, Offset(0, spacer)),
+          ? (
+              AlignmentDirectional.bottomEnd.resolve(textDirection),
+              AlignmentDirectional.topEnd.resolve(textDirection),
+              Offset(0, spacer),
+            )
+          : (
+              AlignmentDirectional.bottomStart.resolve(textDirection),
+              AlignmentDirectional.topStart.resolve(textDirection),
+              Offset(0, spacer),
+            ),
       BsDropdownDirection.up => widget.alignEnd
-          ? (Alignment.topRight, Alignment.bottomRight, Offset(0, -spacer))
-          : (Alignment.topLeft, Alignment.bottomLeft, Offset(0, -spacer)),
-      BsDropdownDirection.start => (Alignment.topLeft, Alignment.topRight, Offset(-spacer, 0)),
-      BsDropdownDirection.end => (Alignment.topRight, Alignment.topLeft, Offset(spacer, 0)),
+          ? (
+              AlignmentDirectional.topEnd.resolve(textDirection),
+              AlignmentDirectional.bottomEnd.resolve(textDirection),
+              Offset(0, -spacer),
+            )
+          : (
+              AlignmentDirectional.topStart.resolve(textDirection),
+              AlignmentDirectional.bottomStart.resolve(textDirection),
+              Offset(0, -spacer),
+            ),
+      BsDropdownDirection.start => (
+        AlignmentDirectional.topStart.resolve(textDirection),
+        AlignmentDirectional.topEnd.resolve(textDirection),
+        Offset(isRtl ? spacer : -spacer, 0),
+      ),
+      BsDropdownDirection.end => (
+        AlignmentDirectional.topEnd.resolve(textDirection),
+        AlignmentDirectional.topStart.resolve(textDirection),
+        Offset(isRtl ? -spacer : spacer, 0),
+      ),
     };
 
     return Stack(
