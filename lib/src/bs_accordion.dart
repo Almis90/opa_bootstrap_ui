@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import 'bs_focusable.dart';
 import 'bs_theme.dart';
 import 'tokens/bs_accordion_style.dart';
 
@@ -343,8 +344,6 @@ class _BsAccordionItemView extends StatefulWidget {
 }
 
 class _BsAccordionItemViewState extends State<_BsAccordionItemView> {
-  bool _focused = false;
-
   @override
   Widget build(BuildContext context) {
     final style = widget.style;
@@ -402,9 +401,8 @@ class _BsAccordionItemViewState extends State<_BsAccordionItemView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Focus(
-              onFocusChange: (focused) => setState(() => _focused = focused),
-              child: MouseRegion(
+            BsFocusableBuilder(
+              builder: (context, focused) => MouseRegion(
                 cursor: SystemMouseCursors.click,
                 child: GestureDetector(
                   behavior: HitTestBehavior.opaque,
@@ -417,7 +415,7 @@ class _BsAccordionItemViewState extends State<_BsAccordionItemView> {
                       borderRadius: buttonRadius,
                       boxShadow: [
                         if (widget.isExpanded) BoxShadow(color: borderColor, offset: Offset(0, borderWidth)),
-                        if (_focused)
+                        if (focused)
                           BoxShadow(
                             color: (style.focusRingColor ?? BsAccordionStyle.defaultFocusRingColor)
                                 .withValues(alpha: 0.5),

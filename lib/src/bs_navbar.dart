@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 
 import 'bs_breakpoint.dart';
 import 'bs_collapse.dart';
+import 'bs_focusable.dart';
 import 'tokens/bs_focus_ring.dart';
 import 'tokens/bs_navbar_style.dart';
 
@@ -300,7 +301,6 @@ class _BsNavbarToggler extends StatefulWidget {
 
 class _BsNavbarTogglerState extends State<_BsNavbarToggler> {
   bool _hovered = false;
-  bool _focused = false;
 
   @override
   Widget build(BuildContext context) {
@@ -311,9 +311,8 @@ class _BsNavbarTogglerState extends State<_BsNavbarToggler> {
       cursor: SystemMouseCursors.click,
       onEnter: (_) => setState(() => _hovered = true),
       onExit: (_) => setState(() => _hovered = false),
-      child: Focus(
-        onFocusChange: (focused) => setState(() => _focused = focused),
-        child: GestureDetector(
+      child: BsFocusableBuilder(
+        builder: (context, focused) => GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: widget.onTap,
           child: AnimatedContainer(
@@ -328,7 +327,7 @@ class _BsNavbarTogglerState extends State<_BsNavbarToggler> {
                 style.togglerBorderRadius ?? BsNavbarStyle.defaultTogglerBorderRadius,
               ),
               boxShadow: [
-                if (_focused)
+                if (focused)
                   BoxShadow(
                     color: style.togglerFocusRingColor ?? BsFocusRing.color(),
                     spreadRadius: style.togglerFocusRingWidth ?? BsNavbarStyle.defaultTogglerFocusRingWidth,

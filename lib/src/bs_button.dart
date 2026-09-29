@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import 'bs_button_style.dart';
+import 'bs_focusable.dart';
 import 'bs_size.dart';
 import 'bs_variant.dart';
 
@@ -72,7 +73,6 @@ class BsButton extends StatefulWidget {
 class _BsButtonState extends State<BsButton> {
   bool _hovered = false;
   bool _pressed = false;
-  bool _focused = false;
 
   void _setHovered(bool value) {
     if (_hovered != value) setState(() => _hovered = value);
@@ -80,10 +80,6 @@ class _BsButtonState extends State<BsButton> {
 
   void _setPressed(bool value) {
     if (_pressed != value) setState(() => _pressed = value);
-  }
-
-  void _setFocused(bool value) {
-    if (_focused != value) setState(() => _focused = value);
   }
 
   @override
@@ -118,71 +114,72 @@ class _BsButtonState extends State<BsButton> {
         ? 1.0
         : (style.disabledOpacity ?? BsButtonStyle.defaultDisabledOpacity);
 
-    final boxShadow = <BoxShadow>[
-      ...?(isActive ? style.activeShadow : style.boxShadow),
-      if (_focused)
-        BoxShadow(
-          color: (style.focusRingColor ?? style.borderColor)!.withValues(
-            alpha: 0.5,
-          ),
-          spreadRadius:
-              style.focusRingWidth ?? BsButtonStyle.defaultFocusRingWidth,
-        ),
-    ];
-
     return MouseRegion(
       cursor: enabled ? SystemMouseCursors.click : SystemMouseCursors.basic,
       onEnter: enabled ? (_) => _setHovered(true) : null,
       onExit: enabled ? (_) => _setHovered(false) : null,
-      child: Focus(
+      child: BsFocusableBuilder(
         focusNode: widget.focusNode,
         autofocus: widget.autofocus,
-        onFocusChange: _setFocused,
-        child: GestureDetector(
-          onTapDown: enabled ? (_) => _setPressed(true) : null,
-          onTapUp: enabled ? (_) => _setPressed(false) : null,
-          onTapCancel: enabled ? () => _setPressed(false) : null,
-          onTap: enabled ? widget.onPressed : null,
-          child: Opacity(
-            opacity: opacity,
-            child: AnimatedContainer(
-              duration:
-                  style.transitionDuration ??
-                  BsButtonStyle.defaultTransitionDuration,
-              curve:
-                  style.transitionCurve ?? BsButtonStyle.defaultTransitionCurve,
-              padding:
-                  style.padding ??
-                  const EdgeInsets.symmetric(
-                    horizontal: BsButtonStyle.paddingXBase,
-                    vertical: BsButtonStyle.paddingYBase,
-                  ),
-              decoration: BoxDecoration(
-                color: background,
-                borderRadius:
-                    style.borderRadius ??
-                    BorderRadius.circular(BsButtonStyle.borderRadiusBase),
-                border: Border.all(
-                  color: borderColor,
-                  width: style.borderWidth ?? BsButtonStyle.defaultBorderWidth,
+        builder: (context, focused) {
+          final boxShadow = <BoxShadow>[
+            ...?(isActive ? style.activeShadow : style.boxShadow),
+            if (focused)
+              BoxShadow(
+                color: (style.focusRingColor ?? style.borderColor)!.withValues(
+                  alpha: 0.5,
                 ),
-                boxShadow: boxShadow.isEmpty ? null : boxShadow,
+                spreadRadius:
+                    style.focusRingWidth ?? BsButtonStyle.defaultFocusRingWidth,
               ),
-              child: DefaultTextStyle(
-                style: (style.textStyle ?? const TextStyle()).copyWith(
-                  color: color,
+          ];
+
+          return GestureDetector(
+            onTapDown: enabled ? (_) => _setPressed(true) : null,
+            onTapUp: enabled ? (_) => _setPressed(false) : null,
+            onTapCancel: enabled ? () => _setPressed(false) : null,
+            onTap: enabled ? widget.onPressed : null,
+            child: Opacity(
+              opacity: opacity,
+              child: AnimatedContainer(
+                duration:
+                    style.transitionDuration ??
+                    BsButtonStyle.defaultTransitionDuration,
+                curve:
+                    style.transitionCurve ?? BsButtonStyle.defaultTransitionCurve,
+                padding:
+                    style.padding ??
+                    const EdgeInsets.symmetric(
+                      horizontal: BsButtonStyle.paddingXBase,
+                      vertical: BsButtonStyle.paddingYBase,
+                    ),
+                decoration: BoxDecoration(
+                  color: background,
+                  borderRadius:
+                      style.borderRadius ??
+                      BorderRadius.circular(BsButtonStyle.borderRadiusBase),
+                  border: Border.all(
+                    color: borderColor,
+                    width: style.borderWidth ?? BsButtonStyle.defaultBorderWidth,
+                  ),
+                  boxShadow: boxShadow.isEmpty ? null : boxShadow,
                 ),
-                textAlign: TextAlign.center,
-                child: widget.noWrap
-                    ? Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [widget.child],
-                      )
-                    : widget.child,
+                child: DefaultTextStyle(
+                  style: (style.textStyle ?? const TextStyle()).copyWith(
+                    color: color,
+                  ),
+                  textAlign: TextAlign.center,
+                  child: widget.noWrap
+                      ? Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [widget.child],
+                        )
+                      : widget.child,
+                ),
               ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

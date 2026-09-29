@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import 'bs_focusable.dart';
 import 'bs_theme.dart';
 import 'tokens/bs_focus_ring.dart';
 import 'tokens/bs_pagination_style.dart';
@@ -114,7 +115,6 @@ class _BsPaginationItemWidget extends StatefulWidget {
 
 class _BsPaginationItemWidgetState extends State<_BsPaginationItemWidget> {
   bool _hovered = false;
-  bool _focused = false;
 
   @override
   Widget build(BuildContext context) {
@@ -122,64 +122,66 @@ class _BsPaginationItemWidgetState extends State<_BsPaginationItemWidget> {
     final style = widget.style;
     final enabled = item.onTap != null && !item.disabled;
 
-    final Color color;
-    final Color background;
-    final Color borderColor;
-    if (item.disabled) {
-      color = style.disabledColor ?? BsPaginationStyle.defaultDisabledColor;
-      background = style.disabledBackground ?? BsPaginationStyle.defaultDisabledBackground;
-      borderColor = style.disabledBorderColor ?? BsPaginationStyle.defaultBorderColor;
-    } else if (item.active) {
-      color = style.activeColor ?? BsPaginationStyle.defaultActiveColor;
-      background = style.activeBackground ?? BsPaginationStyle.defaultActiveBackground;
-      borderColor = style.activeBorderColor ?? BsPaginationStyle.defaultActiveBackground;
-    } else if (_focused) {
-      color = style.focusColor ?? BsPaginationStyle.defaultColor;
-      background = style.focusBackground ?? BsPaginationStyle.defaultFocusBackground;
-      borderColor = style.borderColor ?? BsPaginationStyle.defaultBorderColor;
-    } else if (_hovered && enabled) {
-      color = style.hoverColor ?? BsPaginationStyle.defaultColor;
-      background = style.hoverBackground ?? BsPaginationStyle.defaultHoverBackground;
-      borderColor = style.hoverBorderColor ?? BsPaginationStyle.defaultBorderColor;
-    } else {
-      color = style.color ?? BsPaginationStyle.defaultColor;
-      background = style.background ?? BsPaginationStyle.defaultBackground;
-      borderColor = style.borderColor ?? BsPaginationStyle.defaultBorderColor;
-    }
-
     return MouseRegion(
       cursor: enabled ? SystemMouseCursors.click : SystemMouseCursors.basic,
       onEnter: enabled ? (_) => setState(() => _hovered = true) : null,
       onExit: enabled ? (_) => setState(() => _hovered = false) : null,
-      child: Focus(
-        onFocusChange: enabled ? (focused) => setState(() => _focused = focused) : null,
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: enabled ? item.onTap : null,
-          child: AnimatedContainer(
-            duration: style.transitionDuration ?? BsPaginationStyle.defaultTransitionDuration,
-            decoration: BoxDecoration(
-              color: background,
-              border: Border.all(color: borderColor, width: style.borderWidth ?? BsPaginationStyle.defaultBorderWidth),
-              borderRadius: widget.borderRadius,
-              boxShadow: [
-                if (_focused)
-                  BoxShadow(
-                    color: style.focusRingColor ?? BsFocusRing.color(),
-                    spreadRadius: style.focusRingWidth ?? BsPaginationStyle.defaultFocusRingWidth,
-                  ),
-              ],
-            ),
-            child: Padding(
-              padding: style.padding ?? BsPaginationStyle.defaultPadding,
-              child: DefaultTextStyle.merge(
-                style: TextStyle(color: color, fontSize: style.fontSize ?? BsPaginationStyle.defaultFontSize),
-                textAlign: TextAlign.center,
-                child: item.child,
+      child: BsFocusableBuilder(
+        enabled: enabled,
+        builder: (context, focused) {
+          final Color color;
+          final Color background;
+          final Color borderColor;
+          if (item.disabled) {
+            color = style.disabledColor ?? BsPaginationStyle.defaultDisabledColor;
+            background = style.disabledBackground ?? BsPaginationStyle.defaultDisabledBackground;
+            borderColor = style.disabledBorderColor ?? BsPaginationStyle.defaultBorderColor;
+          } else if (item.active) {
+            color = style.activeColor ?? BsPaginationStyle.defaultActiveColor;
+            background = style.activeBackground ?? BsPaginationStyle.defaultActiveBackground;
+            borderColor = style.activeBorderColor ?? BsPaginationStyle.defaultActiveBackground;
+          } else if (focused) {
+            color = style.focusColor ?? BsPaginationStyle.defaultColor;
+            background = style.focusBackground ?? BsPaginationStyle.defaultFocusBackground;
+            borderColor = style.borderColor ?? BsPaginationStyle.defaultBorderColor;
+          } else if (_hovered && enabled) {
+            color = style.hoverColor ?? BsPaginationStyle.defaultColor;
+            background = style.hoverBackground ?? BsPaginationStyle.defaultHoverBackground;
+            borderColor = style.hoverBorderColor ?? BsPaginationStyle.defaultBorderColor;
+          } else {
+            color = style.color ?? BsPaginationStyle.defaultColor;
+            background = style.background ?? BsPaginationStyle.defaultBackground;
+            borderColor = style.borderColor ?? BsPaginationStyle.defaultBorderColor;
+          }
+
+          return GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: enabled ? item.onTap : null,
+            child: AnimatedContainer(
+              duration: style.transitionDuration ?? BsPaginationStyle.defaultTransitionDuration,
+              decoration: BoxDecoration(
+                color: background,
+                border: Border.all(color: borderColor, width: style.borderWidth ?? BsPaginationStyle.defaultBorderWidth),
+                borderRadius: widget.borderRadius,
+                boxShadow: [
+                  if (focused)
+                    BoxShadow(
+                      color: style.focusRingColor ?? BsFocusRing.color(),
+                      spreadRadius: style.focusRingWidth ?? BsPaginationStyle.defaultFocusRingWidth,
+                    ),
+                ],
+              ),
+              child: Padding(
+                padding: style.padding ?? BsPaginationStyle.defaultPadding,
+                child: DefaultTextStyle.merge(
+                  style: TextStyle(color: color, fontSize: style.fontSize ?? BsPaginationStyle.defaultFontSize),
+                  textAlign: TextAlign.center,
+                  child: item.child,
+                ),
               ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

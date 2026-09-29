@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import 'bs_focusable.dart';
 import 'bs_theme.dart';
 import 'tokens/bs_nav_style.dart';
 import 'tokens/bs_transitions.dart';
@@ -142,7 +143,6 @@ class _BsNavLinkWidget extends StatefulWidget {
 
 class _BsNavLinkWidgetState extends State<_BsNavLinkWidget> {
   bool _hovered = false;
-  bool _focused = false;
 
   @override
   Widget build(BuildContext context) {
@@ -206,13 +206,13 @@ class _BsNavLinkWidgetState extends State<_BsNavLinkWidget> {
       }
     }
 
-    final content = DecoratedBox(
+    Widget content(bool focused) => DecoratedBox(
       decoration: BoxDecoration(
         color: background,
         border: border,
         borderRadius: widget.variant == BsNavVariant.pills || widget.variant == BsNavVariant.tabs ? borderRadius : null,
         boxShadow: [
-          if (_focused)
+          if (focused)
             BoxShadow(
               color: style.linkFocusRingColor ?? BsNavStyle.defaultLinkFocusRingColor,
               spreadRadius: style.linkFocusRingWidth ?? BsNavStyle.defaultLinkFocusRingWidth,
@@ -233,9 +233,10 @@ class _BsNavLinkWidgetState extends State<_BsNavLinkWidget> {
       cursor: enabled ? SystemMouseCursors.click : SystemMouseCursors.basic,
       onEnter: enabled ? (_) => setState(() => _hovered = true) : null,
       onExit: enabled ? (_) => setState(() => _hovered = false) : null,
-      child: Focus(
-        onFocusChange: enabled ? (focused) => setState(() => _focused = focused) : null,
-        child: GestureDetector(behavior: HitTestBehavior.opaque, onTap: enabled ? item.onTap : null, child: content),
+      child: BsFocusableBuilder(
+        enabled: enabled,
+        builder: (context, focused) =>
+            GestureDetector(behavior: HitTestBehavior.opaque, onTap: enabled ? item.onTap : null, child: content(focused)),
       ),
     );
 

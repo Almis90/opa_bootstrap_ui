@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import 'bs_focusable.dart';
 import 'bs_theme.dart';
 import 'tokens/bs_close_button_style.dart';
 import 'tokens/bs_focus_ring.dart';
@@ -21,24 +22,12 @@ class BsCloseButton extends StatefulWidget {
 
 class _BsCloseButtonState extends State<BsCloseButton> {
   bool _hovered = false;
-  bool _focused = false;
 
   @override
   Widget build(BuildContext context) {
     final isDark = BsTheme.of(context) == Brightness.dark;
     final style = (isDark ? BsCloseButtonStyle.darkDefaults : BsCloseButtonStyle.defaults).merge(widget.style);
     final enabled = widget.onPressed != null;
-
-    final double opacity;
-    if (!enabled) {
-      opacity = style.disabledOpacity ?? BsCloseButtonStyle.defaultDisabledOpacity;
-    } else if (_focused) {
-      opacity = style.focusOpacity ?? BsCloseButtonStyle.defaultFocusOpacity;
-    } else if (_hovered) {
-      opacity = style.hoverOpacity ?? BsCloseButtonStyle.defaultHoverOpacity;
-    } else {
-      opacity = style.opacity ?? BsCloseButtonStyle.defaultOpacity;
-    }
 
     // Bootstrap's `.btn-close` is a fixed 1em x 1em inline-block that never
     // stretches. A plain SizedBox can't guarantee that on its own — a parent
@@ -63,32 +52,44 @@ class _BsCloseButtonState extends State<BsCloseButton> {
           cursor: enabled ? SystemMouseCursors.click : SystemMouseCursors.basic,
           onEnter: enabled ? (_) => setState(() => _hovered = true) : null,
           onExit: enabled ? (_) => setState(() => _hovered = false) : null,
-          child: Focus(
-            onFocusChange: (focused) => setState(() => _focused = focused),
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: widget.onPressed,
-              child: AnimatedOpacity(
-                duration: const Duration(milliseconds: 150),
-                opacity: opacity,
-                child: AnimatedContainer(
+          child: BsFocusableBuilder(
+            builder: (context, focused) {
+              final double opacity;
+              if (!enabled) {
+                opacity = style.disabledOpacity ?? BsCloseButtonStyle.defaultDisabledOpacity;
+              } else if (focused) {
+                opacity = style.focusOpacity ?? BsCloseButtonStyle.defaultFocusOpacity;
+              } else if (_hovered) {
+                opacity = style.hoverOpacity ?? BsCloseButtonStyle.defaultHoverOpacity;
+              } else {
+                opacity = style.opacity ?? BsCloseButtonStyle.defaultOpacity;
+              }
+
+              return GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: widget.onPressed,
+                child: AnimatedOpacity(
                   duration: const Duration(milliseconds: 150),
-                  decoration: BoxDecoration(
-                    boxShadow: [
-                      if (_focused)
-                        BoxShadow(color: BsFocusRing.color(), spreadRadius: BsCloseButtonStyle.defaultFocusRingWidth),
-                    ],
-                  ),
-                  child: Padding(
-                    padding: padding,
-                    child: CustomPaint(
-                      size: Size.square(glyphSize),
-                      painter: _BsCloseGlyphPainter(style.color ?? BsCloseButtonStyle.defaultColor),
+                  opacity: opacity,
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 150),
+                    decoration: BoxDecoration(
+                      boxShadow: [
+                        if (focused)
+                          BoxShadow(color: BsFocusRing.color(), spreadRadius: BsCloseButtonStyle.defaultFocusRingWidth),
+                      ],
+                    ),
+                    child: Padding(
+                      padding: padding,
+                      child: CustomPaint(
+                        size: Size.square(glyphSize),
+                        painter: _BsCloseGlyphPainter(style.color ?? BsCloseButtonStyle.defaultColor),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ),
+              );
+            },
           ),
         ),
       ),
