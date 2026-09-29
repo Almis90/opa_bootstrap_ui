@@ -74,10 +74,13 @@ class BsApp extends StatelessWidget {
   /// this package has no `ThemeData`-style primary color to derive from.
   final Color? color;
 
-  /// Bootstrap's `data-bs-theme`: `Brightness.light` (the default) or
-  /// `Brightness.dark`. Installed as a [BsTheme] ancestor, so every `Bs*`
-  /// widget beneath [home] resolves its dark-mode colors from this.
-  final Brightness brightness;
+  /// Bootstrap's `data-bs-theme`: [Brightness.light] (the default) or
+  /// [Brightness.dark]. Pass null for Bootstrap's `data-bs-theme="auto"` —
+  /// follows the OS's `prefers-color-scheme` ([MediaQuery.platformBrightness])
+  /// instead of a fixed value, switching live if the user changes it while
+  /// the app keeps running. Installed as a [BsTheme] ancestor, so every
+  /// `Bs*` widget beneath [home] resolves its dark-mode colors from this.
+  final Brightness? brightness;
 
   final Locale? locale;
   final Iterable<LocalizationsDelegate<dynamic>>? localizationsDelegates;
@@ -104,6 +107,7 @@ class BsApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final resolvedBrightness = brightness ?? MediaQuery.platformBrightnessOf(context);
     return WidgetsApp(
       navigatorKey: navigatorKey,
       home: home,
@@ -118,7 +122,7 @@ class BsApp extends StatelessWidget {
         pageBuilder: (context, animation, secondaryAnimation) => pageBuilder(context),
       ),
       builder: (context, child) => BsTheme(
-        brightness: brightness,
+        brightness: resolvedBrightness,
         child: Builder(
           builder: (context) {
             final styled = DefaultTextStyle(
