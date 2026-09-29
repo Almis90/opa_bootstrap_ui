@@ -47,6 +47,11 @@ class BsNavbar extends StatefulWidget {
     this.background,
     this.expandBreakpoint = BsBreakpoint.lg,
     this.style,
+    this.collapseController,
+    this.onShow,
+    this.onShown,
+    this.onHide,
+    this.onHidden,
   });
 
   /// `.navbar-brand`: typically the site/app name or logo.
@@ -77,14 +82,51 @@ class BsNavbar extends StatefulWidget {
   /// Style overrides layered on top of [BsNavbarStyle.light]/[BsNavbarStyle.dark].
   final BsNavbarStyle? style;
 
+  /// Drives the mobile menu's open/closed state below [expandBreakpoint] —
+  /// the same [BsCollapseController] [BsCollapse] itself takes, since the
+  /// mobile menu literally is a [BsCollapse] under the hood. Defaults to
+  /// an internally-owned controller when null.
+  final BsCollapseController? collapseController;
+
+  /// Called as soon as the mobile menu is triggered to open, before it
+  /// starts animating. Mirrors Bootstrap's `show.bs.collapse`.
+  final VoidCallback? onShow;
+
+  /// Called once the mobile menu has finished opening. Mirrors
+  /// Bootstrap's `shown.bs.collapse`.
+  final VoidCallback? onShown;
+
+  /// Called as soon as the mobile menu is triggered to close, before it
+  /// starts animating. Mirrors Bootstrap's `hide.bs.collapse`.
+  final VoidCallback? onHide;
+
+  /// Called once the mobile menu has finished closing. Mirrors
+  /// Bootstrap's `hidden.bs.collapse`.
+  final VoidCallback? onHidden;
+
   @override
   State<BsNavbar> createState() => _BsNavbarState();
 }
 
 class _BsNavbarState extends State<BsNavbar> {
-  bool _open = false;
+  BsCollapseController? _ownedController;
 
-  void _toggle() => setState(() => _open = !_open);
+  BsCollapseController get _controller => widget.collapseController ?? (_ownedController ??= BsCollapseController());
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(_handleControllerChanged);
+  }
+
+  void _handleControllerChanged() => setState(() {});
+
+  @override
+  void dispose() {
+    _controller.removeListener(_handleControllerChanged);
+    _ownedController?.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +146,8 @@ class _BsNavbarState extends State<BsNavbar> {
               children: [
                 if (widget.brand != null) _BsNavbarBrand(onTap: widget.onBrandTap, style: style, child: widget.brand!),
                 const Spacer(),
-                if (!expanded) _BsNavbarToggler(isOpen: _open, onTap: _toggle, style: style),
+                if (!expanded)
+                  _BsNavbarToggler(isOpen: _controller.isExpanded, onTap: _controller.toggle, style: style),
               ],
             );
 
@@ -126,7 +169,11 @@ class _BsNavbarState extends State<BsNavbar> {
               children: [
                 brandAndToggler,
                 BsCollapse(
-                  isExpanded: _open,
+                  controller: _controller,
+                  onShow: widget.onShow,
+                  onShown: widget.onShown,
+                  onHide: widget.onHide,
+                  onHidden: widget.onHidden,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
@@ -226,8 +273,14 @@ class _BsNavbarLinkState extends State<_BsNavbarLink> {
         behavior: HitTestBehavior.opaque,
         onTap: enabled ? item.onTap : null,
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: style.navLinkPaddingX ?? BsNavbarStyle.defaultNavLinkPaddingX, vertical: 8),
-          child: DefaultTextStyle.merge(style: TextStyle(color: color), child: item.child),
+          padding: EdgeInsets.symmetric(
+            horizontal: style.navLinkPaddingX ?? BsNavbarStyle.defaultNavLinkPaddingX,
+            vertical: 8,
+          ),
+          child: DefaultTextStyle.merge(
+            style: TextStyle(color: color),
+            child: item.child,
+          ),
         ),
       ),
     );
