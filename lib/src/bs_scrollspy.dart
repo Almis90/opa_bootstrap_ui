@@ -14,7 +14,12 @@ import 'package:flutter/widgets.dart';
 /// measured via [RenderAbstractViewport.getOffsetToReveal] — the same
 /// mechanism [Scrollable.ensureVisible] uses internally.
 class BsScrollspyController extends ChangeNotifier {
-  BsScrollspyController({required this.scrollController, required this.sectionKeys, this.offset = 0}) {
+  BsScrollspyController({
+    required this.scrollController,
+    required this.sectionKeys,
+    this.offset = 0,
+    this.onActivate,
+  }) {
     scrollController.addListener(_handleScroll);
     WidgetsBinding.instance.addPostFrameCallback((_) => _handleScroll());
   }
@@ -30,6 +35,14 @@ class BsScrollspyController extends ChangeNotifier {
   /// edge and still count as "reached" — mirrors Bootstrap's
   /// `data-bs-offset`/`rootMargin`.
   final double offset;
+
+  /// Called whenever [activeIndex] changes to a new section, mirroring
+  /// Bootstrap's `activate.bs.scrollspy` event. Unlike the generic
+  /// [ChangeNotifier] notification (which a [ListenableBuilder] already
+  /// reacts to for re-rendering), this fires only for an actual section
+  /// change — handy for one-off side effects like analytics that shouldn't
+  /// re-run on every rebuild-triggering notification.
+  final ValueChanged<int>? onActivate;
 
   int _activeIndex = 0;
 
@@ -58,9 +71,17 @@ class BsScrollspyController extends ChangeNotifier {
 
     if (newIndex != _activeIndex) {
       _activeIndex = newIndex;
+      onActivate?.call(newIndex);
       notifyListeners();
     }
   }
+
+  /// Recalculates the active section immediately, without waiting for a
+  /// scroll event — mirrors Bootstrap's `refresh()`. Call it after content
+  /// changes that could move the tracked sections (e.g. one is added,
+  /// removed, or resized) so the active index reflects the new layout
+  /// right away instead of only on the next scroll.
+  void refresh() => _handleScroll();
 
   /// Scrolls so [sectionKeys][index] reaches the top of the viewport.
   Future<void> scrollToSection(int index, {Duration duration = const Duration(milliseconds: 300)}) {

@@ -63,6 +63,25 @@ Row(
 )''',
           preview: const SizedBox(height: 320, child: _ScrollspyDemo()),
         ),
+        DocExample(
+          title: 'Events and refresh',
+          description:
+              "onActivate fires whenever the active section changes, mirroring Bootstrap's activate.bs.scrollspy "
+              "— separate from the ChangeNotifier's own generic notification, so it only fires for an actual "
+              "section change rather than every rebuild-triggering update. refresh() recalculates the active "
+              'section immediately instead of waiting for the next scroll — call it after content changes that '
+              'could move a tracked section, like the height toggle below.',
+          code: '''
+final scrollspy = BsScrollspyController(
+  scrollController: scrollController,
+  sectionKeys: sectionKeys,
+  onActivate: (index) => log('activate \$index'),
+);
+
+// After changing content that could move a section (e.g. expanding one):
+scrollspy.refresh();''',
+          preview: const SizedBox(height: 440, child: _EventsDemo()),
+        ),
       ],
     );
   }
@@ -142,6 +161,128 @@ class _ScrollspyDemoState extends State<_ScrollspyDemo> {
               'Scroll this pane — the nav on the left highlights whichever section '
               'is currently at the top of the viewport.',
             ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _EventsDemo extends StatefulWidget {
+  const _EventsDemo();
+
+  @override
+  State<_EventsDemo> createState() => _EventsDemoState();
+}
+
+class _EventsDemoState extends State<_EventsDemo> {
+  static const _sections = ['Introduction', 'Approach', 'Content', 'Summary'];
+
+  final _scrollController = ScrollController();
+  late final _sectionKeys = List.generate(_sections.length, (_) => GlobalKey());
+  late final _scrollspy = BsScrollspyController(
+    scrollController: _scrollController,
+    sectionKeys: _sectionKeys,
+    offset: 16,
+    onActivate: (index) => _log('activate $index'),
+  );
+
+  bool _expanded = false;
+  final _events = <String>[];
+
+  void _log(String event) => setState(() => _events.add(event));
+
+  @override
+  void dispose() {
+    _scrollspy.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Wrap(
+          spacing: 8,
+          children: [
+            BsButton(
+              size: BsSize.sm,
+              onPressed: () => setState(() {
+                _expanded = !_expanded;
+                // The first section just changed height, which can shift
+                // which section is active without any scrolling — refresh()
+                // recalculates that immediately instead of waiting for the
+                // next scroll event.
+                WidgetsBinding.instance.addPostFrameCallback((_) => _scrollspy.refresh());
+              }),
+              child: Text(_expanded ? 'Shrink first section' : 'Expand first section'),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Expanded(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ListenableBuilder(
+                listenable: _scrollspy,
+                builder: (context, _) => BsNav(
+                  variant: BsNavVariant.pills,
+                  vertical: true,
+                  items: [
+                    for (var i = 0; i < _sections.length; i++)
+                      BsNavItem(
+                        child: Text(_sections[i]),
+                        active: i == _scrollspy.activeIndex,
+                        onTap: () => _scrollspy.scrollToSection(i),
+                      ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: SingleChildScrollView(
+                  controller: _scrollController,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [for (var i = 0; i < _sections.length; i++) _buildSection(i)],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 8),
+        SizedBox(
+          height: 40,
+          child: _events.isEmpty
+              ? Text('No events yet — scroll the pane.', style: TextStyle(color: BsBody.secondaryColorOf(context)))
+              : SingleChildScrollView(
+                  child: Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [for (final event in _events) BsBadge(variant: BsVariant.secondary, child: Text(event))],
+                  ),
+                ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSection(int index) {
+    return Padding(
+      key: _sectionKeys[index],
+      padding: const EdgeInsets.only(bottom: 24),
+      child: SizedBox(
+        height: index == 0 && _expanded ? 260 : 160,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(_sections[index], style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+            const SizedBox(height: 8),
+            const Text('Section content.'),
           ],
         ),
       ),
