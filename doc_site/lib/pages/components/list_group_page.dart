@@ -3,6 +3,7 @@ import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 
 import '../../src/doc_example.dart';
 import '../../src/doc_page.dart';
+import '../../src/doc_style_table.dart';
 
 class ListGroupPage extends StatelessWidget {
   const ListGroupPage({super.key});
@@ -155,6 +156,33 @@ BsListGroup(
               BsListGroupItem(child: Text('A third item')),
             ],
           ),
+        ),
+      ],
+      children: const [
+        DocStyleTable(
+          styleClass: 'BsListGroupStyle',
+          defaultsNote:
+              'background, borderColor, hoverBackground, disabledBackground, actionHoverColor, and '
+              'actionActiveBackground swap for their dark-theme counterparts when BsTheme.of(context) is '
+              'Brightness.dark; every other field stays the same.',
+          rows: [
+            DocStyleRow(field: 'color', defaultValue: 'null — inherits the surrounding text color'),
+            DocStyleRow(field: 'background', defaultValue: 'BsColors.white'),
+            DocStyleRow(field: 'borderColor', defaultValue: 'BsColors.gray300'),
+            DocStyleRow(field: 'borderWidth', defaultValue: '1'),
+            DocStyleRow(field: 'borderRadius', defaultValue: '6'),
+            DocStyleRow(field: 'itemPadding', defaultValue: 'EdgeInsets.symmetric(horizontal: 16, vertical: 8)'),
+            DocStyleRow(field: 'hoverBackground', defaultValue: 'BsColors.gray100'),
+            DocStyleRow(field: 'activeColor', defaultValue: 'BsColors.white'),
+            DocStyleRow(field: 'activeBackground', defaultValue: 'BsVariant.primary.color (BsColors.blue)'),
+            DocStyleRow(field: 'activeBorderColor', defaultValue: 'BsVariant.primary.color; same as activeBackground'),
+            DocStyleRow(field: 'disabledColor', defaultValue: 'null — inherits the surrounding text color'),
+            DocStyleRow(field: 'disabledBackground', defaultValue: 'BsColors.white; same as background'),
+            DocStyleRow(field: 'actionColor', defaultValue: 'BsColors.gray600'),
+            DocStyleRow(field: 'actionHoverColor', defaultValue: 'BsColors.black'),
+            DocStyleRow(field: 'actionActiveColor', defaultValue: 'null — inherits the surrounding text color'),
+            DocStyleRow(field: 'actionActiveBackground', defaultValue: 'BsColors.gray200'),
+          ],
         ),
       ],
     );
