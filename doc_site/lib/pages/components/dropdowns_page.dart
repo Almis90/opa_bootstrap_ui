@@ -3,6 +3,7 @@ import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 
 import '../../src/doc_example.dart';
 import '../../src/doc_page.dart';
+import '../../src/doc_style_table.dart';
 
 class DropdownsPage extends StatelessWidget {
   const DropdownsPage({super.key});
@@ -201,6 +202,40 @@ BsDropdown(
   toggleBuilder: (context, toggle, isOpen) => BsButton(onPressed: toggle, child: Text('Click me')),
 )''',
           preview: const _EventsDemo(),
+        ),
+      ],
+      children: const [
+        DocStyleTable(
+          styleClass: 'BsDropdownStyle',
+          defaultsNote:
+              'Fields reading an ambient --bs-* custom property in Bootstrap (color, background, borderColor, '
+              'dividerColor, linkColor, linkHoverColor, linkHoverBackground, linkDisabledColor) swap for their '
+              'dark-theme counterparts when BsTheme.of(context) is Brightness.dark. That\'s separate from '
+              'BsDropdownStyle.dark, a distinct literal palette for .dropdown-menu-dark — pass it as style to force '
+              'a dark-looking menu regardless of page theme, rather than following it.',
+          rows: [
+            DocStyleRow(field: 'minWidth', defaultValue: '160'),
+            DocStyleRow(field: 'padding', defaultValue: 'EdgeInsets.symmetric(vertical: 8)'),
+            DocStyleRow(field: 'spacer', defaultValue: '2'),
+            DocStyleRow(field: 'fontSize', defaultValue: '16'),
+            DocStyleRow(field: 'color', defaultValue: 'BsColors.gray900'),
+            DocStyleRow(field: 'background', defaultValue: 'BsColors.white'),
+            DocStyleRow(field: 'borderColor', defaultValue: 'Black at ~18% opacity'),
+            DocStyleRow(field: 'borderRadius', defaultValue: '6'),
+            DocStyleRow(field: 'borderWidth', defaultValue: '1'),
+            DocStyleRow(field: 'dividerColor', defaultValue: 'Black at ~18% opacity; same as borderColor'),
+            DocStyleRow(field: 'dividerMarginY', defaultValue: '8'),
+            DocStyleRow(field: 'boxShadow', defaultValue: 'Black at ~15% opacity, offset (0, 8), 16 blur'),
+            DocStyleRow(field: 'linkColor', defaultValue: 'BsColors.gray900; same as color'),
+            DocStyleRow(field: 'linkHoverColor', defaultValue: 'BsColors.gray900; same as color'),
+            DocStyleRow(field: 'linkHoverBackground', defaultValue: 'BsColors.gray100'),
+            DocStyleRow(field: 'linkActiveColor', defaultValue: 'BsColors.white'),
+            DocStyleRow(field: 'linkActiveBackground', defaultValue: 'BsVariant.primary.color (BsColors.blue)'),
+            DocStyleRow(field: 'linkDisabledColor', defaultValue: 'BsColors.gray400'),
+            DocStyleRow(field: 'itemPadding', defaultValue: 'EdgeInsets.symmetric(horizontal: 16, vertical: 4)'),
+            DocStyleRow(field: 'headerColor', defaultValue: 'BsColors.gray600'),
+            DocStyleRow(field: 'headerPadding', defaultValue: 'EdgeInsets.symmetric(horizontal: 16, vertical: 8)'),
+          ],
         ),
       ],
     );
