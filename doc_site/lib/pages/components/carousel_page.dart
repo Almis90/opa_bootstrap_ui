@@ -3,6 +3,7 @@ import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 
 import '../../src/doc_example.dart';
 import '../../src/doc_page.dart';
+import '../../src/doc_style_table.dart';
 
 class CarouselPage extends StatelessWidget {
   const CarouselPage({super.key});
@@ -210,6 +211,32 @@ BsCarousel(
   ],
 )''',
           preview: const _EventsDemo(),
+        ),
+      ],
+      children: const [
+        DocStyleTable(
+          styleClass: 'BsCarouselStyle',
+          rows: [
+            DocStyleRow(field: 'controlColor', defaultValue: 'BsColors.white'),
+            DocStyleRow(field: 'controlWidthFraction', defaultValue: '0.15 (15% of the carousel width, each side)'),
+            DocStyleRow(field: 'controlOpacity', defaultValue: '0.5'),
+            DocStyleRow(field: 'controlHoverOpacity', defaultValue: '0.9'),
+            DocStyleRow(field: 'controlTransitionDuration', defaultValue: '150ms'),
+            DocStyleRow(field: 'controlIconSize', defaultValue: '32'),
+            DocStyleRow(field: 'indicatorWidth', defaultValue: '30'),
+            DocStyleRow(field: 'indicatorHeight', defaultValue: '3'),
+            DocStyleRow(field: 'indicatorHitAreaHeight', defaultValue: '10'),
+            DocStyleRow(field: 'indicatorSpacer', defaultValue: '3'),
+            DocStyleRow(field: 'indicatorOpacity', defaultValue: '0.5'),
+            DocStyleRow(field: 'indicatorActiveBackground', defaultValue: 'BsColors.white'),
+            DocStyleRow(field: 'indicatorActiveOpacity', defaultValue: '1'),
+            DocStyleRow(field: 'indicatorTransitionDuration', defaultValue: '600ms'),
+            DocStyleRow(field: 'captionWidthFraction', defaultValue: '0.7 (70% of the carousel width)'),
+            DocStyleRow(field: 'captionColor', defaultValue: 'BsColors.white'),
+            DocStyleRow(field: 'captionPaddingY', defaultValue: '20'),
+            DocStyleRow(field: 'captionSpacer', defaultValue: '20'),
+            DocStyleRow(field: 'transitionDuration', defaultValue: '600ms'),
+          ],
         ),
       ],
     );
