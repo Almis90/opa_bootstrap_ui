@@ -3,6 +3,7 @@ import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 
 import '../../src/doc_example.dart';
 import '../../src/doc_page.dart';
+import '../../src/doc_style_table.dart';
 
 class NavbarPage extends StatelessWidget {
   const NavbarPage({super.key});
@@ -168,6 +169,38 @@ BsNavbar(
   onHidden: () => log('hidden'),
 )''',
           preview: const _EventsDemo(),
+        ),
+      ],
+      children: const [
+        DocStyleTable(
+          styleClass: 'BsNavbarStyle',
+          defaultsNote:
+              'BsNavbarStyle has no single BsNavbarStyle.defaults — color/hoverColor/activeColor/disabledColor/'
+              'togglerBorderColor/iconColor/brandColor/brandHoverColor come from BsNavbarStyle.light or '
+              '.dark, matching BsNavbar.colorScheme (BsNavbarColorScheme.light/.dark — a color scheme you choose '
+              "independently of the page's own BsTheme brightness, the same way Bootstrap's .navbar-light/"
+              '.navbar-dark work). The values below are for BsNavbar\'s own default, colorScheme: '
+              'BsNavbarColorScheme.light — pass .dark and those eight rows change; the rest stay fixed.',
+          rows: [
+            DocStyleRow(field: 'padding', defaultValue: 'EdgeInsets.symmetric(vertical: 8)'),
+            DocStyleRow(field: 'navLinkPaddingX', defaultValue: '8'),
+            DocStyleRow(field: 'brandFontSize', defaultValue: '20'),
+            DocStyleRow(field: 'brandMarginEnd', defaultValue: '16'),
+            DocStyleRow(field: 'togglerPadding', defaultValue: 'EdgeInsets.symmetric(horizontal: 12, vertical: 4)'),
+            DocStyleRow(field: 'togglerFontSize', defaultValue: '20'),
+            DocStyleRow(field: 'togglerBorderRadius', defaultValue: '6'),
+            DocStyleRow(field: 'togglerFocusRingWidth', defaultValue: '4'),
+            DocStyleRow(field: 'togglerFocusRingColor', defaultValue: 'BsColors.blue at 25% opacity'),
+            DocStyleRow(field: 'togglerTransitionDuration', defaultValue: '150ms'),
+            DocStyleRow(field: 'color', defaultValue: 'BsColors.gray900 at ~65% opacity'),
+            DocStyleRow(field: 'hoverColor', defaultValue: 'BsColors.gray900 at ~80% opacity'),
+            DocStyleRow(field: 'activeColor', defaultValue: 'BsColors.gray900'),
+            DocStyleRow(field: 'disabledColor', defaultValue: 'BsColors.gray900 at ~30% opacity'),
+            DocStyleRow(field: 'togglerBorderColor', defaultValue: 'BsColors.gray900 at ~15% opacity'),
+            DocStyleRow(field: 'iconColor', defaultValue: 'BsColors.gray900 at ~75% opacity'),
+            DocStyleRow(field: 'brandColor', defaultValue: 'BsColors.gray900; same as activeColor'),
+            DocStyleRow(field: 'brandHoverColor', defaultValue: 'BsColors.gray900; same as activeColor'),
+          ],
         ),
       ],
     );
