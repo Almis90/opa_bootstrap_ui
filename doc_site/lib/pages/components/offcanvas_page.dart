@@ -3,6 +3,7 @@ import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 
 import '../../src/doc_example.dart';
 import '../../src/doc_page.dart';
+import '../../src/doc_style_table.dart';
 
 class OffcanvasPage extends StatelessWidget {
   const OffcanvasPage({super.key});
@@ -112,6 +113,29 @@ showBsOffcanvas<void>(
   onHidden: () => log('hidden'),
 )''',
           preview: const _EventsDemo(),
+        ),
+      ],
+      children: const [
+        DocStyleTable(
+          styleClass: 'BsOffcanvasStyle',
+          defaultsNote:
+              'borderColor, background, and color swap for their dark-theme counterparts when BsTheme.of(context) '
+              "is Brightness.dark. backdropColor/backdropOpacity don't — a backdrop stays the same dark scrim "
+              'regardless of page theme.',
+          rows: [
+            DocStyleRow(field: 'padding', defaultValue: 'EdgeInsets.all(16)'),
+            DocStyleRow(field: 'horizontalWidth', defaultValue: '400'),
+            DocStyleRow(field: 'verticalHeightFraction', defaultValue: '0.3 (30% of the viewport height)'),
+            DocStyleRow(field: 'transitionDuration', defaultValue: '300ms'),
+            DocStyleRow(field: 'borderColor', defaultValue: 'Black at ~18% opacity'),
+            DocStyleRow(field: 'borderWidth', defaultValue: '1'),
+            DocStyleRow(field: 'titleLineHeight', defaultValue: '1.5'),
+            DocStyleRow(field: 'background', defaultValue: 'BsColors.white'),
+            DocStyleRow(field: 'color', defaultValue: 'BsColors.gray900'),
+            DocStyleRow(field: 'boxShadow', defaultValue: 'Black at ~7% opacity, offset (0, 2), 4 blur'),
+            DocStyleRow(field: 'backdropColor', defaultValue: 'BsColors.black'),
+            DocStyleRow(field: 'backdropOpacity', defaultValue: '0.5'),
+          ],
         ),
       ],
     );
