@@ -3,6 +3,7 @@ import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 
 import '../../src/doc_example.dart';
 import '../../src/doc_page.dart';
+import '../../src/doc_style_table.dart';
 
 class ModalPage extends StatelessWidget {
   const ModalPage({super.key});
@@ -196,6 +197,39 @@ showBsModal<void>(
   onHidden: () => log('hidden'),
 )''',
           preview: const _EventsDemo(),
+        ),
+      ],
+      children: const [
+        DocStyleTable(
+          styleClass: 'BsModalStyle',
+          defaultsNote:
+              'contentColor, contentBackground, contentBorderColor, headerBorderColor, and footerBorderColor swap '
+              'for their dark-theme counterparts when BsTheme.of(context) is Brightness.dark. backdropColor/'
+              "backdropOpacity don't — a backdrop stays the same dark scrim regardless of page theme.",
+          rows: [
+            DocStyleRow(field: 'innerPadding', defaultValue: '16'),
+            DocStyleRow(field: 'footerMarginBetween', defaultValue: '8'),
+            DocStyleRow(field: 'dialogMargin', defaultValue: '8'),
+            DocStyleRow(field: 'titleLineHeight', defaultValue: '1.5'),
+            DocStyleRow(field: 'contentColor', defaultValue: 'BsColors.gray900'),
+            DocStyleRow(field: 'contentBackground', defaultValue: 'BsColors.white'),
+            DocStyleRow(field: 'contentBorderColor', defaultValue: 'Black at ~18% opacity'),
+            DocStyleRow(field: 'contentBorderWidth', defaultValue: '1'),
+            DocStyleRow(field: 'contentBorderRadius', defaultValue: '8'),
+            DocStyleRow(field: 'contentBoxShadow', defaultValue: 'Black at ~15% opacity, offset (0, 8), 16 blur'),
+            DocStyleRow(field: 'backdropColor', defaultValue: 'BsColors.black'),
+            DocStyleRow(field: 'backdropOpacity', defaultValue: '0.5'),
+            DocStyleRow(field: 'headerBorderColor', defaultValue: 'BsColors.gray300'),
+            DocStyleRow(field: 'headerBorderWidth', defaultValue: '1'),
+            DocStyleRow(field: 'footerBackground', defaultValue: 'null — inherits contentBackground'),
+            DocStyleRow(field: 'footerBorderColor', defaultValue: 'BsColors.gray300; same as headerBorderColor'),
+            DocStyleRow(field: 'footerBorderWidth', defaultValue: '1'),
+            DocStyleRow(field: 'smallSize', defaultValue: '300'),
+            DocStyleRow(field: 'mediumSize', defaultValue: '500'),
+            DocStyleRow(field: 'largeSize', defaultValue: '800'),
+            DocStyleRow(field: 'extraLargeSize', defaultValue: '1140'),
+            DocStyleRow(field: 'transitionDuration', defaultValue: '300ms'),
+          ],
         ),
       ],
     );
