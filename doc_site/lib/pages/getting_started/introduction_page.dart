@@ -63,6 +63,30 @@ class HomePage extends StatelessWidget {
             ),
           ],
         ),
+        _QuickStartStep(
+          number: 4,
+          title: 'Theming & accessibility',
+          description:
+              'BsApp.brightness picks Bootstrap\'s data-bs-theme: Brightness.light (the default), '
+              'Brightness.dark, or null for "auto" — following the OS\'s prefers-color-scheme live, the same '
+              'way data-bs-theme="auto" does. RTL follows the ambient Directionality automatically, the same '
+              'as any other flutter/widgets.dart app — nest a Directionality override around any subtree that '
+              "needs a different direction than the rest. Every Bs* widget's transitions also already respect "
+              "the OS's reduced-motion accessibility preference (MediaQuery.disableAnimations) with no setup "
+              'required on your part.',
+          blocks: [
+            _CodeBlock(
+              code: '''
+BsApp(
+  brightness: null, // or Brightness.light/.dark for a fixed theme
+  home: Directionality(
+    textDirection: TextDirection.rtl,
+    child: HomePage(),
+  ),
+)''',
+            ),
+          ],
+        ),
       ],
     );
   }
@@ -76,10 +100,11 @@ class _CodeBlock {
 }
 
 class _QuickStartStep extends StatelessWidget {
-  const _QuickStartStep({required this.number, required this.title, required this.blocks});
+  const _QuickStartStep({required this.number, required this.title, this.description, required this.blocks});
 
   final int number;
   final String title;
+  final String? description;
   final List<_CodeBlock> blocks;
 
   @override
@@ -112,6 +137,10 @@ class _QuickStartStep extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 12),
+          if (description != null) ...[
+            Text(description!, style: TextStyle(fontSize: 14, color: BsBody.secondaryColorOf(context), height: 1.5)),
+            const SizedBox(height: 12),
+          ],
           for (final block in blocks) ...[
             if (block.label != null) ...[
               Text(block.label!, style: TextStyle(fontSize: 13, color: BsBody.secondaryColorOf(context))),
