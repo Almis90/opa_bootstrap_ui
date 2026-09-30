@@ -1,17 +1,15 @@
 import 'package:flutter/widgets.dart';
 import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 
-/// One field on a `BsXStyle` class: its Bootstrap CSS/Sass variable
-/// equivalent and its default value.
+/// One field on a `BsXStyle` class: the Bootstrap variable it mirrors and
+/// its default value.
 class DocStyleRow {
   const DocStyleRow({required this.field, required this.bootstrapVar, required this.defaultValue});
 
   /// The Dart field name on the style class, e.g. `'color'`.
   final String field;
 
-  /// The Bootstrap CSS custom property (or Sass variable, for values that
-  /// only exist at the Sass layer, like transition timing) it mirrors,
-  /// e.g. `'--bs-btn-color'`.
+  /// The Bootstrap variable it mirrors, e.g. `'--bs-btn-color'`.
   final String bootstrapVar;
 
   /// The default value. For a flat `BsXStyle.defaults` class this is a
@@ -22,12 +20,11 @@ class DocStyleRow {
   final String defaultValue;
 }
 
-/// A "CSS" reference section mirroring the "Variables"/"Sass variables"
-/// tables on Bootstrap's own docs site (`getbootstrap.com/docs/.../CSS`) —
-/// except every row here is sourced from this repo's own
-/// `vendor/bootstrap/scss/` and the matching `BsXStyle` class, so it
-/// documents what this port actually implements rather than re-deriving
-/// it from upstream each time.
+/// A "Style tokens" reference section mirroring the variables tables on
+/// Bootstrap's own docs site — except every row here is sourced from this
+/// repo's own `vendor/bootstrap/scss/` and the matching `BsXStyle` class,
+/// so it documents what this port actually implements rather than
+/// re-deriving it from upstream each time.
 class DocStyleTable extends StatelessWidget {
   const DocStyleTable({super.key, required this.styleClass, required this.sassFile, this.defaultsNote, required this.rows});
 
@@ -53,9 +50,10 @@ class DocStyleTable extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('CSS', style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600, color: BsBody.colorOf(context))),
-          const SizedBox(height: 4),
-          Text('Variables', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: BsBody.colorOf(context))),
+          Text(
+            'Style tokens',
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600, color: BsBody.colorOf(context)),
+          ),
           const SizedBox(height: 8),
           DefaultTextStyle.merge(
             style: TextStyle(fontSize: 14, color: BsBody.secondaryColorOf(context), height: 1.5),
@@ -64,7 +62,7 @@ class DocStyleTable extends StatelessWidget {
                 children: [
                   const TextSpan(text: 'Every field on '),
                   WidgetSpan(alignment: PlaceholderAlignment.middle, child: BsCode(child: Text(styleClass))),
-                  const TextSpan(text: ' mirrors one of Bootstrap\'s own CSS custom properties or Sass variables in '),
+                  const TextSpan(text: ' mirrors one of Bootstrap\'s own style variables, defined in '),
                   WidgetSpan(alignment: PlaceholderAlignment.middle, child: BsCode(child: Text(sassFile))),
                   const TextSpan(text: '.'),
                   if (defaultsNote != null) TextSpan(text: ' $defaultsNote'),
