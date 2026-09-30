@@ -1,6 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 
+import 'copy_code_button.dart';
+
 /// A single live example within a [DocPage]: a rendered [preview] inside a
 /// bordered box (Bootstrap's `.bd-example`), with the Dart [code] that
 /// produced it available behind a "Show code" toggle (Bootstrap's
@@ -101,9 +103,19 @@ class _DocExampleState extends State<DocExample> {
                   bottomRight: Radius.circular(BsBorders.radius),
                 ),
               ),
-              child: BsPre(
-                style: const BsCodeStyle(preColor: BsColors.gray100),
-                child: Text(widget.code),
+              child: Stack(
+                children: [
+                  Padding(
+                    // Reserves room so the copy button never overlaps the
+                    // first line of code, regardless of its width.
+                    padding: const EdgeInsetsDirectional.only(end: 64),
+                    child: BsPre(
+                      style: const BsCodeStyle(preColor: BsColors.gray100),
+                      child: Text(widget.code),
+                    ),
+                  ),
+                  PositionedDirectional(top: 0, end: 0, child: CopyCodeButton(code: widget.code)),
+                ],
               ),
             ),
         ],

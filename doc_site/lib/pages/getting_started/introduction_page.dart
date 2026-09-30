@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 
+import '../../src/copy_code_button.dart';
 import '../../src/doc_page.dart';
 
 class IntroductionPage extends StatelessWidget {
@@ -154,7 +155,15 @@ class _QuickStartStep extends StatelessWidget {
                 border: Border.all(color: BsBorders.colorOf(context)),
                 borderRadius: BorderRadius.circular(BsBorders.radius),
               ),
-              child: BsPre(style: const BsCodeStyle(preColor: BsColors.gray100), child: Text(block.code)),
+              child: Stack(
+                children: [
+                  Padding(
+                    padding: const EdgeInsetsDirectional.only(end: 64),
+                    child: BsPre(style: const BsCodeStyle(preColor: BsColors.gray100), child: Text(block.code)),
+                  ),
+                  PositionedDirectional(top: 0, end: 0, child: CopyCodeButton(code: block.code)),
+                ],
+              ),
             ),
             const SizedBox(height: 12),
           ],
