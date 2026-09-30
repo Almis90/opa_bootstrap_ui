@@ -3,6 +3,7 @@ import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 
 import '../../src/doc_example.dart';
 import '../../src/doc_page.dart';
+import '../../src/doc_style_table.dart';
 
 class ButtonsPage extends StatelessWidget {
   const ButtonsPage({super.key});
@@ -101,6 +102,34 @@ BsButton(
             ),
             child: const Text('Custom brand color'),
           ),
+        ),
+      ],
+      children: const [
+        DocStyleTable(
+          styleClass: 'BsButtonStyle',
+          sassFile: 'scss/_buttons.scss',
+          rows: [
+            DocStyleRow(field: 'color', bootstrapVar: '--bs-btn-color', defaultValue: 'Derived from variant (contrast color, e.g. white for primary)'),
+            DocStyleRow(field: 'background', bootstrapVar: '--bs-btn-bg', defaultValue: 'Derived from variant (e.g. BsColors.blue for primary)'),
+            DocStyleRow(field: 'borderColor', bootstrapVar: '--bs-btn-border-color', defaultValue: 'Same as background by default'),
+            DocStyleRow(field: 'hoverColor', bootstrapVar: '--bs-btn-hover-color', defaultValue: 'Contrast color of hoverBackground'),
+            DocStyleRow(field: 'hoverBackground', bootstrapVar: '--bs-btn-hover-bg', defaultValue: 'background shaded/tinted 15%'),
+            DocStyleRow(field: 'hoverBorderColor', bootstrapVar: '--bs-btn-hover-border-color', defaultValue: 'borderColor shaded 20% / tinted 10%'),
+            DocStyleRow(field: 'activeColor', bootstrapVar: '--bs-btn-active-color', defaultValue: 'Contrast color of activeBackground'),
+            DocStyleRow(field: 'activeBackground', bootstrapVar: '--bs-btn-active-bg', defaultValue: 'background shaded/tinted 20%'),
+            DocStyleRow(field: 'activeBorderColor', bootstrapVar: '--bs-btn-active-border-color', defaultValue: 'borderColor shaded 25% / tinted 10%'),
+            DocStyleRow(field: 'padding', bootstrapVar: '--bs-btn-padding-x / -y', defaultValue: '12×6 (sm: 8×4, lg: 16×8)'),
+            DocStyleRow(field: 'textStyle', bootstrapVar: '--bs-btn-font-* / -line-height', defaultValue: '16px, normal weight, 1.5 line-height (sm: 14px, lg: 20px)'),
+            DocStyleRow(field: 'borderRadius', bootstrapVar: '--bs-btn-border-radius', defaultValue: '6px (sm: 4px, lg: 8px)'),
+            DocStyleRow(field: 'borderWidth', bootstrapVar: '--bs-btn-border-width', defaultValue: '1'),
+            DocStyleRow(field: 'disabledOpacity', bootstrapVar: '--bs-btn-disabled-opacity', defaultValue: '0.65'),
+            DocStyleRow(field: 'boxShadow', bootstrapVar: '--bs-btn-box-shadow', defaultValue: 'Inset top highlight + subtle drop shadow'),
+            DocStyleRow(field: 'activeShadow', bootstrapVar: '--bs-btn-active-shadow', defaultValue: 'Inset pressed-in shadow'),
+            DocStyleRow(field: 'focusRingColor', bootstrapVar: '--bs-btn-focus-shadow-rgb', defaultValue: 'Mix of color/borderColor at 15%'),
+            DocStyleRow(field: 'focusRingWidth', bootstrapVar: r'$btn-focus-width', defaultValue: '4'),
+            DocStyleRow(field: 'transitionDuration', bootstrapVar: r'$btn-transition', defaultValue: '150ms'),
+            DocStyleRow(field: 'transitionCurve', bootstrapVar: r'$btn-transition', defaultValue: 'easeInOut'),
+          ],
         ),
       ],
     );
