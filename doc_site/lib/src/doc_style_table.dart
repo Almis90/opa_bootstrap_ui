@@ -14,10 +14,11 @@ class DocStyleRow {
   /// e.g. `'--bs-btn-color'`.
   final String bootstrapVar;
 
-  /// The default value, as prose — often "derived from variant/size"
-  /// rather than one fixed value, since several `BsXStyle` classes (like
-  /// `BsButtonStyle`) don't have a single flat set of defaults the way
-  /// most others do.
+  /// The default value. For a flat `BsXStyle.defaults` class this is a
+  /// literal value; for a variant/size-derived class (no single
+  /// `.defaults` — e.g. `BsButtonStyle`) this is the value the widget's
+  /// own default parameters actually resolve to (e.g. `BsButton`'s
+  /// `variant: BsVariant.primary`), not a generic "varies by variant".
   final String defaultValue;
 }
 
@@ -28,7 +29,7 @@ class DocStyleRow {
 /// documents what this port actually implements rather than re-deriving
 /// it from upstream each time.
 class DocStyleTable extends StatelessWidget {
-  const DocStyleTable({super.key, required this.styleClass, required this.sassFile, required this.rows});
+  const DocStyleTable({super.key, required this.styleClass, required this.sassFile, this.defaultsNote, required this.rows});
 
   /// The Dart style class this documents, e.g. `'BsButtonStyle'`.
   final String styleClass;
@@ -36,6 +37,12 @@ class DocStyleTable extends StatelessWidget {
   /// Where in `vendor/bootstrap/scss/` the mirrored variables live, e.g.
   /// `'scss/_buttons.scss'`.
   final String sassFile;
+
+  /// Extra context for [DocStyleRow.defaultValue] when it isn't a flat,
+  /// always-the-same value — e.g. clarifying that the "Default" column
+  /// shows values for the widget's own default parameters, which vary if
+  /// you pass something else.
+  final String? defaultsNote;
 
   final List<DocStyleRow> rows;
 
@@ -60,6 +67,7 @@ class DocStyleTable extends StatelessWidget {
                   const TextSpan(text: ' mirrors one of Bootstrap\'s own CSS custom properties or Sass variables in '),
                   WidgetSpan(alignment: PlaceholderAlignment.middle, child: BsCode(child: Text(sassFile))),
                   const TextSpan(text: '.'),
+                  if (defaultsNote != null) TextSpan(text: ' $defaultsNote'),
                 ],
               ),
             ),
