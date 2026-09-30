@@ -3,6 +3,7 @@ import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 
 import '../../src/doc_example.dart';
 import '../../src/doc_page.dart';
+import '../../src/doc_style_table.dart';
 
 class NavsTabsPage extends StatefulWidget {
   const NavsTabsPage({super.key});
@@ -191,6 +192,37 @@ BsTabView(
   children: [Text('Content for Home.'), Text('Content for Profile.'), Text('Content for Contact.')],
 )''',
           preview: const _EventsDemo(),
+        ),
+      ],
+      children: const [
+        DocStyleTable(
+          styleClass: 'BsNavStyle',
+          defaultsNote:
+              'linkHoverColor, linkDisabledColor, tabsBorderColor, tabsLinkActiveColor, tabsLinkActiveBackground, '
+              'tabsLinkActiveBorderColor, tabsLinkHoverBorderColor, and underlineLinkActiveColor swap for their '
+              'dark-theme counterparts when BsTheme.of(context) is Brightness.dark; every other field stays the '
+              'same.',
+          rows: [
+            DocStyleRow(field: 'linkPadding', defaultValue: 'EdgeInsets.symmetric(horizontal: 16, vertical: 8)'),
+            DocStyleRow(field: 'linkColor', defaultValue: 'BsVariant.primary.color (BsColors.blue)'),
+            DocStyleRow(field: 'linkHoverColor', defaultValue: 'BsColors.blue, shaded ~20%'),
+            DocStyleRow(field: 'linkDisabledColor', defaultValue: 'BsColors.gray600'),
+            DocStyleRow(field: 'linkFocusRingColor', defaultValue: 'BsColors.blue at 25% opacity'),
+            DocStyleRow(field: 'linkFocusRingWidth', defaultValue: '4'),
+            DocStyleRow(field: 'tabsBorderColor', defaultValue: 'BsColors.gray300'),
+            DocStyleRow(field: 'tabsBorderWidth', defaultValue: '1'),
+            DocStyleRow(field: 'tabsBorderRadius', defaultValue: '6'),
+            DocStyleRow(field: 'tabsLinkActiveColor', defaultValue: 'BsColors.black'),
+            DocStyleRow(field: 'tabsLinkActiveBackground', defaultValue: 'BsColors.white'),
+            DocStyleRow(field: 'tabsLinkActiveBorderColor', defaultValue: 'BsColors.gray300; same as tabsBorderColor'),
+            DocStyleRow(field: 'tabsLinkHoverBorderColor', defaultValue: 'BsColors.gray200'),
+            DocStyleRow(field: 'pillsBorderRadius', defaultValue: '6'),
+            DocStyleRow(field: 'pillsLinkActiveColor', defaultValue: 'BsColors.white'),
+            DocStyleRow(field: 'pillsLinkActiveBackground', defaultValue: 'BsVariant.primary.color (BsColors.blue)'),
+            DocStyleRow(field: 'underlineGap', defaultValue: '16'),
+            DocStyleRow(field: 'underlineBorderWidth', defaultValue: '2'),
+            DocStyleRow(field: 'underlineLinkActiveColor', defaultValue: 'BsColors.black'),
+          ],
         ),
       ],
     );
