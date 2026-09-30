@@ -3,6 +3,7 @@ import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 
 import '../../src/doc_example.dart';
 import '../../src/doc_page.dart';
+import '../../src/doc_style_table.dart';
 
 class CardPage extends StatelessWidget {
   const CardPage({super.key});
@@ -254,6 +255,32 @@ BsCard(
               ),
             ),
           ),
+        ),
+      ],
+      children: const [
+        DocStyleTable(
+          styleClass: 'BsCardStyle',
+          defaultsNote:
+              'background/borderColor/capBackground swap for their dark-theme counterparts when BsTheme.of(context) '
+              'is Brightness.dark; every other field stays the same.',
+          rows: [
+            DocStyleRow(field: 'spacing', defaultValue: 'EdgeInsets.all(16)'),
+            DocStyleRow(field: 'titleSpacerY', defaultValue: '8'),
+            DocStyleRow(field: 'titleColor', defaultValue: 'null — inherits color'),
+            DocStyleRow(field: 'subtitleColor', defaultValue: 'null — inherits color'),
+            DocStyleRow(field: 'borderWidth', defaultValue: '1'),
+            DocStyleRow(field: 'borderColor', defaultValue: 'Black at ~18% opacity'),
+            DocStyleRow(field: 'borderRadius', defaultValue: '6'),
+            DocStyleRow(field: 'innerBorderRadius', defaultValue: '5 (borderRadius − borderWidth)'),
+            DocStyleRow(field: 'capPadding', defaultValue: 'EdgeInsets.symmetric(horizontal: 16, vertical: 8)'),
+            DocStyleRow(field: 'capBackground', defaultValue: 'BsColors.gray900 at ~3% opacity'),
+            DocStyleRow(field: 'capColor', defaultValue: 'null — inherits color'),
+            DocStyleRow(field: 'color', defaultValue: 'null — inherits the surrounding text color'),
+            DocStyleRow(field: 'background', defaultValue: 'BsColors.white'),
+            DocStyleRow(field: 'boxShadow', defaultValue: 'null — no shadow'),
+            DocStyleRow(field: 'imgOverlayPadding', defaultValue: '16'),
+            DocStyleRow(field: 'groupMargin', defaultValue: '12'),
+          ],
         ),
       ],
     );
