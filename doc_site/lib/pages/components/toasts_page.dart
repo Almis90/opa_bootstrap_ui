@@ -3,6 +3,7 @@ import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 
 import '../../src/doc_example.dart';
 import '../../src/doc_page.dart';
+import '../../src/doc_style_table.dart';
 
 class ToastsPage extends StatelessWidget {
   const ToastsPage({super.key});
@@ -145,6 +146,30 @@ showBsToast(
   ),
 )''',
           preview: const _EventsDemo(),
+        ),
+      ],
+      children: const [
+        DocStyleTable(
+          styleClass: 'BsToastStyle',
+          defaultsNote:
+              'background, borderColor, headerColor, headerBackground, and headerBorderColor swap for their '
+              "dark-theme counterparts when BsTheme.of(context) is Brightness.dark. color doesn't swap — it's "
+              "left null in both, so a toast's body text inherits whatever color surrounds it.",
+          rows: [
+            DocStyleRow(field: 'maxWidth', defaultValue: '350'),
+            DocStyleRow(field: 'padding', defaultValue: 'EdgeInsets.symmetric(horizontal: 12, vertical: 8)'),
+            DocStyleRow(field: 'fontSize', defaultValue: '14'),
+            DocStyleRow(field: 'color', defaultValue: 'null — inherits the surrounding text color'),
+            DocStyleRow(field: 'background', defaultValue: 'BsColors.white at 85% opacity'),
+            DocStyleRow(field: 'borderWidth', defaultValue: '1'),
+            DocStyleRow(field: 'borderColor', defaultValue: 'Black at ~18% opacity'),
+            DocStyleRow(field: 'borderRadius', defaultValue: '6'),
+            DocStyleRow(field: 'boxShadow', defaultValue: 'Black at ~15% opacity, offset (0, 8), 16 blur'),
+            DocStyleRow(field: 'spacing', defaultValue: '24'),
+            DocStyleRow(field: 'headerColor', defaultValue: 'BsColors.gray600'),
+            DocStyleRow(field: 'headerBackground', defaultValue: 'BsColors.white at 85% opacity; same as background'),
+            DocStyleRow(field: 'headerBorderColor', defaultValue: 'Black at ~18% opacity; same as borderColor'),
+          ],
         ),
       ],
     );
