@@ -3,6 +3,7 @@ import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 
 import '../../src/doc_example.dart';
 import '../../src/doc_page.dart';
+import '../../src/doc_style_table.dart';
 
 class PaginationPage extends StatefulWidget {
   const PaginationPage({super.key});
@@ -91,6 +92,40 @@ BsPagination(
               showPrevNext: false,
             ),
           ),
+        ),
+      ],
+      children: const [
+        DocStyleTable(
+          styleClass: 'BsPaginationStyle',
+          defaultsNote:
+              'background, borderColor, focusBackground, hoverBackground, hoverBorderColor, disabledColor, '
+              'disabledBackground, and disabledBorderColor swap for their dark-theme counterparts when '
+              'BsTheme.of(context) is Brightness.dark. color, focusColor, hoverColor, focusRingColor, '
+              'activeColor, and activeBackground don\'t — they\'re literal primary/white values that don\'t '
+              're-theme.',
+          rows: [
+            DocStyleRow(field: 'padding', defaultValue: 'EdgeInsets.symmetric(horizontal: 12, vertical: 6)'),
+            DocStyleRow(field: 'fontSize', defaultValue: '16'),
+            DocStyleRow(field: 'color', defaultValue: 'BsVariant.primary.color (BsColors.blue)'),
+            DocStyleRow(field: 'background', defaultValue: 'BsColors.white'),
+            DocStyleRow(field: 'borderRadius', defaultValue: '6'),
+            DocStyleRow(field: 'borderWidth', defaultValue: '1'),
+            DocStyleRow(field: 'borderColor', defaultValue: 'BsColors.gray300'),
+            DocStyleRow(field: 'focusColor', defaultValue: 'BsColors.blue; same as color'),
+            DocStyleRow(field: 'focusBackground', defaultValue: 'BsColors.gray200'),
+            DocStyleRow(field: 'focusRingColor', defaultValue: 'BsColors.blue at 25% opacity'),
+            DocStyleRow(field: 'focusRingWidth', defaultValue: '4'),
+            DocStyleRow(field: 'hoverColor', defaultValue: 'BsColors.blue; same as color'),
+            DocStyleRow(field: 'hoverBackground', defaultValue: 'BsColors.gray100'),
+            DocStyleRow(field: 'hoverBorderColor', defaultValue: 'BsColors.gray300; same as borderColor'),
+            DocStyleRow(field: 'activeColor', defaultValue: 'BsColors.white'),
+            DocStyleRow(field: 'activeBackground', defaultValue: 'BsVariant.primary.color (BsColors.blue)'),
+            DocStyleRow(field: 'activeBorderColor', defaultValue: 'BsColors.blue; same as activeBackground'),
+            DocStyleRow(field: 'disabledColor', defaultValue: 'BsColors.gray600'),
+            DocStyleRow(field: 'disabledBackground', defaultValue: 'BsColors.gray200'),
+            DocStyleRow(field: 'disabledBorderColor', defaultValue: 'BsColors.gray300; same as borderColor'),
+            DocStyleRow(field: 'transitionDuration', defaultValue: '150ms'),
+          ],
         ),
       ],
     );
