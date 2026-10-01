@@ -3,6 +3,7 @@ import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 
 import '../../src/doc_example.dart';
 import '../../src/doc_page.dart';
+import '../../src/doc_style_table.dart';
 
 class SpinnersPage extends StatelessWidget {
   const SpinnersPage({super.key});
@@ -119,6 +120,23 @@ BsButton(
               ],
             ),
           ),
+        ),
+      ],
+      children: const [
+        DocStyleTable(
+          styleClass: 'BsSpinnerStyle',
+          defaultsNote:
+              "The values below are for size: BsSpinnerSize.normal, the default for both BsSpinnerBorder and "
+              "BsSpinnerGrow. Passing size: BsSpinnerSize.small swaps in BsSpinnerStyle.small instead, which only "
+              "changes size (16) and borderWidth (3.2) — verticalAlign and animationDuration stay the same. "
+              "color isn't part of BsSpinnerStyle at all; it's a separate parameter on BsSpinnerBorder/"
+              "BsSpinnerGrow, defaulting to the surrounding text color.",
+          rows: [
+            DocStyleRow(field: 'size', defaultValue: '32'),
+            DocStyleRow(field: 'borderWidth', defaultValue: '4'),
+            DocStyleRow(field: 'animationDuration', defaultValue: '750ms'),
+            DocStyleRow(field: 'verticalAlign', defaultValue: '-2'),
+          ],
         ),
       ],
     );
