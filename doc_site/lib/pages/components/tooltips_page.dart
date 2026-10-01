@@ -3,6 +3,7 @@ import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 
 import '../../src/doc_example.dart';
 import '../../src/doc_page.dart';
+import '../../src/doc_style_table.dart';
 
 class TooltipsPage extends StatelessWidget {
   const TooltipsPage({super.key});
@@ -145,6 +146,26 @@ BsTooltip(
   child: BsButton(onPressed: () {}, child: Text('Hover over me')),
 )''',
           preview: const _EventsDemo(),
+        ),
+      ],
+      children: const [
+        DocStyleTable(
+          styleClass: 'BsTooltipStyle',
+          defaultsNote:
+              'color and background swap for their dark-theme counterparts when BsTheme.of(context) is '
+              "Brightness.dark — and background doesn't just lighten, it inverts: a light-page tooltip is a dark "
+              'chip, but a dark-page tooltip becomes a light chip, so color and background effectively swap roles.',
+          rows: [
+            DocStyleRow(field: 'fontSize', defaultValue: '14'),
+            DocStyleRow(field: 'maxWidth', defaultValue: '200'),
+            DocStyleRow(field: 'color', defaultValue: 'BsColors.white'),
+            DocStyleRow(field: 'background', defaultValue: 'BsColors.black'),
+            DocStyleRow(field: 'borderRadius', defaultValue: '6'),
+            DocStyleRow(field: 'opacity', defaultValue: '0.9'),
+            DocStyleRow(field: 'padding', defaultValue: 'EdgeInsets.symmetric(horizontal: 8, vertical: 4)'),
+            DocStyleRow(field: 'arrowWidth', defaultValue: '12.8'),
+            DocStyleRow(field: 'arrowHeight', defaultValue: '6.4'),
+          ],
         ),
       ],
     );
