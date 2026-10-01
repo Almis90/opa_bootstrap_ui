@@ -3,6 +3,7 @@ import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 
 import '../../src/doc_example.dart';
 import '../../src/doc_page.dart';
+import '../../src/doc_style_table.dart';
 
 class PopoversPage extends StatelessWidget {
   const PopoversPage({super.key});
@@ -125,6 +126,32 @@ BsPopover(
   triggerBuilder: (context, toggle, isOpen) => BsButton(onPressed: toggle, child: Text('Click me')),
 )''',
           preview: const _EventsDemo(),
+        ),
+      ],
+      children: const [
+        DocStyleTable(
+          styleClass: 'BsPopoverStyle',
+          defaultsNote:
+              'background, borderColor, headerBackground, and bodyColor swap for their dark-theme counterparts '
+              "when BsTheme.of(context) is Brightness.dark. headerColor isn't set by either — it's left null, so "
+              'a popover title inherits whatever text color surrounds it.',
+          rows: [
+            DocStyleRow(field: 'fontSize', defaultValue: '14'),
+            DocStyleRow(field: 'background', defaultValue: 'BsColors.white'),
+            DocStyleRow(field: 'maxWidth', defaultValue: '276'),
+            DocStyleRow(field: 'borderWidth', defaultValue: '1'),
+            DocStyleRow(field: 'borderColor', defaultValue: 'Black at ~18% opacity'),
+            DocStyleRow(field: 'borderRadius', defaultValue: '8'),
+            DocStyleRow(field: 'boxShadow', defaultValue: 'Black at ~15% opacity, offset (0, 8), 16 blur'),
+            DocStyleRow(field: 'headerFontSize', defaultValue: '16'),
+            DocStyleRow(field: 'headerBackground', defaultValue: 'BsColors.gray200'),
+            DocStyleRow(field: 'headerColor', defaultValue: 'null — inherits the surrounding text color'),
+            DocStyleRow(field: 'headerPadding', defaultValue: 'EdgeInsets.symmetric(horizontal: 16, vertical: 8)'),
+            DocStyleRow(field: 'bodyColor', defaultValue: 'BsColors.gray900'),
+            DocStyleRow(field: 'bodyPadding', defaultValue: 'EdgeInsets.all(16)'),
+            DocStyleRow(field: 'arrowWidth', defaultValue: '16'),
+            DocStyleRow(field: 'arrowHeight', defaultValue: '8'),
+          ],
         ),
       ],
     );
