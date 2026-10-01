@@ -3,6 +3,7 @@ import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 
 import '../../src/doc_example.dart';
 import '../../src/doc_page.dart';
+import '../../src/doc_style_table.dart';
 
 class PlaceholdersPage extends StatelessWidget {
   const PlaceholdersPage({super.key});
@@ -155,6 +156,15 @@ BsCard(
               ),
             ),
           ),
+        ),
+      ],
+      children: const [
+        DocStyleTable(
+          styleClass: 'BsPlaceholderStyle',
+          rows: [
+            DocStyleRow(field: 'opacityMax', defaultValue: '0.5'),
+            DocStyleRow(field: 'opacityMin', defaultValue: '0.2'),
+          ],
         ),
       ],
     );
