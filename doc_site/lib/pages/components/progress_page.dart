@@ -3,6 +3,7 @@ import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 
 import '../../src/doc_example.dart';
 import '../../src/doc_page.dart';
+import '../../src/doc_style_table.dart';
 
 class ProgressPage extends StatelessWidget {
   const ProgressPage({super.key});
@@ -85,6 +86,26 @@ BsProgress.stacked(
               BsProgressBar(value: 20, variant: BsVariant.danger),
             ],
           ),
+        ),
+      ],
+      children: const [
+        DocStyleTable(
+          styleClass: 'BsProgressStyle',
+          defaultsNote:
+              "background swaps for its dark-theme counterpart when BsTheme.of(context) is Brightness.dark. "
+              "barColor and barBackground don't — they're literal white/primary values that don't re-theme, "
+              "though barBackground is overridden whenever BsProgress's own variant parameter is set.",
+          rows: [
+            DocStyleRow(field: 'height', defaultValue: '16'),
+            DocStyleRow(field: 'fontSize', defaultValue: '12'),
+            DocStyleRow(field: 'background', defaultValue: 'BsColors.gray200'),
+            DocStyleRow(field: 'borderRadius', defaultValue: '6'),
+            DocStyleRow(field: 'boxShadow', defaultValue: 'Black at ~7% opacity, offset (0, 1), 2 blur, inset'),
+            DocStyleRow(field: 'barColor', defaultValue: 'BsColors.white'),
+            DocStyleRow(field: 'barBackground', defaultValue: 'BsVariant.primary.color (BsColors.blue)'),
+            DocStyleRow(field: 'barAnimationDuration', defaultValue: '1s'),
+            DocStyleRow(field: 'barTransitionDuration', defaultValue: '600ms'),
+          ],
         ),
       ],
     );
