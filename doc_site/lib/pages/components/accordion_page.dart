@@ -3,6 +3,7 @@ import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 
 import '../../src/doc_example.dart';
 import '../../src/doc_page.dart';
+import '../../src/doc_style_table.dart';
 
 class AccordionPage extends StatelessWidget {
   const AccordionPage({super.key});
@@ -210,6 +211,38 @@ BsAccordion(
   ],
 )''',
           preview: const _EventsDemo(),
+        ),
+      ],
+      children: const [
+        DocStyleTable(
+          styleClass: 'BsAccordionStyle',
+          defaultsNote:
+              'color, background, borderColor, buttonColor, buttonBackground, iconColor, buttonActiveBackground, '
+              "buttonActiveColor, and iconActiveColor swap for their dark-theme counterparts when "
+              "BsTheme.of(context) is Brightness.dark. focusRingColor doesn't — it's a literal tinted blue "
+              'with no dark-theme override.',
+          rows: [
+            DocStyleRow(field: 'padding', defaultValue: 'EdgeInsets.symmetric(horizontal: 20, vertical: 16)'),
+            DocStyleRow(field: 'bodyPadding', defaultValue: 'EdgeInsets.symmetric(horizontal: 20, vertical: 16); same as padding'),
+            DocStyleRow(field: 'color', defaultValue: 'BsColors.gray900'),
+            DocStyleRow(field: 'background', defaultValue: 'BsColors.white'),
+            DocStyleRow(field: 'borderWidth', defaultValue: '1'),
+            DocStyleRow(field: 'borderColor', defaultValue: 'BsColors.gray300'),
+            DocStyleRow(field: 'borderRadius', defaultValue: '6'),
+            DocStyleRow(field: 'innerBorderRadius', defaultValue: '5'),
+            DocStyleRow(field: 'buttonColor', defaultValue: 'BsColors.gray900; same as color'),
+            DocStyleRow(field: 'buttonBackground', defaultValue: 'BsColors.white; same as background'),
+            DocStyleRow(field: 'transitionDuration', defaultValue: '150ms'),
+            DocStyleRow(field: 'buttonActiveBackground', defaultValue: '#cfe2ff (primary tinted 80% toward white)'),
+            DocStyleRow(field: 'buttonActiveColor', defaultValue: '#052c65 (primary shaded 60% toward black)'),
+            DocStyleRow(field: 'iconWidth', defaultValue: '20'),
+            DocStyleRow(field: 'iconColor', defaultValue: 'BsColors.gray900; same as color'),
+            DocStyleRow(field: 'iconActiveColor', defaultValue: '#052c65; same as buttonActiveColor'),
+            DocStyleRow(field: 'iconTransitionDuration', defaultValue: '200ms'),
+            DocStyleRow(field: 'iconRotationTurns', defaultValue: '0.5 (a 180° flip)'),
+            DocStyleRow(field: 'focusRingColor', defaultValue: 'BsColors.blue tinted 15% toward white, drawn at 50% opacity as the glow'),
+            DocStyleRow(field: 'focusRingWidth', defaultValue: '4'),
+          ],
         ),
       ],
     );
