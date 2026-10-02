@@ -44,7 +44,16 @@ class _DocShellState extends State<DocShell> {
   late DocNavPage _selected = widget.sections.first.pages.first;
   AppSection _section = AppSection.docs;
 
-  void _selectSection(AppSection section) => setState(() => _section = section);
+  /// True once an example's own standalone page is open — Bootstrap's real
+  /// examples have no site chrome of their own, so the app bar hides to
+  /// match rather than wrapping them in docs-site navigation they'd never
+  /// actually have.
+  bool _exampleDetailOpen = false;
+
+  void _selectSection(AppSection section) => setState(() {
+    _section = section;
+    _exampleDetailOpen = false;
+  });
 
   void _select(DocNavPage page) => setState(() => _selected = page);
 
@@ -78,49 +87,56 @@ class _DocShellState extends State<DocShell> {
         final isMobile = constraints.maxWidth < BsBreakpoint.md.minWidth;
         return Column(
           children: [
-            Container(
-              width: double.infinity,
-              color: BsColors.gray900,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-              child: Row(
-                children: [
-                  if (isMobile && _section == AppSection.docs) ...[
-                    _HamburgerButton(key: const Key('doc-shell-hamburger'), onTap: () => _openMobileNav(context)),
-                    const SizedBox(width: 16),
-                  ],
-                  if (!isMobile) ...[
-                    const Text(
-                      'opa_bootstrap_ui',
-                      style: TextStyle(color: BsColors.white, fontSize: 18, fontWeight: FontWeight.w600),
+            if (!_exampleDetailOpen)
+              Container(
+                width: double.infinity,
+                color: BsColors.gray900,
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                child: Row(
+                  children: [
+                    if (isMobile && _section == AppSection.docs) ...[
+                      _HamburgerButton(key: const Key('doc-shell-hamburger'), onTap: () => _openMobileNav(context)),
+                      const SizedBox(width: 16),
+                    ],
+                    if (!isMobile) ...[
+                      const Text(
+                        'opa_bootstrap_ui',
+                        style: TextStyle(color: BsColors.white, fontSize: 18, fontWeight: FontWeight.w600),
+                      ),
+                      const SizedBox(width: 24),
+                    ],
+                    _SectionTab(
+                      key: const Key('doc-shell-tab-docs'),
+                      label: 'Docs',
+                      selected: _section == AppSection.docs,
+                      onTap: () => _selectSection(AppSection.docs),
                     ),
-                    const SizedBox(width: 24),
+                    const SizedBox(width: 8),
+                    _SectionTab(
+                      key: const Key('doc-shell-tab-examples'),
+                      label: 'Examples',
+                      selected: _section == AppSection.examples,
+                      onTap: () => _selectSection(AppSection.examples),
+                    ),
+                    const Spacer(),
+                    _BrightnessToggle(
+                      key: const Key('doc-shell-brightness-toggle'),
+                      brightness: widget.brightness,
+                      showLabel: !isMobile,
+                      onTap: widget.onToggleBrightness,
+                    ),
                   ],
-                  _SectionTab(
-                    key: const Key('doc-shell-tab-docs'),
-                    label: 'Docs',
-                    selected: _section == AppSection.docs,
-                    onTap: () => _selectSection(AppSection.docs),
-                  ),
-                  const SizedBox(width: 8),
-                  _SectionTab(
-                    key: const Key('doc-shell-tab-examples'),
-                    label: 'Examples',
-                    selected: _section == AppSection.examples,
-                    onTap: () => _selectSection(AppSection.examples),
-                  ),
-                  const Spacer(),
-                  _BrightnessToggle(
-                    key: const Key('doc-shell-brightness-toggle'),
-                    brightness: widget.brightness,
-                    showLabel: !isMobile,
-                    onTap: widget.onToggleBrightness,
-                  ),
-                ],
+                ),
               ),
-            ),
             Expanded(
               child: _section == AppSection.examples
-                  ? ColoredBox(color: BsBody.backgroundOf(context), child: ExamplesShell(examples: widget.examples))
+                  ? ColoredBox(
+                      color: BsBody.backgroundOf(context),
+                      child: ExamplesShell(
+                        examples: widget.examples,
+                        onDetailChanged: (open) => setState(() => _exampleDetailOpen = open),
+                      ),
+                    )
                   : isMobile
                   ? ColoredBox(color: BsBody.backgroundOf(context), child: Builder(builder: _selected.builder))
                   : Row(

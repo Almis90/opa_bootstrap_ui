@@ -8,9 +8,14 @@ import 'example_entry.dart';
 /// mirroring how Bootstrap's own site separates bite-sized component docs
 /// from full, real-world page examples under `/examples`.
 class ExamplesShell extends StatefulWidget {
-  const ExamplesShell({super.key, required this.examples});
+  const ExamplesShell({super.key, required this.examples, this.onDetailChanged});
 
   final List<ExampleEntry> examples;
+
+  /// Called with `true` once an example is open (its real page has no
+  /// site chrome of its own, so [DocShell] hides its app bar) and `false`
+  /// back at the gallery.
+  final ValueChanged<bool>? onDetailChanged;
 
   @override
   State<ExamplesShell> createState() => _ExamplesShellState();
@@ -23,9 +28,21 @@ class _ExamplesShellState extends State<ExamplesShell> {
   Widget build(BuildContext context) {
     final selected = _selected;
     if (selected == null) {
-      return _ExamplesIndex(examples: widget.examples, onSelect: (entry) => setState(() => _selected = entry));
+      return _ExamplesIndex(
+        examples: widget.examples,
+        onSelect: (entry) {
+          setState(() => _selected = entry);
+          widget.onDetailChanged?.call(true);
+        },
+      );
     }
-    return _ExampleDetail(entry: selected, onBack: () => setState(() => _selected = null));
+    return _ExampleDetail(
+      entry: selected,
+      onBack: () {
+        setState(() => _selected = null);
+        widget.onDetailChanged?.call(false);
+      },
+    );
   }
 }
 
