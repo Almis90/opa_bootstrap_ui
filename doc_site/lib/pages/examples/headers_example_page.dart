@@ -18,47 +18,22 @@ class HeadersExamplePage extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _Section(
-          label: 'Simple header',
-          description: "A centered brand and nav-pills — Bootstrap's baseline header.",
-          child: _simpleHeader(context),
-        ),
-        _Section(
-          label: 'Centered navigation',
-          description: 'Just the nav-pills, no brand — a lighter-weight variant of the simple header.',
-          child: _centeredNav(context),
-        ),
-        _Section(
-          label: 'Header with call-to-action buttons',
-          description: 'A logo brand, plain nav links, and Login/Sign-up buttons spread across the bar.',
-          child: _ctaHeader(context),
-        ),
-        _Section(
-          label: 'Dark header with search',
-          description: 'A dark, logo-only header with a search box and outline/warning buttons.',
-          child: _darkSearchHeader(context),
-        ),
-        _Section(
-          label: 'Header with dropdown',
-          description: 'A logo-only header: nav links, a search box, and a GitHub-avatar BsDropdown.',
-          child: _dropdownHeader(context),
-        ),
-        _Section(
-          label: 'Header with logo dropdown',
-          description: "The brand itself opens a BsDropdown menu, in Bootstrap's two-column grid layout.",
-          child: _gridDropdownSection(context),
-        ),
-        _Section(
-          label: 'Nav bar + double header',
-          description: 'A slim utility nav bar stacked above a brand-and-search bar.',
-          child: _doubleHeader(context),
-        ),
-        _Section(
-          label: 'Two-tier icon navigation',
-          description: 'A dark, icon-labelled nav bar stacked above a search-and-buttons bar.',
-          isLast: true,
-          child: _iconNavHeader(context),
-        ),
+        _simpleHeader(context),
+        const _ExampleDivider(),
+        _centeredNav(context),
+        const _ExampleDivider(),
+        _ctaHeader(context),
+        const _ExampleDivider(),
+        _darkSearchHeader(context),
+        const _ExampleDivider(),
+        _dropdownHeader(context),
+        const _ExampleDivider(),
+        _gridDropdownSection(context),
+        const _ExampleDivider(),
+        _doubleHeader(context),
+        const _ExampleDivider(),
+        _iconNavHeader(context),
+        const _ExampleDivider(),
       ],
     );
   }
@@ -468,41 +443,20 @@ Widget _flexHeader({
   );
 }
 
-class _Section extends StatelessWidget {
-  const _Section({required this.label, required this.description, required this.child, this.isLast = false});
-
-  final String label;
-  final String description;
-  final Widget child;
-  final bool isLast;
+/// Bootstrap's own `.b-example-divider`: a plain, inset-shadowed gray band
+/// separating stacked examples on the same page — the real page has no
+/// label or description between sections, just this.
+class _ExampleDivider extends StatelessWidget {
+  const _ExampleDivider();
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 24, 16, 12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700,
-                  color: BsBody.secondaryColorOf(context),
-                  letterSpacing: 0.3,
-                ),
-              ),
-              const SizedBox(height: 2),
-              Text(description, style: TextStyle(fontSize: 13, color: BsBody.tertiaryColorOf(context))),
-            ],
-          ),
-        ),
-        child,
-        if (!isLast) const SizedBox(height: 8),
-      ],
+    return Container(
+      height: 48,
+      decoration: const BoxDecoration(
+        color: Color(0x1A000000),
+        border: Border.symmetric(horizontal: BorderSide(color: Color(0x26000000))),
+      ),
     );
   }
 }

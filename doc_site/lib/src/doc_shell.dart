@@ -134,6 +134,8 @@ class _DocShellState extends State<DocShell> {
                       color: BsBody.backgroundOf(context),
                       child: ExamplesShell(
                         examples: widget.examples,
+                        brightness: widget.brightness,
+                        onToggleBrightness: widget.onToggleBrightness,
                         onDetailChanged: (open) => setState(() => _exampleDetailOpen = open),
                       ),
                     )
