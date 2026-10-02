@@ -3,6 +3,7 @@ import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 
 import '../../src/doc_example.dart';
 import '../../src/doc_page.dart';
+import '../../src/doc_style_table.dart';
 
 class BadgePage extends StatelessWidget {
   const BadgePage({super.key});
@@ -116,6 +117,25 @@ BsButton(
               ),
             ],
           ),
+        ),
+      ],
+      children: const [
+        DocStyleTable(
+          styleClass: 'BsBadgeStyle',
+          defaultsNote:
+              "BsBadgeStyle has no single color/background default — both are null unless overridden, and BsBadge "
+              'derives them from its variant parameter (default BsVariant.primary) instead: background is the '
+              "variant's raw color, and color is whichever of black/white contrasts best against it. Neither is "
+              "theme-sensitive — a variant's raw color is a literal with no dark-mode override. The values below "
+              'are for the default variant.',
+          rows: [
+            DocStyleRow(field: 'color', defaultValue: 'null — derived: BsColors.white (contrast against background)'),
+            DocStyleRow(field: 'background', defaultValue: 'null — derived: BsColors.blue (BsVariant.primary.color)'),
+            DocStyleRow(field: 'fontSize', defaultValue: '12'),
+            DocStyleRow(field: 'fontWeight', defaultValue: 'FontWeight.bold'),
+            DocStyleRow(field: 'padding', defaultValue: 'EdgeInsets.symmetric(horizontal: 7.8, vertical: 4.2)'),
+            DocStyleRow(field: 'borderRadius', defaultValue: '6'),
+          ],
         ),
       ],
     );
