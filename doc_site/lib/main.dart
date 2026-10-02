@@ -128,7 +128,7 @@ final _sections = [
 final _examples = [
   ExampleEntry(
     title: 'Headers',
-    description: 'Six header/nav bar layouts, from a bare brand-and-nav bar to a dark navbar with a search box.',
+    description: 'Eight header layouts, from a bare brand-and-nav bar to a two-tier icon navigation bar.',
     builder: (_) => const HeadersExamplePage(),
   ),
 ];
