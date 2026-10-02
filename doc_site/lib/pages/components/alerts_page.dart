@@ -3,6 +3,7 @@ import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 
 import '../../src/doc_example.dart';
 import '../../src/doc_page.dart';
+import '../../src/doc_style_table.dart';
 
 class AlertsPage extends StatelessWidget {
   const AlertsPage({super.key});
@@ -130,6 +131,29 @@ BsAlert(
             style: BsAlertStyle(color: BsColors.white, background: Color(0xFF5C2D91), borderColor: Color(0xFF381A59)),
             child: Text('A custom-styled alert using a brand color instead of a theme variant.'),
           ),
+        ),
+      ],
+      children: const [
+        DocStyleTable(
+          styleClass: 'BsAlertStyle',
+          defaultsNote:
+              "BsAlertStyle has no single BsAlertStyle.defaults for color/background/borderColor/linkColor — "
+              "they're null unless overridden, and BsAlert derives them from its variant parameter (default "
+              'BsVariant.primary) instead, swapping to dark-theme counterparts when BsTheme.of(context) is '
+              'Brightness.dark. The values below are for the default variant in light mode — pass a different '
+              'variant and those four rows change; the rest stay fixed.',
+          rows: [
+            DocStyleRow(field: 'color', defaultValue: 'null — derived: #052c65 (BsVariant.primary.textEmphasis)'),
+            DocStyleRow(field: 'background', defaultValue: 'null — derived: #cfe2ff (BsVariant.primary.bgSubtle)'),
+            DocStyleRow(field: 'borderColor', defaultValue: 'null — derived: #9ec5fe (BsVariant.primary.borderSubtle)'),
+            DocStyleRow(field: 'linkColor', defaultValue: 'null — same as color'),
+            DocStyleRow(field: 'padding', defaultValue: 'EdgeInsets.all(16)'),
+            DocStyleRow(field: 'marginBottom', defaultValue: '16'),
+            DocStyleRow(field: 'borderRadius', defaultValue: '6'),
+            DocStyleRow(field: 'borderWidth', defaultValue: '1'),
+            DocStyleRow(field: 'linkFontWeight', defaultValue: 'FontWeight.bold'),
+            DocStyleRow(field: 'dismissiblePaddingEnd', defaultValue: '48'),
+          ],
         ),
       ],
     );
