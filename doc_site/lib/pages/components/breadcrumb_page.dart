@@ -3,6 +3,7 @@ import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 
 import '../../src/doc_example.dart';
 import '../../src/doc_page.dart';
+import '../../src/doc_style_table.dart';
 
 class BreadcrumbPage extends StatelessWidget {
   const BreadcrumbPage({super.key});
@@ -90,6 +91,25 @@ BsBreadcrumb(
             style: const BsBreadcrumbStyle(divider: ''),
             items: [BsBreadcrumbItem(label: const Text('Home'), onTap: () {}), const BsBreadcrumbItem(label: Text('Library'))],
           ),
+        ),
+      ],
+      children: const [
+        DocStyleTable(
+          styleClass: 'BsBreadcrumbStyle',
+          defaultsNote:
+              'dividerColor and activeColor swap for their dark-theme counterparts when BsTheme.of(context) is '
+              "Brightness.dark. background and borderRadius aren't set by either — both are left null, so a "
+              "breadcrumb stays transparent with square corners in both themes.",
+          rows: [
+            DocStyleRow(field: 'padding', defaultValue: 'EdgeInsets.zero'),
+            DocStyleRow(field: 'itemSpacing', defaultValue: '8'),
+            DocStyleRow(field: 'marginBottom', defaultValue: '16'),
+            DocStyleRow(field: 'background', defaultValue: 'null — transparent'),
+            DocStyleRow(field: 'dividerColor', defaultValue: 'BsColors.gray900 at ~75% opacity'),
+            DocStyleRow(field: 'activeColor', defaultValue: 'BsColors.gray900 at ~75% opacity; same as dividerColor'),
+            DocStyleRow(field: 'divider', defaultValue: "'/'"),
+            DocStyleRow(field: 'borderRadius', defaultValue: 'null — square corners'),
+          ],
         ),
       ],
     );
