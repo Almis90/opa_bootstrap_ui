@@ -1,3 +1,4 @@
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
 import 'bs_breakpoint.dart';
@@ -344,7 +345,7 @@ class BsBox extends StatelessWidget {
       );
       if (align != null) {
         // Inline content follows text-align too, not just text.
-        content = Align(
+        content = _TextAligned(
           alignment: switch (align) {
             BsTextAlign.start => AlignmentDirectional.topStart,
             BsTextAlign.center => AlignmentDirectional.topCenter,
@@ -437,5 +438,66 @@ class BsBox extends StatelessWidget {
       );
     }
     return box;
+  }
+}
+
+/// Places inline [child] content at the start, centre or end of a block that
+/// has a width to place it in, and is as wide as the content otherwise.
+///
+/// A plain [Align] always fills the width it is allowed, which would make a
+/// `text-end` box a flex item as wide as its whole line (instead of shrinking to
+/// its content, as CSS flex items do) and so defeat `justify-content-center`.
+class _TextAligned extends SingleChildRenderObjectWidget {
+  const _TextAligned({required this.alignment, required super.child});
+
+  final AlignmentGeometry alignment;
+
+  @override
+  RenderObject createRenderObject(BuildContext context) => _RenderTextAligned(
+    alignment: alignment,
+    textDirection: Directionality.of(context),
+  );
+
+  @override
+  void updateRenderObject(
+    BuildContext context,
+    _RenderTextAligned renderObject,
+  ) {
+    renderObject
+      ..alignment = alignment
+      ..textDirection = Directionality.of(context);
+  }
+}
+
+class _RenderTextAligned extends RenderAligningShiftedBox {
+  _RenderTextAligned({required super.alignment, required super.textDirection});
+
+  Size _sizeFor(BoxConstraints constraints, Size childSize) =>
+      constraints.constrain(
+        Size(
+          constraints.hasTightWidth ? constraints.maxWidth : childSize.width,
+          childSize.height,
+        ),
+      );
+
+  @override
+  Size computeDryLayout(BoxConstraints constraints) {
+    final child = this.child;
+    if (child == null) {
+      return constraints.smallest;
+    }
+    return _sizeFor(constraints, child.getDryLayout(constraints.loosen()));
+  }
+
+  @override
+  void performLayout() {
+    final child = this.child;
+    if (child == null) {
+      size = constraints.smallest;
+      return;
+    }
+    child.layout(constraints.loosen(), parentUsesSize: true);
+    size = _sizeFor(constraints, child.size);
+    alignChild();
   }
 }

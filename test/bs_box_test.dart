@@ -162,6 +162,29 @@ void main() {
     ); // the 1px border adds on both sides
   });
 
+  testWidgets(
+    'text-end box in a flex line is as wide as its content (so justify-content centres it)',
+    (tester) async {
+      await pump(
+        tester,
+        BsFlex(
+          justifyContent: BsJustify.center,
+          alignItems: BsAlign.start,
+          children: const [
+            BsBox(
+              textAlign: BsTextAlign.end,
+              child: SizedBox(key: Key('c'), width: 50, height: 20),
+            ),
+          ],
+        ),
+      );
+      expect(
+        rect(tester).left,
+        175,
+      ); // centred on the 400px line, not pushed to the end
+    },
+  );
+
   testWidgets('w-50 is half the parent', (tester) async {
     await pump(
       tester,
