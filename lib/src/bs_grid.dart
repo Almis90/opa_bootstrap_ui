@@ -16,9 +16,11 @@ abstract final class BsGrid {
   /// `$grid-row-columns` — the max value supported by `.row-cols-*`.
   static const int rowColumns = 6;
 
-  /// `$container-padding-x` (`$grid-gutter-width`) — a `.container`'s
-  /// horizontal padding.
-  static const double containerPaddingX = gutterWidth;
+  /// A `.container`'s horizontal padding: `calc(var(--bs-gutter-x) * .5)`, i.e.
+  /// half of [gutterWidth]. (`$container-padding-x` is the full
+  /// `$grid-gutter-width`, but only seeds `--bs-gutter-x`, which the
+  /// `make-container` mixin then halves.)
+  static const double containerPaddingX = gutterWidth / 2;
 
   /// `$container-max-widths` — a `.container`'s max width at each
   /// breakpoint. `xs` has no entry (a container is full-width until `sm`),
