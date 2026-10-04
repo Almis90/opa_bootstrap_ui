@@ -54,24 +54,45 @@ class DocApp extends StatefulWidget {
   State<DocApp> createState() => _DocAppState();
 }
 
-class _DocAppState extends State<DocApp> {
-  Brightness _brightness = Brightness.light;
+class _DocAppState extends State<DocApp> with WidgetsBindingObserver {
+  /// Bootstrap's `data-bs-theme`; null is `auto` (follow the OS).
+  Brightness? _themeMode = Brightness.light;
+
+  /// [_themeMode] with `auto` resolved against the OS.
+  Brightness get _brightness => _themeMode ?? WidgetsBinding.instance.platformDispatcher.platformBrightness;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangePlatformBrightness() => setState(() {});
 
   void _toggleBrightness() {
     setState(() {
-      _brightness = _brightness == Brightness.light ? Brightness.dark : Brightness.light;
+      _themeMode = _brightness == Brightness.light ? Brightness.dark : Brightness.light;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return BsApp(
-      brightness: _brightness,
+      brightness: _themeMode,
       home: DocShell(
         sections: _sections,
         examples: _examples,
         brightness: _brightness,
         onToggleBrightness: _toggleBrightness,
+        themeMode: _themeMode,
+        onThemeModeChanged: (mode) => setState(() => _themeMode = mode),
       ),
     );
   }

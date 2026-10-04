@@ -22,6 +22,8 @@ class DocShell extends StatefulWidget {
     required this.examples,
     required this.brightness,
     required this.onToggleBrightness,
+    required this.themeMode,
+    required this.onThemeModeChanged,
   });
 
   final List<DocNavSection> sections;
@@ -35,6 +37,12 @@ class DocShell extends StatefulWidget {
 
   /// Flips [brightness] between light and dark.
   final VoidCallback onToggleBrightness;
+
+  /// [BsApp.brightness] as set, where null is `auto` — unlike [brightness],
+  /// which is already resolved. An example's own theme dropdown needs the
+  /// difference.
+  final Brightness? themeMode;
+  final ValueChanged<Brightness?> onThemeModeChanged;
 
   @override
   State<DocShell> createState() => _DocShellState();
@@ -134,8 +142,8 @@ class _DocShellState extends State<DocShell> {
                       color: BsBody.backgroundOf(context),
                       child: ExamplesShell(
                         examples: widget.examples,
-                        brightness: widget.brightness,
-                        onToggleBrightness: widget.onToggleBrightness,
+                        themeMode: widget.themeMode,
+                        onThemeModeChanged: widget.onThemeModeChanged,
                         onDetailChanged: (open) => setState(() => _exampleDetailOpen = open),
                       ),
                     )

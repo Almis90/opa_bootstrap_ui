@@ -1,7 +1,9 @@
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 
 import 'example_entry.dart';
+import 'example_theme_toggler.dart';
 
 /// The Examples tab's body: a gallery of [ExampleEntry]s that swaps to a
 /// single example's full content (with a way back) when one is selected —
@@ -11,19 +13,19 @@ class ExamplesShell extends StatefulWidget {
   const ExamplesShell({
     super.key,
     required this.examples,
-    required this.brightness,
-    required this.onToggleBrightness,
+    required this.themeMode,
+    required this.onThemeModeChanged,
     this.onDetailChanged,
   });
 
   final List<ExampleEntry> examples;
 
-  /// Mirrored from [BsApp.brightness] so a selected example's own floating
-  /// toggle (Bootstrap's real examples each have a fixed bottom-end one,
-  /// `.bd-mode-toggle`, since the page has no site navbar to hold it) shows
-  /// the right icon.
-  final Brightness brightness;
-  final VoidCallback onToggleBrightness;
+  /// Mirrored from [BsApp.brightness] (null = `auto`) so a selected example's
+  /// own floating theme dropdown (Bootstrap's real examples each have a fixed
+  /// bottom-end one, `.bd-mode-toggle`, since the page has no site navbar to
+  /// hold it) shows the active mode.
+  final Brightness? themeMode;
+  final ValueChanged<Brightness?> onThemeModeChanged;
 
   /// Called with `true` once an example is open (its real page has no
   /// site chrome of its own, so [DocShell] hides its app bar) and `false`
@@ -51,8 +53,8 @@ class _ExamplesShellState extends State<ExamplesShell> {
     }
     return _ExampleDetail(
       entry: selected,
-      brightness: widget.brightness,
-      onToggleBrightness: widget.onToggleBrightness,
+      themeMode: widget.themeMode,
+      onThemeModeChanged: widget.onThemeModeChanged,
       onBack: () {
         setState(() => _selected = null);
         widget.onDetailChanged?.call(false);
@@ -145,64 +147,38 @@ class _ExampleCardState extends State<_ExampleCard> {
 
 /// An example's own full-bleed page — no breadcrumb, no title, no site
 /// chrome, matching how Bootstrap's real `examples/*` pages render (a bare
-/// `<body>` with just a fixed-position mode toggle in the corner). [onBack]
-/// still needs a way in since, unlike the real site, this app has no URL
-/// per example to navigate back from with the browser's own back button —
-/// a small floating control fills that gap without adding visible page
-/// content the original doesn't have.
+/// `<body>` with just a fixed-position mode toggle in the corner). Unlike the
+/// real site this app has no URL per example, so [onBack] is bound to the
+/// Escape key rather than a visible control the original doesn't have.
 class _ExampleDetail extends StatelessWidget {
   const _ExampleDetail({
     required this.entry,
-    required this.brightness,
-    required this.onToggleBrightness,
+    required this.themeMode,
+    required this.onThemeModeChanged,
     required this.onBack,
   });
 
   final ExampleEntry entry;
-  final Brightness brightness;
-  final VoidCallback onToggleBrightness;
+  final Brightness? themeMode;
+  final ValueChanged<Brightness?> onThemeModeChanged;
   final VoidCallback onBack;
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Positioned.fill(child: SingleChildScrollView(child: Builder(builder: entry.builder))),
-        Positioned(top: 12, left: 12, child: _FloatingIconButton(icon: '←', onTap: onBack)),
-        Positioned(
-          bottom: 12,
-          right: 12,
-          child: _FloatingIconButton(
-            icon: brightness == Brightness.dark ? '☀' : '☽',
-            onTap: onToggleBrightness,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-/// A small, semi-transparent circular button — mirrors the fixed-position
-/// corner controls Bootstrap's real example pages use (`.bd-mode-toggle`
-/// for the theme switch) without competing with the example content itself.
-class _FloatingIconButton extends StatelessWidget {
-  const _FloatingIconButton({required this.icon, required this.onTap});
-
-  final String icon;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          width: 40,
-          height: 40,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(color: const Color(0xCC212529), shape: BoxShape.circle),
-          child: Text(icon, style: const TextStyle(color: BsColors.white, fontSize: 16)),
+    return CallbackShortcuts(
+      bindings: {const SingleActivator(LogicalKeyboardKey.escape): onBack},
+      child: Focus(
+        autofocus: true,
+        child: Stack(
+          children: [
+            Positioned.fill(child: SingleChildScrollView(child: Builder(builder: entry.builder))),
+            // `.position-fixed.bottom-0.end-0.mb-3.me-3.bd-mode-toggle`
+            Positioned(
+              bottom: 16,
+              right: 16,
+              child: ExampleThemeToggler(mode: themeMode, onChanged: onThemeModeChanged),
+            ),
+          ],
         ),
       ),
     );
