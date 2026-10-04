@@ -205,6 +205,7 @@ class _BsFormControlState extends State<BsFormControl> {
               color: style.inputColor ?? BsFormStyle.defaultInputColor,
               height:
                   style.inputLineHeight ?? BsFormStyle.defaultInputLineHeight,
+              leadingDistribution: TextLeadingDistribution.even,
             ),
             cursorColor: style.inputColor ?? BsFormStyle.defaultInputColor,
             backgroundCursorColor: BsColors.gray400,

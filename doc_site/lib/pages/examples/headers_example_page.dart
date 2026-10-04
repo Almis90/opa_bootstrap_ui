@@ -111,7 +111,7 @@ class HeadersExamplePage extends StatelessWidget {
             final nav = BsNav(
               variant: BsNavVariant.plain,
               style: _px2,
-              items: _plainNavItems(_mainLabels, firstColor: BsBody.secondaryColorOf(context)),
+              items: _plainNavItems(_mainLabels, firstColor: BsColors.gray600),
             );
             final buttons = Row(
               mainAxisSize: MainAxisSize.min,
@@ -132,7 +132,17 @@ class HeadersExamplePage extends StatelessWidget {
             final side = constraints.maxWidth * 0.25;
             return Row(
               children: [
-                SizedBox(width: side, child: Align(alignment: Alignment.centerLeft, child: brand)),
+                // The logo sits in an inline-flex `<a>` inside a block `.col-md-3`, so
+                // it rests on the line's baseline with the strut's ~5.5px descent
+                // below it, and the whole column is what's centred in the row — the
+                // logo ends up at the row's top rather than its middle.
+                SizedBox(
+                  width: side,
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(padding: const EdgeInsets.only(bottom: 5.5), child: brand),
+                  ),
+                ),
                 Expanded(child: Center(child: nav)),
                 SizedBox(width: side, child: Align(alignment: Alignment.centerRight, child: buttons)),
               ],
@@ -158,7 +168,7 @@ class HeadersExamplePage extends StatelessWidget {
             BsNav(
               variant: BsNavVariant.plain,
               style: _px2,
-              items: _plainNavItems(_mainLabels, firstColor: BsColors.gray500, restColor: BsColors.white),
+              items: _plainNavItems(_mainLabels, firstColor: BsColors.gray600, restColor: BsColors.white),
             ),
             SizedBox(width: 201, child: BsFormControl(placeholder: 'Search...', style: _darkFormStyle(context))),
             Row(
@@ -195,7 +205,7 @@ class HeadersExamplePage extends StatelessWidget {
               style: _px2,
               items: _plainNavItems(
                 _dashboardLabels,
-                firstColor: BsBody.secondaryColorOf(context),
+                firstColor: BsColors.gray600,
                 restColor: BsBody.emphasisColorOf(context),
               ),
             ),
@@ -411,13 +421,13 @@ class HeadersExamplePage extends StatelessWidget {
                               icon,
                               width: 24,
                               height: 24,
-                              color: label == 'Home' ? BsColors.gray500 : BsColors.white,
+                              color: label == 'Home' ? BsColors.gray600 : BsColors.white,
                             ),
                             const SizedBox(height: 4), // `.mb-1`
                             Text(
                               label,
                               // `.text-small`: 85%
-                              style: TextStyle(fontSize: 13.6, color: label == 'Home' ? BsColors.gray500 : BsColors.white),
+                              style: TextStyle(fontSize: 13.6, color: label == 'Home' ? BsColors.gray600 : BsColors.white),
                             ),
                           ],
                         ),

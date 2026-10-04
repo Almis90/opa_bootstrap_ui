@@ -126,9 +126,12 @@ class BsNavStyle {
 
   static const EdgeInsets defaultLinkPadding = EdgeInsets.symmetric(horizontal: 16, vertical: 8);
 
-  /// `$nav-link-color` (`var(--bs-link-color)`, i.e. `$primary` — a literal
-  /// with no `-dark` override, unchanged in both themes).
+  /// `$nav-link-color` (`var(--bs-link-color)`, i.e. `$primary`).
   static Color get defaultLinkColor => BsVariant.primary.color;
+
+  /// [defaultLinkColor] resolved against `--bs-link-color` in
+  /// `[data-bs-theme="dark"]` (`$link-color-dark`).
+  static Color get defaultDarkLinkColor => BsLink.darkColor;
 
   static Color get defaultLinkHoverColor => BsLink.hoverColor;
   static Color get defaultDarkLinkHoverColor => BsLink.darkHoverColor;
@@ -225,7 +228,7 @@ class BsNavStyle {
   /// `BsTheme.of(context) == Brightness.dark`.
   static BsNavStyle get darkDefaults => BsNavStyle(
     linkPadding: defaultLinkPadding,
-    linkColor: defaultLinkColor,
+    linkColor: defaultDarkLinkColor,
     linkHoverColor: defaultDarkLinkHoverColor,
     linkDisabledColor: defaultDarkLinkDisabledColor,
     linkFocusRingColor: defaultLinkFocusRingColor,

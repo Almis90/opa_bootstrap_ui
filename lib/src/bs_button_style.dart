@@ -158,6 +158,7 @@ class BsButtonStyle {
   static const TextStyle defaultTextStyle = TextStyle(
     fontWeight: FontWeight.normal,
     height: 1.5,
+    leadingDistribution: TextLeadingDistribution.even,
   );
 
   /// `$btn-border-width` / `$border-width` (assuming the default `16px` root

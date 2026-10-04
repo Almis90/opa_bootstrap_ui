@@ -106,6 +106,10 @@ class BsApp extends StatelessWidget {
       // `body { line-height: $line-height-base }` — every `.nav-link`,
       // `.dropdown-item` etc. inherits it rather than setting its own.
       height: BsTypography.lineHeightBase,
+      // CSS puts a line's half-leading above and below the glyphs equally;
+      // Flutter's default splits it in proportion to ascent/descent, which
+      // sits text about a pixel high in a 1.5 line box.
+      leadingDistribution: TextLeadingDistribution.even,
     );
   }
 
