@@ -44,10 +44,17 @@ class HeadersExamplePage extends StatelessWidget {
   // --- Section bodies, in the same order as Bootstrap's own page ---
 
   static Widget _simpleHeader(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 16),
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: BsBorders.colorOf(context)))),
-      child: BsContainer(
+    // `.fs-4`: `calc(1.275rem + .3vw)` until `xl`, then a flat `1.5rem`.
+    final width = MediaQuery.sizeOf(context).width;
+    final brandFontSize = width >= BsBreakpoint.xl.minWidth ? 24.0 : 20.4 + width * 0.003;
+    // The `<header>` (with its `border-bottom` and `mb-4`) lives *inside* the
+    // `.container`, so the rule spans the container's content width, not the
+    // page, and 1.5rem of margin separates it from the divider below.
+    return BsContainer(
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 24),
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        decoration: BoxDecoration(border: Border(bottom: BorderSide(color: BsBorders.colorOf(context)))),
         child: _flexHeader(
           breakpoint: BsBreakpoint.md,
           children: [
@@ -56,7 +63,10 @@ class HeadersExamplePage extends StatelessWidget {
               children: [
                 const _BootstrapMark(),
                 const SizedBox(width: 8),
-                Text('Simple header', style: TextStyle(fontSize: 20, color: BsBody.emphasisColorOf(context))),
+                Text(
+                  'Simple header',
+                  style: TextStyle(fontSize: brandFontSize, color: BsBody.emphasisColorOf(context)),
+                ),
               ],
             ),
             BsNav(variant: BsNavVariant.pills, items: _pillNavItems(_mainLabels)),
