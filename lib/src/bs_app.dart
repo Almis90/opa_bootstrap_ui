@@ -66,7 +66,8 @@ class BsApp extends StatelessWidget {
 
   /// Defaults to [BsBody.colorOf] (light or dark depending on [brightness])
   /// on [BsTypography.fontFamilySansSerif] at
-  /// [BsTypography.fontSizeBase]/[BsTypography.fontWeightBase]. Set this to
+  /// [BsTypography.fontSizeBase]/[BsTypography.fontWeightBase] with
+  /// [BsTypography.lineHeightBase] (`body`'s `line-height`). Set this to
   /// opt out of the brightness-aware default.
   final TextStyle? textStyle;
 
@@ -102,6 +103,9 @@ class BsApp extends StatelessWidget {
       fontFamilyFallback: BsTypography.fontFamilySansSerif.skip(1).toList(),
       fontSize: BsTypography.fontSizeBase,
       fontWeight: BsTypography.fontWeightBase,
+      // `body { line-height: $line-height-base }` — every `.nav-link`,
+      // `.dropdown-item` etc. inherits it rather than setting its own.
+      height: BsTypography.lineHeightBase,
     );
   }
 
