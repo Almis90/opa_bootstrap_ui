@@ -21,6 +21,9 @@ class HeadersExamplePage extends StatelessWidget {
   /// of their own, so the original asks for one; `.text-small` is `85%`.
   static const _menuStyle = BsDropdownStyle(boxShadow: BsShadows.shadow, fontSize: 13.6);
 
+  /// `.dropdown-menu.text-small` without `.shadow`.
+  static const _textSmallMenuStyle = BsDropdownStyle(fontSize: 13.6);
+
   static const _px2 = BsNavStyle(linkPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 8));
 
   @override
@@ -50,10 +53,14 @@ class HeadersExamplePage extends StatelessWidget {
 
   // --- Section bodies, in the same order as Bootstrap's own page ---
 
-  static Widget _simpleHeader(BuildContext context) {
-    // `.fs-4`: `calc(1.275rem + .3vw)` until `xl`, then a flat `1.5rem`.
+  /// `.fs-4`: `calc(1.275rem + .3vw)` until `xl`, then a flat `1.5rem`.
+  static double _fs4(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
-    final brandFontSize = width >= BsBreakpoint.xl.minWidth ? 24.0 : 20.4 + width * 0.003;
+    return width >= BsBreakpoint.xl.minWidth ? 24.0 : 20.4 + width * 0.003;
+  }
+
+  static Widget _simpleHeader(BuildContext context) {
+    final brandFontSize = _fs4(context);
     // The `<header>` (with its `border-bottom` and `mb-4`) lives *inside* the
     // `.container`, so the rule spans the container's content width, not the
     // page, and 1.5rem of margin separates it from the divider below.
@@ -169,7 +176,10 @@ class HeadersExamplePage extends StatelessWidget {
   }
 
   static Widget _dropdownHeader(BuildContext context) {
+    // `<header class="p-3 mb-3 border-bottom">`: the 1rem margin keeps the rule
+    // clear of the divider below.
     return Container(
+      margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: BsBorders.colorOf(context)))),
       child: BsContainer(
@@ -189,7 +199,7 @@ class HeadersExamplePage extends StatelessWidget {
             ),
             const SizedBox(width: 200, child: BsFormControl(placeholder: 'Search...')),
             BsDropdown(
-              style: _menuStyle,
+              style: _textSmallMenuStyle, // this header's menu has no `.shadow`
               alignEnd: true,
               toggleBuilder: (context, toggle, isOpen) => MouseRegion(
                 cursor: SystemMouseCursors.click,
@@ -280,7 +290,7 @@ class HeadersExamplePage extends StatelessWidget {
 
   static Widget _placeholderBlock(BuildContext context) {
     return Container(
-      height: 140,
+      height: 240, // ten `<br>`s at 1.5 line-height
       decoration: BoxDecoration(
         color: BsBody.tertiaryBackgroundOf(context),
         border: Border.all(color: BsBorders.colorOf(context)),
@@ -330,7 +340,9 @@ class HeadersExamplePage extends StatelessWidget {
             ),
           ),
         ),
+        // `<header class="py-3 mb-4 border-bottom">`
         Container(
+          margin: const EdgeInsets.only(bottom: 24),
           padding: const EdgeInsets.symmetric(vertical: 16),
           decoration: BoxDecoration(border: Border(bottom: BorderSide(color: BsBorders.colorOf(context)))),
           child: BsContainer(
@@ -342,10 +354,13 @@ class HeadersExamplePage extends StatelessWidget {
                   children: [
                     const _BootstrapMark(),
                     const SizedBox(width: 8),
-                    Text('Double header', style: TextStyle(fontSize: 20, color: BsBody.emphasisColorOf(context))),
+                    Text(
+                      'Double header',
+                      style: TextStyle(fontSize: _fs4(context), color: BsBody.emphasisColorOf(context)),
+                    ),
                   ],
                 ),
-                const SizedBox(width: 240, child: BsFormControl(placeholder: 'Search...')),
+                const SizedBox(width: 200, child: BsFormControl(placeholder: 'Search...')),
               ],
             ),
           ),
@@ -365,57 +380,69 @@ class HeadersExamplePage extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        // `<div class="px-3 py-2 text-bg-dark border-bottom">` around a `.container`
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           decoration: BoxDecoration(
             color: BsColors.gray900,
             border: Border(bottom: BorderSide(color: BsBorders.colorOf(context))),
           ),
-          child: _flexHeader(
-            breakpoint: BsBreakpoint.lg,
-            children: [
-              const _BootstrapMark(white: true),
-              Wrap(
-                runSpacing: 8,
-                children: [
-                  for (final (icon, label) in icons)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          BootstrapIcon(
-                            icon,
-                            width: 24,
-                            height: 24,
-                            color: label == 'Home' ? BsColors.gray500 : BsColors.white,
-                          ),
-                          const SizedBox(height: 4), // `.mb-1`
-                          Text(label, style: TextStyle(fontSize: 12, color: label == 'Home' ? BsColors.gray500 : BsColors.white)),
-                        ],
+          child: BsContainer(
+            child: _flexHeader(
+              breakpoint: BsBreakpoint.lg,
+              children: [
+                const _BootstrapMark(white: true),
+                Wrap(
+                  runSpacing: 8,
+                  children: [
+                    for (final (icon, label) in icons)
+                      Padding(
+                        // `.nav-link`: .5rem 1rem
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            BootstrapIcon(
+                              icon,
+                              width: 24,
+                              height: 24,
+                              color: label == 'Home' ? BsColors.gray500 : BsColors.white,
+                            ),
+                            const SizedBox(height: 4), // `.mb-1`
+                            Text(
+                              label,
+                              // `.text-small`: 85%
+                              style: TextStyle(fontSize: 13.6, color: label == 'Home' ? BsColors.gray500 : BsColors.white),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
+        // `<div class="px-3 py-2 border-bottom mb-3">` around a `.container`
         Container(
+          margin: const EdgeInsets.only(bottom: 16),
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           decoration: BoxDecoration(border: Border(bottom: BorderSide(color: BsBorders.colorOf(context)))),
-          child: _flexHeader(
-            breakpoint: BsBreakpoint.lg,
-            children: [
-              const SizedBox(width: 240, child: BsFormControl(placeholder: 'Search...')),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  BsButton(variant: BsVariant.light, onPressed: () {}, child: const Text('Login')),
-                  const SizedBox(width: 8),
-                  BsButton(variant: BsVariant.primary, onPressed: () {}, child: const Text('Sign-up')),
-                ],
-              ),
-            ],
+          child: BsContainer(
+            child: _flexHeader(
+              breakpoint: BsBreakpoint.lg,
+              children: [
+                const SizedBox(width: 200, child: BsFormControl(placeholder: 'Search...')),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    BsButton(variant: BsVariant.light, onPressed: () {}, child: const Text('Login')),
+                    const SizedBox(width: _buttonGap),
+                    BsButton(variant: BsVariant.primary, onPressed: () {}, child: const Text('Sign-up')),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ],
