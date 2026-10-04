@@ -71,7 +71,7 @@ class HeadersExamplePage extends StatelessWidget {
     // The `<header>` (with its `border-bottom` and `mb-4`) lives *inside* the
     // `.container`, so the rule spans the container's content width, not the
     // page, and 1.5rem of margin separates it from the divider below.
-    return BsContainer(
+    return _Container(
       child: Container(
         margin: const EdgeInsets.only(bottom: 24),
         padding: const EdgeInsets.symmetric(vertical: 16),
@@ -106,7 +106,7 @@ class HeadersExamplePage extends StatelessWidget {
   static Widget _centeredNav(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 16),
-      child: BsContainer(
+      child: _Container(
         child: Center(
           child: BsNav(variant: BsNavVariant.pills, items: _pillNavItems(_mainLabels)),
         ),
@@ -117,7 +117,7 @@ class HeadersExamplePage extends StatelessWidget {
   static Widget _ctaHeader(BuildContext context) {
     // As in the first header, the `<header>`'s `border-bottom`/`mb-4` sit
     // inside the `.container`.
-    return BsContainer(
+    return _Container(
       child: Container(
         margin: const EdgeInsets.only(bottom: 24),
         padding: const EdgeInsets.symmetric(vertical: 16),
@@ -190,12 +190,12 @@ class HeadersExamplePage extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       color: BsColors.gray900,
-      child: BsContainer(
+      child: _Container(
         child: _flexHeader(
           breakpoint: BsBreakpoint.lg,
           spacerAfterIndex: 1,
-          // logo `.me-2`, nav `.me-lg-auto`, form `.me-lg-3`.
-          gaps: const {0: 8, 2: 16},
+          // nav `.me-lg-auto`, form `.me-lg-3` (the logo's `.me-2` is part of its link, see _LogoLink)
+          gaps: const {0: 0, 2: 16},
           // logo `.mb-2`; nav `.col-12.mb-2.mb-md-0`; form `.col-12.mb-3`
           stacked: const {
             0: _Stacked(bottom: 8),
@@ -203,7 +203,7 @@ class HeadersExamplePage extends StatelessWidget {
             2: _Stacked(fullWidth: true, bottom: 16),
           },
           children: [
-            const _HomeLink(child: _BootstrapMark(white: true)),
+            const _LogoLink(white: true),
             BsNav(
               variant: BsNavVariant.plain,
               alignment: WrapAlignment.center, // `.justify-content-center`
@@ -237,12 +237,12 @@ class HeadersExamplePage extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border(bottom: BorderSide(color: BsBorders.colorOf(context))),
       ),
-      child: BsContainer(
+      child: _Container(
         child: _flexHeader(
           breakpoint: BsBreakpoint.lg,
           spacerAfterIndex: 1,
-          // logo `.me-2`, nav `.me-lg-auto`, form `.me-lg-3`.
-          gaps: const {0: 8, 2: 16},
+          // nav `.me-lg-auto`, form `.me-lg-3` (the logo's `.me-2` is part of its link, see _LogoLink)
+          gaps: const {0: 0, 2: 16},
           // logo `.mb-2`; nav `.col-12.mb-2.mb-md-0`; form `.col-12.mb-3`
           stacked: const {
             0: _Stacked(bottom: 8),
@@ -250,7 +250,7 @@ class HeadersExamplePage extends StatelessWidget {
             2: _Stacked(fullWidth: true, bottom: 16),
           },
           children: [
-            const _HomeLink(child: _BootstrapMark()),
+            const _LogoLink(),
             BsNav(
               variant: BsNavVariant.plain,
               alignment: WrapAlignment.center, // `.justify-content-center`
@@ -386,7 +386,7 @@ class HeadersExamplePage extends StatelessWidget {
             color: BsBody.tertiaryBackgroundOf(context),
             border: Border(bottom: BorderSide(color: BsBorders.colorOf(context))),
           ),
-          child: BsContainer(
+          child: _Container(
             child: _flexHeader(
               breakpoint: BsBreakpoint.xs,
               // `.container.d-flex.flex-wrap`: the two navs (314 + 124px) wrap,
@@ -428,7 +428,7 @@ class HeadersExamplePage extends StatelessWidget {
           decoration: BoxDecoration(
             border: Border(bottom: BorderSide(color: BsBorders.colorOf(context))),
           ),
-          child: BsContainer(
+          child: _Container(
             child: _flexHeader(
               breakpoint: BsBreakpoint.lg,
               // brand `.mb-3`; form `.col-12.mb-3`
@@ -477,7 +477,7 @@ class HeadersExamplePage extends StatelessWidget {
             color: BsColors.gray900,
             border: Border(bottom: BorderSide(color: BsBorders.colorOf(context))),
           ),
-          child: BsContainer(
+          child: _Container(
             child: _flexHeader(
               breakpoint: BsBreakpoint.lg,
               // logo `.my-2`; nav `.col-12.my-2.my-md-0.justify-content-center`
@@ -486,7 +486,7 @@ class HeadersExamplePage extends StatelessWidget {
                 1: _Stacked(fullWidth: true, top: 8, bottom: 8, topMd: 0, bottomMd: 0),
               },
               children: [
-                const _HomeLink(child: _BootstrapMark(white: true)),
+                const _LogoLink(white: true),
                 Wrap(
                   alignment: WrapAlignment.center,
                   children: [
@@ -530,7 +530,7 @@ class HeadersExamplePage extends StatelessWidget {
           decoration: BoxDecoration(
             border: Border(bottom: BorderSide(color: BsBorders.colorOf(context))),
           ),
-          child: BsContainer(
+          child: _Container(
             child: _flexHeader(
               breakpoint: BsBreakpoint.lg,
               // form `.col-12.mb-2`
@@ -747,6 +747,54 @@ class _HomeLink extends StatelessWidget {
   Widget build(BuildContext context) => MouseRegion(
     cursor: SystemMouseCursors.click,
     child: GestureDetector(onTap: () {}, child: child),
+  );
+}
+
+/// `.container`: its max-width follows the *viewport's* breakpoint, as CSS media
+/// queries do. [BsContainer] picks it from the width it is given instead, which
+/// is narrower wherever the page puts padding around the container (the
+/// original's `<header class="p-3">` around a `.container`): at a 1000px
+/// viewport that's 968px — below `lg` — so it would pick the 720px `md`
+/// container the original doesn't use.
+class _Container extends StatelessWidget {
+  const _Container({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final breakpoint = BsBreakpoint.forWidth(MediaQuery.sizeOf(context).width);
+    return Align(
+      alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxWidth: BsGrid.containerMaxWidthFor(breakpoint) ?? double.infinity),
+        child: SizedBox(
+          width: double.infinity,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: BsGrid.containerPaddingX),
+            child: child,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// The logo as the original's headers 4, 5 and 8 have it: an `<a>` around an
+/// `<svg class="bi me-2">`, so the link is the logo *plus* 8px on its right —
+/// which is what a centred (stacked) layout centres, putting the logo 4px left
+/// of true centre.
+class _LogoLink extends StatelessWidget {
+  const _LogoLink({this.white = false});
+
+  final bool white;
+
+  @override
+  Widget build(BuildContext context) => _HomeLink(
+    child: Padding(
+      padding: const EdgeInsets.only(right: 8),
+      child: _BootstrapMark(white: white),
+    ),
   );
 }
 
