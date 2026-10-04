@@ -13,6 +13,15 @@
 //   node tool/vendor_examples.mjs            build, then serve on :8800
 //   node tool/vendor_examples.mjs --port 9000
 //   node tool/vendor_examples.mjs --no-serve  just build
+//   node tool/vendor_examples.mjs --font roboto
+//                                    render every page in Roboto (loaded from
+//                                    Google Fonts) instead of the system font,
+//                                    to compare against Flutter web's fallback
+//   node tool/vendor_examples.mjs --grayscale
+//                                    turn off macOS subpixel/stem-darkening text
+//                                    smoothing (-webkit-font-smoothing:
+//                                    antialiased), which makes DOM text look
+//                                    ~15-30% heavier than Flutter's canvas text
 //
 // Output goes to build/vendor_examples (git-ignored).
 
@@ -30,6 +39,12 @@ const DOCS_VERSION = '5.3'
 const args = process.argv.slice(2)
 const serve = !args.includes('--no-serve')
 const port = Number(args[args.indexOf('--port') + 1]) || 8800
+const grayscale = args.includes('--grayscale')
+const font = args.includes('--font') ? args[args.indexOf('--font') + 1] : undefined
+if (font && font !== 'roboto') {
+  console.error(`Unknown --font "${font}" (supported: roboto)`)
+  process.exit(1)
+}
 
 // ---------------------------------------------------------------- helpers
 
@@ -137,6 +152,16 @@ const themeToggler = `
     .join('\n  ')}
 </ul>`
 
+// `--font roboto`: Bootstrap sets the font in one place (`body { font-family:
+// var(--bs-body-font-family) }`), and buttons/inputs inherit it.
+const fontOverride =
+  (font === 'roboto'
+    ? `
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+    <style>:root, [data-bs-theme] { --bs-body-font-family: Roboto, sans-serif; }</style>`
+    : '') +
+  (grayscale ? `\n    <style>html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }</style>` : '')
+
 function renderPage({ title, extraCss, extraJs, bodyClass, htmlClass, direction, includeJs }, body) {
   const rtl = direction === 'rtl'
   const css = rtl ? '/dist/css/bootstrap.rtl.css' : '/dist/css/bootstrap.css'
@@ -148,7 +173,7 @@ function renderPage({ title, extraCss, extraJs, bodyClass, htmlClass, direction,
     <title>${title ?? 'Example'} · Bootstrap v${DOCS_VERSION}</title>
     <script src="/docs/assets/js/color-modes.js"></script>
     <link href="${css}" rel="stylesheet" />
-    <style>${layoutStyle}</style>
+    <style>${layoutStyle}</style>${fontOverride}
 ${extraCss.map((href) => `    <link href="${href}" rel="stylesheet" />`).join('\n')}
   </head>
   <body${bodyClass ? ` class="${bodyClass}"` : ''}>
@@ -250,7 +275,7 @@ function build() {
 ${skipped.length ? `<h2 class="h5 mt-4">Not built</h2><ul>${skipped.map((r) => `<li>${r.name} <small class="text-body-secondary">${r.unsupported}</small></li>`).join('')}</ul>` : ''}
 </main>`,
   )
-  console.log(`Built ${ok.length} examples into ${path.relative(ROOT, OUT)}`)
+  console.log(`Built ${ok.length} examples into ${path.relative(ROOT, OUT)}${font ? ` (font: ${font})` : ''}${grayscale ? ' (grayscale smoothing)' : ''}`)
   for (const r of skipped) console.log(`  skipped ${r.name}: ${r.unsupported}`)
 }
 
