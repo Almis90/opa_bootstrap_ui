@@ -637,13 +637,13 @@ class _AvatarToggle extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         const _GithubAvatar(),
-        // The caret's own margin, plus ~2.6px measured in the original: the
-        // markup's whitespace between `<img>` and the `::after` caret.
-        const SizedBox(width: DropdownCaret.marginStart + 2.6),
+        // The caret's own margin, plus the space character the markup leaves
+        // between `<img>` and the `::after` caret (3.9px in Roboto at 16px).
+        const SizedBox(width: DropdownCaret.marginStart + 3.92),
         // Bottom padding equal to the caret's height centres the pair on the
         // avatar, leaving the caret's bottom edge on the avatar's midline.
         Padding(
-          padding: const EdgeInsets.only(bottom: 4.8),
+          padding: EdgeInsets.only(bottom: DropdownCaret.heightFor(context)),
           child: DropdownCaret(color: BsBody.emphasisColorOf(context)),
         ),
       ],
