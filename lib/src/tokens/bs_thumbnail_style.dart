@@ -29,7 +29,9 @@ class BsThumbnailStyle {
   /// `$thumbnail-border-radius` (`var(--bs-border-radius)`).
   final double? borderRadius;
 
-  /// `$thumbnail-box-shadow` (`var(--bs-box-shadow-sm)`).
+  /// `$thumbnail-box-shadow` (`var(--bs-box-shadow-sm)`). Null by default:
+  /// Bootstrap only emits it when `$enable-shadows` is on, which it isn't out
+  /// of the box. Pass [defaultBoxShadow] to opt in.
   final List<BoxShadow>? boxShadow;
 
   BsThumbnailStyle merge(BsThumbnailStyle? other) {
@@ -65,7 +67,6 @@ class BsThumbnailStyle {
     borderWidth: defaultBorderWidth,
     borderColor: defaultBorderColor,
     borderRadius: defaultBorderRadius,
-    boxShadow: defaultBoxShadow,
   );
 
   /// [defaults], with [background]/[borderColor] swapped for their
@@ -78,6 +79,5 @@ class BsThumbnailStyle {
     borderWidth: defaultBorderWidth,
     borderColor: defaultDarkBorderColor,
     borderRadius: defaultBorderRadius,
-    boxShadow: defaultBoxShadow,
   );
 }

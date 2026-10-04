@@ -152,7 +152,10 @@ class BsFormStyle {
   /// `$input-border-width` (`var(--bs-border-width)`).
   final double? inputBorderWidth;
 
-  /// `$input-box-shadow` (`var(--bs-box-shadow-inset)`).
+  /// `$input-box-shadow` (`var(--bs-box-shadow-inset)`). Null by default:
+  /// Bootstrap only emits it when `$enable-shadows` is on, which it isn't out
+  /// of the box (the focus ring, [inputFocusBoxShadow], is unconditional).
+  /// Pass [defaultInputBoxShadow] to opt in.
   final List<BoxShadow>? inputBoxShadow;
 
   /// `$input-border-radius` (`var(--bs-border-radius)`).
@@ -266,7 +269,9 @@ class BsFormStyle {
   /// `$form-range-thumb-border-radius` (`1rem`).
   final double? rangeThumbBorderRadius;
 
-  /// `$form-range-thumb-box-shadow` (`0 .1rem .25rem rgba($black, .1)`).
+  /// `$form-range-thumb-box-shadow` (`0 .1rem .25rem rgba($black, .1)`). Null
+  /// by default, as with [inputBoxShadow]; pass [defaultRangeThumbBoxShadow]
+  /// to opt in.
   final List<BoxShadow>? rangeThumbBoxShadow;
 
   /// `$form-file-button-color` (`$input-color`).
@@ -666,7 +671,6 @@ class BsFormStyle {
     inputDisabledBackground: defaultInputDisabledBackground,
     inputBorderColor: defaultInputBorderColor,
     inputBorderWidth: defaultInputBorderWidth,
-    inputBoxShadow: defaultInputBoxShadow,
     inputBorderRadius: defaultInputBorderRadius,
     inputBorderRadiusSm: defaultInputBorderRadiusSm,
     inputBorderRadiusLg: defaultInputBorderRadiusLg,
@@ -704,7 +708,6 @@ class BsFormStyle {
     rangeThumbActiveBackground: defaultRangeThumbActiveBackground,
     rangeThumbDisabledBackground: defaultRangeThumbDisabledBackground,
     rangeThumbBorderRadius: defaultRangeThumbBorderRadius,
-    rangeThumbBoxShadow: defaultRangeThumbBoxShadow,
     fileButtonColor: defaultFileButtonColor,
     fileButtonBackground: defaultFileButtonBackground,
     fileButtonHoverBackground: defaultFileButtonHoverBackground,
@@ -741,7 +744,6 @@ class BsFormStyle {
     inputDisabledBackground: defaultDarkInputDisabledBackground,
     inputBorderColor: defaultDarkInputBorderColor,
     inputBorderWidth: defaultInputBorderWidth,
-    inputBoxShadow: defaultInputBoxShadow,
     inputBorderRadius: defaultInputBorderRadius,
     inputBorderRadiusSm: defaultInputBorderRadiusSm,
     inputBorderRadiusLg: defaultInputBorderRadiusLg,
@@ -779,7 +781,6 @@ class BsFormStyle {
     rangeThumbActiveBackground: defaultRangeThumbActiveBackground,
     rangeThumbDisabledBackground: defaultDarkRangeThumbDisabledBackground,
     rangeThumbBorderRadius: defaultRangeThumbBorderRadius,
-    rangeThumbBoxShadow: defaultRangeThumbBoxShadow,
     fileButtonColor: defaultDarkFileButtonColor,
     fileButtonBackground: defaultDarkFileButtonBackground,
     fileButtonHoverBackground: defaultDarkFileButtonHoverBackground,

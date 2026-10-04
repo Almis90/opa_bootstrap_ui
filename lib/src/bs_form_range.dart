@@ -124,9 +124,7 @@ class _BsFormRangeState extends State<BsFormRange> {
                         style.rangeThumbBorderRadius ??
                             BsFormStyle.defaultRangeThumbBorderRadius,
                       ),
-                      boxShadow:
-                          style.rangeThumbBoxShadow ??
-                          BsFormStyle.defaultRangeThumbBoxShadow,
+                      boxShadow: style.rangeThumbBoxShadow,
                     ),
                   ),
                 ),

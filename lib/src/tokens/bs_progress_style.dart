@@ -37,7 +37,9 @@ class BsProgressStyle {
   /// `$progress-border-radius` (`var(--bs-border-radius)`).
   final double? borderRadius;
 
-  /// `$progress-box-shadow` (`var(--bs-box-shadow-inset)`).
+  /// `$progress-box-shadow` (`var(--bs-box-shadow-inset)`). Null by default:
+  /// Bootstrap only emits it when `$enable-shadows` is on, which it isn't out
+  /// of the box. Pass [defaultBoxShadow] to opt in.
   final List<BoxShadow>? boxShadow;
 
   /// `$progress-bar-color` (`$white`).
@@ -93,7 +95,6 @@ class BsProgressStyle {
     fontSize: defaultFontSize,
     background: defaultBackground,
     borderRadius: defaultBorderRadius,
-    boxShadow: defaultBoxShadow,
     barColor: defaultBarColor,
     barBackground: defaultBarBackground,
     barAnimationDuration: defaultBarAnimationDuration,
@@ -109,7 +110,6 @@ class BsProgressStyle {
     fontSize: defaultFontSize,
     background: defaultDarkBackground,
     borderRadius: defaultBorderRadius,
-    boxShadow: defaultBoxShadow,
     barColor: defaultBarColor,
     barBackground: defaultBarBackground,
     barAnimationDuration: defaultBarAnimationDuration,

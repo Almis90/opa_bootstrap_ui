@@ -100,7 +100,7 @@ BsProgress.stacked(
             DocStyleRow(field: 'fontSize', defaultValue: '12'),
             DocStyleRow(field: 'background', defaultValue: 'BsColors.gray200'),
             DocStyleRow(field: 'borderRadius', defaultValue: '6'),
-            DocStyleRow(field: 'boxShadow', defaultValue: 'Black at ~7% opacity, offset (0, 1), 2 blur, inset'),
+            DocStyleRow(field: 'boxShadow', defaultValue: 'None (opt in with BsProgressStyle.defaultBoxShadow)'),
             DocStyleRow(field: 'barColor', defaultValue: 'BsColors.white'),
             DocStyleRow(field: 'barBackground', defaultValue: 'BsVariant.primary.color (BsColors.blue)'),
             DocStyleRow(field: 'barAnimationDuration', defaultValue: '1s'),
