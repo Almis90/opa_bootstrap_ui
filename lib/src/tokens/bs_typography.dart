@@ -8,6 +8,7 @@ import 'package:flutter/painting.dart';
 abstract final class BsTypography {
   /// `$font-family-sans-serif`'s cross-platform fallback stack.
   static const List<String> fontFamilySansSerif = [
+    'system-ui',
     '-apple-system',
     'Segoe UI',
     'Roboto',
