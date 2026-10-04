@@ -307,7 +307,7 @@ class BsOffcanvas extends StatelessWidget {
       decoration: BoxDecoration(
         color: style.background ?? BsOffcanvasStyle.defaultBackground,
         border: border,
-        boxShadow: style.boxShadow ?? BsOffcanvasStyle.defaultBoxShadow,
+        boxShadow: style.boxShadow,
       ),
       child: DefaultTextStyle.merge(
         style: TextStyle(color: style.color ?? BsOffcanvasStyle.defaultColor),

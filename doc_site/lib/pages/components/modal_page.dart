@@ -216,7 +216,7 @@ showBsModal<void>(
             DocStyleRow(field: 'contentBorderColor', defaultValue: 'Black at ~18% opacity'),
             DocStyleRow(field: 'contentBorderWidth', defaultValue: '1'),
             DocStyleRow(field: 'contentBorderRadius', defaultValue: '8'),
-            DocStyleRow(field: 'contentBoxShadow', defaultValue: 'Black at ~15% opacity, offset (0, 8), 16 blur'),
+            DocStyleRow(field: 'contentBoxShadow', defaultValue: 'None (Bootstrap\'s \$enable-shadows is off by default; opt in with BsModalStyle.defaultContentBoxShadow)'),
             DocStyleRow(field: 'backdropColor', defaultValue: 'BsColors.black'),
             DocStyleRow(field: 'backdropOpacity', defaultValue: '0.5'),
             DocStyleRow(field: 'headerBorderColor', defaultValue: 'BsColors.gray300'),

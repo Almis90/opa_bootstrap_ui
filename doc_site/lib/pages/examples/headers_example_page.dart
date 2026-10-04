@@ -17,6 +17,10 @@ class HeadersExamplePage extends StatelessWidget {
   /// `.me-2` (8px) plus the ~4px of inline whitespace the original's two
   /// adjacent `<button>`s are separated by in the markup.
   static const _buttonGap = 12.4;
+  /// `.dropdown-menu.text-small.shadow` — Bootstrap's menus have no shadow
+  /// of their own, so the original asks for one; `.text-small` is `85%`.
+  static const _menuStyle = BsDropdownStyle(boxShadow: BsShadows.shadow, fontSize: 13.6);
+
   static const _px2 = BsNavStyle(linkPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 8));
 
   @override
@@ -185,6 +189,7 @@ class HeadersExamplePage extends StatelessWidget {
             ),
             const SizedBox(width: 200, child: BsFormControl(placeholder: 'Search...')),
             BsDropdown(
+              style: _menuStyle,
               alignEnd: true,
               toggleBuilder: (context, toggle, isOpen) => MouseRegion(
                 cursor: SystemMouseCursors.click,
@@ -217,6 +222,7 @@ class HeadersExamplePage extends StatelessWidget {
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: BsDropdown(
+                  style: _menuStyle,
                   toggleBuilder: (context, toggle, isOpen) => MouseRegion(
                     cursor: SystemMouseCursors.click,
                     child: GestureDetector(
@@ -243,6 +249,7 @@ class HeadersExamplePage extends StatelessWidget {
                   const Expanded(child: BsFormControl(placeholder: 'Search...')),
                   const SizedBox(width: 12),
                   BsDropdown(
+                    style: _menuStyle,
                     alignEnd: true,
                     toggleBuilder: (context, toggle, isOpen) => MouseRegion(
                       cursor: SystemMouseCursors.click,

@@ -142,7 +142,7 @@ BsPopover(
             DocStyleRow(field: 'borderWidth', defaultValue: '1'),
             DocStyleRow(field: 'borderColor', defaultValue: 'Black at ~18% opacity'),
             DocStyleRow(field: 'borderRadius', defaultValue: '8'),
-            DocStyleRow(field: 'boxShadow', defaultValue: 'Black at ~15% opacity, offset (0, 8), 16 blur'),
+            DocStyleRow(field: 'boxShadow', defaultValue: 'None (Bootstrap\'s \$enable-shadows is off by default; opt in with BsPopoverStyle.defaultBoxShadow)'),
             DocStyleRow(field: 'headerFontSize', defaultValue: '16'),
             DocStyleRow(field: 'headerBackground', defaultValue: 'BsColors.gray200'),
             DocStyleRow(field: 'headerColor', defaultValue: 'null — inherits the surrounding text color'),

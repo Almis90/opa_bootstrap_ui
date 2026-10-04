@@ -132,7 +132,7 @@ showBsOffcanvas<void>(
             DocStyleRow(field: 'titleLineHeight', defaultValue: '1.5'),
             DocStyleRow(field: 'background', defaultValue: 'BsColors.white'),
             DocStyleRow(field: 'color', defaultValue: 'BsColors.gray900'),
-            DocStyleRow(field: 'boxShadow', defaultValue: 'Black at ~7% opacity, offset (0, 2), 4 blur'),
+            DocStyleRow(field: 'boxShadow', defaultValue: 'None (Bootstrap\'s \$enable-shadows is off by default; opt in with BsOffcanvasStyle.defaultBoxShadow)'),
             DocStyleRow(field: 'backdropColor', defaultValue: 'BsColors.black'),
             DocStyleRow(field: 'backdropOpacity', defaultValue: '0.5'),
           ],

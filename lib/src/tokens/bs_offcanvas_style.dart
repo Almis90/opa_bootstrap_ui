@@ -54,7 +54,9 @@ class BsOffcanvasStyle {
   /// `$offcanvas-color` (`var(--bs-body-color)`).
   final Color? color;
 
-  /// `$offcanvas-box-shadow` (`$modal-content-box-shadow-xs`).
+  /// `$offcanvas-box-shadow` (`$modal-content-box-shadow-xs`). Null by
+  /// default: Bootstrap only emits it when `$enable-shadows` is on, which it
+  /// isn't out of the box. Pass [defaultBoxShadow] to opt in.
   final List<BoxShadow>? boxShadow;
 
   /// `$offcanvas-backdrop-bg` (`$modal-backdrop-bg`, i.e. `$black`).
@@ -122,7 +124,6 @@ class BsOffcanvasStyle {
     titleLineHeight: defaultTitleLineHeight,
     background: defaultBackground,
     color: defaultColor,
-    boxShadow: defaultBoxShadow,
     backdropColor: defaultBackdropColor,
     backdropOpacity: defaultBackdropOpacity,
   );
@@ -141,7 +142,6 @@ class BsOffcanvasStyle {
     titleLineHeight: defaultTitleLineHeight,
     background: defaultDarkBackground,
     color: defaultDarkColor,
-    boxShadow: defaultBoxShadow,
     backdropColor: defaultBackdropColor,
     backdropOpacity: defaultBackdropOpacity,
   );

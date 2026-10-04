@@ -70,7 +70,10 @@ class BsDropdownStyle {
   /// `$dropdown-divider-margin-y` (`$spacer * .5`).
   final double? dividerMarginY;
 
-  /// `$dropdown-box-shadow` (`var(--bs-box-shadow)`).
+  /// `$dropdown-box-shadow` (`var(--bs-box-shadow)`). Null by default:
+  /// Bootstrap only emits it when `$enable-shadows` is on, which it isn't out
+  /// of the box (hence the explicit `.shadow` on its own example menus). Pass
+  /// [defaultBoxShadow] to opt in.
   final List<BoxShadow>? boxShadow;
 
   /// `$dropdown-link-color` (`var(--bs-body-color)`).
@@ -160,7 +163,6 @@ class BsDropdownStyle {
     borderWidth: defaultBorderWidth,
     dividerColor: defaultBorderColor,
     dividerMarginY: defaultDividerMarginY,
-    boxShadow: defaultBoxShadow,
     linkColor: defaultColor,
     linkHoverColor: defaultColor,
     linkHoverBackground: defaultLinkHoverBackground,
@@ -194,7 +196,6 @@ class BsDropdownStyle {
     borderWidth: defaultBorderWidth,
     dividerColor: BsBorders.darkColorTranslucent,
     dividerMarginY: defaultDividerMarginY,
-    boxShadow: defaultBoxShadow,
     linkColor: BsBody.darkColor,
     linkHoverColor: BsBody.darkColor,
     linkHoverBackground: BsBody.darkTertiaryBackground,

@@ -310,7 +310,7 @@ class _BsPopoverContent extends StatelessWidget {
               width: style.borderWidth ?? BsPopoverStyle.defaultBorderWidth,
             ),
             borderRadius: borderRadius,
-            boxShadow: style.boxShadow ?? BsPopoverStyle.defaultBoxShadow,
+            boxShadow: style.boxShadow,
           ),
           child: ClipRRect(
             borderRadius: borderRadius,

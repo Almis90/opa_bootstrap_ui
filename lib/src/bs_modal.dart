@@ -282,7 +282,7 @@ class BsModal extends StatelessWidget {
           width: style.contentBorderWidth ?? BsModalStyle.defaultContentBorderWidth,
         ),
         borderRadius: borderRadius,
-        boxShadow: style.contentBoxShadow ?? BsModalStyle.defaultContentBoxShadow,
+        boxShadow: style.contentBoxShadow,
       ),
       child: ClipRRect(
         borderRadius: borderRadius,

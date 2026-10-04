@@ -371,7 +371,7 @@ class _BsDropdownMenu extends StatelessWidget {
               width: style.borderWidth ?? BsDropdownStyle.defaultBorderWidth,
             ),
             borderRadius: borderRadius,
-            boxShadow: style.boxShadow ?? BsDropdownStyle.defaultBoxShadow,
+            boxShadow: style.boxShadow,
           ),
           child: ClipRRect(
             borderRadius: borderRadius,

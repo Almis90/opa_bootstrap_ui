@@ -225,7 +225,7 @@ BsDropdown(
             DocStyleRow(field: 'borderWidth', defaultValue: '1'),
             DocStyleRow(field: 'dividerColor', defaultValue: 'Black at ~18% opacity; same as borderColor'),
             DocStyleRow(field: 'dividerMarginY', defaultValue: '8'),
-            DocStyleRow(field: 'boxShadow', defaultValue: 'Black at ~15% opacity, offset (0, 8), 16 blur'),
+            DocStyleRow(field: 'boxShadow', defaultValue: 'None (Bootstrap\'s \$enable-shadows is off by default; opt in with BsDropdownStyle.defaultBoxShadow)'),
             DocStyleRow(field: 'linkColor', defaultValue: 'BsColors.gray900; same as color'),
             DocStyleRow(field: 'linkHoverColor', defaultValue: 'BsColors.gray900; same as color'),
             DocStyleRow(field: 'linkHoverBackground', defaultValue: 'BsColors.gray100'),

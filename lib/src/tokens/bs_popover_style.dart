@@ -48,7 +48,9 @@ class BsPopoverStyle {
   /// `$popover-border-radius` (`var(--bs-border-radius-lg)`).
   final double? borderRadius;
 
-  /// `$popover-box-shadow` (`var(--bs-box-shadow)`).
+  /// `$popover-box-shadow` (`var(--bs-box-shadow)`). Null by default:
+  /// Bootstrap only emits it when `$enable-shadows` is on, which it isn't out
+  /// of the box. Pass [defaultBoxShadow] to opt in.
   final List<BoxShadow>? boxShadow;
 
   /// `$popover-header-font-size` (`$font-size-base`).
@@ -146,7 +148,6 @@ class BsPopoverStyle {
     borderWidth: defaultBorderWidth,
     borderColor: defaultBorderColor,
     borderRadius: defaultBorderRadius,
-    boxShadow: defaultBoxShadow,
     headerFontSize: defaultHeaderFontSize,
     headerBackground: defaultHeaderBackground,
     headerPadding: defaultHeaderPadding,
@@ -170,7 +171,6 @@ class BsPopoverStyle {
     borderWidth: defaultBorderWidth,
     borderColor: defaultDarkBorderColor,
     borderRadius: defaultBorderRadius,
-    boxShadow: defaultBoxShadow,
     headerFontSize: defaultHeaderFontSize,
     headerBackground: defaultDarkHeaderBackground,
     headerPadding: defaultHeaderPadding,

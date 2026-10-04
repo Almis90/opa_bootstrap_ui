@@ -64,7 +64,9 @@ class BsModalStyle {
   /// `$modal-content-border-radius` (`var(--bs-border-radius-lg)`).
   final double? contentBorderRadius;
 
-  /// `$modal-content-box-shadow-sm-up` (`var(--bs-box-shadow)`).
+  /// `$modal-content-box-shadow-sm-up` (`var(--bs-box-shadow)`). Null by
+  /// default: Bootstrap only emits it when `$enable-shadows` is on, which it
+  /// isn't out of the box. Pass [defaultContentBoxShadow] to opt in.
   final List<BoxShadow>? contentBoxShadow;
 
   /// `$modal-backdrop-bg` (`$black`).
@@ -183,7 +185,6 @@ class BsModalStyle {
     contentBorderColor: defaultContentBorderColor,
     contentBorderWidth: defaultContentBorderWidth,
     contentBorderRadius: defaultContentBorderRadius,
-    contentBoxShadow: defaultContentBoxShadow,
     backdropColor: defaultBackdropColor,
     backdropOpacity: defaultBackdropOpacity,
     headerBorderColor: defaultHeaderBorderColor,
@@ -214,7 +215,6 @@ class BsModalStyle {
     contentBorderColor: defaultDarkContentBorderColor,
     contentBorderWidth: defaultContentBorderWidth,
     contentBorderRadius: defaultContentBorderRadius,
-    contentBoxShadow: defaultContentBoxShadow,
     backdropColor: defaultBackdropColor,
     backdropOpacity: defaultBackdropOpacity,
     headerBorderColor: defaultDarkHeaderBorderColor,
