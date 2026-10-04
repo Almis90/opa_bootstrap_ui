@@ -200,7 +200,6 @@ class HeadersExamplePage extends StatelessWidget {
             const SizedBox(width: 200, child: BsFormControl(placeholder: 'Search...')),
             BsDropdown(
               style: _textSmallMenuStyle, // this header's menu has no `.shadow`
-              alignEnd: true,
               toggleBuilder: (context, toggle, isOpen) => MouseRegion(
                 cursor: SystemMouseCursors.click,
                 child: GestureDetector(onTap: toggle, child: const _AvatarToggle()),
@@ -260,7 +259,6 @@ class HeadersExamplePage extends StatelessWidget {
                   const SizedBox(width: 12),
                   BsDropdown(
                     style: _menuStyle,
-                    alignEnd: true,
                     toggleBuilder: (context, toggle, isOpen) => MouseRegion(
                       cursor: SystemMouseCursors.click,
                       child: GestureDetector(onTap: toggle, child: const _AvatarToggle()),
