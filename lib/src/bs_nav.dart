@@ -23,7 +23,12 @@ enum BsNavVariant {
 
 /// A single `.nav-link` within a [BsNav].
 class BsNavItem {
-  const BsNavItem({required this.child, this.onTap, this.active = false, this.disabled = false});
+  const BsNavItem({
+    required this.child,
+    this.onTap,
+    this.active = false,
+    this.disabled = false,
+  });
 
   final Widget child;
   final VoidCallback? onTap;
@@ -53,6 +58,7 @@ class BsNav extends StatelessWidget {
     this.variant = BsNavVariant.plain,
     this.vertical = false,
     this.fill = false,
+    this.alignment = WrapAlignment.start,
     this.style,
   });
 
@@ -68,6 +74,12 @@ class BsNav extends StatelessWidget {
   /// (only meaningful when not [vertical]).
   final bool fill;
 
+  /// `.justify-content-center`/`-end`: where each line of a horizontal nav
+  /// sits when it has more room than its links need (and, when the links
+  /// wrap, how each line is placed). Needs a bounded width to have any
+  /// effect — give the nav a full-width parent, as `.col-12` does.
+  final WrapAlignment alignment;
+
   /// Style overrides layered on top of [BsNavStyle.defaults].
   final BsNavStyle? style;
 
@@ -76,7 +88,8 @@ class BsNav extends StatelessWidget {
     if (items.isEmpty) return const SizedBox.shrink();
 
     final isDark = BsTheme.of(context) == Brightness.dark;
-    final style = (isDark ? BsNavStyle.darkDefaults : BsNavStyle.defaults).merge(this.style);
+    final style = (isDark ? BsNavStyle.darkDefaults : BsNavStyle.defaults)
+        .merge(this.style);
     final isTabs = variant == BsNavVariant.tabs;
     final isUnderline = variant == BsNavVariant.underline;
 
@@ -88,7 +101,12 @@ class BsNav extends StatelessWidget {
     final children = <Widget>[
       for (var i = 0; i < items.length; i++) ...[
         if (isUnderline && i > 0) gapWidget,
-        _BsNavLinkWidget(item: items[i], variant: variant, style: style, expand: fill && !vertical),
+        _BsNavLinkWidget(
+          item: items[i],
+          variant: variant,
+          style: style,
+          expand: fill && !vertical,
+        ),
       ],
     ];
 
@@ -105,12 +123,37 @@ class BsNav extends StatelessWidget {
     // next to a sibling (e.g. in a Wrap or a Row) would always claim the
     // rest of that shared row's width for itself instead of just its own
     // links, pushing the sibling onto its own line/row.
+    //
+    // `.nav` is `display: flex; flex-wrap: wrap`, so a horizontal nav too wide
+    // for its space wraps onto further lines (left-aligned) instead of
+    // overflowing; only `.nav-fill`/`.nav-justified`, whose items share the
+    // space out, stay a single Row.
     final Widget nav = vertical
-        ? IntrinsicWidth(child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: children))
-        : Row(
-            mainAxisSize: fill ? MainAxisSize.max : MainAxisSize.min,
+        ? IntrinsicWidth(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: children,
+            ),
+          )
+        : fill
+        ? Row(
+            mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: children,
+          )
+        : Wrap(
+            alignment: alignment,
+            crossAxisAlignment: WrapCrossAlignment.end,
+            spacing: isUnderline ? gap : 0,
+            children: [
+              for (final item in items)
+                _BsNavLinkWidget(
+                  item: item,
+                  variant: variant,
+                  style: style,
+                  expand: false,
+                ),
+            ],
           );
 
     if (!isTabs) return nav;
@@ -130,7 +173,12 @@ class BsNav extends StatelessWidget {
 }
 
 class _BsNavLinkWidget extends StatefulWidget {
-  const _BsNavLinkWidget({required this.item, required this.variant, required this.style, required this.expand});
+  const _BsNavLinkWidget({
+    required this.item,
+    required this.variant,
+    required this.style,
+    required this.expand,
+  });
 
   final BsNavItem item;
   final BsNavVariant variant;
@@ -169,38 +217,62 @@ class _BsNavLinkWidgetState extends State<_BsNavLinkWidget> {
         case BsNavVariant.plain:
           color = _hovered ? hoverColor : restColor;
         case BsNavVariant.tabs:
-          final borderColor = style.tabsBorderColor ?? BsNavStyle.defaultTabsBorderColor;
+          final borderColor =
+              style.tabsBorderColor ?? BsNavStyle.defaultTabsBorderColor;
           if (item.active) {
-            color = style.tabsLinkActiveColor ?? BsNavStyle.defaultTabsLinkActiveColor;
-            background = style.tabsLinkActiveBackground ?? BsNavStyle.defaultTabsLinkActiveBackground;
+            color =
+                style.tabsLinkActiveColor ??
+                BsNavStyle.defaultTabsLinkActiveColor;
+            background =
+                style.tabsLinkActiveBackground ??
+                BsNavStyle.defaultTabsLinkActiveBackground;
             // A uniform-color border, not a bottom edge matching
             // [background] to blend into the container's shared border
             // line below it — Border.paint refuses non-uniform side
             // colors together with a borderRadius.
-            border = Border.all(color: style.tabsLinkActiveBorderColor ?? borderColor);
+            border = Border.all(
+              color: style.tabsLinkActiveBorderColor ?? borderColor,
+            );
           } else {
             color = _hovered ? hoverColor : restColor;
             if (_hovered) {
-              border = Border.all(color: style.tabsLinkHoverBorderColor ?? BsNavStyle.defaultTabsLinkHoverBorderColor);
+              border = Border.all(
+                color:
+                    style.tabsLinkHoverBorderColor ??
+                    BsNavStyle.defaultTabsLinkHoverBorderColor,
+              );
             }
           }
         case BsNavVariant.pills:
           if (item.active) {
-            color = style.pillsLinkActiveColor ?? BsNavStyle.defaultPillsLinkActiveColor;
-            background = style.pillsLinkActiveBackground ?? BsNavStyle.defaultPillsLinkActiveBackground;
+            color =
+                style.pillsLinkActiveColor ??
+                BsNavStyle.defaultPillsLinkActiveColor;
+            background =
+                style.pillsLinkActiveBackground ??
+                BsNavStyle.defaultPillsLinkActiveBackground;
           } else {
             color = _hovered ? hoverColor : restColor;
           }
         case BsNavVariant.underline:
-          final underlineWidth = style.underlineBorderWidth ?? BsNavStyle.defaultUnderlineBorderWidth;
+          final underlineWidth =
+              style.underlineBorderWidth ??
+              BsNavStyle.defaultUnderlineBorderWidth;
           if (item.active) {
-            color = style.underlineLinkActiveColor ?? BsNavStyle.defaultUnderlineLinkActiveColor;
+            color =
+                style.underlineLinkActiveColor ??
+                BsNavStyle.defaultUnderlineLinkActiveColor;
             fontWeight = FontWeight.bold;
-            border = Border(bottom: BorderSide(color: color, width: underlineWidth));
+            border = Border(
+              bottom: BorderSide(color: color, width: underlineWidth),
+            );
           } else {
             color = _hovered ? hoverColor : restColor;
             border = Border(
-              bottom: BorderSide(color: _hovered ? hoverColor : const Color(0x00000000), width: underlineWidth),
+              bottom: BorderSide(
+                color: _hovered ? hoverColor : const Color(0x00000000),
+                width: underlineWidth,
+              ),
             );
           }
       }
@@ -210,12 +282,20 @@ class _BsNavLinkWidgetState extends State<_BsNavLinkWidget> {
       decoration: BoxDecoration(
         color: background,
         border: border,
-        borderRadius: widget.variant == BsNavVariant.pills || widget.variant == BsNavVariant.tabs ? borderRadius : null,
+        borderRadius:
+            widget.variant == BsNavVariant.pills ||
+                widget.variant == BsNavVariant.tabs
+            ? borderRadius
+            : null,
         boxShadow: [
           if (focused)
             BoxShadow(
-              color: style.linkFocusRingColor ?? BsNavStyle.defaultLinkFocusRingColor,
-              spreadRadius: style.linkFocusRingWidth ?? BsNavStyle.defaultLinkFocusRingWidth,
+              color:
+                  style.linkFocusRingColor ??
+                  BsNavStyle.defaultLinkFocusRingColor,
+              spreadRadius:
+                  style.linkFocusRingWidth ??
+                  BsNavStyle.defaultLinkFocusRingWidth,
             ),
         ],
       ),
@@ -235,8 +315,11 @@ class _BsNavLinkWidgetState extends State<_BsNavLinkWidget> {
       onExit: enabled ? (_) => setState(() => _hovered = false) : null,
       child: BsFocusableBuilder(
         enabled: enabled,
-        builder: (context, focused) =>
-            GestureDetector(behavior: HitTestBehavior.opaque, onTap: enabled ? item.onTap : null, child: content(focused)),
+        builder: (context, focused) => GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: enabled ? item.onTap : null,
+          child: content(focused),
+        ),
       ),
     );
 
@@ -332,7 +415,10 @@ class _BsTabViewState extends State<BsTabView> {
   int? _pendingTo;
 
   BsTabController get _controller =>
-      widget.controller ?? (_ownedController ??= BsTabController(initialIndex: widget.activeIndex ?? 0));
+      widget.controller ??
+      (_ownedController ??= BsTabController(
+        initialIndex: widget.activeIndex ?? 0,
+      ));
 
   @override
   void initState() {
@@ -346,7 +432,9 @@ class _BsTabViewState extends State<BsTabView> {
     super.didUpdateWidget(oldWidget);
     // activeIndex only drives the internally-owned controller — an
     // explicit controller is always the source of truth once given.
-    if (widget.controller == null && widget.activeIndex != null && widget.activeIndex != _controller.index) {
+    if (widget.controller == null &&
+        widget.activeIndex != null &&
+        widget.activeIndex != _controller.index) {
       _controller.show(widget.activeIndex!);
     }
   }
@@ -361,7 +449,10 @@ class _BsTabViewState extends State<BsTabView> {
       widget.onHide?.call(oldIndex);
       widget.onShow?.call(newIndex);
 
-      final duration = BsTransitions.resolve(context, widget.duration ?? BsTransitions.fade);
+      final duration = BsTransitions.resolve(
+        context,
+        widget.duration ?? BsTransitions.fade,
+      );
       Future.delayed(duration, () {
         if (!mounted) return;
         // Only fire if this is still the transition we scheduled it for —
@@ -388,7 +479,10 @@ class _BsTabViewState extends State<BsTabView> {
   Widget build(BuildContext context) {
     final index = _controller.index;
     return AnimatedSwitcher(
-      duration: BsTransitions.resolve(context, widget.duration ?? BsTransitions.fade),
+      duration: BsTransitions.resolve(
+        context,
+        widget.duration ?? BsTransitions.fade,
+      ),
       child: KeyedSubtree(key: ValueKey(index), child: widget.children[index]),
     );
   }

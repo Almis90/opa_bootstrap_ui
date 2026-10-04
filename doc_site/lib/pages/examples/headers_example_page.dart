@@ -80,6 +80,8 @@ class HeadersExamplePage extends StatelessWidget {
         ),
         child: _flexHeader(
           breakpoint: BsBreakpoint.md,
+          // brand `.mb-3` (`.mb-md-0` is moot: it's a row from md up)
+          stacked: const {0: _Stacked(bottom: 16)},
           children: [
             _HomeLink(
               child: Row(
@@ -127,6 +129,7 @@ class HeadersExamplePage extends StatelessWidget {
             const brand = _HomeLink(child: _BootstrapMark());
             final nav = BsNav(
               variant: BsNavVariant.plain,
+              alignment: WrapAlignment.center, // `.justify-content-center`
               style: _px2,
               items: _plainNavItems(_mainLabels, firstColor: BsColors.gray600),
             );
@@ -138,10 +141,20 @@ class HeadersExamplePage extends StatelessWidget {
                 BsButton(variant: BsVariant.primary, onPressed: () {}, child: const Text('Sign-up')),
               ],
             );
-            if (constraints.maxWidth < BsBreakpoint.md.minWidth) {
+            if (MediaQuery.sizeOf(context).width < BsBreakpoint.md.minWidth) {
+              // logo `.mb-2`; nav `.col-12.mb-2`; buttons
               return Column(
                 mainAxisSize: MainAxisSize.min,
-                children: [brand, const SizedBox(height: 16), nav, const SizedBox(height: 16), buttons],
+                children: [
+                  // As in the wide layout the logo's column is taller than the logo:
+                  // the line box under an inline-flex `<a>` adds the strut's descent
+                  // (6.6px for Roboto at 16px/24px).
+                  Padding(padding: const EdgeInsets.only(bottom: 6.6), child: brand),
+                  const SizedBox(height: 8),
+                  SizedBox(width: double.infinity, child: nav),
+                  const SizedBox(height: 8),
+                  buttons,
+                ],
               );
             }
             // `.col-md-3` on each side (`.text-end` on the buttons) with
@@ -183,10 +196,17 @@ class HeadersExamplePage extends StatelessWidget {
           spacerAfterIndex: 1,
           // logo `.me-2`, nav `.me-lg-auto`, form `.me-lg-3`.
           gaps: const {0: 8, 2: 16},
+          // logo `.mb-2`; nav `.col-12.mb-2.mb-md-0`; form `.col-12.mb-3`
+          stacked: const {
+            0: _Stacked(bottom: 8),
+            1: _Stacked(fullWidth: true, bottom: 8, bottomMd: 0),
+            2: _Stacked(fullWidth: true, bottom: 16),
+          },
           children: [
             const _HomeLink(child: _BootstrapMark(white: true)),
             BsNav(
               variant: BsNavVariant.plain,
+              alignment: WrapAlignment.center, // `.justify-content-center`
               style: _px2,
               items: _plainNavItems(_mainLabels, firstColor: BsColors.gray600, restColor: BsColors.white),
             ),
@@ -223,10 +243,17 @@ class HeadersExamplePage extends StatelessWidget {
           spacerAfterIndex: 1,
           // logo `.me-2`, nav `.me-lg-auto`, form `.me-lg-3`.
           gaps: const {0: 8, 2: 16},
+          // logo `.mb-2`; nav `.col-12.mb-2.mb-md-0`; form `.col-12.mb-3`
+          stacked: const {
+            0: _Stacked(bottom: 8),
+            1: _Stacked(fullWidth: true, bottom: 8, bottomMd: 0),
+            2: _Stacked(fullWidth: true, bottom: 16),
+          },
           children: [
             const _HomeLink(child: _BootstrapMark()),
             BsNav(
               variant: BsNavVariant.plain,
+              alignment: WrapAlignment.center, // `.justify-content-center`
               style: _px2,
               items: _plainNavItems(
                 _dashboardLabels,
@@ -270,26 +297,31 @@ class HeadersExamplePage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Expanded(
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: BsDropdown(
-                  style: _menuStyle,
-                  toggleBuilder: (context, toggle, isOpen) => MouseRegion(
-                    cursor: SystemMouseCursors.click,
-                    child: GestureDetector(
-                      onTap: toggle,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const _BootstrapMark(),
-                          // `.me-2` on the svg, then the caret's own margin.
-                          const SizedBox(width: 8 + DropdownCaret.marginStart),
-                          DropdownCaret(color: BsBody.emphasisColorOf(context)),
-                        ],
+              child: Padding(
+                // `.mb-2.mb-lg-0` on the logo's `<a>`: below lg its margin box is
+                // 8px taller than the logo, which sets the grid row's height.
+                padding: EdgeInsets.only(bottom: MediaQuery.sizeOf(context).width < BsBreakpoint.lg.minWidth ? 8 : 0),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: BsDropdown(
+                    style: _menuStyle,
+                    toggleBuilder: (context, toggle, isOpen) => MouseRegion(
+                      cursor: SystemMouseCursors.click,
+                      child: GestureDetector(
+                        onTap: toggle,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const _BootstrapMark(),
+                            // `.me-2` on the svg, then the caret's own margin.
+                            const SizedBox(width: 8 + DropdownCaret.marginStart),
+                            DropdownCaret(color: BsBody.emphasisColorOf(context)),
+                          ],
+                        ),
                       ),
                     ),
+                    items: _logoMenuItems(),
                   ),
-                  items: _logoMenuItems(),
                 ),
               ),
             ),
@@ -357,6 +389,10 @@ class HeadersExamplePage extends StatelessWidget {
           child: BsContainer(
             child: _flexHeader(
               breakpoint: BsBreakpoint.xs,
+              // `.container.d-flex.flex-wrap`: the two navs (314 + 124px) wrap,
+              // left-aligned, once they stop fitting on one line.
+              minContentWidth: 438.7,
+              wrapAlignment: WrapAlignment.start,
               children: [
                 BsNav(
                   variant: BsNavVariant.plain,
@@ -395,6 +431,8 @@ class HeadersExamplePage extends StatelessWidget {
           child: BsContainer(
             child: _flexHeader(
               breakpoint: BsBreakpoint.lg,
+              // brand `.mb-3`; form `.col-12.mb-3`
+              stacked: const {0: _Stacked(bottom: 16), 1: _Stacked(fullWidth: true, bottom: 16)},
               children: [
                 _HomeLink(
                   child: Row(
@@ -442,10 +480,15 @@ class HeadersExamplePage extends StatelessWidget {
           child: BsContainer(
             child: _flexHeader(
               breakpoint: BsBreakpoint.lg,
+              // logo `.my-2`; nav `.col-12.my-2.my-md-0.justify-content-center`
+              stacked: const {
+                0: _Stacked(top: 8, bottom: 8),
+                1: _Stacked(fullWidth: true, top: 8, bottom: 8, topMd: 0, bottomMd: 0),
+              },
               children: [
                 const _HomeLink(child: _BootstrapMark(white: true)),
                 Wrap(
-                  runSpacing: 8,
+                  alignment: WrapAlignment.center,
                   children: [
                     for (final (icon, label) in icons)
                       _HomeLink(
@@ -490,6 +533,8 @@ class HeadersExamplePage extends StatelessWidget {
           child: BsContainer(
             child: _flexHeader(
               breakpoint: BsBreakpoint.lg,
+              // form `.col-12.mb-2`
+              stacked: const {0: _Stacked(fullWidth: true, bottom: 8)},
               children: [
                 const SizedBox(
                   width: _searchWidth,
@@ -559,28 +604,68 @@ class HeadersExamplePage extends StatelessWidget {
   );
 }
 
+/// How one child of a [_flexHeader] behaves once the header has collapsed
+/// below its breakpoint, where the original's `col-12`/`mb-*`/`my-*` classes
+/// take over: [fullWidth] is `.col-12` (it takes a whole row, so whatever
+/// follows wraps beneath it), and [top]/[bottom] are its margins, with [topMd]/[bottomMd] where a
+/// `-md-0` class zeroes them again from `md` up.
+class _Stacked {
+  const _Stacked({this.fullWidth = false, this.top = 0, this.bottom = 0, this.topMd, this.bottomMd});
+
+  final bool fullWidth;
+  final double top;
+  final double bottom;
+  final double? topMd;
+  final double? bottomMd;
+}
+
 /// Lays [children] out left-to-right with the free space after
 /// [spacerAfterIndex] distributed to its right — the same effect Bootstrap's
 /// real headers get from an `me-*-auto` class on one child — collapsing to
 /// a centered, wrapped column below [breakpoint]. [gaps] overrides the
-/// default [spacing] after the child at a given index (a `.me-*` margin).
+/// default [spacing] after the child at a given index (a `.me-*` margin), and
+/// [stacked] describes each child's `col-12`/margins in the collapsed layout,
+/// and [wrapAlignment] is that layout's `justify-content`.
+///
+/// The breakpoint is compared with the *viewport*, as CSS media queries are,
+/// not with the width the header happens to be given.
 Widget _flexHeader({
   required List<Widget> children,
   required BsBreakpoint breakpoint,
   int spacerAfterIndex = 0,
   Map<int, double> gaps = const {},
+  Map<int, _Stacked> stacked = const {},
   double spacing = 16,
-  double runSpacing = 12,
+  double? minContentWidth,
+  WrapAlignment wrapAlignment = WrapAlignment.center,
 }) {
   return LayoutBuilder(
     builder: (context, constraints) {
-      if (constraints.maxWidth < breakpoint.minWidth) {
+      final viewport = MediaQuery.sizeOf(context).width;
+      // A bare `flex-wrap` container (no breakpoint classes) wraps once its
+      // children no longer fit side by side: [minContentWidth] is their combined
+      // natural width.
+      final tooNarrow = minContentWidth != null && constraints.maxWidth < minContentWidth;
+      if (viewport < breakpoint.minWidth || tooNarrow) {
+        final md = viewport >= BsBreakpoint.md.minWidth;
         return Wrap(
-          alignment: WrapAlignment.center,
+          alignment: wrapAlignment,
           crossAxisAlignment: WrapCrossAlignment.center,
-          spacing: spacing,
-          runSpacing: runSpacing,
-          children: children,
+          children: [
+            for (var i = 0; i < children.length; i++)
+              () {
+                final spec = stacked[i] ?? const _Stacked();
+                Widget child = children[i];
+                if (spec.fullWidth) child = SizedBox(width: double.infinity, child: child);
+                return Padding(
+                  padding: EdgeInsets.only(
+                    top: md ? (spec.topMd ?? spec.top) : spec.top,
+                    bottom: md ? (spec.bottomMd ?? spec.bottom) : spec.bottom,
+                  ),
+                  child: child,
+                );
+              }(),
+          ],
         );
       }
       final row = <Widget>[];
