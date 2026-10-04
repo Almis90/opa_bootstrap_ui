@@ -31,7 +31,9 @@ BsTooltip(
         ),
         DocExample(
           title: 'Placements',
-          description: 'placement controls which side of the child the tooltip bubble appears on.',
+          description:
+              'placement controls which side of the child the tooltip bubble appears on. As in Bootstrap, it flips to the opposite side when there is no room (and slides to stay on '
+              'screen, its arrow keeping its aim); pass flip: false to always show exactly where asked.',
           code: '''
 BsTooltip(
   placement: BsTooltipPlacement.top,

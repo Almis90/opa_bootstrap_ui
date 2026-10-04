@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 
+import 'bs_placement.dart';
 import 'bs_theme.dart';
 import 'tokens/bs_tooltip_style.dart';
 import 'tokens/bs_transitions.dart';
@@ -105,6 +106,7 @@ class BsTooltip extends StatefulWidget {
     required this.message,
     required this.child,
     this.placement = BsTooltipPlacement.top,
+    this.flip = true,
     this.waitDuration = Duration.zero,
     this.showDuration = const Duration(seconds: 2),
     this.style,
@@ -123,6 +125,13 @@ class BsTooltip extends StatefulWidget {
   final Widget child;
 
   final BsTooltipPlacement placement;
+
+  /// Popper's `flip` and `preventOverflow` modifiers, which Bootstrap's
+  /// tooltips run by default: when the bubble wouldn't fit on screen on the
+  /// side [placement] asks for, it appears on the opposite side instead (its
+  /// arrow flipping with it), and slides along the target to stay in view,
+  /// the arrow keeping its aim. Pass false to always show exactly where asked.
+  final bool flip;
 
   /// Programmatic enable/disable and show/hide. Defaults to an
   /// internally-owned controller (always enabled, initially hidden) when
@@ -159,7 +168,7 @@ class BsTooltip extends StatefulWidget {
   State<BsTooltip> createState() => _BsTooltipState();
 }
 
-class _BsTooltipState extends State<BsTooltip> with SingleTickerProviderStateMixin {
+class _BsTooltipState extends State<BsTooltip> with SingleTickerProviderStateMixin, BsPlacementTracker<BsTooltip> {
   final _link = LayerLink();
   final _overlayController = OverlayPortalController();
   static const _baseFadeDuration = Duration(milliseconds: 150);
@@ -169,6 +178,23 @@ class _BsTooltipState extends State<BsTooltip> with SingleTickerProviderStateMix
   Timer? _autoHideTimer;
   BsTooltipController? _ownedController;
   bool _wasShown = false;
+
+  @override
+  BsPlacement get preferredPlacement {
+    final rtl = Directionality.of(context) == TextDirection.rtl;
+    return switch (_effectivePlacement) {
+      BsTooltipPlacement.top => const BsPlacement(BsPlacementSide.top),
+      BsTooltipPlacement.bottom => const BsPlacement(BsPlacementSide.bottom),
+      BsTooltipPlacement.start => BsPlacement(rtl ? BsPlacementSide.right : BsPlacementSide.left),
+      BsTooltipPlacement.end => BsPlacement(rtl ? BsPlacementSide.left : BsPlacementSide.right),
+    };
+  }
+
+  @override
+  bool get flipEnabled => widget.flip;
+
+  @override
+  bool get placementActive => _controller.isShown;
 
   BsTooltipController get _controller => widget.controller ?? (_ownedController ??= BsTooltipController());
 
@@ -188,6 +214,8 @@ class _BsTooltipState extends State<BsTooltip> with SingleTickerProviderStateMix
     if (isShown == _wasShown) return;
     _wasShown = isShown;
     if (isShown) {
+      resetPlacement();
+      startResolvingPlacement();
       if (!_overlayController.isShowing) _overlayController.show();
       widget.onShow?.call();
       _fadeIn();
@@ -220,23 +248,6 @@ class _BsTooltipState extends State<BsTooltip> with SingleTickerProviderStateMix
     }
     return true;
   }
-
-  // CompositedTransformFollower's anchors are plain Alignment, not
-  // AlignmentGeometry, so start/end need a manual resolve() against the
-  // ambient Directionality instead of just handing it AlignmentDirectional.
-  Alignment get _targetAnchor => switch (_effectivePlacement) {
-    BsTooltipPlacement.top => Alignment.topCenter,
-    BsTooltipPlacement.bottom => Alignment.bottomCenter,
-    BsTooltipPlacement.start => AlignmentDirectional.centerStart.resolve(Directionality.of(context)),
-    BsTooltipPlacement.end => AlignmentDirectional.centerEnd.resolve(Directionality.of(context)),
-  };
-
-  Alignment get _followerAnchor => switch (_effectivePlacement) {
-    BsTooltipPlacement.top => Alignment.bottomCenter,
-    BsTooltipPlacement.bottom => Alignment.topCenter,
-    BsTooltipPlacement.start => AlignmentDirectional.centerEnd.resolve(Directionality.of(context)),
-    BsTooltipPlacement.end => AlignmentDirectional.centerStart.resolve(Directionality.of(context)),
-  };
 
   void _scheduleShow() {
     if (!_controller.enabled) return;
@@ -277,6 +288,49 @@ class _BsTooltipState extends State<BsTooltip> with SingleTickerProviderStateMix
     super.dispose();
   }
 
+  Widget _buildOverlay(BsTooltipStyle style) {
+    // Until the bubble has been measured (see [BsPlacementTracker]) it sits
+    // at the preferred placement, invisible; afterwards wherever flipping
+    // chose, with its arrow slid back to aim at the target.
+    final resolved = currentPlacement;
+    final placement = resolved.placement;
+    final size = placementContentSize;
+    final arrowOffset = size == null
+        ? 0.0
+        : arrowShift(
+            shift: resolved.alongShift,
+            contentExtent: placement.side.isVertical ? size.width : size.height,
+            arrowExtent: style.arrowWidth ?? BsTooltipStyle.defaultArrowWidth,
+            padding: style.borderRadius ?? BsTooltipStyle.defaultBorderRadius,
+          );
+
+    return Stack(
+      children: [
+        IgnorePointer(
+          child: CompositedTransformFollower(
+            link: _link,
+            targetAnchor: placement.targetAnchor,
+            followerAnchor: placement.followerAnchor,
+            offset: resolved.shift,
+            child: FadeTransition(
+              opacity: _fadeController,
+              child: Opacity(
+                opacity: placementPending ? 0 : (style.opacity ?? BsTooltipStyle.defaultOpacity),
+                child: _BsTooltipContent(
+                  key: placementContentKey,
+                  message: _effectiveMessage,
+                  side: placement.side,
+                  arrowOffset: arrowOffset,
+                  style: style,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (!_hasContent) return widget.child;
@@ -287,27 +341,11 @@ class _BsTooltipState extends State<BsTooltip> with SingleTickerProviderStateMix
     final style = (isDark ? BsTooltipStyle.darkDefaults : BsTooltipStyle.defaults).merge(widget.style);
 
     return CompositedTransformTarget(
+      key: placementTargetKey,
       link: _link,
       child: OverlayPortal(
         controller: _overlayController,
-        overlayChildBuilder: (context) => Stack(
-          children: [
-            IgnorePointer(
-              child: CompositedTransformFollower(
-                link: _link,
-                targetAnchor: _targetAnchor,
-                followerAnchor: _followerAnchor,
-                child: FadeTransition(
-                  opacity: _fadeController,
-                  child: Opacity(
-                    opacity: style.opacity ?? BsTooltipStyle.defaultOpacity,
-                    child: _BsTooltipContent(message: _effectiveMessage, placement: _effectivePlacement, style: style),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
+        overlayChildBuilder: (context) => _buildOverlay(style),
         child: MouseRegion(
           onEnter: (_) => _scheduleShow(),
           onExit: (_) => _hideAfter(Duration.zero),
@@ -325,15 +363,26 @@ class _BsTooltipState extends State<BsTooltip> with SingleTickerProviderStateMix
 }
 
 class _BsTooltipContent extends StatelessWidget {
-  const _BsTooltipContent({required this.message, required this.placement, required this.style});
+  const _BsTooltipContent({
+    super.key,
+    required this.message,
+    required this.side,
+    required this.arrowOffset,
+    required this.style,
+  });
 
   final Widget message;
-  final BsTooltipPlacement placement;
+
+  /// The (physical) side of the target the bubble sits on; its arrow points
+  /// back across the opposite edge.
+  final BsPlacementSide side;
+
+  /// How far the arrow has slid along its edge to keep aiming at the target.
+  final double arrowOffset;
   final BsTooltipStyle style;
 
   @override
   Widget build(BuildContext context) {
-    final textDirection = Directionality.of(context);
     final background = style.background ?? BsTooltipStyle.defaultBackground;
 
     final bubble = ConstrainedBox(
@@ -357,40 +406,25 @@ class _BsTooltipContent extends StatelessWidget {
       ),
     );
 
-    return switch (placement) {
-      BsTooltipPlacement.top => Column(
+    Widget arrow(_BsTooltipArrowDirection direction) => Transform.translate(
+      offset: side.isVertical ? Offset(arrowOffset, 0) : Offset(0, arrowOffset),
+      child: _BsTooltipArrow(direction: direction, color: background, style: style),
+    );
+
+    // Physical layout: a flipped tooltip must land on the side it resolved to
+    // whatever the text direction, so the Rows are forced left-to-right.
+    return switch (side) {
+      BsPlacementSide.top => Column(mainAxisSize: MainAxisSize.min, children: [bubble, arrow(_BsTooltipArrowDirection.down)]),
+      BsPlacementSide.bottom => Column(mainAxisSize: MainAxisSize.min, children: [arrow(_BsTooltipArrowDirection.up), bubble]),
+      BsPlacementSide.left => Row(
+        textDirection: TextDirection.ltr,
         mainAxisSize: MainAxisSize.min,
-        children: [bubble, _BsTooltipArrow(direction: _BsTooltipArrowDirection.down, color: background, style: style)],
+        children: [bubble, arrow(_BsTooltipArrowDirection.right)],
       ),
-      BsTooltipPlacement.bottom => Column(
+      BsPlacementSide.right => Row(
+        textDirection: TextDirection.ltr,
         mainAxisSize: MainAxisSize.min,
-        children: [_BsTooltipArrow(direction: _BsTooltipArrowDirection.up, color: background, style: style), bubble],
-      ),
-      // Row's own child order is already logical (first child sits at the
-      // start edge, auto-flipping physical sides under RTL) — only the
-      // arrow glyph's drawn direction needs to flip along with it, so it
-      // still visually points at the target once that flip happens.
-      BsTooltipPlacement.start => Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          bubble,
-          _BsTooltipArrow(
-            direction: textDirection == TextDirection.rtl ? _BsTooltipArrowDirection.left : _BsTooltipArrowDirection.right,
-            color: background,
-            style: style,
-          ),
-        ],
-      ),
-      BsTooltipPlacement.end => Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _BsTooltipArrow(
-            direction: textDirection == TextDirection.rtl ? _BsTooltipArrowDirection.right : _BsTooltipArrowDirection.left,
-            color: background,
-            style: style,
-          ),
-          bubble,
-        ],
+        children: [arrow(_BsTooltipArrowDirection.left), bubble],
       ),
     };
   }

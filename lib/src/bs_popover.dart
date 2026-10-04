@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import 'bs_placement.dart';
 import 'bs_theme.dart';
 import 'tokens/bs_popover_style.dart';
 
@@ -107,6 +108,7 @@ class BsPopover extends StatefulWidget {
     this.title,
     required this.content,
     this.placement = BsPopoverPlacement.top,
+    this.flip = true,
     this.style,
     this.onOpenChanged,
     this.controller,
@@ -128,6 +130,13 @@ class BsPopover extends StatefulWidget {
   final Widget content;
 
   final BsPopoverPlacement placement;
+
+  /// Popper's `flip` and `preventOverflow` modifiers, which Bootstrap's
+  /// popovers run by default: when the bubble wouldn't fit on screen on the
+  /// side [placement] asks for, it opens on the opposite side instead (its
+  /// arrow flipping with it), and slides along the trigger to stay in view,
+  /// the arrow keeping its aim. Pass false to always open exactly where asked.
+  final bool flip;
 
   /// Style overrides layered on top of [BsPopoverStyle.defaults].
   final BsPopoverStyle? style;
@@ -161,11 +170,28 @@ class BsPopover extends StatefulWidget {
   State<BsPopover> createState() => _BsPopoverState();
 }
 
-class _BsPopoverState extends State<BsPopover> {
+class _BsPopoverState extends State<BsPopover> with BsPlacementTracker<BsPopover> {
   final _link = LayerLink();
   final _overlayController = OverlayPortalController();
   BsPopoverController? _ownedController;
   bool _wasShown = false;
+
+  @override
+  BsPlacement get preferredPlacement {
+    final rtl = Directionality.of(context) == TextDirection.rtl;
+    return switch (_effectivePlacement) {
+      BsPopoverPlacement.top => const BsPlacement(BsPlacementSide.top),
+      BsPopoverPlacement.bottom => const BsPlacement(BsPlacementSide.bottom),
+      BsPopoverPlacement.start => BsPlacement(rtl ? BsPlacementSide.right : BsPlacementSide.left),
+      BsPopoverPlacement.end => BsPlacement(rtl ? BsPlacementSide.left : BsPlacementSide.right),
+    };
+  }
+
+  @override
+  bool get flipEnabled => widget.flip;
+
+  @override
+  bool get placementActive => _controller.isShown;
 
   BsPopoverController get _controller => widget.controller ?? (_ownedController ??= BsPopoverController());
 
@@ -183,6 +209,8 @@ class _BsPopoverState extends State<BsPopover> {
     if (isShown == _wasShown) return;
     _wasShown = isShown;
     if (isShown) {
+      resetPlacement();
+      startResolvingPlacement();
       widget.onShow?.call();
       if (!_overlayController.isShowing) _overlayController.show();
       widget.onShown?.call();
@@ -219,6 +247,7 @@ class _BsPopoverState extends State<BsPopover> {
     final style = (isDark ? BsPopoverStyle.darkDefaults : BsPopoverStyle.defaults).merge(widget.style);
 
     return CompositedTransformTarget(
+      key: placementTargetKey,
       link: _link,
       // Shares a groupId with the overlay content's own TapRegion below, so
       // a tap on the trigger itself never counts as "outside" the popover
@@ -236,22 +265,21 @@ class _BsPopoverState extends State<BsPopover> {
   }
 
   Widget _buildOverlay(BsPopoverStyle style) {
-    // CompositedTransformFollower's anchors are plain Alignment, not
-    // AlignmentGeometry, so start/end need a manual resolve() against the
-    // ambient Directionality instead of just handing it AlignmentDirectional.
-    final textDirection = Directionality.of(context);
-    final (Alignment targetAnchor, Alignment followerAnchor) = switch (_effectivePlacement) {
-      BsPopoverPlacement.top => (Alignment.topCenter, Alignment.bottomCenter),
-      BsPopoverPlacement.bottom => (Alignment.bottomCenter, Alignment.topCenter),
-      BsPopoverPlacement.start => (
-        AlignmentDirectional.centerStart.resolve(textDirection),
-        AlignmentDirectional.centerEnd.resolve(textDirection),
-      ),
-      BsPopoverPlacement.end => (
-        AlignmentDirectional.centerEnd.resolve(textDirection),
-        AlignmentDirectional.centerStart.resolve(textDirection),
-      ),
-    };
+    // Until the bubble has been measured (see [BsPlacementTracker]) it sits
+    // at the preferred placement, invisible; afterwards wherever flipping
+    // chose, with its arrow slid back to aim at the trigger.
+    final resolved = currentPlacement;
+    final placement = resolved.placement;
+    final hidden = placementPending;
+    final size = placementContentSize;
+    final arrowOffset = size == null
+        ? 0.0
+        : arrowShift(
+            shift: resolved.alongShift,
+            contentExtent: placement.side.isVertical ? size.width : size.height,
+            arrowExtent: style.arrowWidth ?? BsPopoverStyle.defaultArrowWidth,
+            padding: style.borderRadius ?? BsPopoverStyle.defaultBorderRadius,
+          );
 
     return Stack(
       children: [
@@ -266,13 +294,22 @@ class _BsPopoverState extends State<BsPopover> {
           onTapOutside: (_) => _controller.hide(),
           child: CompositedTransformFollower(
             link: _link,
-            targetAnchor: targetAnchor,
-            followerAnchor: followerAnchor,
-            child: _BsPopoverContent(
-              title: widget.title,
-              content: _effectiveContent,
-              placement: _effectivePlacement,
-              style: style,
+            targetAnchor: placement.targetAnchor,
+            followerAnchor: placement.followerAnchor,
+            offset: resolved.shift,
+            child: IgnorePointer(
+              ignoring: hidden,
+              child: Opacity(
+                opacity: hidden ? 0 : 1,
+                child: _BsPopoverContent(
+                  key: placementContentKey,
+                  title: widget.title,
+                  content: _effectiveContent,
+                  side: placement.side,
+                  arrowOffset: arrowOffset,
+                  style: style,
+                ),
+              ),
             ),
           ),
         ),
@@ -282,16 +319,28 @@ class _BsPopoverState extends State<BsPopover> {
 }
 
 class _BsPopoverContent extends StatelessWidget {
-  const _BsPopoverContent({required this.title, required this.content, required this.placement, required this.style});
+  const _BsPopoverContent({
+    super.key,
+    required this.title,
+    required this.content,
+    required this.side,
+    required this.arrowOffset,
+    required this.style,
+  });
 
   final Widget? title;
   final Widget content;
-  final BsPopoverPlacement placement;
+
+  /// The (physical) side of the trigger the bubble sits on; its arrow points
+  /// back across the opposite edge.
+  final BsPlacementSide side;
+
+  /// How far the arrow has slid along its edge to keep aiming at the trigger.
+  final double arrowOffset;
   final BsPopoverStyle style;
 
   @override
   Widget build(BuildContext context) {
-    final textDirection = Directionality.of(context);
     final borderRadius = BorderRadius.circular(style.borderRadius ?? BsPopoverStyle.defaultBorderRadius);
 
     // Without IntrinsicWidth, the Column below's `crossAxisAlignment:
@@ -350,38 +399,25 @@ class _BsPopoverContent extends StatelessWidget {
       ),
     );
 
-    return switch (placement) {
-      BsPopoverPlacement.top => Column(
+    Widget arrow(_BsPopoverArrowDirection direction) => Transform.translate(
+      offset: side.isVertical ? Offset(arrowOffset, 0) : Offset(0, arrowOffset),
+      child: _BsPopoverArrow(direction: direction, style: style),
+    );
+
+    // Physical layout: a flipped popover must land on the side it resolved to
+    // whatever the text direction, so the Rows are forced left-to-right.
+    return switch (side) {
+      BsPlacementSide.top => Column(mainAxisSize: MainAxisSize.min, children: [box, arrow(_BsPopoverArrowDirection.down)]),
+      BsPlacementSide.bottom => Column(mainAxisSize: MainAxisSize.min, children: [arrow(_BsPopoverArrowDirection.up), box]),
+      BsPlacementSide.left => Row(
+        textDirection: TextDirection.ltr,
         mainAxisSize: MainAxisSize.min,
-        children: [box, _BsPopoverArrow(direction: _BsPopoverArrowDirection.down, style: style)],
+        children: [box, arrow(_BsPopoverArrowDirection.right)],
       ),
-      BsPopoverPlacement.bottom => Column(
+      BsPlacementSide.right => Row(
+        textDirection: TextDirection.ltr,
         mainAxisSize: MainAxisSize.min,
-        children: [_BsPopoverArrow(direction: _BsPopoverArrowDirection.up, style: style), box],
-      ),
-      // Row's own child order is already logical (first child sits at the
-      // start edge, auto-flipping physical sides under RTL) — only the
-      // arrow glyph's drawn direction needs to flip along with it, so it
-      // still visually points at the trigger once that flip happens.
-      BsPopoverPlacement.start => Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          box,
-          _BsPopoverArrow(
-            direction: textDirection == TextDirection.rtl ? _BsPopoverArrowDirection.left : _BsPopoverArrowDirection.right,
-            style: style,
-          ),
-        ],
-      ),
-      BsPopoverPlacement.end => Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _BsPopoverArrow(
-            direction: textDirection == TextDirection.rtl ? _BsPopoverArrowDirection.right : _BsPopoverArrowDirection.left,
-            style: style,
-          ),
-          box,
-        ],
+        children: [arrow(_BsPopoverArrowDirection.left), box],
       ),
     };
   }

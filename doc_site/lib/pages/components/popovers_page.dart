@@ -49,7 +49,10 @@ BsPopover(
         ),
         DocExample(
           title: 'Placements',
-          description: 'placement controls which side of the trigger the popover opens toward.',
+          description:
+              'placement controls which side of the trigger the popover opens toward. As in Bootstrap, it flips to the '
+              'opposite side when there is no room (and slides to stay on screen, its arrow keeping its aim); pass '
+              'flip: false to always open exactly where asked.',
           code: '''
 BsPopover(
   placement: BsPopoverPlacement.top,

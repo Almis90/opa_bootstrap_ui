@@ -1,19 +1,19 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
-import 'package:opa_bootstrap_ui/src/bs_dropdown_placement.dart';
+import 'package:opa_bootstrap_ui/src/bs_placement.dart';
 
 void main() {
-  group('resolveDropdownPlacement', () {
+  group('resolvePlacement', () {
     const viewport = Rect.fromLTWH(0, 0, 800, 600);
     const menu = Size(160, 100);
-    const bottomStart = BsDropdownPlacement(BsDropdownSide.bottom);
+    const bottomStart = BsPlacement(BsPlacementSide.bottom, BsPlacementAlign.start);
 
-    BsDropdownResolvedPlacement resolve(Rect target, {BsDropdownPlacement preferred = bottomStart, bool flip = true}) =>
-        resolveDropdownPlacement(
+    BsResolvedPlacement resolve(Rect target, {BsPlacement preferred = bottomStart, bool flip = true}) =>
+        resolvePlacement(
           preferred: preferred,
           target: target,
-          menu: menu,
+          content: menu,
           viewport: viewport,
           spacer: 2,
           flip: flip,
@@ -27,30 +27,30 @@ void main() {
 
     test('flips to the top when there is no room below', () {
       final r = resolve(const Rect.fromLTWH(100, 560, 40, 30));
-      expect(r.placement, const BsDropdownPlacement(BsDropdownSide.top));
+      expect(r.placement, const BsPlacement(BsPlacementSide.top, BsPlacementAlign.start));
     });
 
     test('flips to end alignment when it would run off the right edge', () {
       final r = resolve(const Rect.fromLTWH(740, 100, 40, 30));
-      expect(r.placement, const BsDropdownPlacement(BsDropdownSide.bottom, alignEnd: true));
+      expect(r.placement, const BsPlacement(BsPlacementSide.bottom, BsPlacementAlign.end));
       expect(r.shift, Offset.zero);
     });
 
     test('flips both axes in the bottom-right corner', () {
       final r = resolve(const Rect.fromLTWH(740, 560, 40, 30));
-      expect(r.placement, const BsDropdownPlacement(BsDropdownSide.top, alignEnd: true));
+      expect(r.placement, const BsPlacement(BsPlacementSide.top, BsPlacementAlign.end));
     });
 
     test('prefers the alignment flip over the side flip, as Popper does', () {
       // Fits bottom-end and top-start; bottom-end comes first.
       final r = resolve(const Rect.fromLTWH(740, 100, 40, 30));
-      expect(r.placement.side, BsDropdownSide.bottom);
+      expect(r.placement.side, BsPlacementSide.bottom);
     });
 
     test('slides along the toggle when neither alignment fits', () {
       // A toggle so wide that bottom-start and bottom-end both overflow.
       final r = resolve(const Rect.fromLTWH(-50, 100, 900, 30));
-      expect(r.placement.side, BsDropdownSide.bottom);
+      expect(r.placement.side, BsPlacementSide.bottom);
       final rect = r.placement.rect(const Rect.fromLTWH(-50, 100, 900, 30), menu, 2).shift(r.shift);
       expect(rect.left, greaterThanOrEqualTo(0));
       expect(rect.right, lessThanOrEqualTo(800));
@@ -65,18 +65,9 @@ void main() {
     test('dropend flips to the left side near the right edge', () {
       final r = resolve(
         const Rect.fromLTWH(700, 100, 40, 30),
-        preferred: const BsDropdownPlacement(BsDropdownSide.right),
+        preferred: const BsPlacement(BsPlacementSide.right, BsPlacementAlign.start),
       );
-      expect(r.placement.side, BsDropdownSide.left);
-    });
-
-    test('RTL maps logical start to the physical right edge', () {
-      final p = BsDropdownPlacement.preferred(
-        BsDropdownDirection.down,
-        alignEnd: false,
-        textDirection: TextDirection.rtl,
-      );
-      expect(p, const BsDropdownPlacement(BsDropdownSide.bottom, alignEnd: true));
+      expect(r.placement.side, BsPlacementSide.left);
     });
   });
 
@@ -133,6 +124,34 @@ void main() {
       final menu = menuRect(tester);
       expect(menu.right, closeTo(toggle.right, 1));
       expect(menu.top, greaterThan(toggle.bottom));
+    });
+
+    testWidgets('in RTL, logical start means the physical right edge', (tester) async {
+      tester.view.physicalSize = const Size(800, 600);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+      await tester.pumpWidget(
+        BsApp(
+          debugShowCheckedModeBanner: false,
+          builder: (context, child) => Directionality(textDirection: TextDirection.rtl, child: child!),
+          home: Center(
+            child: BsDropdown(
+              toggleBuilder: (context, toggle, isOpen) => GestureDetector(
+                key: const Key('toggle'),
+                behavior: HitTestBehavior.opaque,
+                onTap: toggle,
+                child: const SizedBox(width: 40, height: 30),
+              ),
+              items: const [BsDropdownItem(child: Text('One'))],
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('toggle')));
+      await tester.pumpAndSettle();
+      final toggle = tester.getRect(find.byKey(const Key('toggle')));
+      expect(menuRect(tester).right, closeTo(toggle.right, 1));
     });
 
     testWidgets('flip: false stays below even at the bottom edge', (tester) async {
