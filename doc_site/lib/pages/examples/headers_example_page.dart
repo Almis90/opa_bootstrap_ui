@@ -1,6 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 
+import '../../src/bootstrap_icon.dart';
+
 /// The "Headers" example: a faithful port of Bootstrap's own
 /// `examples/headers` page — the same brand text, nav items, and flex-wrap
 /// reflow behavior as the original, which builds every header from plain
@@ -113,7 +115,7 @@ class HeadersExamplePage extends StatelessWidget {
           breakpoint: BsBreakpoint.lg,
           spacerAfterIndex: 1,
           children: [
-            const _BootstrapMark(),
+            const _BootstrapMark(white: true),
             BsNav(
               variant: BsNavVariant.plain,
               style: _px2,
@@ -308,11 +310,11 @@ class HeadersExamplePage extends StatelessWidget {
 
   static Widget _iconNavHeader(BuildContext context) {
     const icons = [
-      (_GlyphIcon.home, 'Home'),
-      (_GlyphIcon.dashboard, 'Dashboard'),
-      (_GlyphIcon.orders, 'Orders'),
-      (_GlyphIcon.products, 'Products'),
-      (_GlyphIcon.customers, 'Customers'),
+      (BootstrapIconData.home, 'Home'),
+      (BootstrapIconData.speedometer2, 'Dashboard'),
+      (BootstrapIconData.table, 'Orders'),
+      (BootstrapIconData.grid, 'Products'),
+      (BootstrapIconData.peopleCircle, 'Customers'),
     ];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -326,7 +328,7 @@ class HeadersExamplePage extends StatelessWidget {
           child: _flexHeader(
             breakpoint: BsBreakpoint.lg,
             children: [
-              const _BootstrapMark(),
+              const _BootstrapMark(white: true),
               Wrap(
                 runSpacing: 8,
                 children: [
@@ -336,8 +338,13 @@ class HeadersExamplePage extends StatelessWidget {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          _Glyph(icon, color: label == 'Home' ? BsColors.gray500 : BsColors.white),
-                          const SizedBox(height: 2),
+                          BootstrapIcon(
+                            icon,
+                            width: 24,
+                            height: 24,
+                            color: label == 'Home' ? BsColors.gray500 : BsColors.white,
+                          ),
+                          const SizedBox(height: 4), // `.mb-1`
                           Text(label, style: TextStyle(fontSize: 12, color: label == 'Home' ? BsColors.gray500 : BsColors.white)),
                         ],
                       ),
@@ -461,27 +468,21 @@ class _ExampleDivider extends StatelessWidget {
   }
 }
 
-/// A simplified stand-in for Bootstrap's own logo mark — this package has
-/// no SVG/icon asset pipeline, so the real multi-path `<svg>` glyph is
-/// approximated with a plain lettermark rather than transcribed by hand.
+/// Bootstrap's own logo (`<svg class="bi" width="40" height="32">`), drawn
+/// from the example's own `<symbol id="bootstrap">` path data. Fills with
+/// `currentColor`: `link-body-emphasis` by default, `text-white` when [white].
 class _BootstrapMark extends StatelessWidget {
-  const _BootstrapMark({this.size = 32});
+  const _BootstrapMark({this.white = false});
 
-  final double size;
+  final bool white;
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: size,
-      height: size * 0.8,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(color: BsColors.blue, borderRadius: BorderRadius.circular(size * 0.22)),
-      child: Text(
-        'B',
-        style: TextStyle(color: BsColors.white, fontWeight: FontWeight.w700, fontSize: size * 0.5, height: 1),
-      ),
-    );
-  }
+  Widget build(BuildContext context) => BootstrapIcon(
+    BootstrapIconData.bootstrap,
+    width: 40,
+    height: 32,
+    color: white ? BsColors.white : BsBody.emphasisColorOf(context),
+  );
 }
 
 /// The same `github.com/mdo.png` avatar Bootstrap's own dropdown examples
@@ -509,85 +510,4 @@ class _GithubAvatar extends StatelessWidget {
       ),
     );
   }
-}
-
-/// The five Bootstrap Icons glyphs (home, speedometer2, table, grid,
-/// people-circle) the icon-nav header uses, hand-approximated with
-/// [CustomPainter] paths rather than transcribed from their real SVG data —
-/// this package draws every icon it needs (close buttons, carets, chevrons)
-/// the same way, with no bundled icon font or asset pipeline.
-enum _GlyphIcon { home, dashboard, orders, products, customers }
-
-class _Glyph extends StatelessWidget {
-  const _Glyph(this.icon, {required this.color, this.size = 20});
-
-  final _GlyphIcon icon;
-  final Color color;
-  final double size;
-
-  @override
-  Widget build(BuildContext context) => CustomPaint(size: Size.square(size), painter: _GlyphPainter(icon, color));
-}
-
-class _GlyphPainter extends CustomPainter {
-  _GlyphPainter(this.icon, this.color);
-
-  final _GlyphIcon icon;
-  final Color color;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final w = size.width;
-    final h = size.height;
-    final stroke = Paint()
-      ..color = color
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = w * 0.08
-      ..strokeCap = StrokeCap.round
-      ..strokeJoin = StrokeJoin.round;
-    final fill = Paint()..color = color;
-
-    switch (icon) {
-      case _GlyphIcon.home:
-        final path = Path()
-          ..moveTo(w * 0.5, h * 0.1)
-          ..lineTo(w * 0.9, h * 0.42)
-          ..lineTo(w * 0.9, h * 0.9)
-          ..lineTo(w * 0.58, h * 0.9)
-          ..lineTo(w * 0.58, h * 0.6)
-          ..lineTo(w * 0.42, h * 0.6)
-          ..lineTo(w * 0.42, h * 0.9)
-          ..lineTo(w * 0.1, h * 0.9)
-          ..lineTo(w * 0.1, h * 0.42)
-          ..close();
-        canvas.drawPath(path, stroke);
-      case _GlyphIcon.dashboard:
-        canvas.drawArc(Rect.fromLTWH(w * 0.1, h * 0.1, w * 0.8, h * 0.8), 3.4, 2.7, false, stroke);
-        canvas.drawLine(Offset(w * 0.5, h * 0.5), Offset(w * 0.74, h * 0.3), stroke);
-        canvas.drawCircle(Offset(w * 0.5, h * 0.5), w * 0.05, fill);
-      case _GlyphIcon.orders:
-        final rect = Rect.fromLTWH(w * 0.12, h * 0.18, w * 0.76, h * 0.64);
-        canvas.drawRRect(RRect.fromRectAndRadius(rect, Radius.circular(w * 0.06)), stroke);
-        canvas.drawLine(Offset(w * 0.12, h * 0.44), Offset(w * 0.88, h * 0.44), stroke);
-        canvas.drawLine(Offset(w * 0.5, h * 0.18), Offset(w * 0.5, h * 0.82), stroke);
-      case _GlyphIcon.products:
-        for (final dx in [0.14, 0.54]) {
-          for (final dy in [0.14, 0.54]) {
-            canvas.drawRRect(
-              RRect.fromRectAndRadius(Rect.fromLTWH(w * dx, h * dy, w * 0.32, h * 0.32), Radius.circular(w * 0.05)),
-              stroke,
-            );
-          }
-        }
-      case _GlyphIcon.customers:
-        canvas.drawCircle(Offset(w * 0.5, h * 0.38), w * 0.16, stroke);
-        final body = Path()
-          ..moveTo(w * 0.22, h * 0.86)
-          ..quadraticBezierTo(w * 0.5, h * 0.56, w * 0.78, h * 0.86);
-        canvas.drawPath(body, stroke);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant _GlyphPainter oldDelegate) => oldDelegate.icon != icon || oldDelegate.color != color;
 }
