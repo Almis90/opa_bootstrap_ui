@@ -84,10 +84,13 @@ class HeadersExamplePage extends StatelessWidget {
   }
 
   static Widget _ctaHeader(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 16),
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: BsBorders.colorOf(context)))),
-      child: BsContainer(
+    // As in the first header, the `<header>`'s `border-bottom`/`mb-4` sit
+    // inside the `.container`.
+    return BsContainer(
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 24),
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        decoration: BoxDecoration(border: Border(bottom: BorderSide(color: BsBorders.colorOf(context)))),
         child: LayoutBuilder(
           builder: (context, constraints) {
             const brand = _BootstrapMark();
@@ -110,7 +113,16 @@ class HeadersExamplePage extends StatelessWidget {
                 children: [brand, const SizedBox(height: 16), nav, const SizedBox(height: 16), buttons],
               );
             }
-            return Row(children: [brand, Expanded(child: Center(child: nav)), buttons]);
+            // `.col-md-3` on each side (`.text-end` on the buttons) with
+            // `justify-content-between`, so the nav lands dead-centre.
+            final side = constraints.maxWidth * 0.25;
+            return Row(
+              children: [
+                SizedBox(width: side, child: Align(alignment: Alignment.centerLeft, child: brand)),
+                Expanded(child: Center(child: nav)),
+                SizedBox(width: side, child: Align(alignment: Alignment.centerRight, child: buttons)),
+              ],
+            );
           },
         ),
       ),
@@ -472,22 +484,57 @@ Widget _flexHeader({
   );
 }
 
-/// Bootstrap's own `.b-example-divider`: a plain, inset-shadowed gray band
-/// separating stacked examples on the same page — the real page has no
-/// label or description between sections, just this.
+/// Bootstrap's own `.b-example-divider`: a 3rem gray band with a translucent
+/// fill, a 1px top/bottom border, and two inset shadows (`inset 0 .5em 1.5em`
+/// at .1 and `inset 0 .125em .5em` at .15) separating stacked examples on the
+/// same page — the real page has no label or description between sections,
+/// just this.
 class _ExampleDivider extends StatelessWidget {
   const _ExampleDivider();
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 48,
-      decoration: const BoxDecoration(
-        color: Color(0x1A000000),
-        border: Border.symmetric(horizontal: BorderSide(color: Color(0x26000000))),
-      ),
-    );
+    return const SizedBox(height: 48, width: double.infinity, child: CustomPaint(painter: _DividerPainter()));
   }
+}
+
+/// Flutter's [BoxShadow] has no CSS-style `inset`, so the shadows are drawn
+/// by hand: the area *outside* the padding box, shifted by the shadow's
+/// offset and blurred, clipped back to the padding box.
+class _DividerPainter extends CustomPainter {
+  const _DividerPainter();
+
+  static const _border = Color(0x26000000);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    canvas.drawRect(Offset.zero & size, Paint()..color = const Color(0x1A000000));
+
+    final inner = Rect.fromLTRB(0, 1, size.width, size.height - 1); // inside the borders
+    canvas.save();
+    canvas.clipRect(inner);
+    // (offset y, blur radius, alpha); CSS draws the first shadow on top.
+    for (final (dy, blur, alpha) in const [(2.0, 8.0, 0.15), (8.0, 24.0, 0.1)]) {
+      final outside = Path()
+        ..fillType = PathFillType.evenOdd
+        ..addRect(inner.inflate(blur * 3 + dy))
+        ..addRect(inner.shift(Offset(0, dy)));
+      canvas.drawPath(
+        outside,
+        Paint()
+          ..color = Color.fromRGBO(0, 0, 0, alpha)
+          ..maskFilter = MaskFilter.blur(BlurStyle.normal, blur / 2),
+      );
+    }
+    canvas.restore();
+
+    final border = Paint()..color = _border;
+    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, 1), border);
+    canvas.drawRect(Rect.fromLTWH(0, size.height - 1, size.width, 1), border);
+  }
+
+  @override
+  bool shouldRepaint(covariant _DividerPainter oldDelegate) => false;
 }
 
 /// Bootstrap's own logo (`<svg class="bi" width="40" height="32">`), drawn
