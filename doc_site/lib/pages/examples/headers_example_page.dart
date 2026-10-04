@@ -14,6 +14,11 @@ class HeadersExamplePage extends StatelessWidget {
 
   static const _mainLabels = ['Home', 'Features', 'Pricing', 'FAQs', 'About'];
   static const _dashboardLabels = ['Overview', 'Inventory', 'Customers', 'Products'];
+  /// A `<input type="search" class="form-control">` in a `.col-lg-auto` form:
+  /// its width is the browser's intrinsic one for `size=20`, which depends on
+  /// the font — 193px in Roboto (201px in San Francisco).
+  static const _searchWidth = 193.0;
+
   /// `.me-2` (8px) plus the ~4px of inline whitespace the original's two
   /// adjacent `<button>`s are separated by in the markup.
   static const _buttonGap = 12.4;
@@ -170,7 +175,7 @@ class HeadersExamplePage extends StatelessWidget {
               style: _px2,
               items: _plainNavItems(_mainLabels, firstColor: BsColors.gray600, restColor: BsColors.white),
             ),
-            SizedBox(width: 201, child: BsFormControl(placeholder: 'Search...', style: _darkFormStyle(context))),
+            SizedBox(width: _searchWidth, child: BsFormControl(placeholder: 'Search...', style: _darkFormStyle(context))),
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -209,7 +214,7 @@ class HeadersExamplePage extends StatelessWidget {
                 restColor: BsBody.emphasisColorOf(context),
               ),
             ),
-            const SizedBox(width: 201, child: BsFormControl(placeholder: 'Search...')),
+            const SizedBox(width: _searchWidth, child: BsFormControl(placeholder: 'Search...')),
             BsDropdown(
               style: _textSmallMenuStyle, // this header's menu has no `.shadow`
               toggleBuilder: (context, toggle, isOpen) => MouseRegion(
@@ -375,7 +380,7 @@ class HeadersExamplePage extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(width: 201, child: BsFormControl(placeholder: 'Search...')),
+                const SizedBox(width: _searchWidth, child: BsFormControl(placeholder: 'Search...')),
               ],
             ),
           ),
@@ -447,7 +452,7 @@ class HeadersExamplePage extends StatelessWidget {
             child: _flexHeader(
               breakpoint: BsBreakpoint.lg,
               children: [
-                const SizedBox(width: 201, child: BsFormControl(placeholder: 'Search...')),
+                const SizedBox(width: _searchWidth, child: BsFormControl(placeholder: 'Search...')),
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [

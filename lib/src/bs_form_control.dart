@@ -208,6 +208,11 @@ class _BsFormControlState extends State<BsFormControl> {
               leadingDistribution: TextLeadingDistribution.even,
             ),
             cursorColor: style.inputColor ?? BsFormStyle.defaultInputColor,
+            // Browsers draw a 1px caret the height of the font's ascent +
+            // descent (~1.17em for Roboto), not Flutter's 2px full-line-height
+            // one — which, in a 1.5 line box, is also visibly taller.
+            cursorWidth: 1,
+            cursorHeight: fontSize * 1.17,
             backgroundCursorColor: BsColors.gray400,
             selectionColor:
                 (style.inputFocusBorderColor ??
