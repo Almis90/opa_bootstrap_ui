@@ -73,13 +73,17 @@ class BsButtonStyle {
   /// `$btn-disabled-opacity`.
   final double? disabledOpacity;
 
-  /// The button's resting shadow, per `$btn-box-shadow`: a subtle top
-  /// highlight and bottom shading, using [BoxShadow.blurStyle] `inner` to
-  /// replicate Bootstrap's `inset` shadows.
+  /// The button's resting shadow, per `$btn-box-shadow`. Null by default:
+  /// Bootstrap only emits it when `$enable-shadows` is on, which it isn't out
+  /// of the box. Pass [defaultBoxShadow] to opt in.
+  ///
+  /// Note a transparent button (`.btn-outline-*`) shows a drop shadow through
+  /// its fill, so opting in tints it gray.
   final List<BoxShadow>? boxShadow;
 
   /// Replaces [boxShadow] while the button is pressed, per
-  /// `$btn-active-box-shadow`.
+  /// `$btn-active-box-shadow`. Null by default for the same reason as
+  /// [boxShadow]; pass [defaultActiveShadow] to opt in.
   final List<BoxShadow>? activeShadow;
 
   /// The color of the ring shown around a focused button, per
@@ -127,8 +131,9 @@ class BsButtonStyle {
     );
   }
 
-  /// The button's default resting shadow, per `$btn-box-shadow: inset 0 1px
-  /// 0 rgba($white, .15), 0 1px 1px rgba($black, .075)`.
+  /// `$btn-box-shadow: inset 0 1px 0 rgba($white, .15), 0 1px 1px
+  /// rgba($black, .075)` — what [boxShadow] would be with `$enable-shadows`
+  /// on, using [BoxShadow.blurStyle] `inner` to replicate `inset`.
   static const List<BoxShadow> defaultBoxShadow = [
     BoxShadow(
       color: Color(0x26FFFFFF),
@@ -138,8 +143,8 @@ class BsButtonStyle {
     BoxShadow(color: Color(0x13000000), offset: Offset(0, 1), blurRadius: 1),
   ];
 
-  /// The button's pressed-state shadow, per `$btn-active-box-shadow: inset
-  /// 0 3px 5px rgba($black, .125)`.
+  /// `$btn-active-box-shadow: inset 0 3px 5px rgba($black, .125)` — what
+  /// [activeShadow] would be with `$enable-shadows` on.
   static const List<BoxShadow> defaultActiveShadow = [
     BoxShadow(
       color: Color(0x20000000),
@@ -259,8 +264,6 @@ class BsButtonStyle {
       activeColor: BsColorUtils.contrast(activeBackground),
       activeBackground: activeBackground,
       activeBorderColor: activeBorderColor,
-      boxShadow: defaultBoxShadow,
-      activeShadow: defaultActiveShadow,
       focusRingColor: BsColorUtils.mix(color, border, 0.15),
       textStyle: defaultTextStyle,
       borderWidth: defaultBorderWidth,
@@ -285,8 +288,6 @@ class BsButtonStyle {
       activeColor: BsColorUtils.contrast(color),
       activeBackground: color,
       activeBorderColor: color,
-      boxShadow: defaultBoxShadow,
-      activeShadow: defaultActiveShadow,
       focusRingColor: color,
       textStyle: defaultTextStyle,
       borderWidth: defaultBorderWidth,
