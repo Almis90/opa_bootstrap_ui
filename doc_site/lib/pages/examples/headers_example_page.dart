@@ -14,6 +14,9 @@ class HeadersExamplePage extends StatelessWidget {
 
   static const _mainLabels = ['Home', 'Features', 'Pricing', 'FAQs', 'About'];
   static const _dashboardLabels = ['Overview', 'Inventory', 'Customers', 'Products'];
+  /// `.me-2` (8px) plus the ~4px of inline whitespace the original's two
+  /// adjacent `<button>`s are separated by in the markup.
+  static const _buttonGap = 12.4;
   static const _px2 = BsNavStyle(linkPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 8));
 
   @override
@@ -103,7 +106,7 @@ class HeadersExamplePage extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 BsButton(variant: BsVariant.primary, outline: true, onPressed: () {}, child: const Text('Login')),
-                const SizedBox(width: 8),
+                const SizedBox(width: _buttonGap),
                 BsButton(variant: BsVariant.primary, onPressed: () {}, child: const Text('Sign-up')),
               ],
             );
@@ -137,6 +140,8 @@ class HeadersExamplePage extends StatelessWidget {
         child: _flexHeader(
           breakpoint: BsBreakpoint.lg,
           spacerAfterIndex: 1,
+          // logo `.me-2`, nav `.me-lg-auto`, form `.me-lg-3`.
+          gaps: const {0: 8, 2: 16},
           children: [
             const _BootstrapMark(white: true),
             BsNav(
@@ -144,12 +149,12 @@ class HeadersExamplePage extends StatelessWidget {
               style: _px2,
               items: _plainNavItems(_mainLabels, firstColor: BsColors.gray500, restColor: BsColors.white),
             ),
-            const SizedBox(width: 200, child: BsFormControl(placeholder: 'Search', style: _darkFormStyle)),
+            SizedBox(width: 200, child: BsFormControl(placeholder: 'Search...', style: _darkFormStyle(context))),
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 BsButton(variant: BsVariant.light, outline: true, onPressed: () {}, child: const Text('Login')),
-                const SizedBox(width: 8),
+                const SizedBox(width: _buttonGap),
                 BsButton(variant: BsVariant.warning, onPressed: () {}, child: const Text('Sign-up')),
               ],
             ),
@@ -178,7 +183,7 @@ class HeadersExamplePage extends StatelessWidget {
                 restColor: BsBody.emphasisColorOf(context),
               ),
             ),
-            const SizedBox(width: 200, child: BsFormControl(placeholder: 'Search')),
+            const SizedBox(width: 200, child: BsFormControl(placeholder: 'Search...')),
             BsDropdown(
               alignEnd: true,
               toggleBuilder: (context, toggle, isOpen) => MouseRegion(
@@ -235,7 +240,7 @@ class HeadersExamplePage extends StatelessWidget {
               flex: 2,
               child: Row(
                 children: [
-                  const Expanded(child: BsFormControl(placeholder: 'Search')),
+                  const Expanded(child: BsFormControl(placeholder: 'Search...')),
                   const SizedBox(width: 12),
                   BsDropdown(
                     alignEnd: true,
@@ -333,7 +338,7 @@ class HeadersExamplePage extends StatelessWidget {
                     Text('Double header', style: TextStyle(fontSize: 20, color: BsBody.emphasisColorOf(context))),
                   ],
                 ),
-                const SizedBox(width: 240, child: BsFormControl(placeholder: 'Search')),
+                const SizedBox(width: 240, child: BsFormControl(placeholder: 'Search...')),
               ],
             ),
           ),
@@ -394,7 +399,7 @@ class HeadersExamplePage extends StatelessWidget {
           child: _flexHeader(
             breakpoint: BsBreakpoint.lg,
             children: [
-              const SizedBox(width: 240, child: BsFormControl(placeholder: 'Search')),
+              const SizedBox(width: 240, child: BsFormControl(placeholder: 'Search...')),
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -443,22 +448,31 @@ class HeadersExamplePage extends StatelessWidget {
     BsDropdownItem(child: Text('Analytics')),
   ];
 
-  static const _darkFormStyle = BsFormStyle(
+  /// `.form-control.form-control-dark.text-bg-dark`: white text on the
+  /// header's own `#212529`, a `--bs-gray` border that turns white (with a
+  /// translucent white ring) on focus. The placeholder keeps the page theme's
+  /// `--bs-secondary-color` — which is why it vanishes into the dark field in
+  /// light mode, exactly as in the original.
+  static BsFormStyle _darkFormStyle(BuildContext context) => BsFormStyle(
     inputColor: BsColors.white,
-    inputBackground: Color(0x1AFFFFFF),
-    inputBorderColor: Color(0x1AFFFFFF),
-    inputPlaceholderColor: Color(0x80FFFFFF),
+    inputBackground: BsColors.gray900,
+    inputBorderColor: BsColors.gray600,
+    inputPlaceholderColor: BsBody.secondaryColorOf(context),
+    inputFocusBorderColor: BsColors.white,
+    inputFocusBoxShadow: const [BoxShadow(color: Color(0x40FFFFFF), spreadRadius: 4)],
   );
 }
 
 /// Lays [children] out left-to-right with the free space after
 /// [spacerAfterIndex] distributed to its right — the same effect Bootstrap's
 /// real headers get from an `me-*-auto` class on one child — collapsing to
-/// a centered, wrapped column below [breakpoint].
+/// a centered, wrapped column below [breakpoint]. [gaps] overrides the
+/// default [spacing] after the child at a given index (a `.me-*` margin).
 Widget _flexHeader({
   required List<Widget> children,
   required BsBreakpoint breakpoint,
   int spacerAfterIndex = 0,
+  Map<int, double> gaps = const {},
   double spacing = 16,
   double runSpacing = 12,
 }) {
@@ -477,7 +491,7 @@ Widget _flexHeader({
       for (var i = 0; i < children.length; i++) {
         row.add(children[i]);
         if (i == children.length - 1) continue;
-        row.add(i == spacerAfterIndex ? const Spacer() : SizedBox(width: spacing));
+        row.add(i == spacerAfterIndex ? const Spacer() : SizedBox(width: gaps[i] ?? spacing));
       }
       return Row(crossAxisAlignment: CrossAxisAlignment.center, children: row);
     },
