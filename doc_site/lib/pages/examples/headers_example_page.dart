@@ -576,9 +576,10 @@ class _BootstrapMark extends StatelessWidget {
 }
 
 /// An avatar `.dropdown-toggle`: the image with the CSS caret after it, in
-/// `link-body-emphasis`. The caret is an inline-block sitting `.255em` above
-/// the text baseline, which the image rests on — so its bottom edge lands
-/// `.255em` above the image's own bottom edge.
+/// `link-body-emphasis`. Reboot gives `img` `vertical-align: middle`, and the
+/// caret is an inline-block raised `.255em` off the baseline — which puts its
+/// bottom edge level with the image's vertical centre, so it hangs in the
+/// upper half beside the avatar.
 class _AvatarToggle extends StatelessWidget {
   const _AvatarToggle();
 
@@ -586,12 +587,14 @@ class _AvatarToggle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         const _GithubAvatar(),
         const SizedBox(width: DropdownCaret.marginStart),
+        // Bottom padding equal to the caret's height centres the pair on the
+        // avatar, leaving the caret's bottom edge on the avatar's midline.
         Padding(
-          padding: const EdgeInsets.only(bottom: DropdownCaret.marginStart),
+          padding: const EdgeInsets.only(bottom: 4.8),
           child: DropdownCaret(color: BsBody.emphasisColorOf(context)),
         ),
       ],
@@ -599,8 +602,10 @@ class _AvatarToggle extends StatelessWidget {
   }
 }
 
-/// The same `github.com/mdo.png` avatar Bootstrap's own dropdown examples
-/// use.
+/// The same avatar Bootstrap's own dropdown examples use (`github.com/mdo.png`).
+/// That URL redirects to `avatars.githubusercontent.com` without CORS headers
+/// on the redirect, which Flutter web's canvas image loader needs, so the
+/// final URL is used directly.
 class _GithubAvatar extends StatelessWidget {
   const _GithubAvatar({this.size = 32});
 
@@ -610,7 +615,7 @@ class _GithubAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     return ClipOval(
       child: Image.network(
-        'https://github.com/mdo.png',
+        'https://avatars.githubusercontent.com/u/98681?v=4',
         width: size,
         height: size,
         fit: BoxFit.cover,
