@@ -5,6 +5,7 @@ import 'bs_theme.dart';
 import 'tokens/bs_focus_ring.dart';
 import 'tokens/bs_pagination_style.dart';
 import 'tokens/bs_transitions.dart';
+import 'bs_decorated_box.dart';
 
 /// A single `.page-item`/`.page-link` within a [BsPagination].
 class BsPaginationItem {
@@ -158,7 +159,7 @@ class _BsPaginationItemWidgetState extends State<_BsPaginationItemWidget> {
           return GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: enabled ? item.onTap : null,
-            child: AnimatedContainer(
+            child: BsAnimatedContainer(
               duration: BsTransitions.resolve(
                 context,
                 style.transitionDuration ?? BsPaginationStyle.defaultTransitionDuration,

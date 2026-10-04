@@ -4,6 +4,7 @@ import 'bs_theme.dart';
 import 'bs_variant.dart';
 import 'tokens/bs_progress_style.dart';
 import 'tokens/bs_transitions.dart';
+import 'bs_decorated_box.dart';
 
 /// A Bootstrap progress track (`.progress`): a rounded, height-capped bar
 /// that hosts one or more [BsProgressBar] segments.
@@ -105,7 +106,7 @@ class BsProgress extends StatelessWidget {
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(borderRadius),
-      child: DecoratedBox(
+      child: BsDecoratedBox(
         decoration: BoxDecoration(
           color: style.background,
           boxShadow: style.boxShadow,
@@ -118,7 +119,7 @@ class BsProgress extends StatelessWidget {
               return Row(
                 children: [
                   for (var i = 0; i < bars.length; i++)
-                    AnimatedContainer(
+                    BsAnimatedContainer(
                       duration: transitionDuration,
                       curve: Curves.easeInOut,
                       width: totalWidth * fractions[i],
@@ -230,7 +231,7 @@ class _BsProgressBarState extends State<BsProgressBar>
     final color = style.barColor ?? BsProgressStyle.defaultBarColor;
     final striped = widget.striped || widget.animated;
 
-    return DecoratedBox(
+    return BsDecoratedBox(
       decoration: BoxDecoration(color: background),
       child: Stack(
         fit: StackFit.expand,

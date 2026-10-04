@@ -748,17 +748,30 @@ class _Logo extends StatelessWidget {
 
 /// An inline-level box sitting in a block's line box, as the original's
 /// `<div class="col-md-3"><a class="d-inline-flex">` does: the line box is the
-/// strut's descent (7px for Roboto at 16px/24px: Chrome rounds the font's
-/// ascent and descent to whole pixels, so 2.5 half-leading + 4 + 0.5) taller than the box, so the
-/// logo rests at the top of its column rather than in its middle.
+/// strut's descent taller than the box, so the logo rests at the top of its
+/// column rather than in its middle.
+///
+/// The descent is font-metric dependent: Chrome rounds Roboto's ascent (0.928em)
+/// and descent (0.244em) to whole *device* pixels, adds the line-height's
+/// leading around them (the ascent side gets the floored half), and the
+/// descent side is what's left — 7px at 1x, 6.5px at 2x.
 class _InlineLine extends StatelessWidget {
   const _InlineLine({required this.child});
 
   final Widget child;
 
   @override
-  Widget build(BuildContext context) =>
-      Padding(padding: const EdgeInsets.only(bottom: 7), child: child);
+  Widget build(BuildContext context) {
+    final dpr = MediaQuery.devicePixelRatioOf(context);
+    final ascent = (0.9277 * 16 * dpr).round();
+    final descent = (0.2441 * 16 * dpr).round();
+    final lineHeight = 24 * dpr;
+    final above = ascent + ((lineHeight - ascent - descent) / 2).floor();
+    return Padding(
+      padding: EdgeInsets.only(bottom: (lineHeight - above) / dpr),
+      child: child,
+    );
+  }
 }
 
 /// `<a class="nav-link text-*"><svg class="bi d-block mx-auto mb-1" width="24"
@@ -773,11 +786,17 @@ class _IconLink extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final resolved = color.of(context);
+    final dpr = MediaQuery.devicePixelRatioOf(context);
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         BootstrapIcon(icon, width: 24, height: 24, color: resolved),
-        const SizedBox(height: 4), // mb-1
+        // mb-1 — plus the fraction by which a CSS line of the 13.6px
+        // `.text-small` (20.39px at 1x) is taller than Flutter's whole-pixel
+        // one (20px).
+        SizedBox(
+          height: 4 + (13.6 * 1.5 * dpr * 64).floorToDouble() / 64 / dpr - 20,
+        ),
         Text(label, style: TextStyle(color: resolved)),
       ],
     );
@@ -856,31 +875,45 @@ class _ExampleDivider extends StatelessWidget {
     return const SizedBox(
       height: 48,
       width: double.infinity,
-      child: CustomPaint(painter: _DividerPainter()),
+      child: BsDecoratedBox(decoration: _DividerDecoration()),
     );
   }
 }
 
-/// Flutter's [BoxShadow] has no CSS-style `inset`, so the shadows are drawn
-/// by hand: the area *outside* the padding box, shifted by the shadow's
-/// offset and blurred, clipped back to the padding box.
-class _DividerPainter extends CustomPainter {
+/// Flutter's [BoxShadow] has no CSS-style `inset`, so the whole band is a
+/// custom [Decoration]: fill, the shadows drawn as the area *outside* the
+/// padding box (shifted by the shadow's offset, blurred, clipped back to the
+/// padding box) and the borders. It is painted by a [BsDecoratedBox], so it
+/// gets the same pixel-snapped rectangle the browser would paint.
+class _DividerDecoration extends Decoration {
+  const _DividerDecoration();
+
+  @override
+  BoxPainter createBoxPainter([VoidCallback? onChanged]) =>
+      const _DividerPainter();
+
+  @override
+  bool operator ==(Object other) => other is _DividerDecoration;
+
+  @override
+  int get hashCode => 0;
+}
+
+class _DividerPainter extends BoxPainter {
   const _DividerPainter();
 
   static const _border = Color(0x26000000);
 
   @override
-  void paint(Canvas canvas, Size size) {
-    canvas.drawRect(
-      Offset.zero & size,
-      Paint()..color = const Color(0x1A000000),
-    );
+  void paint(Canvas canvas, Offset offset, ImageConfiguration configuration) {
+    final rect = offset & configuration.size!;
+    canvas.drawRect(rect, Paint()..color = const Color(0x1A000000));
 
     final inner = Rect.fromLTRB(
-      0,
-      1,
-      size.width,
-      size.height - 1,
+      rect.left,
+      rect.top + 1,
+      rect.right,
+      rect.bottom - 1,
     ); // inside the borders
     canvas.save();
     canvas.clipRect(inner);
@@ -903,10 +936,10 @@ class _DividerPainter extends CustomPainter {
     canvas.restore();
 
     final border = Paint()..color = _border;
-    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, 1), border);
-    canvas.drawRect(Rect.fromLTWH(0, size.height - 1, size.width, 1), border);
+    canvas.drawRect(Rect.fromLTWH(rect.left, rect.top, rect.width, 1), border);
+    canvas.drawRect(
+      Rect.fromLTWH(rect.left, rect.bottom - 1, rect.width, 1),
+      border,
+    );
   }
-
-  @override
-  bool shouldRepaint(covariant _DividerPainter oldDelegate) => false;
 }

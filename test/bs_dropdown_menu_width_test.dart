@@ -39,7 +39,7 @@ void main() {
     await tester.pumpAndSettle();
 
     final avatarRect = tester.getRect(find.byKey(const Key('avatar')));
-    final menuRect = tester.getRect(find.byType(DecoratedBox).last);
+    final menuRect = tester.getRect(find.byType(BsDecoratedBox).last);
 
     // The menu's right edge should align with the toggle's, and it should
     // be a normal, content-sized width — not stretched across the screen.
@@ -72,7 +72,7 @@ void main() {
     tester.widget<GestureDetector>(find.byKey(const Key('trigger-tap'))).onTap!();
     await tester.pumpAndSettle();
 
-    final bubbleRect = tester.getRect(find.byType(DecoratedBox).last);
+    final bubbleRect = tester.getRect(find.byType(BsDecoratedBox).last);
     expect(bubbleRect.width, lessThan(400));
   });
 }

@@ -7,6 +7,7 @@ import 'bs_responsive_value.dart';
 import 'bs_theme.dart';
 import 'tokens/bs_nav_style.dart';
 import 'tokens/bs_transitions.dart';
+import 'bs_decorated_box.dart';
 
 /// Which Bootstrap nav style a [BsNav] renders.
 enum BsNavVariant {
@@ -165,7 +166,7 @@ class BsNav extends StatelessWidget {
 
     if (!isTabs) return nav;
 
-    return DecoratedBox(
+    return BsDecoratedBox(
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
@@ -294,7 +295,7 @@ class _BsNavLinkWidgetState extends State<_BsNavLinkWidget> {
       }
     }
 
-    Widget content(bool focused) => DecoratedBox(
+    Widget content(bool focused) => BsDecoratedBox(
       decoration: BoxDecoration(
         color: background,
         border: border,

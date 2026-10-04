@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/widgets.dart';
 
 import 'tokens/bs_spinner_style.dart';
+import 'bs_decorated_box.dart';
 
 /// `$spinner-width`/`$spinner-height` vs. their `-sm` counterparts.
 enum BsSpinnerSize { normal, small }
@@ -219,7 +220,7 @@ class _BsSpinnerGrowState extends State<BsSpinnerGrow>
         scale: _growth,
         child: FadeTransition(
           opacity: _growth,
-          child: DecoratedBox(
+          child: BsDecoratedBox(
             decoration: BoxDecoration(color: color, shape: BoxShape.circle),
             child: SizedBox.square(dimension: size),
           ),

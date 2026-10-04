@@ -7,6 +7,7 @@ import 'bs_theme.dart';
 import 'tokens/bs_close_button_style.dart';
 import 'tokens/bs_toast_style.dart';
 import 'tokens/bs_transitions.dart';
+import 'bs_decorated_box.dart';
 
 /// Which corner (or edge center) a toast stack anchors to. The six
 /// top/bottom placements match Bootstrap's own toast docs; [centerStart]/
@@ -337,7 +338,7 @@ class BsToast extends StatelessWidget {
 
     return ConstrainedBox(
       constraints: BoxConstraints(maxWidth: style.maxWidth ?? BsToastStyle.defaultMaxWidth),
-      child: DecoratedBox(
+      child: BsDecoratedBox(
         decoration: BoxDecoration(
           color: style.background ?? BsToastStyle.defaultBackground,
           border: Border.all(
@@ -387,7 +388,7 @@ class BsToastHeader extends StatelessWidget {
     final isDark = BsTheme.of(context) == Brightness.dark;
     final style = (isDark ? BsToastStyle.darkDefaults : BsToastStyle.defaults).merge(this.style);
 
-    return DecoratedBox(
+    return BsDecoratedBox(
       decoration: BoxDecoration(
         color: style.headerBackground ?? BsToastStyle.defaultHeaderBackground,
         border: Border(

@@ -10,6 +10,7 @@ import 'bs_spacing.dart';
 import 'bs_variant.dart';
 import 'tokens/bs_body.dart';
 import 'tokens/bs_borders.dart';
+import 'bs_decorated_box.dart';
 
 /// `fs-1`…`fs-6`: Bootstrap's responsive font sizes. Below the `xl` breakpoint
 /// the larger ones scale with the viewport (`calc(1.375rem + 1.5vw)` for
@@ -343,6 +344,16 @@ class BsBox extends StatelessWidget {
         },
         child: content,
       );
+      if (fontSize != null) {
+        content = _LineHeightAdjust(
+          delta: _cssLineHeightDelta(
+            fontSize,
+            DefaultTextStyle.of(context).style.height ?? 1.5,
+            MediaQuery.devicePixelRatioOf(context),
+          ),
+          child: content,
+        );
+      }
       if (align != null) {
         // Inline content follows text-align too, not just text.
         content = _TextAligned(
@@ -395,7 +406,7 @@ class BsBox extends StatelessWidget {
       bottom: px0(pick([pb, py, p])),
       start: px0(pick([ps, px, p])),
     );
-    Widget box = Container(
+    Widget box = BsDecoratedContainer(
       decoration: decoration,
       padding: padding == EdgeInsetsDirectional.zero ? null : padding,
       child: content,
@@ -438,6 +449,84 @@ class BsBox extends StatelessWidget {
       );
     }
     return box;
+  }
+}
+
+/// How much taller (or shorter) a single CSS line of text is than Flutter's.
+///
+/// CSS keeps `line-height` fractional (to 1/64px) — `fs-4` at 390px is 21.57px
+/// × 1.5 = 32.34px — while Flutter rounds a text line to whole pixels (32px).
+/// (The browser lays out in device pixels, so the 1/64px floor is taken there.)
+/// Over a page of such titles the difference adds up to visible drift, so
+/// [BsBox] makes up for it on `fs-*` content (exact for single-line text).
+/// The boxes' edges are snapped to device pixels when painted
+/// ([BsDecoratedBox]), as a browser does, so the fractions don't blur borders.
+double _cssLineHeightDelta(double fontSize, double lineHeight, double dpr) {
+  final css = (fontSize * lineHeight * dpr * 64).floorToDouble() / 64 / dpr;
+  return css - (fontSize * lineHeight).roundToDouble();
+}
+
+/// Makes [child] [delta] logical pixels taller, keeping it vertically centred
+/// in the extra (half-leading) space, as CSS splits a line box's leading.
+class _LineHeightAdjust extends SingleChildRenderObjectWidget {
+  const _LineHeightAdjust({required this.delta, required super.child});
+
+  final double delta;
+
+  @override
+  RenderObject createRenderObject(BuildContext context) =>
+      _RenderLineHeightAdjust(delta);
+
+  @override
+  void updateRenderObject(
+    BuildContext context,
+    _RenderLineHeightAdjust renderObject,
+  ) {
+    renderObject.delta = delta;
+  }
+}
+
+class _RenderLineHeightAdjust extends RenderShiftedBox {
+  _RenderLineHeightAdjust(this._delta) : super(null);
+
+  double _delta;
+  set delta(double value) {
+    if (_delta != value) {
+      _delta = value;
+      markNeedsLayout();
+    }
+  }
+
+  @override
+  double computeMinIntrinsicHeight(double width) =>
+      (child?.getMinIntrinsicHeight(width) ?? 0) + _delta;
+
+  @override
+  double computeMaxIntrinsicHeight(double width) =>
+      (child?.getMaxIntrinsicHeight(width) ?? 0) + _delta;
+
+  @override
+  Size computeDryLayout(BoxConstraints constraints) {
+    final child = this.child;
+    if (child == null) {
+      return constraints.smallest;
+    }
+    final size = child.getDryLayout(constraints);
+    return constraints.constrain(Size(size.width, size.height + _delta));
+  }
+
+  @override
+  void performLayout() {
+    final child = this.child;
+    if (child == null) {
+      size = constraints.smallest;
+      return;
+    }
+    child.layout(constraints, parentUsesSize: true);
+    size = constraints.constrain(
+      Size(child.size.width, child.size.height + _delta),
+    );
+    (child.parentData! as BoxParentData).offset = Offset(0, _delta / 2);
   }
 }
 

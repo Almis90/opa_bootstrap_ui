@@ -4,6 +4,7 @@ import 'bs_theme.dart';
 import 'tokens/bs_borders.dart';
 import 'tokens/bs_code_style.dart';
 import 'tokens/bs_typography.dart';
+import 'bs_decorated_box.dart';
 
 /// `code`: an inline, monospaced, [BsCodeStyle.codeColor]-tinted span.
 class BsCode extends StatelessWidget {
@@ -44,7 +45,7 @@ class BsKbd extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = BsTheme.of(context) == Brightness.dark;
     final style = (isDark ? BsCodeStyle.darkDefaults : BsCodeStyle.defaults).merge(this.style);
-    return Container(
+    return BsDecoratedContainer(
       padding: style.kbdPadding ?? BsCodeStyle.defaultKbdPadding,
       decoration: BoxDecoration(
         color: style.kbdBackground ?? BsCodeStyle.defaultKbdBackground,

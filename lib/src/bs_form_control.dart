@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'bs_colors.dart';
 import 'bs_theme.dart';
 import 'tokens/bs_form_style.dart';
+import 'bs_decorated_box.dart';
 
 /// `.form-control-sm`/(implicit default)/`.form-control-lg`: how tall and
 /// large-text a [BsFormControl] renders.
@@ -222,7 +223,7 @@ class _BsFormControlState extends State<BsFormControl>
     // DecoratedBox sits *over* its child's box instead of adding to it, which
     // would leave the control 2px short of Bootstrap's `$input-height`
     // (line-height + padding + border).
-    return Container(
+    return BsDecoratedContainer(
       decoration: BoxDecoration(
         color: widget.enabled
             ? (style.inputBackground ?? BsFormStyle.defaultInputBackground)

@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'bs_placement.dart';
 import 'bs_theme.dart';
 import 'tokens/bs_dropdown_style.dart';
+import 'bs_decorated_box.dart';
 
 /// Which side of the toggle a [BsDropdown]'s menu opens on.
 enum BsDropdownDirection {
@@ -415,7 +416,7 @@ class _BsDropdownMenu extends StatelessWidget {
         constraints: BoxConstraints(
           minWidth: style.minWidth ?? BsDropdownStyle.defaultMinWidth,
         ),
-        child: DecoratedBox(
+        child: BsDecoratedBox(
           decoration: BoxDecoration(
             color: style.background ?? BsDropdownStyle.defaultBackground,
             border: Border.all(

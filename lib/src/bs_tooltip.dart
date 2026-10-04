@@ -6,6 +6,7 @@ import 'bs_placement.dart';
 import 'bs_theme.dart';
 import 'tokens/bs_tooltip_style.dart';
 import 'tokens/bs_transitions.dart';
+import 'bs_decorated_box.dart';
 
 /// Which side of [BsTooltip.child] the bubble opens on, with its arrow
 /// pointing back at it.
@@ -387,7 +388,7 @@ class _BsTooltipContent extends StatelessWidget {
 
     final bubble = ConstrainedBox(
       constraints: BoxConstraints(maxWidth: style.maxWidth ?? BsTooltipStyle.defaultMaxWidth),
-      child: DecoratedBox(
+      child: BsDecoratedBox(
         decoration: BoxDecoration(
           color: background,
           borderRadius: BorderRadius.circular(style.borderRadius ?? BsTooltipStyle.defaultBorderRadius),

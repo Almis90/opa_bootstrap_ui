@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'bs_placement.dart';
 import 'bs_theme.dart';
 import 'tokens/bs_popover_style.dart';
+import 'bs_decorated_box.dart';
 
 /// Which side of the trigger a [BsPopover]'s bubble opens on, with its
 /// arrow pointing back at the trigger.
@@ -372,7 +373,7 @@ class _BsPopoverContent extends StatelessWidget {
         constraints: BoxConstraints(
           maxWidth: style.maxWidth ?? BsPopoverStyle.defaultMaxWidth,
         ),
-        child: DecoratedBox(
+        child: BsDecoratedBox(
           decoration: BoxDecoration(
             color: style.background ?? BsPopoverStyle.defaultBackground,
             border: Border.all(
@@ -389,7 +390,7 @@ class _BsPopoverContent extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 if (title != null)
-                  DecoratedBox(
+                  BsDecoratedBox(
                     decoration: BoxDecoration(
                       color:
                           style.headerBackground ??

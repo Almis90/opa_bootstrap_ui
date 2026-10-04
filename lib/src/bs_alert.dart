@@ -5,6 +5,7 @@ import 'bs_theme.dart';
 import 'bs_variant.dart';
 import 'tokens/bs_alert_style.dart';
 import 'tokens/bs_transitions.dart';
+import 'bs_decorated_box.dart';
 
 /// Programmatic control of a [BsAlert]'s dismissal — mirrors Bootstrap's
 /// `bootstrap.Alert.getInstance(element).close()`. [BsAlert] only ever
@@ -145,7 +146,7 @@ class _BsAlertState extends State<BsAlert> {
         duration: _duration,
         child: _dismissed
             ? const SizedBox(width: double.infinity, height: 0)
-            : Container(
+            : BsDecoratedContainer(
                 width: double.infinity,
                 margin: EdgeInsets.only(bottom: style.marginBottom ?? BsAlertStyle.defaultMarginBottom),
                 decoration: BoxDecoration(

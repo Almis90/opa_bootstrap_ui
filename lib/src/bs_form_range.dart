@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 
 import 'bs_theme.dart';
 import 'tokens/bs_form_style.dart';
+import 'bs_decorated_box.dart';
 
 /// A Bootstrap range slider (`.form-range`).
 class BsFormRange extends StatefulWidget {
@@ -101,7 +102,7 @@ class _BsFormRangeState extends State<BsFormRange> {
             child: Stack(
               alignment: AlignmentDirectional.centerStart,
               children: [
-                Container(
+                BsDecoratedContainer(
                   height: trackHeight,
                   decoration: BoxDecoration(
                     color:
@@ -115,7 +116,7 @@ class _BsFormRangeState extends State<BsFormRange> {
                 ),
                 PositionedDirectional(
                   start: fraction * (width - thumbSize),
-                  child: Container(
+                  child: BsDecoratedContainer(
                     width: thumbSize,
                     height: thumbSize,
                     decoration: BoxDecoration(

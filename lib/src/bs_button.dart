@@ -5,6 +5,7 @@ import 'bs_focusable.dart';
 import 'bs_size.dart';
 import 'bs_variant.dart';
 import 'tokens/bs_transitions.dart';
+import 'bs_decorated_box.dart';
 
 /// A Bootstrap-styled button (`.btn`).
 ///
@@ -142,7 +143,7 @@ class _BsButtonState extends State<BsButton> {
             onTap: enabled ? widget.onPressed : null,
             child: Opacity(
               opacity: opacity,
-              child: AnimatedContainer(
+              child: BsAnimatedContainer(
                 duration: BsTransitions.resolve(
                   context,
                   style.transitionDuration ?? BsButtonStyle.defaultTransitionDuration,

@@ -12,7 +12,7 @@ void main() {
   // that the logical start/end sides themselves come out right, the same
   // regardless of LTR/RTL.
   BorderDirectional borderOf(WidgetTester tester, int index) {
-    final decoratedBoxes = tester.widgetList<DecoratedBox>(find.byType(DecoratedBox)).toList();
+    final decoratedBoxes = tester.widgetList<BsDecoratedBox>(find.byType(BsDecoratedBox)).toList();
     // Each card's outer DecoratedBox is the one carrying a non-null border.
     final withBorder = decoratedBoxes.where((box) => (box.decoration as BoxDecoration).border != null).toList();
     return (withBorder[index].decoration as BoxDecoration).border! as BorderDirectional;

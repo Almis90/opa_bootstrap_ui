@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'bs_theme.dart';
 import 'tokens/bs_breadcrumb_style.dart';
 import 'tokens/bs_link.dart';
+import 'bs_decorated_box.dart';
 
 /// One crumb in a [BsBreadcrumb].
 class BsBreadcrumbItem {
@@ -48,7 +49,7 @@ class BsBreadcrumb extends StatelessWidget {
     final dividerColor = style.dividerColor ?? BsBreadcrumbStyle.defaultDividerColor;
     final divider = style.divider ?? BsBreadcrumbStyle.defaultDivider;
 
-    return Container(
+    return BsDecoratedContainer(
       width: double.infinity,
       margin: EdgeInsets.only(bottom: style.marginBottom ?? BsBreadcrumbStyle.defaultMarginBottom),
       padding: style.padding ?? BsBreadcrumbStyle.defaultPadding,

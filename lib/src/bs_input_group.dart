@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'bs_form_control.dart';
 import 'bs_theme.dart';
 import 'tokens/bs_form_style.dart';
+import 'bs_decorated_box.dart';
 
 /// A Bootstrap input group (`.input-group`): a row of [children] — typically
 /// [BsInputGroupText] addons around one flexible control — sharing a single
@@ -45,7 +46,7 @@ class BsInputGroup extends StatelessWidget {
     // Container, not DecoratedBox: the border must add to the group's size
     // (as each `.form-control`/`.input-group-text` border does in Bootstrap)
     // instead of painting over its children.
-    return Container(
+    return BsDecoratedContainer(
       decoration: BoxDecoration(
         border: Border.all(
           color: style.inputBorderColor ?? BsFormStyle.defaultInputBorderColor,

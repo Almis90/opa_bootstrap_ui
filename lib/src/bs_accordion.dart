@@ -4,6 +4,7 @@ import 'bs_focusable.dart';
 import 'bs_theme.dart';
 import 'tokens/bs_accordion_style.dart';
 import 'tokens/bs_transitions.dart';
+import 'bs_decorated_box.dart';
 
 /// Controls which [BsAccordion] items are expanded, for programmatic
 /// show/hide — the same pattern Flutter itself uses for [TabController],
@@ -403,7 +404,7 @@ class _BsAccordionItemViewState extends State<_BsAccordionItemView> {
 
     return ClipRRect(
       borderRadius: borderRadius,
-      child: DecoratedBox(
+      child: BsDecoratedBox(
         decoration: BoxDecoration(border: border, borderRadius: borderRadius),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -414,7 +415,7 @@ class _BsAccordionItemViewState extends State<_BsAccordionItemView> {
                 child: GestureDetector(
                   behavior: HitTestBehavior.opaque,
                   onTap: widget.onTap,
-                  child: AnimatedContainer(
+                  child: BsAnimatedContainer(
                     duration: transitionDuration,
                     padding: style.padding ?? BsAccordionStyle.defaultPadding,
                     decoration: BoxDecoration(

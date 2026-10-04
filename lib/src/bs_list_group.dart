@@ -4,6 +4,7 @@ import 'bs_theme.dart';
 import 'bs_variant.dart';
 import 'tokens/bs_body.dart';
 import 'tokens/bs_list_group_style.dart';
+import 'bs_decorated_box.dart';
 
 /// Which way a [BsListGroup] stacks its items.
 enum BsListGroupOrientation {
@@ -243,7 +244,7 @@ class _BsListGroupItemWidgetState extends State<_BsListGroupItemWidget> {
         onTapUp: enabled ? (_) => _setPressed(false) : null,
         onTapCancel: enabled ? () => _setPressed(false) : null,
         onTap: enabled ? item.onTap : null,
-        child: DecoratedBox(
+        child: BsDecoratedBox(
           decoration: BoxDecoration(color: background, border: border, borderRadius: borderRadius),
           child: content,
         ),

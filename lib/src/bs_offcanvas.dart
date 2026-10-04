@@ -4,6 +4,7 @@ import 'bs_close_button.dart';
 import 'bs_theme.dart';
 import 'tokens/bs_offcanvas_style.dart';
 import 'tokens/bs_transitions.dart';
+import 'bs_decorated_box.dart';
 
 /// `.offcanvas-start`/`-end`/`-top`/`-bottom`: which viewport edge a
 /// [BsOffcanvas] slides in from.
@@ -303,7 +304,7 @@ class BsOffcanvas extends StatelessWidget {
       BsOffcanvasPlacement.bottom => Border(top: borderSide),
     };
 
-    return DecoratedBox(
+    return BsDecoratedBox(
       decoration: BoxDecoration(
         color: style.background ?? BsOffcanvasStyle.defaultBackground,
         border: border,

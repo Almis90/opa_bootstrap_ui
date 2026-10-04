@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'bs_theme.dart';
 import 'tokens/bs_form_style.dart';
 import 'tokens/bs_transitions.dart';
+import 'bs_decorated_box.dart';
 
 /// `.form-check-input[type=checkbox]`/`[type=radio]`/`.form-switch`: how a
 /// [BsFormCheck] renders and toggles.
@@ -105,7 +106,7 @@ class _BsFormCheckGlyph extends StatelessWidget {
         style.checkInputCheckedBackground ??
         BsFormStyle.defaults.checkInputCheckedBackground!;
 
-    return Container(
+    return BsDecoratedContainer(
       width: size,
       height: size,
       decoration: BoxDecoration(
@@ -119,7 +120,7 @@ class _BsFormCheckGlyph extends StatelessWidget {
           ? null
           : type == BsFormCheckType.radio
           ? Center(
-              child: Container(
+              child: BsDecoratedContainer(
                 width: size * 0.4,
                 height: size * 0.4,
                 decoration: BoxDecoration(
@@ -185,7 +186,7 @@ class _BsFormSwitchGlyph extends StatelessWidget {
       style.switchTransitionDuration ?? BsFormStyle.defaultSwitchTransitionDuration,
     );
 
-    return AnimatedContainer(
+    return BsAnimatedContainer(
       duration: transitionDuration,
       width: width,
       height: height,
@@ -209,7 +210,7 @@ class _BsFormSwitchGlyph extends StatelessWidget {
         // Bootstrap's own RTLCSS-flipped background-position for
         // .form-switch), not always physically right.
         alignment: value ? AlignmentDirectional.centerEnd : AlignmentDirectional.centerStart,
-        child: Container(
+        child: BsDecoratedContainer(
           width: thumbSize,
           height: thumbSize,
           decoration: BoxDecoration(

@@ -4,6 +4,7 @@ import 'bs_close_button.dart';
 import 'bs_theme.dart';
 import 'tokens/bs_modal_style.dart';
 import 'tokens/bs_transitions.dart';
+import 'bs_decorated_box.dart';
 
 /// `$modal-sm`/`$modal-md` (implicit default)/`$modal-lg`/`$modal-xl`: how
 /// wide a [BsModalDialog] grows.
@@ -274,7 +275,7 @@ class BsModal extends StatelessWidget {
     final style = (isDark ? BsModalStyle.darkDefaults : BsModalStyle.defaults).merge(this.style);
     final borderRadius = BorderRadius.circular(style.contentBorderRadius ?? BsModalStyle.defaultContentBorderRadius);
 
-    return DecoratedBox(
+    return BsDecoratedBox(
       decoration: BoxDecoration(
         color: style.contentBackground ?? BsModalStyle.defaultContentBackground,
         border: Border.all(
@@ -320,7 +321,7 @@ class BsModalHeader extends StatelessWidget {
     final isDark = BsTheme.of(context) == Brightness.dark;
     final style = (isDark ? BsModalStyle.darkDefaults : BsModalStyle.defaults).merge(this.style);
 
-    return DecoratedBox(
+    return BsDecoratedBox(
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
@@ -380,7 +381,7 @@ class BsModalFooter extends StatelessWidget {
     final style = (isDark ? BsModalStyle.darkDefaults : BsModalStyle.defaults).merge(this.style);
     final gap = style.footerMarginBetween ?? BsModalStyle.defaultFooterMarginBetween;
 
-    return DecoratedBox(
+    return BsDecoratedBox(
       decoration: BoxDecoration(
         color: style.footerBackground,
         border: Border(

@@ -4,6 +4,7 @@ import 'bs_dropdown.dart';
 import 'bs_form_control.dart';
 import 'bs_theme.dart';
 import 'tokens/bs_form_style.dart';
+import 'bs_decorated_box.dart';
 
 /// A single `<option>` in a [BsFormSelect].
 class BsFormSelectItem<T> {
@@ -96,7 +97,7 @@ class BsFormSelect<T> extends StatelessWidget {
         return GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: enabled ? toggle : null,
-          child: Container(
+          child: BsDecoratedContainer(
             padding: padding,
             decoration: BoxDecoration(
               color: enabled

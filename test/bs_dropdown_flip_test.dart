@@ -100,7 +100,7 @@ void main() {
       await tester.pumpAndSettle();
     }
 
-    Rect menuRect(WidgetTester tester) => tester.getRect(find.byType(DecoratedBox).last);
+    Rect menuRect(WidgetTester tester) => tester.getRect(find.byType(BsDecoratedBox).last);
 
     testWidgets('opens below, left-aligned, when there is room', (tester) async {
       await pump(tester, Alignment.center);

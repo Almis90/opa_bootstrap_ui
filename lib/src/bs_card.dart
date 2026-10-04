@@ -4,6 +4,7 @@ import 'bs_breakpoint.dart';
 import 'bs_theme.dart';
 import 'tokens/bs_card_style.dart';
 import 'tokens/bs_link.dart';
+import 'bs_decorated_box.dart';
 
 /// Where a [BsCardImg] sits relative to a card's other content.
 enum BsCardImgPosition {
@@ -78,7 +79,7 @@ class BsCard extends StatelessWidget {
       style: style,
       groupStartJoin: _groupStartJoin,
       groupEndJoin: _groupEndJoin,
-      child: DecoratedBox(
+      child: BsDecoratedBox(
         decoration: BoxDecoration(
           color: background,
           border: BorderDirectional(
@@ -161,7 +162,7 @@ class BsCardHeader extends StatelessWidget {
     final innerRadius = style.innerBorderRadius ?? BsCardStyle.defaultInnerBorderRadius;
     final radius = Radius.circular(innerRadius);
 
-    return DecoratedBox(
+    return BsDecoratedBox(
       decoration: BoxDecoration(
         color: style.capBackground ?? BsCardStyle.defaultCapBackground,
         borderRadius: BorderRadiusDirectional.only(
@@ -197,7 +198,7 @@ class BsCardFooter extends StatelessWidget {
     final innerRadius = style.innerBorderRadius ?? BsCardStyle.defaultInnerBorderRadius;
     final radius = Radius.circular(innerRadius);
 
-    return DecoratedBox(
+    return BsDecoratedBox(
       decoration: BoxDecoration(
         color: style.capBackground ?? BsCardStyle.defaultCapBackground,
         borderRadius: BorderRadiusDirectional.only(

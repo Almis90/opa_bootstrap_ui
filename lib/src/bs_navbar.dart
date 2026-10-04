@@ -6,6 +6,7 @@ import 'bs_focusable.dart';
 import 'tokens/bs_focus_ring.dart';
 import 'tokens/bs_navbar_style.dart';
 import 'tokens/bs_transitions.dart';
+import 'bs_decorated_box.dart';
 
 /// `.navbar-light`/`.navbar-dark`: which color scheme a [BsNavbar] uses for
 /// its text (its background is set separately via [BsNavbar.background],
@@ -135,7 +136,7 @@ class _BsNavbarState extends State<BsNavbar> {
     final baseStyle = widget.colorScheme == BsNavbarColorScheme.dark ? BsNavbarStyle.dark : BsNavbarStyle.light;
     final style = baseStyle.merge(widget.style);
 
-    return DecoratedBox(
+    return BsDecoratedBox(
       decoration: BoxDecoration(color: widget.background),
       child: Padding(
         padding: style.padding ?? BsNavbarStyle.defaultPadding,
@@ -320,7 +321,7 @@ class _BsNavbarTogglerState extends State<_BsNavbarToggler> {
         builder: (context, focused) => GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: widget.onTap,
-          child: AnimatedContainer(
+          child: BsAnimatedContainer(
             duration: BsTransitions.resolve(
               context,
               style.togglerTransitionDuration ?? BsNavbarStyle.defaultTogglerTransitionDuration,

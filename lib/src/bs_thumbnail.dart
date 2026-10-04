@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 
 import 'bs_theme.dart';
 import 'tokens/bs_thumbnail_style.dart';
+import 'bs_decorated_box.dart';
 
 /// A Bootstrap thumbnail (`.img-thumbnail`): a bordered, padded, rounded
 /// frame around [child], typically an [Image].
@@ -25,7 +26,7 @@ class BsThumbnail extends StatelessWidget {
     final background = style.background ?? BsThumbnailStyle.defaultBackground;
     final radius = BorderRadius.circular(borderRadius);
 
-    return DecoratedBox(
+    return BsDecoratedBox(
       decoration: BoxDecoration(
         color: background,
         border: Border.all(color: borderColor, width: borderWidth),

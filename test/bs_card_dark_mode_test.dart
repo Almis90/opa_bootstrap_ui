@@ -20,7 +20,7 @@ Future<Color> _pumpAndGetBackground(WidgetTester tester, Brightness brightness) 
     ),
   );
   final box = tester.renderObject<RenderDecoratedBox>(
-    find.descendant(of: find.byKey(key), matching: find.byType(DecoratedBox)).first,
+    find.descendant(of: find.byKey(key), matching: find.byType(BsDecoratedBox)).first,
   );
   return (box.decoration as BoxDecoration).color!;
 }
@@ -45,7 +45,7 @@ void main() {
       ),
     );
     final box = tester.renderObject<RenderDecoratedBox>(
-      find.descendant(of: find.byKey(key), matching: find.byType(DecoratedBox)).first,
+      find.descendant(of: find.byKey(key), matching: find.byType(BsDecoratedBox)).first,
     );
     expect((box.decoration as BoxDecoration).color, BsCardStyle.defaultBackground);
   });

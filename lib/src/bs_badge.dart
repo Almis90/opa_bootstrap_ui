@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'bs_color_utils.dart';
 import 'bs_variant.dart';
 import 'tokens/bs_badge_style.dart';
+import 'bs_decorated_box.dart';
 
 /// A Bootstrap badge (`.badge`): a small count/label pill.
 ///
@@ -33,7 +34,7 @@ class BsBadge extends StatelessWidget {
     final color = style.color ?? BsColorUtils.contrast(background);
     final borderRadius = style.borderRadius ?? BsBadgeStyle.defaultBorderRadius;
 
-    return Container(
+    return BsDecoratedContainer(
       padding: style.padding ?? BsBadgeStyle.defaultPadding,
       decoration: BoxDecoration(
         color: background,

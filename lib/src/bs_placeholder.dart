@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'bs_colors.dart';
 import 'tokens/bs_placeholder_style.dart';
 import 'tokens/bs_transitions.dart';
+import 'bs_decorated_box.dart';
 
 /// Which Bootstrap `.placeholder` animation, if any, a [BsPlaceholder] runs.
 enum BsPlaceholderAnimation {
@@ -152,7 +153,7 @@ class _BsPlaceholderWave extends StatelessWidget {
   Widget build(BuildContext context) {
     return FractionalTranslation(
       translation: Offset(-1 + progress * 2, 0),
-      child: const DecoratedBox(
+      child: const BsDecoratedBox(
         decoration: BoxDecoration(
           gradient: LinearGradient(colors: [Color(0x00FFFFFF), Color(0x4DFFFFFF), Color(0x00FFFFFF)]),
         ),

@@ -95,9 +95,9 @@ void main() {
         child: Text('x', key: Key('t')),
       ),
     );
-    final box = tester.widget<Container>(
+    final box = tester.widget<BsDecoratedContainer>(
       find
-          .descendant(of: find.byType(BsBox), matching: find.byType(Container))
+          .descendant(of: find.byType(BsBox), matching: find.byType(BsDecoratedContainer))
           .first,
     );
     expect((box.decoration! as BoxDecoration).color, BsVariant.dark.color);
@@ -148,9 +148,9 @@ void main() {
         child: SizedBox(height: 10),
       ),
     );
-    final box = tester.widget<Container>(
+    final box = tester.widget<BsDecoratedContainer>(
       find
-          .descendant(of: find.byType(BsBox), matching: find.byType(Container))
+          .descendant(of: find.byType(BsBox), matching: find.byType(BsDecoratedContainer))
           .first,
     );
     final decoration = box.decoration! as BoxDecoration;
@@ -194,5 +194,21 @@ void main() {
       ),
     );
     expect(tester.getSize(find.byKey(const Key('c'))).width, 200);
+  });
+
+  testWidgets('fs-4 text is as tall as a CSS line (fractional line-height)', (
+    tester,
+  ) async {
+    await pump(
+      tester,
+      const BsBox(fs: BsFs.fs4, child: Text('Title', key: Key('c'))),
+      width: 390,
+    );
+    // calc(1.275rem + .3vw) = 21.57px; × 1.5 = 32.355px, floored to 1/64px
+    // by the browser's layout.
+    expect(
+      tester.getSize(find.byType(BsBox)).height,
+      closeTo(32.34375, 0.001),
+    );
   });
 }
