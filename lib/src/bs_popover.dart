@@ -120,7 +120,8 @@ class BsPopover extends StatefulWidget {
 
   /// Builds the trigger widget. Call `toggle` from it to open/close the
   /// popover; `isOpen` reflects its current state.
-  final Widget Function(BuildContext context, VoidCallback toggle, bool isOpen) triggerBuilder;
+  final Widget Function(BuildContext context, VoidCallback toggle, bool isOpen)
+  triggerBuilder;
 
   /// `.popover-header`. Omit for a bodyless header, matching Bootstrap's
   /// own `data-bs-title`-less popovers.
@@ -170,7 +171,8 @@ class BsPopover extends StatefulWidget {
   State<BsPopover> createState() => _BsPopoverState();
 }
 
-class _BsPopoverState extends State<BsPopover> with BsPlacementTracker<BsPopover> {
+class _BsPopoverState extends State<BsPopover>
+    with BsPlacementTracker<BsPopover> {
   final _link = LayerLink();
   final _overlayController = OverlayPortalController();
   BsPopoverController? _ownedController;
@@ -182,8 +184,12 @@ class _BsPopoverState extends State<BsPopover> with BsPlacementTracker<BsPopover
     return switch (_effectivePlacement) {
       BsPopoverPlacement.top => const BsPlacement(BsPlacementSide.top),
       BsPopoverPlacement.bottom => const BsPlacement(BsPlacementSide.bottom),
-      BsPopoverPlacement.start => BsPlacement(rtl ? BsPlacementSide.right : BsPlacementSide.left),
-      BsPopoverPlacement.end => BsPlacement(rtl ? BsPlacementSide.left : BsPlacementSide.right),
+      BsPopoverPlacement.start => BsPlacement(
+        rtl ? BsPlacementSide.right : BsPlacementSide.left,
+      ),
+      BsPopoverPlacement.end => BsPlacement(
+        rtl ? BsPlacementSide.left : BsPlacementSide.right,
+      ),
     };
   }
 
@@ -193,7 +199,8 @@ class _BsPopoverState extends State<BsPopover> with BsPlacementTracker<BsPopover
   @override
   bool get placementActive => _controller.isShown;
 
-  BsPopoverController get _controller => widget.controller ?? (_ownedController ??= BsPopoverController());
+  BsPopoverController get _controller =>
+      widget.controller ?? (_ownedController ??= BsPopoverController());
 
   @override
   void initState() {
@@ -202,7 +209,9 @@ class _BsPopoverState extends State<BsPopover> with BsPlacementTracker<BsPopover
   }
 
   void _handleControllerChanged() {
-    setState(() {}); // picks up content/placement changes even while already open
+    setState(
+      () {},
+    ); // picks up content/placement changes even while already open
     final isShown = _controller.isShown;
     // A setContent()/setPlacement() call while already open (or closed)
     // notifies too, but that's not an open/close transition.
@@ -239,12 +248,16 @@ class _BsPopoverState extends State<BsPopover> with BsPlacementTracker<BsPopover
   Widget get _effectiveContent => _controller.content ?? widget.content;
 
   /// [BsPopover.placement], unless overridden by [BsPopoverController.setPlacement].
-  BsPopoverPlacement get _effectivePlacement => _controller.placement ?? widget.placement;
+  BsPopoverPlacement get _effectivePlacement =>
+      _controller.placement ?? widget.placement;
 
   @override
   Widget build(BuildContext context) {
     final isDark = BsTheme.of(context) == Brightness.dark;
-    final style = (isDark ? BsPopoverStyle.darkDefaults : BsPopoverStyle.defaults).merge(widget.style);
+    final style =
+        (isDark ? BsPopoverStyle.darkDefaults : BsPopoverStyle.defaults).merge(
+          widget.style,
+        );
 
     return CompositedTransformTarget(
       key: placementTargetKey,
@@ -283,20 +296,24 @@ class _BsPopoverState extends State<BsPopover> with BsPlacementTracker<BsPopover
 
     return Stack(
       children: [
+        // The TapRegion sits *inside* the follower (see BsDropdown): wrapped
+        // around it, its box would stay at the Stack's origin and a tap on the
+        // popover itself would count as outside it.
+        //
         // TapRegion (not a full-screen hit-test barrier, unlike the
         // Positioned.fill+opaque GestureDetector this replaced) detects an
         // outside tap passively, without absorbing it — so closing the
         // popover this way still lets that same tap reach whatever it
         // actually landed on, matching Bootstrap's own document-click
         // listener instead of swallowing clicks meant for other widgets.
-        TapRegion(
-          groupId: this,
-          onTapOutside: (_) => _controller.hide(),
-          child: CompositedTransformFollower(
-            link: _link,
-            targetAnchor: placement.targetAnchor,
-            followerAnchor: placement.followerAnchor,
-            offset: resolved.shift,
+        CompositedTransformFollower(
+          link: _link,
+          targetAnchor: placement.targetAnchor,
+          followerAnchor: placement.followerAnchor,
+          offset: resolved.shift,
+          child: TapRegion(
+            groupId: this,
+            onTapOutside: (_) => _controller.hide(),
             child: IgnorePointer(
               ignoring: hidden,
               child: Opacity(
@@ -341,7 +358,9 @@ class _BsPopoverContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final borderRadius = BorderRadius.circular(style.borderRadius ?? BsPopoverStyle.defaultBorderRadius);
+    final borderRadius = BorderRadius.circular(
+      style.borderRadius ?? BsPopoverStyle.defaultBorderRadius,
+    );
 
     // Without IntrinsicWidth, the Column below's `crossAxisAlignment:
     // stretch` would stretch the popover out to the overlay Stack's full
@@ -350,7 +369,9 @@ class _BsPopoverContent extends StatelessWidget {
     // BsDropdown's `_BsDropdownMenu`.
     final box = IntrinsicWidth(
       child: ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: style.maxWidth ?? BsPopoverStyle.defaultMaxWidth),
+        constraints: BoxConstraints(
+          maxWidth: style.maxWidth ?? BsPopoverStyle.defaultMaxWidth,
+        ),
         child: DecoratedBox(
           decoration: BoxDecoration(
             color: style.background ?? BsPopoverStyle.defaultBackground,
@@ -369,12 +390,20 @@ class _BsPopoverContent extends StatelessWidget {
               children: [
                 if (title != null)
                   DecoratedBox(
-                    decoration: BoxDecoration(color: style.headerBackground ?? BsPopoverStyle.defaultHeaderBackground),
+                    decoration: BoxDecoration(
+                      color:
+                          style.headerBackground ??
+                          BsPopoverStyle.defaultHeaderBackground,
+                    ),
                     child: Padding(
-                      padding: style.headerPadding ?? BsPopoverStyle.defaultHeaderPadding,
+                      padding:
+                          style.headerPadding ??
+                          BsPopoverStyle.defaultHeaderPadding,
                       child: DefaultTextStyle.merge(
                         style: TextStyle(
-                          fontSize: style.headerFontSize ?? BsPopoverStyle.defaultHeaderFontSize,
+                          fontSize:
+                              style.headerFontSize ??
+                              BsPopoverStyle.defaultHeaderFontSize,
                           color: style.headerColor,
                           fontWeight: FontWeight.bold,
                         ),
@@ -383,10 +412,12 @@ class _BsPopoverContent extends StatelessWidget {
                     ),
                   ),
                 Padding(
-                  padding: style.bodyPadding ?? BsPopoverStyle.defaultBodyPadding,
+                  padding:
+                      style.bodyPadding ?? BsPopoverStyle.defaultBodyPadding,
                   child: DefaultTextStyle.merge(
                     style: TextStyle(
-                      fontSize: style.fontSize ?? BsPopoverStyle.defaultFontSize,
+                      fontSize:
+                          style.fontSize ?? BsPopoverStyle.defaultFontSize,
                       color: style.bodyColor ?? BsPopoverStyle.defaultBodyColor,
                     ),
                     child: content,
@@ -407,8 +438,14 @@ class _BsPopoverContent extends StatelessWidget {
     // Physical layout: a flipped popover must land on the side it resolved to
     // whatever the text direction, so the Rows are forced left-to-right.
     return switch (side) {
-      BsPlacementSide.top => Column(mainAxisSize: MainAxisSize.min, children: [box, arrow(_BsPopoverArrowDirection.down)]),
-      BsPlacementSide.bottom => Column(mainAxisSize: MainAxisSize.min, children: [arrow(_BsPopoverArrowDirection.up), box]),
+      BsPlacementSide.top => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [box, arrow(_BsPopoverArrowDirection.down)],
+      ),
+      BsPlacementSide.bottom => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [arrow(_BsPopoverArrowDirection.up), box],
+      ),
       BsPlacementSide.left => Row(
         textDirection: TextDirection.ltr,
         mainAxisSize: MainAxisSize.min,
@@ -435,7 +472,9 @@ class _BsPopoverArrow extends StatelessWidget {
   Widget build(BuildContext context) {
     final width = style.arrowWidth ?? BsPopoverStyle.defaultArrowWidth;
     final height = style.arrowHeight ?? BsPopoverStyle.defaultArrowHeight;
-    final vertical = direction == _BsPopoverArrowDirection.up || direction == _BsPopoverArrowDirection.down;
+    final vertical =
+        direction == _BsPopoverArrowDirection.up ||
+        direction == _BsPopoverArrowDirection.down;
 
     return CustomPaint(
       size: vertical ? Size(width, height) : Size(height, width),

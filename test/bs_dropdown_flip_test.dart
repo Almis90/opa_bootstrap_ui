@@ -160,11 +160,45 @@ void main() {
       expect(menuRect(tester).top, greaterThan(toggle.bottom));
     });
 
-    testWidgets('is hit-testable once placed', (tester) async {
-      await pump(tester, Alignment.bottomRight);
-      final menu = menuRect(tester);
-      expect(menu.top, lessThan(570));
-      await tester.tap(find.text('One'), warnIfMissed: false);
+    testWidgets('a real tap on a menu item reaches it, then closes the menu', (tester) async {
+      tester.view.physicalSize = const Size(800, 600);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+      var taps = 0;
+      await tester.pumpWidget(
+        BsApp(
+          debugShowCheckedModeBanner: false,
+          home: Align(
+            alignment: Alignment.bottomRight,
+            child: BsDropdown(
+              toggleBuilder: (context, toggle, isOpen) => GestureDetector(
+                key: const Key('toggle'),
+                behavior: HitTestBehavior.opaque,
+                onTap: toggle,
+                child: const SizedBox(width: 40, height: 30),
+              ),
+              items: [BsDropdownItem(child: const Text('One'), onTap: () => taps++)],
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('toggle')));
+      await tester.pumpAndSettle();
+      expect(find.text('One'), findsOneWidget);
+
+      // warnIfMissed stays on: the item must really be under the pointer.
+      await tester.tap(find.text('One'));
+      await tester.pumpAndSettle();
+
+      expect(taps, 1);
+      expect(find.text('One'), findsNothing);
+    });
+
+    testWidgets('a real tap outside still closes the menu', (tester) async {
+      await pump(tester, Alignment.center);
+      expect(find.text('One'), findsOneWidget);
+      await tester.tapAt(const Offset(5, 5));
       await tester.pumpAndSettle();
       expect(find.text('One'), findsNothing);
     });

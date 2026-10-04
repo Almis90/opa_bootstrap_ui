@@ -24,13 +24,16 @@ void main() {
           onShown: onShown,
           onHide: onHide,
           onHidden: onHidden,
-          triggerBuilder: (context, toggle, isOpen) => BsButton(onPressed: toggle, child: const Text('Trigger')),
+          triggerBuilder: (context, toggle, isOpen) =>
+              BsButton(onPressed: toggle, child: const Text('Trigger')),
         ),
       ),
     );
   }
 
-  testWidgets('Tapping the trigger opens and closes the popover', (tester) async {
+  testWidgets('Tapping the trigger opens and closes the popover', (
+    tester,
+  ) async {
     await tester.pumpWidget(buildPopover());
     expect(find.text('Popover content'), findsNothing);
 
@@ -54,70 +57,83 @@ void main() {
     expect(find.text('Popover content'), findsNothing);
   });
 
-  testWidgets('An outside tap that lands on another widget closes the popover and still activates that widget', (
-    tester,
-  ) async {
-    var otherButtonTaps = 0;
-    final controller = BsPopoverController();
-    addTearDown(controller.dispose);
+  testWidgets(
+    'An outside tap that lands on another widget closes the popover and still activates that widget',
+    (tester) async {
+      var otherButtonTaps = 0;
+      final controller = BsPopoverController();
+      addTearDown(controller.dispose);
 
-    await tester.pumpWidget(
-      BsApp(
-        home: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              BsButton(onPressed: () => otherButtonTaps++, child: const Text('Other button')),
-              BsPopover(
-                controller: controller,
-                content: const Text('Popover content'),
-                triggerBuilder: (context, toggle, isOpen) => BsButton(onPressed: toggle, child: const Text('Trigger')),
-              ),
-            ],
+      await tester.pumpWidget(
+        BsApp(
+          home: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // The popover opens above its trigger, so the other button goes
+                // below it — otherwise the bubble would sit right on top of it and
+                // a tap there would (correctly) land on the popover.
+                BsPopover(
+                  controller: controller,
+                  content: const Text('Popover content'),
+                  triggerBuilder: (context, toggle, isOpen) =>
+                      BsButton(onPressed: toggle, child: const Text('Trigger')),
+                ),
+                BsButton(
+                  onPressed: () => otherButtonTaps++,
+                  child: const Text('Other button'),
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
 
-    controller.show();
-    await tester.pumpAndSettle();
-    expect(find.text('Popover content'), findsOneWidget);
+      controller.show();
+      await tester.pumpAndSettle();
+      expect(find.text('Popover content'), findsOneWidget);
 
-    // Unlike a Positioned.fill hit-test barrier (which would swallow this
-    // tap), TapRegion's onTapOutside doesn't consume it — Bootstrap's own
-    // click-outside dismissal doesn't stop the click from reaching its
-    // actual target either.
-    await tester.tap(find.text('Other button'));
-    await tester.pumpAndSettle();
-    expect(find.text('Popover content'), findsNothing);
-    expect(otherButtonTaps, 1);
-  });
+      // Unlike a Positioned.fill hit-test barrier (which would swallow this
+      // tap), TapRegion's onTapOutside doesn't consume it — Bootstrap's own
+      // click-outside dismissal doesn't stop the click from reaching its
+      // actual target either.
+      await tester.tap(find.text('Other button'));
+      await tester.pumpAndSettle();
+      expect(find.text('Popover content'), findsNothing);
+      expect(otherButtonTaps, 1);
+    },
+  );
 
-  testWidgets('BsPopoverController disables the trigger and closes an already-open popover', (tester) async {
-    final controller = BsPopoverController();
-    addTearDown(controller.dispose);
-    await tester.pumpWidget(buildPopover(controller: controller));
+  testWidgets(
+    'BsPopoverController disables the trigger and closes an already-open popover',
+    (tester) async {
+      final controller = BsPopoverController();
+      addTearDown(controller.dispose);
+      await tester.pumpWidget(buildPopover(controller: controller));
 
-    await tester.tap(find.text('Trigger'));
-    await tester.pumpAndSettle();
-    expect(find.text('Popover content'), findsOneWidget);
+      await tester.tap(find.text('Trigger'));
+      await tester.pumpAndSettle();
+      expect(find.text('Popover content'), findsOneWidget);
 
-    controller.disable();
-    await tester.pumpAndSettle();
-    expect(find.text('Popover content'), findsNothing);
+      controller.disable();
+      await tester.pumpAndSettle();
+      expect(find.text('Popover content'), findsNothing);
 
-    // Disabled: tapping the trigger again must not reopen it.
-    await tester.tap(find.text('Trigger'));
-    await tester.pumpAndSettle();
-    expect(find.text('Popover content'), findsNothing);
+      // Disabled: tapping the trigger again must not reopen it.
+      await tester.tap(find.text('Trigger'));
+      await tester.pumpAndSettle();
+      expect(find.text('Popover content'), findsNothing);
 
-    controller.enable();
-    await tester.tap(find.text('Trigger'));
-    await tester.pumpAndSettle();
-    expect(find.text('Popover content'), findsOneWidget);
-  });
+      controller.enable();
+      await tester.tap(find.text('Trigger'));
+      await tester.pumpAndSettle();
+      expect(find.text('Popover content'), findsOneWidget);
+    },
+  );
 
-  testWidgets('BsPopoverController show/hide/toggle work without any tap', (tester) async {
+  testWidgets('BsPopoverController show/hide/toggle work without any tap', (
+    tester,
+  ) async {
     final controller = BsPopoverController();
     addTearDown(controller.dispose);
     await tester.pumpWidget(buildPopover(controller: controller));
@@ -147,84 +163,109 @@ void main() {
     expect(find.text('Popover content'), findsNothing);
   });
 
-  testWidgets('BsPopoverController.setContent updates an already-open popover', (tester) async {
-    final controller = BsPopoverController();
-    addTearDown(controller.dispose);
-    await tester.pumpWidget(buildPopover(controller: controller, content: const Text('Original')));
+  testWidgets(
+    'BsPopoverController.setContent updates an already-open popover',
+    (tester) async {
+      final controller = BsPopoverController();
+      addTearDown(controller.dispose);
+      await tester.pumpWidget(
+        buildPopover(controller: controller, content: const Text('Original')),
+      );
 
-    controller.show();
-    await tester.pumpAndSettle();
-    expect(find.text('Original'), findsOneWidget);
+      controller.show();
+      await tester.pumpAndSettle();
+      expect(find.text('Original'), findsOneWidget);
 
-    controller.setContent(const Text('Updated'));
-    await tester.pump();
-    expect(find.text('Original'), findsNothing);
-    expect(find.text('Updated'), findsOneWidget);
+      controller.setContent(const Text('Updated'));
+      await tester.pump();
+      expect(find.text('Original'), findsNothing);
+      expect(find.text('Updated'), findsOneWidget);
 
-    controller.setContent(null);
-    await tester.pump();
-    expect(find.text('Original'), findsOneWidget);
-  });
+      controller.setContent(null);
+      await tester.pump();
+      expect(find.text('Original'), findsOneWidget);
+    },
+  );
 
-  testWidgets('BsPopoverController.setPlacement moves an already-open popover', (tester) async {
-    final controller = BsPopoverController();
-    addTearDown(controller.dispose);
-    await tester.pumpWidget(buildPopover(controller: controller));
+  testWidgets(
+    'BsPopoverController.setPlacement moves an already-open popover',
+    (tester) async {
+      final controller = BsPopoverController();
+      addTearDown(controller.dispose);
+      await tester.pumpWidget(buildPopover(controller: controller));
 
-    controller.show();
-    await tester.pumpAndSettle();
-    final targetRect = tester.getRect(find.text('Trigger'));
-    var contentRect = tester.getRect(find.text('Popover content'));
-    // Default placement is top: the bubble sits above the target.
-    expect(contentRect.bottom, lessThanOrEqualTo(targetRect.top));
+      controller.show();
+      await tester.pumpAndSettle();
+      final targetRect = tester.getRect(find.text('Trigger'));
+      var contentRect = tester.getRect(find.text('Popover content'));
+      // Default placement is top: the bubble sits above the target.
+      expect(contentRect.bottom, lessThanOrEqualTo(targetRect.top));
 
-    controller.setPlacement(BsPopoverPlacement.bottom);
-    await tester.pumpAndSettle();
-    contentRect = tester.getRect(find.text('Popover content'));
-    expect(contentRect.top, greaterThanOrEqualTo(targetRect.bottom));
-  });
+      controller.setPlacement(BsPopoverPlacement.bottom);
+      await tester.pumpAndSettle();
+      contentRect = tester.getRect(find.text('Popover content'));
+      expect(contentRect.top, greaterThanOrEqualTo(targetRect.bottom));
+    },
+  );
 
-  testWidgets('BsPopover fires onShow/onShown/onHide/onHidden and onOpenChanged in order', (tester) async {
-    final controller = BsPopoverController();
-    addTearDown(controller.dispose);
-    final events = <String>[];
+  testWidgets(
+    'BsPopover fires onShow/onShown/onHide/onHidden and onOpenChanged in order',
+    (tester) async {
+      final controller = BsPopoverController();
+      addTearDown(controller.dispose);
+      final events = <String>[];
 
-    await tester.pumpWidget(
-      buildPopover(
-        controller: controller,
-        onShow: () => events.add('show'),
-        onShown: () => events.add('shown'),
-        onHide: () => events.add('hide'),
-        onHidden: () => events.add('hidden'),
-        onOpenChanged: (open) => events.add('openChanged:$open'),
-      ),
-    );
+      await tester.pumpWidget(
+        buildPopover(
+          controller: controller,
+          onShow: () => events.add('show'),
+          onShown: () => events.add('shown'),
+          onHide: () => events.add('hide'),
+          onHidden: () => events.add('hidden'),
+          onOpenChanged: (open) => events.add('openChanged:$open'),
+        ),
+      );
 
-    controller.show();
-    await tester.pumpAndSettle();
-    expect(events, ['show', 'shown', 'openChanged:true']);
+      controller.show();
+      await tester.pumpAndSettle();
+      expect(events, ['show', 'shown', 'openChanged:true']);
 
-    controller.hide();
-    await tester.pumpAndSettle();
-    expect(events, ['show', 'shown', 'openChanged:true', 'hide', 'hidden', 'openChanged:false']);
-  });
+      controller.hide();
+      await tester.pumpAndSettle();
+      expect(events, [
+        'show',
+        'shown',
+        'openChanged:true',
+        'hide',
+        'hidden',
+        'openChanged:false',
+      ]);
+    },
+  );
 
-  testWidgets('setContent/setPlacement while open do not re-fire onShow/onShown', (tester) async {
-    final controller = BsPopoverController();
-    addTearDown(controller.dispose);
-    final events = <String>[];
+  testWidgets(
+    'setContent/setPlacement while open do not re-fire onShow/onShown',
+    (tester) async {
+      final controller = BsPopoverController();
+      addTearDown(controller.dispose);
+      final events = <String>[];
 
-    await tester.pumpWidget(
-      buildPopover(controller: controller, onShow: () => events.add('show'), onShown: () => events.add('shown')),
-    );
+      await tester.pumpWidget(
+        buildPopover(
+          controller: controller,
+          onShow: () => events.add('show'),
+          onShown: () => events.add('shown'),
+        ),
+      );
 
-    controller.show();
-    await tester.pumpAndSettle();
-    expect(events, ['show', 'shown']);
+      controller.show();
+      await tester.pumpAndSettle();
+      expect(events, ['show', 'shown']);
 
-    controller.setContent(const Text('Updated'));
-    controller.setPlacement(BsPopoverPlacement.bottom);
-    await tester.pumpAndSettle();
-    expect(events, ['show', 'shown']);
-  });
+      controller.setContent(const Text('Updated'));
+      controller.setPlacement(BsPopoverPlacement.bottom);
+      await tester.pumpAndSettle();
+      expect(events, ['show', 'shown']);
+    },
+  );
 }

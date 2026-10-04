@@ -103,7 +103,12 @@ class BsDropdownController extends ChangeNotifier {
 
 /// `.dropdown-item`: a single actionable row.
 class BsDropdownItem extends BsDropdownEntry {
-  const BsDropdownItem({required this.child, this.onTap, this.active = false, this.disabled = false});
+  const BsDropdownItem({
+    required this.child,
+    this.onTap,
+    this.active = false,
+    this.disabled = false,
+  });
 
   final Widget child;
 
@@ -157,7 +162,8 @@ class BsDropdown extends StatefulWidget {
   /// Builds the toggle widget. Call `toggle` from it (e.g. as a
   /// [BsButton.onPressed]) to open/close the menu; `isOpen` reflects the
   /// menu's current state.
-  final Widget Function(BuildContext context, VoidCallback toggle, bool isOpen) toggleBuilder;
+  final Widget Function(BuildContext context, VoidCallback toggle, bool isOpen)
+  toggleBuilder;
 
   /// The menu's rows, in order.
   final List<BsDropdownEntry> items;
@@ -213,29 +219,40 @@ class BsDropdown extends StatefulWidget {
   State<BsDropdown> createState() => _BsDropdownState();
 }
 
-class _BsDropdownState extends State<BsDropdown> with BsPlacementTracker<BsDropdown> {
+class _BsDropdownState extends State<BsDropdown>
+    with BsPlacementTracker<BsDropdown> {
   final _link = LayerLink();
   final _overlayController = OverlayPortalController();
   BsDropdownController? _ownedController;
   bool _wasShown = false;
 
-  BsDropdownController get _controller => widget.controller ?? (_ownedController ??= BsDropdownController());
+  BsDropdownController get _controller =>
+      widget.controller ?? (_ownedController ??= BsDropdownController());
 
   @override
   BsPlacement get preferredPlacement {
     final rtl = Directionality.of(context) == TextDirection.rtl;
     // "Start" alignment is the physical right edge in RTL.
-    final align = (widget.alignEnd != rtl) ? BsPlacementAlign.end : BsPlacementAlign.start;
+    final align = (widget.alignEnd != rtl)
+        ? BsPlacementAlign.end
+        : BsPlacementAlign.start;
     return switch (_effectiveDirection) {
       BsDropdownDirection.down => BsPlacement(BsPlacementSide.bottom, align),
       BsDropdownDirection.up => BsPlacement(BsPlacementSide.top, align),
-      BsDropdownDirection.start => BsPlacement(rtl ? BsPlacementSide.right : BsPlacementSide.left, BsPlacementAlign.start),
-      BsDropdownDirection.end => BsPlacement(rtl ? BsPlacementSide.left : BsPlacementSide.right, BsPlacementAlign.start),
+      BsDropdownDirection.start => BsPlacement(
+        rtl ? BsPlacementSide.right : BsPlacementSide.left,
+        BsPlacementAlign.start,
+      ),
+      BsDropdownDirection.end => BsPlacement(
+        rtl ? BsPlacementSide.left : BsPlacementSide.right,
+        BsPlacementAlign.start,
+      ),
     };
   }
 
   @override
-  double get placementSpacer => (_style.spacer ?? BsDropdownStyle.defaultSpacer);
+  double get placementSpacer =>
+      (_style.spacer ?? BsDropdownStyle.defaultSpacer);
 
   @override
   bool get flipEnabled => widget.flip;
@@ -244,7 +261,10 @@ class _BsDropdownState extends State<BsDropdown> with BsPlacementTracker<BsDropd
   bool get placementActive => _controller.isShown;
 
   BsDropdownStyle get _style =>
-      (BsTheme.of(context) == Brightness.dark ? BsDropdownStyle.darkDefaults : BsDropdownStyle.defaults).merge(widget.style);
+      (BsTheme.of(context) == Brightness.dark
+              ? BsDropdownStyle.darkDefaults
+              : BsDropdownStyle.defaults)
+          .merge(widget.style);
 
   @override
   void initState() {
@@ -287,10 +307,12 @@ class _BsDropdownState extends State<BsDropdown> with BsPlacementTracker<BsDropd
   }
 
   /// [BsDropdown.items], unless overridden by [BsDropdownController.setItems].
-  List<BsDropdownEntry> get _effectiveItems => _controller.items ?? widget.items;
+  List<BsDropdownEntry> get _effectiveItems =>
+      _controller.items ?? widget.items;
 
   /// [BsDropdown.direction], unless overridden by [BsDropdownController.setDirection].
-  BsDropdownDirection get _effectiveDirection => _controller.direction ?? widget.direction;
+  BsDropdownDirection get _effectiveDirection =>
+      _controller.direction ?? widget.direction;
 
   @override
   Widget build(BuildContext context) {
@@ -324,17 +346,24 @@ class _BsDropdownState extends State<BsDropdown> with BsPlacementTracker<BsDropd
 
     return Stack(
       children: [
+        // The TapRegion sits *inside* the follower: a region's "inside" is the
+        // box it's laid out in, and the follower only moves its child (and the
+        // hit-testing of it) away from the Stack's origin — a TapRegion wrapped
+        // around the follower would keep its box at the origin, so a tap on the
+        // menu would count as outside it and close the menu on pointer-down,
+        // before any item saw the tap.
+        //
         // TapRegion (not a full-screen hit-test barrier) detects an outside
         // tap passively, without absorbing it — see the identical fix and
         // explanation on BsPopover's outside-tap dismissal.
-        TapRegion(
-          groupId: this,
-          onTapOutside: (_) => _controller.hide(),
-          child: CompositedTransformFollower(
-            link: _link,
-            targetAnchor: placement.targetAnchor,
-            followerAnchor: placement.followerAnchor,
-            offset: placement.offset(placementSpacer) + resolved.shift,
+        CompositedTransformFollower(
+          link: _link,
+          targetAnchor: placement.targetAnchor,
+          followerAnchor: placement.followerAnchor,
+          offset: placement.offset(placementSpacer) + resolved.shift,
+          child: TapRegion(
+            groupId: this,
+            onTapOutside: (_) => _controller.hide(),
             child: IgnorePointer(
               ignoring: hidden,
               child: Opacity(
@@ -355,7 +384,12 @@ class _BsDropdownState extends State<BsDropdown> with BsPlacementTracker<BsDropd
 }
 
 class _BsDropdownMenu extends StatelessWidget {
-  const _BsDropdownMenu({super.key, required this.items, required this.style, required this.onItemTap});
+  const _BsDropdownMenu({
+    super.key,
+    required this.items,
+    required this.style,
+    required this.onItemTap,
+  });
 
   final List<BsDropdownEntry> items;
   final BsDropdownStyle style;
@@ -363,7 +397,9 @@ class _BsDropdownMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final borderRadius = BorderRadius.circular(style.borderRadius ?? BsDropdownStyle.defaultBorderRadius);
+    final borderRadius = BorderRadius.circular(
+      style.borderRadius ?? BsDropdownStyle.defaultBorderRadius,
+    );
 
     // The overlay Stack that hosts this menu (see [_buildOverlay]) only
     // *loosens* the tight constraints Overlay hands its entries — it
@@ -376,7 +412,9 @@ class _BsDropdownMenu extends StatelessWidget {
     // left of the toggle instead of hugging its right edge.
     return IntrinsicWidth(
       child: ConstrainedBox(
-        constraints: BoxConstraints(minWidth: style.minWidth ?? BsDropdownStyle.defaultMinWidth),
+        constraints: BoxConstraints(
+          minWidth: style.minWidth ?? BsDropdownStyle.defaultMinWidth,
+        ),
         child: DecoratedBox(
           decoration: BoxDecoration(
             color: style.background ?? BsDropdownStyle.defaultBackground,
@@ -413,13 +451,21 @@ class _BsDropdownMenu extends StatelessWidget {
     return switch (entry) {
       BsDropdownDivider() => _BsDropdownDividerWidget(style: style),
       BsDropdownHeader() => _BsDropdownHeaderWidget(entry: entry, style: style),
-      BsDropdownItem() => _BsDropdownItemWidget(item: entry, style: style, onTap: onItemTap),
+      BsDropdownItem() => _BsDropdownItemWidget(
+        item: entry,
+        style: style,
+        onTap: onItemTap,
+      ),
     };
   }
 }
 
 class _BsDropdownItemWidget extends StatefulWidget {
-  const _BsDropdownItemWidget({required this.item, required this.style, required this.onTap});
+  const _BsDropdownItemWidget({
+    required this.item,
+    required this.style,
+    required this.onTap,
+  });
 
   final BsDropdownItem item;
   final BsDropdownStyle style;
@@ -443,16 +489,24 @@ class _BsDropdownItemWidgetState extends State<_BsDropdownItemWidget> {
     final Color background;
     final Color color;
     if (item.active) {
-      background = style.linkActiveBackground ?? BsDropdownStyle.defaultLinkActiveBackground;
+      background =
+          style.linkActiveBackground ??
+          BsDropdownStyle.defaultLinkActiveBackground;
       color = style.linkActiveColor ?? BsDropdownStyle.defaultLinkActiveColor;
     } else if (_hovered && enabled) {
-      background = style.linkHoverBackground ?? BsDropdownStyle.defaultLinkHoverBackground;
-      color = style.linkHoverColor ?? style.linkColor ?? BsDropdownStyle.defaultColor;
+      background =
+          style.linkHoverBackground ??
+          BsDropdownStyle.defaultLinkHoverBackground;
+      color =
+          style.linkHoverColor ??
+          style.linkColor ??
+          BsDropdownStyle.defaultColor;
     } else {
       background = const Color(0x00000000);
       color = enabled
           ? (style.linkColor ?? BsDropdownStyle.defaultColor)
-          : (style.linkDisabledColor ?? BsDropdownStyle.defaultLinkDisabledColor);
+          : (style.linkDisabledColor ??
+                BsDropdownStyle.defaultLinkDisabledColor);
     }
 
     return MouseRegion(
@@ -471,7 +525,10 @@ class _BsDropdownItemWidgetState extends State<_BsDropdownItemWidget> {
           color: background,
           child: Padding(
             padding: style.itemPadding ?? BsDropdownStyle.defaultItemPadding,
-            child: DefaultTextStyle.merge(style: TextStyle(color: color), child: item.child),
+            child: DefaultTextStyle.merge(
+              style: TextStyle(color: color),
+              child: item.child,
+            ),
           ),
         ),
       ),
@@ -487,7 +544,9 @@ class _BsDropdownDividerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: style.dividerMarginY ?? BsDropdownStyle.defaultDividerMarginY),
+      padding: EdgeInsets.symmetric(
+        vertical: style.dividerMarginY ?? BsDropdownStyle.defaultDividerMarginY,
+      ),
       child: ColoredBox(
         color: style.dividerColor ?? BsDropdownStyle.defaultBorderColor,
         child: const SizedBox(height: 1, width: double.infinity),
@@ -507,7 +566,10 @@ class _BsDropdownHeaderWidget extends StatelessWidget {
     return Padding(
       padding: style.headerPadding ?? BsDropdownStyle.defaultHeaderPadding,
       child: DefaultTextStyle.merge(
-        style: TextStyle(color: style.headerColor ?? BsDropdownStyle.defaultHeaderColor, fontSize: 14),
+        style: TextStyle(
+          color: style.headerColor ?? BsDropdownStyle.defaultHeaderColor,
+          fontSize: 14,
+        ),
         child: entry.child,
       ),
     );
@@ -527,7 +589,11 @@ class BsDropdownCaret extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomPaint(
       size: Size(size, size * 0.7),
-      painter: _BsDropdownCaretPainter(color ?? DefaultTextStyle.of(context).style.color ?? const Color(0xFF000000)),
+      painter: _BsDropdownCaretPainter(
+        color ??
+            DefaultTextStyle.of(context).style.color ??
+            const Color(0xFF000000),
+      ),
     );
   }
 }
@@ -548,5 +614,6 @@ class _BsDropdownCaretPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _BsDropdownCaretPainter oldDelegate) => oldDelegate.color != color;
+  bool shouldRepaint(covariant _BsDropdownCaretPainter oldDelegate) =>
+      oldDelegate.color != color;
 }
