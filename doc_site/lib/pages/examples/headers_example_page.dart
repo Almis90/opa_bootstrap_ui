@@ -748,7 +748,8 @@ class _Logo extends StatelessWidget {
 
 /// An inline-level box sitting in a block's line box, as the original's
 /// `<div class="col-md-3"><a class="d-inline-flex">` does: the line box is the
-/// strut's descent (6.6px for Roboto at 16px/24px) taller than the box, so the
+/// strut's descent (7px for Roboto at 16px/24px: Chrome rounds the font's
+/// ascent and descent to whole pixels, so 2.5 half-leading + 4 + 0.5) taller than the box, so the
 /// logo rests at the top of its column rather than in its middle.
 class _InlineLine extends StatelessWidget {
   const _InlineLine({required this.child});
@@ -757,7 +758,7 @@ class _InlineLine extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) =>
-      Padding(padding: const EdgeInsets.only(bottom: 6.6), child: child);
+      Padding(padding: const EdgeInsets.only(bottom: 7), child: child);
 }
 
 /// `<a class="nav-link text-*"><svg class="bi d-block mx-auto mb-1" width="24"
