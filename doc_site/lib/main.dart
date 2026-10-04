@@ -39,6 +39,8 @@ import 'pages/examples/headers_example_page.dart';
 import 'pages/getting_started/introduction_page.dart';
 import 'pages/layout/breakpoints_page.dart';
 import 'pages/layout/containers_page.dart';
+import 'pages/layout/flex_page.dart';
+import 'pages/layout/utilities_page.dart';
 import 'src/doc_nav.dart';
 import 'src/doc_shell.dart';
 import 'src/example_entry.dart';
@@ -104,6 +106,8 @@ final _sections = [
   DocNavSection('Layout', [
     DocNavPage('Breakpoints', (_) => const BreakpointsPage()),
     DocNavPage('Containers', (_) => const ContainersPage()),
+    DocNavPage('Flex', (_) => const FlexPage()),
+    DocNavPage('Utilities', (_) => const UtilitiesPage()),
   ]),
   DocNavSection('Content', [
     DocNavPage('Figures', (_) => const FiguresPage()),

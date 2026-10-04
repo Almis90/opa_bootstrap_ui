@@ -577,18 +577,48 @@ class _BsDropdownHeaderWidget extends StatelessWidget {
 }
 
 /// A small downward-pointing triangle, replicating the caret Bootstrap's
-/// CSS automatically appends after `.dropdown-toggle` content. Add it
-/// manually inside a [BsDropdown.toggleBuilder]'s returned widget.
+/// CSS automatically appends after `.dropdown-toggle` content
+/// (`.dropdown-toggle::after`). Add it manually inside a
+/// [BsDropdown.toggleBuilder]'s returned widget, [marginStart] after the
+/// content.
+///
+/// Without a [size] it is the stylesheet's own caret: `.3em` of [fontSize]
+/// (16 by default) wide on each side, `.3em` tall. Browsers snap border widths
+/// down to whole device pixels, so that is 8x4 at 1x and 9x4.5 at 2x rather
+/// than 9.6x4.8, and so it is here. Pass [size] for a caret of an explicit
+/// width instead (its height is then 70% of it).
 class BsDropdownCaret extends StatelessWidget {
-  const BsDropdownCaret({super.key, this.color, this.size = 8});
+  const BsDropdownCaret({super.key, this.color, this.size, this.fontSize = 16});
+
+  /// `.dropdown-toggle::after`'s `margin-left` (`.255em` of 16px).
+  static const double marginStart = 4.08;
 
   final Color? color;
-  final double size;
+
+  /// An explicit width, bypassing the `.3em` border-snapping behaviour.
+  final double? size;
+
+  /// The toggle's font size, which `.3em` is relative to.
+  final double fontSize;
+
+  /// The height of the stylesheet's caret (its border width) at the ambient
+  /// device pixel ratio, for a toggle of [fontSize].
+  static double heightFor(BuildContext context, {double fontSize = 16}) {
+    final dpr = MediaQuery.maybeDevicePixelRatioOf(context) ?? 1;
+    return (fontSize * 0.3 * dpr).floorToDouble() / dpr;
+  }
 
   @override
   Widget build(BuildContext context) {
+    final Size caretSize;
+    if (size != null) {
+      caretSize = Size(size!, size! * 0.7);
+    } else {
+      final border = heightFor(context, fontSize: fontSize);
+      caretSize = Size(border * 2, border);
+    }
     return CustomPaint(
-      size: Size(size, size * 0.7),
+      size: caretSize,
       painter: _BsDropdownCaretPainter(
         color ??
             DefaultTextStyle.of(context).style.color ??

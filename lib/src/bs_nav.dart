@@ -1,6 +1,9 @@
 import 'package:flutter/widgets.dart';
 
+import 'bs_breakpoint.dart';
+import 'bs_flex.dart';
 import 'bs_focusable.dart';
+import 'bs_responsive_value.dart';
 import 'bs_theme.dart';
 import 'tokens/bs_nav_style.dart';
 import 'tokens/bs_transitions.dart';
@@ -58,7 +61,7 @@ class BsNav extends StatelessWidget {
     this.variant = BsNavVariant.plain,
     this.vertical = false,
     this.fill = false,
-    this.alignment = WrapAlignment.start,
+    this.justifyContent,
     this.style,
   });
 
@@ -74,11 +77,11 @@ class BsNav extends StatelessWidget {
   /// (only meaningful when not [vertical]).
   final bool fill;
 
-  /// `.justify-content-center`/`-end`: where each line of a horizontal nav
-  /// sits when it has more room than its links need (and, when the links
-  /// wrap, how each line is placed). Needs a bounded width to have any
-  /// effect — give the nav a full-width parent, as `.col-12` does.
-  final WrapAlignment alignment;
+  /// `justify-content-*` on the `.nav` (a flex container): where each line of
+  /// a horizontal nav sits when it has more room than its links need, and how
+  /// each wrapped line is placed. Needs a bounded width to have any effect —
+  /// give the nav a full-width parent, as `.col-12` does.
+  final BsResponsive<BsJustify>? justifyContent;
 
   /// Style overrides layered on top of [BsNavStyle.defaults].
   final BsNavStyle? style;
@@ -142,7 +145,11 @@ class BsNav extends StatelessWidget {
             children: children,
           )
         : Wrap(
-            alignment: alignment,
+            alignment: _wrapAlignment(
+              justifyContent?.resolve(
+                BsBreakpoint.forWidth(MediaQuery.sizeOf(context).width),
+              ),
+            ),
             crossAxisAlignment: WrapCrossAlignment.end,
             spacing: isUnderline ? gap : 0,
             children: [
@@ -171,6 +178,15 @@ class BsNav extends StatelessWidget {
     );
   }
 }
+
+WrapAlignment _wrapAlignment(BsJustify? justify) => switch (justify) {
+  null || BsJustify.start => WrapAlignment.start,
+  BsJustify.end => WrapAlignment.end,
+  BsJustify.center => WrapAlignment.center,
+  BsJustify.between => WrapAlignment.spaceBetween,
+  BsJustify.around => WrapAlignment.spaceAround,
+  BsJustify.evenly => WrapAlignment.spaceEvenly,
+};
 
 class _BsNavLinkWidget extends StatefulWidget {
   const _BsNavLinkWidget({

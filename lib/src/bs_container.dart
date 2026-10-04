@@ -5,7 +5,8 @@ import 'bs_grid.dart';
 
 /// A Bootstrap container (`.container`): a centered, width-capped box that
 /// applies [BsGrid.containerPaddingX] and constrains itself to
-/// [BsGrid.containerMaxWidths] at each breakpoint.
+/// [BsGrid.containerMaxWidths] at each breakpoint — the breakpoint of the
+/// viewport (the window), as in Bootstrap's CSS.
 ///
 /// - [BsContainer.new] mirrors `.container`, applying a max-width from `sm`
 ///   upward and staying full-width below it.
@@ -59,7 +60,11 @@ class BsContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final breakpoint = BsBreakpoint.forWidth(constraints.maxWidth);
+        // The *viewport's* breakpoint, as Bootstrap's `.container` media queries
+        // use — not the width this container happens to be given, which is
+        // narrower wherever the page pads or indents it (a `p-3` header, a
+        // sidebar layout) and would pick a smaller breakpoint's max-width.
+        final breakpoint = BsBreakpoint.forWidth(MediaQuery.sizeOf(context).width);
         final constrained =
             !fluid &&
             (minBreakpoint == null || breakpoint.index >= minBreakpoint!.index);

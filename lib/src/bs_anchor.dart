@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import 'bs_box.dart';
 import 'tokens/bs_link.dart';
 
 /// A Bootstrap link (`<a>`): [BsLink.color] text with an underline, that
@@ -8,12 +9,25 @@ import 'tokens/bs_link.dart';
 /// Named `BsAnchor` rather than `BsLink` because the latter already names
 /// this package's raw link color/decoration tokens (`tokens/bs_link.dart`).
 class BsAnchor extends StatefulWidget {
-  const BsAnchor({super.key, required this.child, this.onTap});
+  const BsAnchor({
+    super.key,
+    required this.child,
+    this.onTap,
+    this.textDecorationNone = false,
+    this.linkColor,
+  });
 
   /// Typically a [Text].
   final Widget child;
 
   final VoidCallback? onTap;
+
+  /// `text-decoration-none`: no underline, even on hover.
+  final bool textDecorationNone;
+
+  /// `link-body-emphasis`, `link-secondary`…: a fixed link color instead of
+  /// [BsLink.color] (which shifts to [BsLink.hoverColor] on hover).
+  final BsTextColor? linkColor;
 
   @override
   State<BsAnchor> createState() => _BsAnchorState();
@@ -24,8 +38,12 @@ class _BsAnchorState extends State<BsAnchor> {
 
   @override
   Widget build(BuildContext context) {
-    final color = _hovered ? BsLink.hoverColor : BsLink.color;
-    final decoration = _hovered
+    final color =
+        widget.linkColor?.of(context) ??
+        (_hovered ? BsLink.hoverColor : BsLink.color);
+    final decoration = widget.textDecorationNone
+        ? TextDecoration.none
+        : _hovered
         ? (BsLink.hoverDecoration ?? BsLink.decoration)
         : BsLink.decoration;
 

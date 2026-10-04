@@ -1,6 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:doc_site/pages/layout/breakpoints_page.dart';
 import 'package:doc_site/pages/layout/containers_page.dart';
+import 'package:doc_site/pages/layout/flex_page.dart';
+import 'package:doc_site/pages/layout/utilities_page.dart';
 
 import '../test_utils.dart';
 
@@ -18,6 +20,24 @@ void main() {
     await pumpDocPage(tester, const ContainersPage());
 
     expect(find.text('Containers'), findsWidgets);
+    expect(tester.takeException(), isNull);
+
+    await unmountDocPage(tester);
+  });
+
+  testWidgets('Flex renders without errors', (tester) async {
+    await pumpDocPage(tester, const FlexPage());
+
+    expect(find.text('Flex'), findsWidgets);
+    expect(tester.takeException(), isNull);
+
+    await unmountDocPage(tester);
+  });
+
+  testWidgets('Utilities renders without errors', (tester) async {
+    await pumpDocPage(tester, const UtilitiesPage());
+
+    expect(find.text('Utilities'), findsWidgets);
     expect(tester.takeException(), isNull);
 
     await unmountDocPage(tester);

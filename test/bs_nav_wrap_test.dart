@@ -3,17 +3,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 
 void main() {
-  Widget nav({
-    WrapAlignment alignment = WrapAlignment.start,
-    bool fill = false,
-  }) => BsApp(
+  Widget nav({BsJustify? justifyContent, bool fill = false}) => BsApp(
     debugShowCheckedModeBanner: false,
     home: Align(
       alignment: Alignment.topLeft,
       child: SizedBox(
         width: 200,
         child: BsNav(
-          alignment: alignment,
+          justifyContent: justifyContent,
           fill: fill,
           items: [
             for (final l in ['Home', 'Features', 'Pricing', 'FAQs', 'About'])
@@ -38,13 +35,14 @@ void main() {
     },
   );
 
-  testWidgets('alignment centres each wrapped line (.justify-content-center)', (
-    tester,
-  ) async {
-    await tester.pumpWidget(nav(alignment: WrapAlignment.center));
-    final firstLeft = tester.getTopLeft(find.text('Home')).dx;
-    await tester.pumpWidget(nav());
-    final startLeft = tester.getTopLeft(find.text('Home')).dx;
-    expect(firstLeft, greaterThanOrEqualTo(startLeft));
-  });
+  testWidgets(
+    'justifyContent centres each wrapped line (.justify-content-center)',
+    (tester) async {
+      await tester.pumpWidget(nav(justifyContent: BsJustify.center));
+      final firstLeft = tester.getTopLeft(find.text('Home')).dx;
+      await tester.pumpWidget(nav());
+      final startLeft = tester.getTopLeft(find.text('Home')).dx;
+      expect(firstLeft, greaterThanOrEqualTo(startLeft));
+    },
+  );
 }
