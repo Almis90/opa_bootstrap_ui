@@ -24,3 +24,18 @@ without it the option is ignored and the site renders with Roboto as before.
 
 To try it in a Chrome you launch yourself, enable
 `chrome://flags/#enable-experimental-web-platform-features` instead.
+
+## Bootstrap's original examples, locally
+
+To open Bootstrap's own example pages next to the Flutter port, in the same
+browser and with the same system font:
+
+```sh
+node tool/vendor_examples.mjs        # http://localhost:8800/
+```
+
+It turns the Astro templates in `vendor/bootstrap/site/src/assets/examples`
+into static pages under `build/vendor_examples` (see the header comment in
+`tool/vendor_examples.mjs` for what it expands). `--port` changes the port and
+`--no-serve` only builds. Pages that load Chart.js, Masonry or web fonts still
+fetch them from their CDNs, as the originals do.
