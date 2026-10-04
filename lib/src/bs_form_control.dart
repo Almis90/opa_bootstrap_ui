@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
 
 import 'bs_colors.dart';
@@ -81,7 +83,8 @@ class BsFormControl extends StatefulWidget {
   State<BsFormControl> createState() => _BsFormControlState();
 }
 
-class _BsFormControlState extends State<BsFormControl> {
+class _BsFormControlState extends State<BsFormControl>
+    with WidgetsBindingObserver {
   TextEditingController? _ownedController;
   FocusNode? _ownedFocusNode;
 
@@ -90,16 +93,86 @@ class _BsFormControlState extends State<BsFormControl> {
   FocusNode get _focusNode =>
       widget.focusNode ?? (_ownedFocusNode ??= FocusNode());
 
+  // Switching browser tabs (or windows) blurs the page's text input, and Flutter
+  // web's engine answers by closing the text-input connection — which unfocuses
+  // this field *before* the window's `AppLifecycleState.inactive` arrives, so
+  // the framework's own "restore focus on resume" (it only remembers a node
+  // that's still focused when the app goes inactive) has nothing to restore.
+  // A plain `<input>` keeps focus across a tab switch, so this does the same:
+  // a focus loss immediately followed by the app going inactive is the window
+  // losing focus, not the user moving on, and gets undone on resume.
+  bool _hadFocus = false;
+  bool _justLostFocus = false;
+  Timer? _justLostFocusTimer;
+  bool _refocusOnResume = false;
+  TextSelection? _selectionToRestore;
+
   @override
   void initState() {
     super.initState();
+    _hadFocus = _focusNode.hasFocus;
     _focusNode.addListener(_onFocusChange);
+    WidgetsBinding.instance.addObserver(this);
   }
 
-  void _onFocusChange() => setState(() {});
+  void _onFocusChange() {
+    final hasFocus = _focusNode.hasFocus;
+    if (_hadFocus && !hasFocus) {
+      _justLostFocus = true;
+      _selectionToRestore = _controller.selection;
+      _justLostFocusTimer?.cancel();
+      _justLostFocusTimer = Timer(
+        const Duration(milliseconds: 250),
+        () => _justLostFocus = false,
+      );
+    }
+    if (hasFocus) _refocusOnResume = false;
+    _hadFocus = hasFocus;
+    setState(() {});
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.inactive:
+      case AppLifecycleState.hidden:
+      case AppLifecycleState.paused:
+        if (_focusNode.hasFocus) _selectionToRestore = _controller.selection;
+        if (_focusNode.hasFocus || _justLostFocus) _refocusOnResume = true;
+      case AppLifecycleState.resumed:
+        if (!_refocusOnResume) return;
+        _refocusOnResume = false;
+        // Let the framework's own restore (if it had one) run first.
+        Timer.run(_refocusAfterResume);
+      case AppLifecycleState.detached:
+        break;
+    }
+  }
+
+  void _refocusAfterResume() {
+    if (!mounted || !widget.enabled || _focusNode.hasFocus) return;
+    final primary = FocusManager.instance.primaryFocus;
+    // Unfocusing leaves focus on the enclosing scope (a FocusScopeNode), which
+    // is "nobody"; a real node means something else took focus meanwhile.
+    final someoneElseHasFocus =
+        primary != null && primary is! FocusScopeNode && primary != _focusNode;
+    if (someoneElseHasFocus) return;
+    final selection = _selectionToRestore;
+    _focusNode.requestFocus();
+    // Regaining focus can select everything; put the caret back where it was.
+    if (selection != null &&
+        selection.isValid &&
+        selection.end <= _controller.text.length) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && _focusNode.hasFocus) _controller.selection = selection;
+      });
+    }
+  }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _justLostFocusTimer?.cancel();
     _focusNode.removeListener(_onFocusChange);
     _ownedController?.dispose();
     _ownedFocusNode?.dispose();
