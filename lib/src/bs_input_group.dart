@@ -31,7 +31,8 @@ class BsInputGroup extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = BsTheme.of(context) == Brightness.dark;
-    final style = (isDark ? BsFormStyle.darkDefaults : BsFormStyle.defaults).merge(this.style);
+    final style = (isDark ? BsFormStyle.darkDefaults : BsFormStyle.defaults)
+        .merge(this.style);
     final borderRadius = switch (size) {
       BsFormControlSize.small =>
         style.inputBorderRadiusSm ?? BsFormStyle.defaultInputBorderRadiusSm,
@@ -41,7 +42,10 @@ class BsInputGroup extends StatelessWidget {
         style.inputBorderRadiusLg ?? BsFormStyle.defaultInputBorderRadiusLg,
     };
 
-    return DecoratedBox(
+    // Container, not DecoratedBox: the border must add to the group's size
+    // (as each `.form-control`/`.input-group-text` border does in Bootstrap)
+    // instead of painting over its children.
+    return Container(
       decoration: BoxDecoration(
         border: Border.all(
           color: style.inputBorderColor ?? BsFormStyle.defaultInputBorderColor,
@@ -75,7 +79,8 @@ class BsInputGroupText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = BsTheme.of(context) == Brightness.dark;
-    final style = (isDark ? BsFormStyle.darkDefaults : BsFormStyle.defaults).merge(this.style);
+    final style = (isDark ? BsFormStyle.darkDefaults : BsFormStyle.defaults)
+        .merge(this.style);
     return ColoredBox(
       color:
           style.inputGroupAddonBackground ??

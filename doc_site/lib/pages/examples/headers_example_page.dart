@@ -160,7 +160,7 @@ class HeadersExamplePage extends StatelessWidget {
               style: _px2,
               items: _plainNavItems(_mainLabels, firstColor: BsColors.gray500, restColor: BsColors.white),
             ),
-            SizedBox(width: 200, child: BsFormControl(placeholder: 'Search...', style: _darkFormStyle(context))),
+            SizedBox(width: 201, child: BsFormControl(placeholder: 'Search...', style: _darkFormStyle(context))),
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -186,6 +186,8 @@ class HeadersExamplePage extends StatelessWidget {
         child: _flexHeader(
           breakpoint: BsBreakpoint.lg,
           spacerAfterIndex: 1,
+          // logo `.me-2`, nav `.me-lg-auto`, form `.me-lg-3`.
+          gaps: const {0: 8, 2: 16},
           children: [
             const _BootstrapMark(),
             BsNav(
@@ -197,7 +199,7 @@ class HeadersExamplePage extends StatelessWidget {
                 restColor: BsBody.emphasisColorOf(context),
               ),
             ),
-            const SizedBox(width: 200, child: BsFormControl(placeholder: 'Search...')),
+            const SizedBox(width: 201, child: BsFormControl(placeholder: 'Search...')),
             BsDropdown(
               style: _textSmallMenuStyle, // this header's menu has no `.shadow`
               toggleBuilder: (context, toggle, isOpen) => MouseRegion(
@@ -251,12 +253,15 @@ class HeadersExamplePage extends StatelessWidget {
                 ),
               ),
             ),
+            // `d-grid gap-3`
+            const SizedBox(width: 16),
             Expanded(
               flex: 2,
               child: Row(
                 children: [
                   const Expanded(child: BsFormControl(placeholder: 'Search...')),
-                  const SizedBox(width: 12),
+                  // `.me-3` on the form
+                  const SizedBox(width: 16),
                   BsDropdown(
                     style: _menuStyle,
                     toggleBuilder: (context, toggle, isOpen) => MouseRegion(
@@ -275,7 +280,9 @@ class HeadersExamplePage extends StatelessWidget {
   }
 
   static Widget _gridPlaceholderBlocks(BuildContext context) {
+    // `.container-fluid.pb-3`
     return BsContainer.fluid(
+      padding: const EdgeInsets.fromLTRB(12, 0, 12, 16),
       child: Row(
         children: [
           Expanded(child: _placeholderBlock(context)),
@@ -288,7 +295,7 @@ class HeadersExamplePage extends StatelessWidget {
 
   static Widget _placeholderBlock(BuildContext context) {
     return Container(
-      height: 240, // ten `<br>`s at 1.5 line-height
+      height: 242, // ten `<br>`s at 1.5 line-height, plus the 1px borders
       decoration: BoxDecoration(
         color: BsBody.tertiaryBackgroundOf(context),
         border: Border.all(color: BsBorders.colorOf(context)),
@@ -358,7 +365,7 @@ class HeadersExamplePage extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(width: 200, child: BsFormControl(placeholder: 'Search...')),
+                const SizedBox(width: 201, child: BsFormControl(placeholder: 'Search...')),
               ],
             ),
           ),
@@ -430,7 +437,7 @@ class HeadersExamplePage extends StatelessWidget {
             child: _flexHeader(
               breakpoint: BsBreakpoint.lg,
               children: [
-                const SizedBox(width: 200, child: BsFormControl(placeholder: 'Search...')),
+                const SizedBox(width: 201, child: BsFormControl(placeholder: 'Search...')),
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -615,7 +622,9 @@ class _AvatarToggle extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         const _GithubAvatar(),
-        const SizedBox(width: DropdownCaret.marginStart),
+        // The caret's own margin, plus ~2.6px measured in the original: the
+        // markup's whitespace between `<img>` and the `::after` caret.
+        const SizedBox(width: DropdownCaret.marginStart + 2.6),
         // Bottom padding equal to the caret's height centres the pair on the
         // avatar, leaving the caret's bottom edge on the avatar's midline.
         Padding(

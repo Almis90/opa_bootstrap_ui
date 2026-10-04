@@ -109,7 +109,8 @@ class _BsFormControlState extends State<BsFormControl> {
   @override
   Widget build(BuildContext context) {
     final isDark = BsTheme.of(context) == Brightness.dark;
-    final style = (isDark ? BsFormStyle.darkDefaults : BsFormStyle.defaults).merge(widget.style);
+    final style = (isDark ? BsFormStyle.darkDefaults : BsFormStyle.defaults)
+        .merge(widget.style);
     final padding = switch (widget.size) {
       BsFormControlSize.small =>
         style.inputPaddingSm ?? BsFormStyle.defaultInputPaddingSm,
@@ -144,7 +145,11 @@ class _BsFormControlState extends State<BsFormControl> {
       null => style.inputBorderColor ?? BsFormStyle.defaultInputBorderColor,
     };
 
-    return DecoratedBox(
+    // A Container (not a bare DecoratedBox + Padding): a border drawn by
+    // DecoratedBox sits *over* its child's box instead of adding to it, which
+    // would leave the control 2px short of Bootstrap's `$input-height`
+    // (line-height + padding + border).
+    return Container(
       decoration: BoxDecoration(
         color: widget.enabled
             ? (style.inputBackground ?? BsFormStyle.defaultInputBackground)
@@ -165,57 +170,55 @@ class _BsFormControlState extends State<BsFormControl> {
             ? (focused ? style.inputFocusBoxShadow : style.inputBoxShadow)
             : null,
       ),
-      child: Padding(
-        padding: padding,
-        child: Stack(
-          alignment: AlignmentDirectional.centerStart,
-          children: [
-            if (widget.placeholder != null && _controller.text.isEmpty)
-              Text(
-                widget.placeholder!,
-                style: TextStyle(
-                  fontSize: fontSize,
-                  fontWeight:
-                      style.inputFontWeight ?? BsFormStyle.defaultInputFontWeight,
-                  color:
-                      style.inputPlaceholderColor ??
-                      BsFormStyle.defaultInputPlaceholderColor,
-                ),
-              ),
-            EditableText(
-              controller: _controller,
-              focusNode: _focusNode,
-              autofocus: widget.autofocus,
-              obscureText: widget.obscureText,
-              readOnly: widget.readOnly || !widget.enabled,
-              maxLines: widget.maxLines,
-              keyboardType:
-                  widget.keyboardType ??
-                  (widget.maxLines == 1
-                      ? TextInputType.text
-                      : TextInputType.multiline),
+      padding: padding,
+      child: Stack(
+        alignment: AlignmentDirectional.centerStart,
+        children: [
+          if (widget.placeholder != null && _controller.text.isEmpty)
+            Text(
+              widget.placeholder!,
               style: TextStyle(
                 fontSize: fontSize,
                 fontWeight:
                     style.inputFontWeight ?? BsFormStyle.defaultInputFontWeight,
-                color: style.inputColor ?? BsFormStyle.defaultInputColor,
-                height:
-                    style.inputLineHeight ?? BsFormStyle.defaultInputLineHeight,
+                color:
+                    style.inputPlaceholderColor ??
+                    BsFormStyle.defaultInputPlaceholderColor,
               ),
-              cursorColor: style.inputColor ?? BsFormStyle.defaultInputColor,
-              backgroundCursorColor: BsColors.gray400,
-              selectionColor:
-                  (style.inputFocusBorderColor ??
-                          BsFormStyle.defaultInputFocusBorderColor)
-                      .withValues(alpha: 0.4),
-              onChanged: (value) {
-                widget.onChanged?.call(value);
-                setState(() {});
-              },
-              onSubmitted: widget.onSubmitted,
             ),
-          ],
-        ),
+          EditableText(
+            controller: _controller,
+            focusNode: _focusNode,
+            autofocus: widget.autofocus,
+            obscureText: widget.obscureText,
+            readOnly: widget.readOnly || !widget.enabled,
+            maxLines: widget.maxLines,
+            keyboardType:
+                widget.keyboardType ??
+                (widget.maxLines == 1
+                    ? TextInputType.text
+                    : TextInputType.multiline),
+            style: TextStyle(
+              fontSize: fontSize,
+              fontWeight:
+                  style.inputFontWeight ?? BsFormStyle.defaultInputFontWeight,
+              color: style.inputColor ?? BsFormStyle.defaultInputColor,
+              height:
+                  style.inputLineHeight ?? BsFormStyle.defaultInputLineHeight,
+            ),
+            cursorColor: style.inputColor ?? BsFormStyle.defaultInputColor,
+            backgroundCursorColor: BsColors.gray400,
+            selectionColor:
+                (style.inputFocusBorderColor ??
+                        BsFormStyle.defaultInputFocusBorderColor)
+                    .withValues(alpha: 0.4),
+            onChanged: (value) {
+              widget.onChanged?.call(value);
+              setState(() {});
+            },
+            onSubmitted: widget.onSubmitted,
+          ),
+        ],
       ),
     );
   }
