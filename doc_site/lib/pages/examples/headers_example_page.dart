@@ -14,6 +14,7 @@ class HeadersExamplePage extends StatelessWidget {
 
   static const _mainLabels = ['Home', 'Features', 'Pricing', 'FAQs', 'About'];
   static const _dashboardLabels = ['Overview', 'Inventory', 'Customers', 'Products'];
+
   /// A `<input type="search" class="form-control">` in a `.col-lg-auto` form:
   /// its width is the browser's intrinsic one for `size=20`, which depends on
   /// the font — 193px in Roboto (201px in San Francisco).
@@ -22,6 +23,7 @@ class HeadersExamplePage extends StatelessWidget {
   /// `.me-2` (8px) plus the ~4px of inline whitespace the original's two
   /// adjacent `<button>`s are separated by in the markup.
   static const _buttonGap = 12.4;
+
   /// `.dropdown-menu.text-small.shadow` — Bootstrap's menus have no shadow
   /// of their own, so the original asks for one; `.text-small` is `85%`.
   static const _menuStyle = BsDropdownStyle(boxShadow: BsShadows.shadow, fontSize: 13.6);
@@ -73,20 +75,24 @@ class HeadersExamplePage extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.only(bottom: 24),
         padding: const EdgeInsets.symmetric(vertical: 16),
-        decoration: BoxDecoration(border: Border(bottom: BorderSide(color: BsBorders.colorOf(context)))),
+        decoration: BoxDecoration(
+          border: Border(bottom: BorderSide(color: BsBorders.colorOf(context))),
+        ),
         child: _flexHeader(
           breakpoint: BsBreakpoint.md,
           children: [
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const _BootstrapMark(),
-                const SizedBox(width: 8),
-                Text(
-                  'Simple header',
-                  style: TextStyle(fontSize: brandFontSize, color: BsBody.emphasisColorOf(context)),
-                ),
-              ],
+            _HomeLink(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const _BootstrapMark(),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Simple header',
+                    style: TextStyle(fontSize: brandFontSize, color: BsBody.emphasisColorOf(context)),
+                  ),
+                ],
+              ),
             ),
             BsNav(variant: BsNavVariant.pills, items: _pillNavItems(_mainLabels)),
           ],
@@ -98,7 +104,11 @@ class HeadersExamplePage extends StatelessWidget {
   static Widget _centeredNav(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 16),
-      child: BsContainer(child: Center(child: BsNav(variant: BsNavVariant.pills, items: _pillNavItems(_mainLabels)))),
+      child: BsContainer(
+        child: Center(
+          child: BsNav(variant: BsNavVariant.pills, items: _pillNavItems(_mainLabels)),
+        ),
+      ),
     );
   }
 
@@ -109,10 +119,12 @@ class HeadersExamplePage extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.only(bottom: 24),
         padding: const EdgeInsets.symmetric(vertical: 16),
-        decoration: BoxDecoration(border: Border(bottom: BorderSide(color: BsBorders.colorOf(context)))),
+        decoration: BoxDecoration(
+          border: Border(bottom: BorderSide(color: BsBorders.colorOf(context))),
+        ),
         child: LayoutBuilder(
           builder: (context, constraints) {
-            const brand = _BootstrapMark();
+            const brand = _HomeLink(child: _BootstrapMark());
             final nav = BsNav(
               variant: BsNavVariant.plain,
               style: _px2,
@@ -149,7 +161,10 @@ class HeadersExamplePage extends StatelessWidget {
                   ),
                 ),
                 Expanded(child: Center(child: nav)),
-                SizedBox(width: side, child: Align(alignment: Alignment.centerRight, child: buttons)),
+                SizedBox(
+                  width: side,
+                  child: Align(alignment: Alignment.centerRight, child: buttons),
+                ),
               ],
             );
           },
@@ -169,13 +184,16 @@ class HeadersExamplePage extends StatelessWidget {
           // logo `.me-2`, nav `.me-lg-auto`, form `.me-lg-3`.
           gaps: const {0: 8, 2: 16},
           children: [
-            const _BootstrapMark(white: true),
+            const _HomeLink(child: _BootstrapMark(white: true)),
             BsNav(
               variant: BsNavVariant.plain,
               style: _px2,
               items: _plainNavItems(_mainLabels, firstColor: BsColors.gray600, restColor: BsColors.white),
             ),
-            SizedBox(width: _searchWidth, child: BsFormControl(placeholder: 'Search...', style: _darkFormStyle(context))),
+            SizedBox(
+              width: _searchWidth,
+              child: BsFormControl(placeholder: 'Search...', style: _darkFormStyle(context)),
+            ),
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -196,7 +214,9 @@ class HeadersExamplePage extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: BsBorders.colorOf(context)))),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: BsBorders.colorOf(context))),
+      ),
       child: BsContainer(
         child: _flexHeader(
           breakpoint: BsBreakpoint.lg,
@@ -204,7 +224,7 @@ class HeadersExamplePage extends StatelessWidget {
           // logo `.me-2`, nav `.me-lg-auto`, form `.me-lg-3`.
           gaps: const {0: 8, 2: 16},
           children: [
-            const _BootstrapMark(),
+            const _HomeLink(child: _BootstrapMark()),
             BsNav(
               variant: BsNavVariant.plain,
               style: _px2,
@@ -214,7 +234,10 @@ class HeadersExamplePage extends StatelessWidget {
                 restColor: BsBody.emphasisColorOf(context),
               ),
             ),
-            const SizedBox(width: _searchWidth, child: BsFormControl(placeholder: 'Search...')),
+            const SizedBox(
+              width: _searchWidth,
+              child: BsFormControl(placeholder: 'Search...'),
+            ),
             BsDropdown(
               style: _textSmallMenuStyle, // this header's menu has no `.shadow`
               toggleBuilder: (context, toggle, isOpen) => MouseRegion(
@@ -239,7 +262,9 @@ class HeadersExamplePage extends StatelessWidget {
   static Widget _gridDropdownHeader(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 16),
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: BsBorders.colorOf(context)))),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: BsBorders.colorOf(context))),
+      ),
       child: BsContainer.fluid(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -364,23 +389,30 @@ class HeadersExamplePage extends StatelessWidget {
         Container(
           margin: const EdgeInsets.only(bottom: 24),
           padding: const EdgeInsets.symmetric(vertical: 16),
-          decoration: BoxDecoration(border: Border(bottom: BorderSide(color: BsBorders.colorOf(context)))),
+          decoration: BoxDecoration(
+            border: Border(bottom: BorderSide(color: BsBorders.colorOf(context))),
+          ),
           child: BsContainer(
             child: _flexHeader(
               breakpoint: BsBreakpoint.lg,
               children: [
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const _BootstrapMark(),
-                    const SizedBox(width: 8),
-                    Text(
-                      'Double header',
-                      style: TextStyle(fontSize: _fs4(context), color: BsBody.emphasisColorOf(context)),
-                    ),
-                  ],
+                _HomeLink(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const _BootstrapMark(),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Double header',
+                        style: TextStyle(fontSize: _fs4(context), color: BsBody.emphasisColorOf(context)),
+                      ),
+                    ],
+                  ),
                 ),
-                const SizedBox(width: _searchWidth, child: BsFormControl(placeholder: 'Search...')),
+                const SizedBox(
+                  width: _searchWidth,
+                  child: BsFormControl(placeholder: 'Search...'),
+                ),
               ],
             ),
           ),
@@ -411,30 +443,35 @@ class HeadersExamplePage extends StatelessWidget {
             child: _flexHeader(
               breakpoint: BsBreakpoint.lg,
               children: [
-                const _BootstrapMark(white: true),
+                const _HomeLink(child: _BootstrapMark(white: true)),
                 Wrap(
                   runSpacing: 8,
                   children: [
                     for (final (icon, label) in icons)
-                      Padding(
-                        // `.nav-link`: .5rem 1rem
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            BootstrapIcon(
-                              icon,
-                              width: 24,
-                              height: 24,
-                              color: label == 'Home' ? BsColors.gray600 : BsColors.white,
-                            ),
-                            const SizedBox(height: 4), // `.mb-1`
-                            Text(
-                              label,
-                              // `.text-small`: 85%
-                              style: TextStyle(fontSize: 13.6, color: label == 'Home' ? BsColors.gray600 : BsColors.white),
-                            ),
-                          ],
+                      _HomeLink(
+                        child: Padding(
+                          // `.nav-link`: .5rem 1rem
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              BootstrapIcon(
+                                icon,
+                                width: 24,
+                                height: 24,
+                                color: label == 'Home' ? BsColors.gray600 : BsColors.white,
+                              ),
+                              const SizedBox(height: 4), // `.mb-1`
+                              Text(
+                                label,
+                                // `.text-small`: 85%
+                                style: TextStyle(
+                                  fontSize: 13.6,
+                                  color: label == 'Home' ? BsColors.gray600 : BsColors.white,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                   ],
@@ -447,12 +484,17 @@ class HeadersExamplePage extends StatelessWidget {
         Container(
           margin: const EdgeInsets.only(bottom: 16),
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          decoration: BoxDecoration(border: Border(bottom: BorderSide(color: BsBorders.colorOf(context)))),
+          decoration: BoxDecoration(
+            border: Border(bottom: BorderSide(color: BsBorders.colorOf(context))),
+          ),
           child: BsContainer(
             child: _flexHeader(
               breakpoint: BsBreakpoint.lg,
               children: [
-                const SizedBox(width: _searchWidth, child: BsFormControl(placeholder: 'Search...')),
+                const SizedBox(
+                  width: _searchWidth,
+                  child: BsFormControl(placeholder: 'Search...'),
+                ),
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -562,7 +604,11 @@ class _ExampleDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const SizedBox(height: 48, width: double.infinity, child: CustomPaint(painter: _DividerPainter()));
+    return const SizedBox(
+      height: 48,
+      width: double.infinity,
+      child: CustomPaint(painter: _DividerPainter()),
+    );
   }
 }
 
@@ -603,6 +649,20 @@ class _DividerPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _DividerPainter oldDelegate) => false;
+}
+
+/// Anything that's an `<a href>` in the original: shows the pointer cursor.
+/// The example has nowhere to navigate, so a tap does nothing.
+class _HomeLink extends StatelessWidget {
+  const _HomeLink({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => MouseRegion(
+    cursor: SystemMouseCursors.click,
+    child: GestureDetector(onTap: () {}, child: child),
+  );
 }
 
 /// Bootstrap's own logo (`<svg class="bi" width="40" height="32">`), drawn
@@ -673,7 +733,10 @@ class _GithubAvatar extends StatelessWidget {
           height: size,
           alignment: Alignment.center,
           color: BsColors.gray400,
-          child: Text('M', style: TextStyle(color: BsColors.white, fontSize: size * 0.42, fontWeight: FontWeight.w600)),
+          child: Text(
+            'M',
+            style: TextStyle(color: BsColors.white, fontSize: size * 0.42, fontWeight: FontWeight.w600),
+          ),
         ),
       ),
     );
