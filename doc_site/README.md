@@ -22,6 +22,12 @@ out with the browser itself and so can use the system font. It relies on
 Chrome's canvas Text Clusters API, still behind that flag; in any browser
 without it the option is ignored and the site renders with Roboto as before.
 
+Known limitation: WebParagraph is still being fixed. On Flutter stable 3.47.5
+a few words render a pixel high with their top row clipped (the "F" of
+"Features" in the Headers example). That is
+[flutter/flutter#191736](https://github.com/flutter/flutter/pull/191736), merged
+to master on 2026-09-12 and already in the beta channel, but not in 3.47.5.
+
 To try it in a Chrome you launch yourself, enable
 `chrome://flags/#enable-experimental-web-platform-features` instead.
 
