@@ -119,6 +119,27 @@ BsDropdown(
           ),
         ),
         DocExample(
+          title: 'Flipping',
+          description:
+              "Like Bootstrap's Popper-driven dropdowns, a menu that wouldn't fit on screen where direction and "
+              'alignEnd put it flips to the opposite alignment or side instead — a dropdown near the bottom edge opens '
+              'upward, a left-aligned one at the right edge becomes right-aligned — and slides to stay in view as a last '
+              'resort. Try it by scrolling this page so the toggle sits near an edge. flip: false opens exactly where asked.',
+          code: '''
+BsDropdown(
+  flip: false, // default is true
+  toggleBuilder: (context, toggle, isOpen) => BsButton(onPressed: toggle, child: ...),
+  items: [
+    BsDropdownItem(child: Text('Action')),
+  ],
+)''',
+          preview: BsDropdown(
+            flip: false,
+            toggleBuilder: (context, toggle, isOpen) => BsButton(onPressed: toggle, child: _toggleLabel('flip: false')),
+            items: const [BsDropdownItem(child: Text('Action')), BsDropdownItem(child: Text('Another action'))],
+          ),
+        ),
+        DocExample(
           title: 'Dark menu',
           description: 'style: BsDropdownStyle.dark swaps the menu to a dark background with light text.',
           code: '''

@@ -33,9 +33,8 @@ class ExampleThemeToggler extends StatelessWidget {
   Widget build(BuildContext context) {
     final activeIcon = _modes.firstWhere((m) => m.$1 == mode).$3;
     return BsDropdown(
-      // The toggle sits at the bottom of the viewport, so Popper flips the
-      // menu above it.
-      direction: BsDropdownDirection.up,
+      // `.dropdown-menu-end`; sitting at the bottom of the viewport, the menu
+      // flips above it on its own, as Popper does for the original.
       alignEnd: true,
       style: const BsDropdownStyle(boxShadow: BsShadows.shadow),
       items: [

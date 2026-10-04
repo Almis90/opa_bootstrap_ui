@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import 'bs_dropdown_placement.dart';
 import 'bs_theme.dart';
 import 'tokens/bs_dropdown_style.dart';
 
@@ -143,6 +144,7 @@ class BsDropdown extends StatefulWidget {
     required this.items,
     this.direction = BsDropdownDirection.down,
     this.alignEnd = false,
+    this.flip = true,
     this.style,
     this.onOpenChanged,
     this.controller,
@@ -167,6 +169,15 @@ class BsDropdown extends StatefulWidget {
   /// toggle's instead of its leading edge. Only affects [direction]s
   /// [BsDropdownDirection.down]/[BsDropdownDirection.up].
   final bool alignEnd;
+
+  /// Popper's `flip` and `preventOverflow` modifiers, which Bootstrap's
+  /// dropdowns run by default: when the menu wouldn't fit inside the screen
+  /// where [direction] and [alignEnd] put it, it opens on the opposite
+  /// alignment or side instead (a `.dropdown` near the bottom edge becomes a
+  /// `.dropup`, a left-aligned menu at the right edge becomes right-aligned),
+  /// and as a last resort slides along the toggle to stay on screen. Pass
+  /// false to always open exactly where asked.
+  final bool flip;
 
   /// Style overrides layered on top of [BsDropdownStyle.defaults]. Pass
   /// [BsDropdownStyle.dark] for `.dropdown-menu-dark`.
@@ -205,8 +216,16 @@ class BsDropdown extends StatefulWidget {
 class _BsDropdownState extends State<BsDropdown> {
   final _link = LayerLink();
   final _overlayController = OverlayPortalController();
+  final _targetKey = GlobalKey();
+  final _menuKey = GlobalKey();
   BsDropdownController? _ownedController;
   bool _wasShown = false;
+
+  /// Where the open menu actually goes, once measured. Null until the first
+  /// frame after opening has told us the menu's size (the menu is laid out
+  /// invisibly until then, so it never flashes in the wrong place).
+  BsDropdownResolvedPlacement? _resolved;
+  bool _resolving = false;
 
   BsDropdownController get _controller => widget.controller ?? (_ownedController ??= BsDropdownController());
 
@@ -224,6 +243,8 @@ class _BsDropdownState extends State<BsDropdown> {
     if (isShown == _wasShown) return;
     _wasShown = isShown;
     if (isShown) {
+      _resolved = null;
+      _startResolving();
       widget.onShow?.call();
       if (!_overlayController.isShowing) _overlayController.show();
       widget.onShown?.call();
@@ -234,6 +255,47 @@ class _BsDropdownState extends State<BsDropdown> {
       widget.onHidden?.call();
       widget.onOpenChanged?.call(false);
     }
+  }
+
+  /// Re-measures after every frame while the menu is open, so it keeps
+  /// tracking its toggle (scrolling, resizing) like Popper's update loop.
+  /// Re-registering from inside a post-frame callback doesn't schedule a
+  /// frame of its own, so an idle open menu costs nothing.
+  void _startResolving() {
+    if (_resolving) return;
+    _resolving = true;
+    WidgetsBinding.instance.addPostFrameCallback(_resolveStep);
+  }
+
+  void _resolveStep(Duration _) {
+    if (!mounted || !_controller.isShown) {
+      _resolving = false;
+      return;
+    }
+    _resolve();
+    WidgetsBinding.instance.addPostFrameCallback(_resolveStep);
+  }
+
+  void _resolve() {
+    if (!widget.flip) return;
+    final target = _targetKey.currentContext?.findRenderObject();
+    final menu = _menuKey.currentContext?.findRenderObject();
+    if (target is! RenderBox || menu is! RenderBox || !target.hasSize || !menu.hasSize || !target.attached) return;
+
+    final style = (BsTheme.of(context) == Brightness.dark ? BsDropdownStyle.darkDefaults : BsDropdownStyle.defaults)
+        .merge(widget.style);
+    final resolved = resolveDropdownPlacement(
+      preferred: BsDropdownPlacement.preferred(
+        _effectiveDirection,
+        alignEnd: widget.alignEnd,
+        textDirection: Directionality.of(context),
+      ),
+      target: target.localToGlobal(Offset.zero) & target.size,
+      menu: menu.size,
+      viewport: Offset.zero & MediaQuery.sizeOf(context),
+      spacer: style.spacer ?? BsDropdownStyle.defaultSpacer,
+    );
+    if (resolved != _resolved) setState(() => _resolved = resolved);
   }
 
   void _toggle() {
@@ -260,6 +322,7 @@ class _BsDropdownState extends State<BsDropdown> {
     final style = (isDark ? BsDropdownStyle.darkDefaults : BsDropdownStyle.defaults).merge(widget.style);
 
     return CompositedTransformTarget(
+      key: _targetKey,
       link: _link,
       // Shares a groupId with the overlay menu's own TapRegion below, so a
       // tap on the toggle itself never counts as "outside" the dropdown
@@ -278,46 +341,20 @@ class _BsDropdownState extends State<BsDropdown> {
 
   Widget _buildOverlay(BsDropdownStyle style) {
     final spacer = style.spacer ?? BsDropdownStyle.defaultSpacer;
-    // CompositedTransformFollower's anchors are plain Alignment, not
-    // AlignmentGeometry, so every start/end/alignEnd case needs a manual
-    // resolve() against the ambient Directionality — including the side
-    // .start/.end drop out to, which needs the Offset's sign flipped too.
-    final textDirection = Directionality.of(context);
-    final isRtl = textDirection == TextDirection.rtl;
-    final (Alignment targetAnchor, Alignment followerAnchor, Offset offset) = switch (_effectiveDirection) {
-      BsDropdownDirection.down => widget.alignEnd
-          ? (
-              AlignmentDirectional.bottomEnd.resolve(textDirection),
-              AlignmentDirectional.topEnd.resolve(textDirection),
-              Offset(0, spacer),
-            )
-          : (
-              AlignmentDirectional.bottomStart.resolve(textDirection),
-              AlignmentDirectional.topStart.resolve(textDirection),
-              Offset(0, spacer),
-            ),
-      BsDropdownDirection.up => widget.alignEnd
-          ? (
-              AlignmentDirectional.topEnd.resolve(textDirection),
-              AlignmentDirectional.bottomEnd.resolve(textDirection),
-              Offset(0, -spacer),
-            )
-          : (
-              AlignmentDirectional.topStart.resolve(textDirection),
-              AlignmentDirectional.bottomStart.resolve(textDirection),
-              Offset(0, -spacer),
-            ),
-      BsDropdownDirection.start => (
-        AlignmentDirectional.topStart.resolve(textDirection),
-        AlignmentDirectional.topEnd.resolve(textDirection),
-        Offset(isRtl ? spacer : -spacer, 0),
-      ),
-      BsDropdownDirection.end => (
-        AlignmentDirectional.topEnd.resolve(textDirection),
-        AlignmentDirectional.topStart.resolve(textDirection),
-        Offset(isRtl ? -spacer : spacer, 0),
-      ),
-    };
+    // Until the menu has been measured (see [_resolve]) it sits at the
+    // preferred placement, invisible; afterwards at wherever flipping chose.
+    final measured = _resolved;
+    final resolved =
+        measured ??
+        BsDropdownResolvedPlacement(
+          BsDropdownPlacement.preferred(
+            _effectiveDirection,
+            alignEnd: widget.alignEnd,
+            textDirection: Directionality.of(context),
+          ),
+        );
+    final placement = resolved.placement;
+    final hidden = widget.flip && measured == null;
 
     return Stack(
       children: [
@@ -329,10 +366,21 @@ class _BsDropdownState extends State<BsDropdown> {
           onTapOutside: (_) => _controller.hide(),
           child: CompositedTransformFollower(
             link: _link,
-            targetAnchor: targetAnchor,
-            followerAnchor: followerAnchor,
-            offset: offset,
-            child: _BsDropdownMenu(items: _effectiveItems, style: style, onItemTap: _controller.hide),
+            targetAnchor: placement.targetAnchor,
+            followerAnchor: placement.followerAnchor,
+            offset: placement.offset(spacer) + resolved.shift,
+            child: IgnorePointer(
+              ignoring: hidden,
+              child: Opacity(
+                opacity: hidden ? 0 : 1,
+                child: _BsDropdownMenu(
+                  key: _menuKey,
+                  items: _effectiveItems,
+                  style: style,
+                  onItemTap: _controller.hide,
+                ),
+              ),
+            ),
           ),
         ),
       ],
@@ -341,7 +389,7 @@ class _BsDropdownState extends State<BsDropdown> {
 }
 
 class _BsDropdownMenu extends StatelessWidget {
-  const _BsDropdownMenu({required this.items, required this.style, required this.onItemTap});
+  const _BsDropdownMenu({super.key, required this.items, required this.style, required this.onItemTap});
 
   final List<BsDropdownEntry> items;
   final BsDropdownStyle style;
