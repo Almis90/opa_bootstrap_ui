@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 
 import '../../src/bootstrap_icon.dart';
+import '../../src/dropdown_caret.dart';
 
 /// The "Headers" example: a faithful port of Bootstrap's own
 /// `examples/headers` page — the same brand text, nav items, and flex-wrap
@@ -160,7 +161,7 @@ class HeadersExamplePage extends StatelessWidget {
               alignEnd: true,
               toggleBuilder: (context, toggle, isOpen) => MouseRegion(
                 cursor: SystemMouseCursors.click,
-                child: GestureDetector(onTap: toggle, child: const _GithubAvatar()),
+                child: GestureDetector(onTap: toggle, child: const _AvatarToggle()),
               ),
               items: _avatarMenuItems(),
             ),
@@ -191,7 +192,18 @@ class HeadersExamplePage extends StatelessWidget {
                 child: BsDropdown(
                   toggleBuilder: (context, toggle, isOpen) => MouseRegion(
                     cursor: SystemMouseCursors.click,
-                    child: GestureDetector(onTap: toggle, child: const _BootstrapMark()),
+                    child: GestureDetector(
+                      onTap: toggle,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const _BootstrapMark(),
+                          // `.me-2` on the svg, then the caret's own margin.
+                          const SizedBox(width: 8 + DropdownCaret.marginStart),
+                          DropdownCaret(color: BsBody.emphasisColorOf(context)),
+                        ],
+                      ),
+                    ),
                   ),
                   items: _logoMenuItems(),
                 ),
@@ -207,7 +219,7 @@ class HeadersExamplePage extends StatelessWidget {
                     alignEnd: true,
                     toggleBuilder: (context, toggle, isOpen) => MouseRegion(
                       cursor: SystemMouseCursors.click,
-                      child: GestureDetector(onTap: toggle, child: const _GithubAvatar()),
+                      child: GestureDetector(onTap: toggle, child: const _AvatarToggle()),
                     ),
                     items: _avatarMenuItems(),
                   ),
@@ -483,6 +495,30 @@ class _BootstrapMark extends StatelessWidget {
     height: 32,
     color: white ? BsColors.white : BsBody.emphasisColorOf(context),
   );
+}
+
+/// An avatar `.dropdown-toggle`: the image with the CSS caret after it, in
+/// `link-body-emphasis`. The caret is an inline-block sitting `.255em` above
+/// the text baseline, which the image rests on — so its bottom edge lands
+/// `.255em` above the image's own bottom edge.
+class _AvatarToggle extends StatelessWidget {
+  const _AvatarToggle();
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        const _GithubAvatar(),
+        const SizedBox(width: DropdownCaret.marginStart),
+        Padding(
+          padding: const EdgeInsets.only(bottom: DropdownCaret.marginStart),
+          child: DropdownCaret(color: BsBody.emphasisColorOf(context)),
+        ),
+      ],
+    );
+  }
 }
 
 /// The same `github.com/mdo.png` avatar Bootstrap's own dropdown examples

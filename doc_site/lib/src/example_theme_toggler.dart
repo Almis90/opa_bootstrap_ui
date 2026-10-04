@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 
 import 'bootstrap_icon.dart';
+import 'dropdown_caret.dart';
 
 /// The theme switcher fixed to the bottom-end corner of every Bootstrap
 /// example page — `ThemeToggler.astro` in its `examples` layout: a violet
@@ -77,40 +78,11 @@ class ExampleThemeToggler extends StatelessWidget {
             Padding(padding: const EdgeInsets.symmetric(vertical: 4), child: BootstrapIcon(activeIcon)),
             // `.dropdown-toggle::after`: margin-left .255em, then a
             // .3em-border triangle (.6em wide, .3em tall).
-            const SizedBox(width: 4.08),
-            const _Caret(),
+            const SizedBox(width: DropdownCaret.marginStart),
+            const DropdownCaret(),
           ],
         ),
       ),
     );
   }
-}
-
-class _Caret extends StatelessWidget {
-  const _Caret();
-
-  @override
-  Widget build(BuildContext context) =>
-      CustomPaint(size: const Size(9.6, 4.8), painter: _CaretPainter(DefaultTextStyle.of(context).style.color!));
-}
-
-class _CaretPainter extends CustomPainter {
-  _CaretPainter(this.color);
-
-  final Color color;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    canvas.drawPath(
-      Path()
-        ..moveTo(0, 0)
-        ..lineTo(size.width, 0)
-        ..lineTo(size.width / 2, size.height)
-        ..close(),
-      Paint()..color = color,
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant _CaretPainter oldDelegate) => oldDelegate.color != color;
 }

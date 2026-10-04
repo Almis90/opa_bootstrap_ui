@@ -86,6 +86,7 @@ class _DocAppState extends State<DocApp> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return BsApp(
       brightness: _themeMode,
+      debugShowCheckedModeBanner: false,
       home: DocShell(
         sections: _sections,
         examples: _examples,
