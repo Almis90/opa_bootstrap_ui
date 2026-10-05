@@ -11,6 +11,7 @@ import 'package:doc_site/pages/examples/modals_example_page.dart';
 import 'package:doc_site/pages/examples/navbar_bottom_example_page.dart';
 import 'package:doc_site/pages/examples/navbar_fixed_example_page.dart';
 import 'package:doc_site/pages/examples/navbar_static_example_page.dart';
+import 'package:doc_site/pages/examples/navbars_example_page.dart';
 
 import '../test_utils.dart';
 
@@ -27,6 +28,7 @@ void main() {
       'Navbar bottom': () => const NavbarBottomExamplePage(),
       'Navbar fixed': () => const NavbarFixedExamplePage(),
       'Navbar static': () => const NavbarStaticExamplePage(),
+      'Navbars': () => const NavbarsExamplePage(),
     }.entries) {
       testWidgets('${entry.key} example lays out without errors at ${width.toInt()}px', (tester) async {
         tester.view.physicalSize = Size(width, 900);

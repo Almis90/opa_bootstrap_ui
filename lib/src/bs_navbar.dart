@@ -2,7 +2,9 @@ import 'package:flutter/widgets.dart';
 
 import 'bs_breakpoint.dart';
 import 'bs_collapse.dart';
+import 'bs_flex.dart';
 import 'bs_focusable.dart';
+import 'bs_spacing.dart';
 import 'tokens/bs_focus_ring.dart';
 import 'tokens/bs_navbar_style.dart';
 import 'tokens/bs_transitions.dart';
@@ -60,6 +62,8 @@ class BsNavbar extends StatefulWidget {
     this.colorScheme = BsNavbarColorScheme.light,
     this.background,
     this.expandBreakpoint = BsBreakpoint.lg,
+    this.centerItems = false,
+    this.collapseBuilder,
     this.style,
     this.collapseController,
     this.onShow,
@@ -92,6 +96,21 @@ class BsNavbar extends StatefulWidget {
   /// [items]/[trailing] show inline instead of behind the toggler. Null
   /// means "never expand".
   final BsBreakpoint? expandBreakpoint;
+
+  /// `justify-content-md-center` on the `.navbar-collapse`: when expanded the
+  /// [items] sit in the middle of the bar rather than after the brand.
+  final bool centerItems;
+
+  /// The `.navbar-collapse`'s whole content, for navbars that lay it out in
+  /// their own way (a three-column "centered nav"): replaces the default
+  /// arrangement of [items] and [trailing]. Told whether the navbar is
+  /// expanded, and given the rendered nav links of [items] to place.
+  final Widget Function(
+    BuildContext context,
+    bool expanded,
+    List<Widget> links,
+  )?
+  collapseBuilder;
 
   /// Style overrides layered on top of [BsNavbarStyle.light]/[BsNavbarStyle.dark].
   final BsNavbarStyle? style;
@@ -155,44 +174,66 @@ class _BsNavbarState extends State<BsNavbar> {
       decoration: BoxDecoration(color: widget.background),
       child: Padding(
         padding: style.padding ?? BsNavbarStyle.defaultPadding,
-        child: LayoutBuilder(
-          builder: (context, constraints) {
+        child: Builder(
+          builder: (context) {
+            // `.navbar-expand-*` is a media query: it is the viewport's width
+            // that counts, not the room the navbar happens to have.
             final expanded =
                 widget.expandBreakpoint != null &&
-                constraints.maxWidth >= widget.expandBreakpoint!.minWidth;
+                MediaQuery.sizeOf(context).width >=
+                    widget.expandBreakpoint!.minWidth;
 
-            final brandAndToggler = Row(
-              children: [
-                if (widget.brand != null)
-                  _BsNavbarBrand(
-                    onTap: widget.onBrandTap,
-                    style: style,
-                    child: widget.brand!,
-                  ),
-                const Spacer(),
-                if (!expanded)
-                  _BsNavbarToggler(
-                    isOpen: _controller.isExpanded,
-                    onTap: _controller.toggle,
-                    style: style,
-                  ),
-              ],
-            );
-
-            if (expanded) {
-              return Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  if (widget.brand != null)
-                    _BsNavbarBrand(
+            final brand = widget.brand == null
+                ? null
+                : BsFlexItem(
+                    flexShrink: false,
+                    child: _BsNavbarBrand(
                       onTap: widget.onBrandTap,
                       style: style,
                       child: widget.brand!,
                     ),
-                  for (final item in widget.items)
-                    _BsNavbarLink(item: item, style: style),
-                  const Spacer(),
-                  ...widget.trailing,
+                  );
+            final rawLinks = [
+              for (final item in widget.items)
+                _BsNavbarLink(item: item, style: style, expanded: expanded),
+            ];
+            // (A link never gives up room: its words are its minimum width.)
+            final links = [
+              for (final link in rawLinks)
+                BsFlexItem(flexShrink: false, child: link),
+            ];
+            final custom = widget.collapseBuilder?.call(
+              context,
+              expanded,
+              links,
+            );
+
+            if (expanded) {
+              return BsFlex(
+                alignItems: BsAlign.center,
+                children: [
+                  ?brand,
+                  BsFlexItem(
+                    flexGrow: true,
+                    child:
+                        custom ??
+                        BsFlex(
+                          alignItems: BsAlign.center,
+                          justifyContent: widget.centerItems
+                              ? BsJustify.center
+                              : BsJustify.start,
+                          children: [
+                            ...links,
+                            if (widget.trailing.isNotEmpty &&
+                                !widget.centerItems)
+                              const BsFlexItem(
+                                ms: BsSpacing.auto,
+                                child: SizedBox.shrink(),
+                              ),
+                            ...widget.trailing,
+                          ],
+                        ),
+                  ),
                 ],
               );
             }
@@ -200,21 +241,34 @@ class _BsNavbarState extends State<BsNavbar> {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                brandAndToggler,
+                BsFlex(
+                  alignItems: BsAlign.center,
+                  justifyContent: BsJustify.between,
+                  children: [
+                    ?brand,
+                    _BsNavbarToggler(
+                      isOpen: _controller.isExpanded,
+                      onTap: _controller.toggle,
+                      style: style,
+                    ),
+                  ],
+                ),
                 BsCollapse(
                   controller: _controller,
                   onShow: widget.onShow,
                   onShown: widget.onShown,
                   onHide: widget.onHide,
                   onHidden: widget.onHidden,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      for (final item in widget.items)
-                        _BsNavbarLink(item: item, style: style),
-                      ...widget.trailing,
-                    ],
-                  ),
+                  child:
+                      custom ??
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          // `.navbar-nav.mb-2` (the nav's own bottom margin).
+                          ...rawLinks,
+                          ...widget.trailing,
+                        ],
+                      ),
                 ),
               ],
             );
@@ -263,6 +317,8 @@ class _BsNavbarBrandState extends State<_BsNavbarBrand> {
           // right — Padding.padding is EdgeInsetsGeometry, so this
           // resolves against the ambient Directionality automatically.
           padding: EdgeInsetsDirectional.only(
+            top: 5, // `.navbar-brand`: padding-block .3125rem
+            bottom: 5,
             end: style.brandMarginEnd ?? BsNavbarStyle.defaultBrandMarginEnd,
           ),
           child: DefaultTextStyle.merge(
@@ -271,6 +327,8 @@ class _BsNavbarBrandState extends State<_BsNavbarBrand> {
               fontSize:
                   style.brandFontSize ?? BsNavbarStyle.defaultBrandFontSize,
             ),
+            // `.navbar-brand { white-space: nowrap }`
+            softWrap: false,
             child: widget.child,
           ),
         ),
@@ -280,10 +338,18 @@ class _BsNavbarBrandState extends State<_BsNavbarBrand> {
 }
 
 class _BsNavbarLink extends StatefulWidget {
-  const _BsNavbarLink({required this.item, required this.style});
+  const _BsNavbarLink({
+    required this.item,
+    required this.style,
+    required this.expanded,
+  });
 
   final BsNavbarItem item;
   final BsNavbarStyle style;
+
+  /// Expanded, a link is padded by `.5rem` on each side; collapsed, by none
+  /// (`--bs-nav-link-padding-x: 0`).
+  final bool expanded;
 
   @override
   State<_BsNavbarLink> createState() => _BsNavbarLinkState();
@@ -319,9 +385,10 @@ class _BsNavbarLinkState extends State<_BsNavbarLink> {
         child: Padding(
           padding: item.padded
               ? EdgeInsets.symmetric(
-                  horizontal:
-                      style.navLinkPaddingX ??
-                      BsNavbarStyle.defaultNavLinkPaddingX,
+                  horizontal: widget.expanded
+                      ? (style.navLinkPaddingX ??
+                            BsNavbarStyle.defaultNavLinkPaddingX)
+                      : 0,
                   vertical: 8,
                 )
               : EdgeInsets.zero,

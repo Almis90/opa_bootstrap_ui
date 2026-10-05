@@ -150,3 +150,88 @@ List<BsNavbarItem> navbarExampleItems() => [
   BsNavbarItem(child: const Text('Link'), onTap: () {}),
   const BsNavbarItem(child: Text('Disabled'), disabled: true),
 ];
+
+/// `<li class="nav-item dropdown">` (or `dropup`): a `.nav-link.dropdown-toggle`
+/// whose menu opens from the whole item. It pads itself like a nav link —
+/// `.5rem` each side once the navbar has expanded at [expandBreakpoint], none
+/// before — hence the item's `padded: false`.
+BsNavbarItem navbarDropdownItem(
+  String label, {
+  required BsBreakpoint? expandBreakpoint,
+  bool up = false,
+}) {
+  return BsNavbarItem(
+    onTap: () {},
+    padded: false,
+    child: Builder(
+      builder: (context) {
+        final expanded =
+            expandBreakpoint != null &&
+            MediaQuery.sizeOf(context).width >= expandBreakpoint.minWidth;
+        return BsDropdown(
+          direction: up ? BsDropdownDirection.up : BsDropdownDirection.down,
+          toggleBuilder: (context, toggle, isOpen) => GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: toggle,
+            // The whole `.nav-item`, link padding included, so the menu opens
+            // from its edge.
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: expanded ? 8 : 0,
+                vertical: 8,
+              ),
+              child: BsFlex(
+                inline: true,
+                alignItems: BsAlign.start,
+                children: [
+                  Text(label),
+                  // `.dropdown-toggle::after`: .255em from the text, raised
+                  // .255em off the baseline of the 24px line.
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: BsDropdownCaret.marginStart,
+                      top: 17 - 4.08 - BsDropdownCaret.heightFor(context),
+                    ),
+                    child: BsDropdownCaret(up: up),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          items: [
+            for (final label in const [
+              'Action',
+              'Another action',
+              'Something else here',
+            ])
+              BsDropdownItem(child: Text(label), onTap: () {}),
+          ],
+        );
+      },
+    ),
+  );
+}
+
+/// `<form role="search"><input class="form-control" type="search"
+/// placeholder="Search">`: as wide as the bar lets it once expanded
+/// (the input's own width), the full width of the collapse before.
+class NavbarSearchInput extends StatelessWidget {
+  const NavbarSearchInput({super.key, required this.expandBreakpoint});
+
+  final BsBreakpoint? expandBreakpoint;
+
+  @override
+  Widget build(BuildContext context) {
+    final expanded =
+        expandBreakpoint != null &&
+        MediaQuery.sizeOf(context).width >= expandBreakpoint!.minWidth;
+    const input = BsFormControl(placeholder: 'Search');
+    // (Its width is the input's own, but the `<form>` around it can shrink.)
+    return expanded
+        ? ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: 193),
+            child: input,
+          )
+        : input;
+  }
+}

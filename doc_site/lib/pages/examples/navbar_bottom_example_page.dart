@@ -21,48 +21,10 @@ class NavbarBottomExamplePage extends StatelessWidget {
         items: [
           ...navbarExampleItems(),
           // <li class="nav-item dropup"><a class="nav-link dropdown-toggle">
-          BsNavbarItem(
-            onTap: () {},
-            padded: false,
-            child: BsDropdown(
-              direction: BsDropdownDirection.up,
-              toggleBuilder: (context, toggle, isOpen) => GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: toggle,
-                // The whole `.nav-item`, link padding included, so the menu
-                // opens from its edge.
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 8,
-                  ),
-                  child: BsFlex(
-                    inline: true,
-                    alignItems: BsAlign.start,
-                    children: [
-                      const Text('Dropup'),
-                      // `.dropdown-toggle::after`: .255em from the text, raised
-                      // .255em off the baseline of the 24px line.
-                      Padding(
-                        padding: EdgeInsets.only(
-                          left: BsDropdownCaret.marginStart,
-                          top: 17 - 4.08 - BsDropdownCaret.heightFor(context),
-                        ),
-                        child: const BsDropdownCaret(up: true),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              items: [
-                for (final label in const [
-                  'Action',
-                  'Another action',
-                  'Something else here',
-                ])
-                  BsDropdownItem(child: Text(label), onTap: () {}),
-              ],
-            ),
+          navbarDropdownItem(
+            'Dropup',
+            expandBreakpoint: BsBreakpoint.sm,
+            up: true,
           ),
         ],
       ),
