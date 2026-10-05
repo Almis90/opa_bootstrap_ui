@@ -164,6 +164,16 @@ class BootstrapIconData {
       BootstrapIconPath('M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z'),
   ]);
 
+  /// Album example's camera: a line icon, `viewBox="0 0 24 24"`.
+  static const camera = BootstrapIconData(
+    [
+      BootstrapIconPath('M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z'),
+      BootstrapIconPath('M12 9a4 4 0 1 0 0 8a4 4 0 1 0 0-8z'),
+    ],
+    viewBox: Size(24, 24),
+    strokeWidth: 2,
+  );
+
   /// Sidebars example's `.btn-toggle::before` chevron: a line icon.
   static const chevronToggle = BootstrapIconData(
     [BootstrapIconPath('M5 14l6-6-6-6')],

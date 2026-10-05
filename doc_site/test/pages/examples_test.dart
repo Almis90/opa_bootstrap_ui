@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:doc_site/pages/examples/album_example_page.dart';
 import 'package:doc_site/pages/examples/headers_example_page.dart';
 import 'package:doc_site/pages/examples/heroes_example_page.dart';
 import 'package:doc_site/pages/examples/jumbotron_example_page.dart';
@@ -27,6 +28,7 @@ import '../test_utils.dart';
 void main() {
   for (final width in [375.0, 1000.0, 1300.0]) {
     for (final entry in {
+      'Album': () => const AlbumExamplePage(),
       'Headers': () => const HeadersExamplePage(),
       'Heroes': () => const HeroesExamplePage(),
       'Jumbotron': () => const JumbotronExamplePage(),

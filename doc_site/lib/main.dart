@@ -35,6 +35,7 @@ import 'pages/forms/form_control_page.dart';
 import 'pages/forms/input_group_page.dart';
 import 'pages/forms/range_page.dart';
 import 'pages/forms/select_page.dart';
+import 'pages/examples/album_example_page.dart';
 import 'pages/examples/headers_example_page.dart';
 import 'pages/examples/heroes_example_page.dart';
 import 'pages/examples/jumbotron_example_page.dart';
@@ -171,6 +172,11 @@ final _sections = [
 ];
 
 final _examples = [
+  ExampleEntry(
+    title: 'Album',
+    description: 'A photo album: a collapsible header, an intro and a grid of thumbnail cards.',
+    builder: (_) => const AlbumExamplePage(),
+  ),
   ExampleEntry(
     title: 'Headers',
     description: 'Eight header layouts, from a bare brand-and-nav bar to a two-tier icon navigation bar.',
