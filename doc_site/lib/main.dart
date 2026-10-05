@@ -36,6 +36,7 @@ import 'pages/forms/input_group_page.dart';
 import 'pages/forms/range_page.dart';
 import 'pages/forms/select_page.dart';
 import 'pages/examples/album_example_page.dart';
+import 'pages/examples/badges_example_page.dart';
 import 'pages/examples/headers_example_page.dart';
 import 'pages/examples/heroes_example_page.dart';
 import 'pages/examples/jumbotron_example_page.dart';
@@ -181,6 +182,11 @@ final _examples = [
     title: 'Album RTL',
     description: 'The album page, right to left in Arabic.',
     builder: (_) => const AlbumExamplePage(rtl: true),
+  ),
+  ExampleEntry(
+    title: 'Badges',
+    description: 'Pill badges in every color: solid, subtle, with avatars and dismiss icons.',
+    builder: (_) => const BadgesExamplePage(),
   ),
   ExampleEntry(
     title: 'Headers',
