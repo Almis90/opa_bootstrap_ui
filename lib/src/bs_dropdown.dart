@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import 'bs_clip_rrect.dart';
 import 'bs_placement.dart';
 import 'bs_theme.dart';
 import 'tokens/bs_dropdown_style.dart';
@@ -426,7 +427,7 @@ class _BsDropdownMenu extends StatelessWidget {
             borderRadius: borderRadius,
             boxShadow: style.boxShadow,
           ),
-          child: ClipRRect(
+          child: BsClipRRect(
             borderRadius: borderRadius,
             child: Padding(
               padding: style.padding ?? BsDropdownStyle.defaultPadding,

@@ -415,6 +415,12 @@ class _BsNavLinkWidgetState extends State<_BsNavLinkWidget> {
           // .125rem solid transparent }`: the border adds to the link's height.
           widget.variant == BsNavVariant.underline
               ? _underlinePadding(style)
+              // `.nav-tabs .nav-link { border: 1px solid transparent }`: always
+              // there (the active tab only colors it), and part of its size.
+              : widget.variant == BsNavVariant.tabs
+              ? (style.linkPadding ?? BsNavStyle.defaultLinkPadding).add(
+                  const EdgeInsets.all(1),
+                )
               : style.linkPadding ?? BsNavStyle.defaultLinkPadding,
         ),
         child: DefaultTextStyle.merge(

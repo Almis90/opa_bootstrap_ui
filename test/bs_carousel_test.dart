@@ -207,4 +207,25 @@ void main() {
     expect(find.text('Slide 1'), findsOneWidget);
     expect(events, ['slide', 'slid']);
   });
+
+  // The PageView behind a wrapping carousel has a bounded virtual range that is
+  // re-centred as it nears an end (a huge one asserts with fractional pages).
+  testWidgets('keeps wrapping past the end of its virtual range', (tester) async {
+    final controller = BsCarouselController(itemCount: 3);
+    await tester.pumpWidget(
+      BsApp(
+        home: SizedBox(
+          height: 200,
+          width: 400.4,
+          child: BsCarousel(controller: controller, items: slides(3), interval: null),
+        ),
+      ),
+    );
+    for (var i = 1; i <= 160; i++) {
+      controller.next();
+      await tester.pumpAndSettle();
+      expect(controller.index, i % 3);
+    }
+    expect(tester.takeException(), isNull);
+  });
 }

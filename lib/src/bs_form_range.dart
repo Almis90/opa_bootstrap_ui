@@ -97,7 +97,8 @@ class _BsFormRangeState extends State<BsFormRange> {
               ? (_) => setState(() => _dragging = false)
               : null,
           child: SizedBox(
-            height: thumbSize,
+            // `.form-range { height: 1.5rem }`; the thumb is centred in it.
+            height: thumbSize < 24 ? 24 : thumbSize,
             width: double.infinity,
             child: Stack(
               alignment: AlignmentDirectional.centerStart,

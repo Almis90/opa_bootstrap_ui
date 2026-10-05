@@ -1,6 +1,7 @@
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
+import 'bs_clip_rrect.dart';
 import 'bs_breakpoint.dart';
 import 'bs_color_utils.dart';
 import 'bs_colors.dart';
@@ -600,7 +601,7 @@ class BsBox extends StatelessWidget {
                 double.infinity,
               ),
             );
-      content = ClipRRect(
+      content = BsClipRRect(
         borderRadius: inner,
         child: hasPadding ? Padding(padding: padding, child: content) : content,
       );

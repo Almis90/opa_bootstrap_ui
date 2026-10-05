@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/widgets.dart';
 
+import 'bs_clip_rrect.dart';
 import 'bs_box.dart';
 import 'bs_color_utils.dart';
 import 'bs_breakpoint.dart';
@@ -154,7 +155,7 @@ class BsCard extends StatelessWidget {
         ),
         // (Clipped to the padding box — inside the border — so a header's or
         // image's corners follow the inner radius.)
-        child: ClipRRect(
+        child: BsClipRRect(
           borderRadius: innerClipRadius,
           child: DefaultTextStyle.merge(
             style: TextStyle(color: style.color),
@@ -442,7 +443,7 @@ class BsCardImg extends StatelessWidget {
     final squareStart = scope?.groupStartJoin ?? false;
     final squareEnd = scope?.groupEndJoin ?? false;
 
-    return ClipRRect(
+    return BsClipRRect(
       borderRadius: BorderRadiusDirectional.only(
         topStart: position != BsCardImgPosition.bottom && !squareStart
             ? radius
@@ -477,7 +478,7 @@ class BsCardImgOverlay extends StatelessWidget {
         style.innerBorderRadius ?? BsCardStyle.defaultInnerBorderRadius;
 
     return Positioned.fill(
-      child: ClipRRect(
+      child: BsClipRRect(
         borderRadius: BorderRadius.circular(innerRadius),
         child: Padding(
           padding: EdgeInsets.all(

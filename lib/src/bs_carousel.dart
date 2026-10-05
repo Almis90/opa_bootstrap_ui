@@ -184,10 +184,13 @@ class BsCarousel extends StatefulWidget {
 }
 
 class _BsCarouselState extends State<BsCarousel> {
-  // A large virtual page count lets the PageView wrap seamlessly in either
+  // A virtual page count lets the PageView wrap seamlessly in either
   // direction; the real slide index is just the virtual page modulo the
-  // item count.
-  static const int _virtualMultiplier = 100000;
+  // item count. It stays small, and is re-centred whenever the carousel
+  // settles near an end: a PageView of fractional-width pages asserts (in
+  // debug) once its scroll extent is large enough to lose precision.
+  static const int _virtualMultiplier = 40;
+  static const int _recenterMargin = 5;
 
   BsCarouselController? _ownedController;
   late final PageController _pageController = PageController(initialPage: _virtualInitialPage);
@@ -290,6 +293,15 @@ class _BsCarouselState extends State<BsCarousel> {
     // delta of 0 needing no further animation.
     _controller.syncIndexFromSwipe(resolved);
     widget.onSlid?.call();
+    if (_loops &&
+        (page < count * _recenterMargin ||
+            page >= count * (_virtualMultiplier - _recenterMargin))) {
+      // The same slide, in the middle of the virtual range again.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted || !_pageController.hasClients) return;
+        _pageController.jumpToPage(count * (_virtualMultiplier ~/ 2) + resolved);
+      });
+    }
   }
 
   BsCarouselStyle get _resolvedStyle => BsCarouselStyle.defaults.merge(widget.style);

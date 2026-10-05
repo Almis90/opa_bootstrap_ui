@@ -135,8 +135,12 @@ class _BsTableState extends State<BsTable> {
 
     // Every cell has a bottom border (collapsed with the next row's top one) that
     // takes room: Flutter's [Table] only paints its rules, so make it.
-    final rule = widget.borderless || widget.bordered ? 0.0 : borderWidth;
+    final rule = widget.borderless ? 0.0 : borderWidth;
     final cellPadding = padding.add(EdgeInsets.only(bottom: rule));
+    // `.table-bordered`: the table's own top rule takes room too.
+    final firstRowPadding = widget.bordered
+        ? cellPadding.add(EdgeInsets.only(top: borderWidth))
+        : cellPadding;
     final rows = <TableRow>[
       if (widget.columns != null)
         TableRow(
@@ -145,7 +149,11 @@ class _BsTableState extends State<BsTable> {
           ),
           children: [
             for (final cell in widget.columns!)
-              _cell(cell, padding: cellPadding, fontWeight: FontWeight.bold),
+              _cell(
+                cell,
+                padding: firstRowPadding,
+                fontWeight: FontWeight.bold,
+              ),
           ],
         ),
       for (var i = 0; i < widget.rows.length; i++)
@@ -154,7 +162,7 @@ class _BsTableState extends State<BsTable> {
           widget.rows[i],
           style,
           background,
-          cellPadding,
+          i == 0 && widget.columns == null ? firstRowPadding : cellPadding,
           isDark,
           ruleColor: color,
         ),

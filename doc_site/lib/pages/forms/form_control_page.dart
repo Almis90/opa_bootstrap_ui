@@ -71,6 +71,27 @@ BsFormControl(placeholder: 'Please provide a value', valid: false)''',
             ],
           ),
         ),
+        DocExample(
+          title: 'File input',
+          description: 'BsFormFile draws the browser\'s file input — the "Choose File" button and the chosen name. '
+              'The package has no file picker, so pass onPressed to open one and fileName for the result.',
+          code: '''
+BsFormFile(onPressed: () {})
+BsFormFile(fileName: 'photo.png', onPressed: () {})
+BsFormFile(size: BsFormControlSize.small, onPressed: () {})
+BsFormFile(enabled: false)''',
+          preview: Column(
+            children: [
+              BsFormFile(onPressed: () {}),
+              const SizedBox(height: 8),
+              BsFormFile(fileName: 'photo.png', onPressed: () {}),
+              const SizedBox(height: 8),
+              BsFormFile(size: BsFormControlSize.small, onPressed: () {}),
+              const SizedBox(height: 8),
+              const BsFormFile(enabled: false),
+            ],
+          ),
+        ),
       ],
     );
   }

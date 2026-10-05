@@ -256,10 +256,10 @@ void main() {
         child: SizedBox(key: Key('c'), width: 50, height: 20),
       ),
     );
-    expect(find.byType(ClipRRect), findsOneWidget);
+    expect(find.byType(BsClipRRect), findsOneWidget);
     expect(tester.getSize(find.byKey(const Key('c'))).width, 50);
     // (the box itself is 50px wide inside the 400px line it is placed in)
-    expect(tester.getSize(find.byType(ClipRRect)).width, 50);
+    expect(tester.getSize(find.byType(BsClipRRect)).width, 50);
   });
 
   testWidgets('display headings are fluid below xl and fixed from it', (

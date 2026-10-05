@@ -221,7 +221,9 @@ class BsMark extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = BsTheme.of(context) == Brightness.dark;
     return Container(
-      padding: const EdgeInsets.all(BsTypography.markPadding),
+      // `mark { padding: .1875em }`: an inline box's vertical padding paints
+      // but takes no room, so only the sides are padded here.
+      padding: const EdgeInsets.symmetric(horizontal: BsTypography.markPadding),
       color: isDark ? _darkBackground : _background,
       child: child,
     );
@@ -240,19 +242,17 @@ class BsBlockquote extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Reboot: `blockquote { margin: 0 0 1rem }`.
+    // Reboot: `blockquote { margin: 0 0 1rem }`; `.blockquote { font-size:
+    // 1.25rem }` is on the blockquote itself, so its footer's `.875em` is of that.
     return Padding(
       padding: const EdgeInsets.only(bottom: BsTypography.blockquoteMarginY),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          DefaultTextStyle.merge(
-            style: const TextStyle(fontSize: BsTypography.blockquoteFontSize),
-            child: child,
-          ),
-          ?footer,
-        ],
+      child: DefaultTextStyle.merge(
+        style: const TextStyle(fontSize: BsTypography.blockquoteFontSize),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [child, ?footer],
+        ),
       ),
     );
   }
@@ -303,9 +303,11 @@ class BsBlockquoteFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // `.blockquote-footer { font-size: .875em }`
+    final base = DefaultTextStyle.of(context).style.fontSize ?? BsTypography.fontSizeBase;
     Widget footer = DefaultTextStyle.merge(
       style: TextStyle(
-        fontSize: BsTypography.blockquoteFooterFontSize,
+        fontSize: base * 0.875,
         color: color ?? BsTypography.blockquoteFooterColor,
       ),
       child: _withDash(child),

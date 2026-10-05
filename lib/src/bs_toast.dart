@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 
+import 'bs_clip_rrect.dart';
 import 'bs_close_button.dart';
 import 'bs_theme.dart';
 import 'tokens/bs_close_button_style.dart';
@@ -348,7 +349,7 @@ class BsToast extends StatelessWidget {
           borderRadius: borderRadius,
           boxShadow: style.boxShadow ?? BsToastStyle.defaultBoxShadow,
         ),
-        child: ClipRRect(
+        child: BsClipRRect(
           borderRadius: borderRadius,
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -356,7 +357,13 @@ class BsToast extends StatelessWidget {
             children: [
               ?header,
               Padding(
-                padding: style.padding ?? BsToastStyle.defaultPadding,
+                // `.toast-body { padding: var(--bs-toast-padding-x) }`: the
+                // horizontal padding on every side.
+                padding: EdgeInsets.all(
+                  (style.padding ?? BsToastStyle.defaultPadding)
+                      .resolve(TextDirection.ltr)
+                      .left,
+                ),
                 child: DefaultTextStyle.merge(
                   style: TextStyle(color: style.color, fontSize: style.fontSize ?? BsToastStyle.defaultFontSize),
                   child: body,
@@ -399,31 +406,64 @@ class BsToastHeader extends StatelessWidget {
         ),
       ),
       child: Padding(
-        padding: style.padding ?? BsToastStyle.defaultPadding,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              child: DefaultTextStyle.merge(
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: style.headerColor ?? BsToastStyle.defaultHeaderColor,
+        // `.toast-header { padding: .5rem .75rem }`
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        child: DefaultTextStyle.merge(
+          style: TextStyle(
+            fontSize: style.fontSize ?? BsToastStyle.defaultFontSize,
+            height: 1.5,
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: DefaultTextStyle.merge(
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: style.headerColor ?? BsToastStyle.defaultHeaderColor,
+                  ),
+                  child: title,
                 ),
-                child: title,
               ),
-            ),
-            if (meta != null) ...[
-              const SizedBox(width: 8),
-              DefaultTextStyle.merge(
-                style: TextStyle(fontSize: 12, color: style.headerColor ?? BsToastStyle.defaultHeaderColor),
-                child: meta!,
-              ),
+              if (meta != null)
+                // (`<small>`: `.875em` of the toast's font size)
+                DefaultTextStyle.merge(
+                  style: TextStyle(
+                    fontSize:
+                        (style.fontSize ?? BsToastStyle.defaultFontSize) *
+                        0.875,
+                    color: style.headerColor ?? BsToastStyle.defaultHeaderColor,
+                  ),
+                  child: meta!,
+                ),
+              if (onClose != null) ...[
+                // `.toast-header .btn-close { margin-left: .75rem;
+                // margin-right: -.375rem }`
+                const SizedBox(width: 12),
+                SizedBox(
+                  width: 21 - 6,
+                  height: 21,
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      PositionedDirectional(
+                        start: 0,
+                        width: 21,
+                        height: 21,
+                        child: BsCloseButton(
+                          onPressed: onClose,
+                          style: const BsCloseButtonStyle(
+                            size: 14,
+                            padding: EdgeInsets.all(3.5),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ],
-            if (onClose != null) ...[
-              const SizedBox(width: 8),
-              BsCloseButton(onPressed: onClose, style: const BsCloseButtonStyle(size: 12)),
-            ],
-          ],
+          ),
         ),
       ),
     );

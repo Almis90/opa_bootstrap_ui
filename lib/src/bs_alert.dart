@@ -225,14 +225,24 @@ class BsAlertLink extends StatelessWidget {
   /// `.alert-link` color/weight, not `<a>`'s navigation behavior.
   final VoidCallback? onTap;
 
-  @override
-  Widget build(BuildContext context) {
+  /// The style of an `.alert-link` — the enclosing alert's link color and weight,
+  /// underlined like any `<a>` — for a `TextSpan` that must wrap with the text
+  /// around it (a [BsAlertLink] widget is one box, and wraps as a whole).
+  static TextStyle styleOf(BuildContext context) {
     final scope = _BsAlertScope.maybeOf(context);
     final color = scope?.linkColor ?? BsVariant.primary.textEmphasis;
-    final fontWeight = scope?.linkFontWeight ?? BsAlertStyle.defaultLinkFontWeight;
+    return TextStyle(
+      color: color,
+      fontWeight: scope?.linkFontWeight ?? BsAlertStyle.defaultLinkFontWeight,
+      decoration: TextDecoration.underline,
+      decorationColor: color,
+    );
+  }
 
+  @override
+  Widget build(BuildContext context) {
     final styledChild = DefaultTextStyle.merge(
-      style: TextStyle(color: color, fontWeight: fontWeight),
+      style: styleOf(context),
       child: child,
     );
 

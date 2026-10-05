@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import 'bs_pull_start.dart';
 import 'bs_focusable.dart';
 import 'bs_theme.dart';
 import 'tokens/bs_focus_ring.dart';
@@ -36,10 +37,14 @@ class BsPaginationItem {
 /// Use [BsPagination.numberedItems] to generate a page-number-plus-prev/next
 /// item list for the common case.
 class BsPagination extends StatelessWidget {
-  const BsPagination({super.key, required this.items, this.style});
+  const BsPagination({super.key, required this.items, this.wrap = false, this.style});
 
   /// The items to render, in order.
   final List<BsPaginationItem> items;
+
+  /// `flex-wrap`: items that don't fit move on to another line, instead of
+  /// running off the end of the first.
+  final bool wrap;
 
   /// Style overrides layered on top of [BsPaginationStyle.defaults].
   final BsPaginationStyle? style;
@@ -79,6 +84,32 @@ class BsPagination extends StatelessWidget {
     final style = (isDark ? BsPaginationStyle.darkDefaults : BsPaginationStyle.defaults).merge(this.style);
     final borderWidth = style.borderWidth ?? BsPaginationStyle.defaultBorderWidth;
     final radius = Radius.circular(style.borderRadius ?? BsPaginationStyle.defaultBorderRadius);
+
+    if (wrap) {
+      // Each item but the first is pulled over its neighbour by a border width.
+      return Wrap(
+        children: [
+          for (var i = 0; i < items.length; i++)
+            if (i == 0)
+              _BsPaginationItemWidget(
+                item: items[i],
+                style: style,
+                borderRadius: BorderRadius.horizontal(left: radius),
+              )
+            else
+              BsPullStart(
+                by: borderWidth,
+                child: _BsPaginationItemWidget(
+                  item: items[i],
+                  style: style,
+                  borderRadius: BorderRadius.horizontal(
+                    right: i == items.length - 1 ? radius : Radius.zero,
+                  ),
+                ),
+              ),
+        ],
+      );
+    }
 
     final widgets = <Widget>[];
     var cumulativeOverlap = 0.0;

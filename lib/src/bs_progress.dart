@@ -1,5 +1,7 @@
 import 'package:flutter/widgets.dart';
 
+import 'bs_color_utils.dart';
+import 'bs_clip_rrect.dart';
 import 'bs_theme.dart';
 import 'bs_variant.dart';
 import 'tokens/bs_progress_style.dart';
@@ -104,7 +106,7 @@ class BsProgress extends StatelessWidget {
       style.barTransitionDuration ?? BsProgressStyle.defaultBarTransitionDuration,
     );
 
-    return ClipRRect(
+    return BsClipRRect(
       borderRadius: BorderRadius.circular(borderRadius),
       child: BsDecoratedBox(
         decoration: BoxDecoration(
@@ -225,10 +227,14 @@ class _BsProgressBarState extends State<BsProgressBar>
   Widget build(BuildContext context) {
     final style = BsProgressStyle.defaults.merge(widget.style);
     final background =
-        style.barBackground ??
         widget.variant?.color ??
+        style.barBackground ??
         BsProgressStyle.defaultBarBackground;
-    final color = style.barColor ?? BsProgressStyle.defaultBarColor;
+    // `.text-bg-*`: light variants (warning, info, light) take dark text; on
+    // the others `.progress-bar`'s white is what `.bg-*` leaves.
+    final color = widget.variant != null
+        ? BsColorUtils.contrast(background)
+        : style.barColor ?? BsProgressStyle.defaultBarColor;
     final striped = widget.striped || widget.animated;
 
     return BsDecoratedBox(

@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import 'bs_clip_rrect.dart';
 import 'bs_placement.dart';
 import 'bs_theme.dart';
 import 'tokens/bs_popover_style.dart';
@@ -383,7 +384,7 @@ class _BsPopoverContent extends StatelessWidget {
             borderRadius: borderRadius,
             boxShadow: style.boxShadow,
           ),
-          child: ClipRRect(
+          child: BsClipRRect(
             borderRadius: borderRadius,
             child: Column(
               mainAxisSize: MainAxisSize.min,

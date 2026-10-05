@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import 'bs_clip_rrect.dart';
 import 'bs_form_control.dart';
 import 'bs_theme.dart';
 import 'tokens/bs_form_style.dart';
@@ -62,7 +63,7 @@ class BsInputGroup extends StatelessWidget {
         ),
         borderRadius: BorderRadius.circular(borderRadius),
       ),
-      child: ClipRRect(
+      child: BsClipRRect(
         borderRadius: BorderRadius.circular(borderRadius),
         child: IntrinsicHeight(
           child: Row(

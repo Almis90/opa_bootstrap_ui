@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import 'bs_clip_rrect.dart';
 import 'bs_close_button.dart';
 import 'bs_theme.dart';
 import 'tokens/bs_modal_style.dart';
@@ -285,7 +286,7 @@ class BsModal extends StatelessWidget {
         borderRadius: borderRadius,
         boxShadow: style.contentBoxShadow,
       ),
-      child: ClipRRect(
+      child: BsClipRRect(
         borderRadius: borderRadius,
         child: DefaultTextStyle.merge(
           style: TextStyle(color: style.contentColor),

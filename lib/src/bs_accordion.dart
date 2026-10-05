@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import 'bs_clip_rrect.dart';
 import 'bs_focusable.dart';
 import 'bs_theme.dart';
 import 'tokens/bs_accordion_style.dart';
@@ -402,11 +403,14 @@ class _BsAccordionItemViewState extends State<_BsAccordionItemView> {
         ? (style.iconActiveColor ?? buttonColor)
         : (style.iconColor ?? BsAccordionStyle.defaultIconColor);
 
-    return ClipRRect(
+    return BsClipRRect(
       borderRadius: borderRadius,
       child: BsDecoratedBox(
         decoration: BoxDecoration(border: border, borderRadius: borderRadius),
-        child: Column(
+        // (the borders take room, as CSS borders do)
+        child: Padding(
+          padding: border.dimensions,
+          child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             BsFocusableBuilder(
@@ -435,7 +439,9 @@ class _BsAccordionItemViewState extends State<_BsAccordionItemView> {
                       children: [
                         Expanded(
                           child: DefaultTextStyle.merge(
-                            style: TextStyle(color: buttonColor, fontWeight: FontWeight.w500),
+                            // (`.accordion-header` is a heading — `line-height: 1.2` — but the button
+                            // inside keeps the regular weight)
+                            style: TextStyle(color: buttonColor, height: 1.2),
                             child: widget.item.header,
                           ),
                         ),
@@ -477,6 +483,7 @@ class _BsAccordionItemViewState extends State<_BsAccordionItemView> {
                   : const SizedBox(width: double.infinity, height: 0),
             ),
           ],
+        ),
         ),
       ),
     );

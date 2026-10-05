@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import 'bs_clip_rrect.dart';
 import 'bs_colors.dart';
 import 'tokens/bs_placeholder_style.dart';
 import 'tokens/bs_transitions.dart';
@@ -118,7 +119,7 @@ class _BsPlaceholderState extends State<BsPlaceholder> with SingleTickerProvider
       );
     }
 
-    bar = ClipRRect(
+    bar = BsClipRRect(
       borderRadius: BorderRadius.circular(widget.borderRadius),
       child: SizedBox(width: widget.width ?? double.infinity, height: widget.height, child: bar),
     );

@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import 'bs_clip_rrect.dart';
 import 'bs_theme.dart';
 import 'tokens/bs_thumbnail_style.dart';
 import 'bs_decorated_box.dart';
@@ -33,7 +34,7 @@ class BsThumbnail extends StatelessWidget {
         borderRadius: radius,
         boxShadow: style.boxShadow,
       ),
-      child: ClipRRect(
+      child: BsClipRRect(
         borderRadius: radius,
         child: Padding(padding: EdgeInsets.all(padding), child: child),
       ),
