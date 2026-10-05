@@ -5,6 +5,7 @@ import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 
 import '../../src/bootstrap_icon.dart';
 import '../../src/example_container960.dart';
+import '../../src/example_icon_link.dart';
 import '../../src/inline_line.dart';
 
 /// The "Product" example: a port of Bootstrap's own `examples/product` page —
@@ -209,10 +210,7 @@ class ProductExamplePage extends StatelessWidget {
               child: BsFlex(
                 gap: BsSpacing.s3,
                 justifyContent: BsJustify.center,
-                children: [
-                  _iconLink(context, 'Learn more'),
-                  _iconLink(context, 'Buy'),
-                ],
+                children: [_iconLink('Learn more'), _iconLink('Buy')],
               ),
             ),
           ),
@@ -221,32 +219,12 @@ class ProductExamplePage extends StatelessWidget {
     );
   }
 
-  /// `<a class="icon-link">Learn more <svg class="bi">` (`.75em` icon in the
-  /// product page's CSS): `inline-flex`, a `.375rem` gap, underlined text.
-  static Widget _iconLink(BuildContext context, String text) {
-    final color = BsLink.colorOf(context);
-    return BsFlex(
-      inline: true,
-      alignItems: BsAlign.center,
-      children: [
-        Text(
-          text,
-          style: TextStyle(
-            color: color,
-            decoration: TextDecoration.underline,
-            decorationColor: color.withValues(alpha: 0.5),
-          ),
-        ),
-        const SizedBox(width: 6),
-        BootstrapIcon(
-          BootstrapIconData.chevronRight,
-          width: 15,
-          height: 15,
-          color: color,
-        ),
-      ],
-    );
-  }
+  /// `.icon-link` with the product page's `.75em` icon.
+  static Widget _iconLink(String text) => ExampleIconLink(
+    text: text,
+    icon: BootstrapIconData.chevronRight,
+    iconSize: 15,
+  );
 
   // --- the rows of panels ---
 

@@ -18,6 +18,7 @@ import 'package:doc_site/pages/examples/pricing_example_page.dart';
 import 'package:doc_site/pages/examples/product_example_page.dart';
 import 'package:doc_site/pages/examples/sidebars_example_page.dart';
 import 'package:doc_site/pages/examples/sign_in_example_page.dart';
+import 'package:doc_site/pages/examples/starter_template_example_page.dart';
 
 import '../test_utils.dart';
 
@@ -41,6 +42,7 @@ void main() {
       'Product': () => const ProductExamplePage(),
       'Sidebars': () => const SidebarsExamplePage(),
       'Sign-in': () => const SignInExamplePage(),
+      'Starter template': () => const StarterTemplateExamplePage(),
     }.entries) {
       testWidgets(
         '${entry.key} example lays out without errors at ${width.toInt()}px',

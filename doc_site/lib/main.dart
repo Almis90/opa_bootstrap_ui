@@ -52,6 +52,7 @@ import 'pages/examples/pricing_example_page.dart';
 import 'pages/examples/product_example_page.dart';
 import 'pages/examples/sidebars_example_page.dart';
 import 'pages/examples/sign_in_example_page.dart';
+import 'pages/examples/starter_template_example_page.dart';
 import 'pages/getting_started/introduction_page.dart';
 import 'pages/layout/breakpoints_page.dart';
 import 'pages/layout/containers_page.dart';
@@ -256,5 +257,10 @@ final _examples = [
     title: 'Sign-in',
     description: 'A centered sign-in form with floating labels.',
     builder: (_) => const SignInExamplePage(),
+  ),
+  ExampleEntry(
+    title: 'Starter template',
+    description: 'A barebones starter page: header, intro and two columns of links.',
+    builder: (_) => const StarterTemplateExamplePage(),
   ),
 ];
