@@ -43,6 +43,7 @@ import 'pages/examples/carousel_example_page.dart';
 import 'pages/examples/checkout_example_page.dart';
 import 'pages/examples/cover_example_page.dart';
 import 'pages/examples/dashboard_example_page.dart';
+import 'pages/examples/dropdowns_example_page.dart';
 import 'pages/examples/headers_example_page.dart';
 import 'pages/examples/heroes_example_page.dart';
 import 'pages/examples/jumbotron_example_page.dart';
@@ -242,6 +243,11 @@ final _examples = [
     description: 'The dashboard, right to left in Arabic.',
     builder: (_) => const DashboardExamplePage(rtl: true),
     fixed: (context) => DashboardExamplePage.fixed(context, rtl: true),
+  ),
+  ExampleEntry(
+    title: 'Dropdowns',
+    description: 'Static dropdown menus in light and dark: lists, filters, icons, calendars and mega menus.',
+    builder: (_) => const DropdownsExamplePage(),
   ),
   ExampleEntry(
     title: 'Headers',
