@@ -17,6 +17,7 @@ import 'package:doc_site/pages/examples/offcanvas_navbar_example_page.dart';
 import 'package:doc_site/pages/examples/pricing_example_page.dart';
 import 'package:doc_site/pages/examples/product_example_page.dart';
 import 'package:doc_site/pages/examples/sidebars_example_page.dart';
+import 'package:doc_site/pages/examples/sign_in_example_page.dart';
 
 import '../test_utils.dart';
 
@@ -39,6 +40,7 @@ void main() {
       'Pricing': () => const PricingExamplePage(),
       'Product': () => const ProductExamplePage(),
       'Sidebars': () => const SidebarsExamplePage(),
+      'Sign-in': () => const SignInExamplePage(),
     }.entries) {
       testWidgets(
         '${entry.key} example lays out without errors at ${width.toInt()}px',

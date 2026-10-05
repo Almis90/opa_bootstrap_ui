@@ -51,6 +51,7 @@ import 'pages/examples/offcanvas_navbar_example_page.dart';
 import 'pages/examples/pricing_example_page.dart';
 import 'pages/examples/product_example_page.dart';
 import 'pages/examples/sidebars_example_page.dart';
+import 'pages/examples/sign_in_example_page.dart';
 import 'pages/getting_started/introduction_page.dart';
 import 'pages/layout/breakpoints_page.dart';
 import 'pages/layout/containers_page.dart';
@@ -250,5 +251,10 @@ final _examples = [
     title: 'Sidebars',
     description: 'Five sidebars: nav pills, icon-only, collapsible and a list group.',
     builder: (_) => const SidebarsExamplePage(),
+  ),
+  ExampleEntry(
+    title: 'Sign-in',
+    description: 'A centered sign-in form with floating labels.',
+    builder: (_) => const SignInExamplePage(),
   ),
 ];

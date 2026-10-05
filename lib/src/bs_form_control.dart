@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 
+import 'bs_box.dart';
 import 'bs_colors.dart';
 import 'bs_theme.dart';
 import 'tokens/bs_form_style.dart';
@@ -33,6 +34,8 @@ class BsFormControl extends StatefulWidget {
     this.size = BsFormControlSize.normal,
     this.valid,
     this.showBorder = true,
+    this.roundedTop,
+    this.roundedBottom,
     this.onChanged,
     this.onSubmitted,
     this.style,
@@ -72,6 +75,14 @@ class BsFormControl extends StatefulWidget {
   /// Set false inside a `BsInputGroup`, which draws one shared border
   /// around the whole group instead.
   final bool showBorder;
+
+  /// `rounded-top-*` (`rounded-top-0`): the radius of the top corners in place
+  /// of the control's.
+  final BsRounded? roundedTop;
+
+  /// `rounded-bottom-*`: the radius of the bottom corners in place of the
+  /// control's.
+  final BsRounded? roundedBottom;
 
   final ValueChanged<String>? onChanged;
 
@@ -238,7 +249,12 @@ class _BsFormControlState extends State<BsFormControl>
               )
             : null,
         borderRadius: widget.showBorder
-            ? BorderRadius.circular(borderRadius)
+            ? BorderRadius.vertical(
+                top: Radius.circular(widget.roundedTop?.radius ?? borderRadius),
+                bottom: Radius.circular(
+                  widget.roundedBottom?.radius ?? borderRadius,
+                ),
+              )
             : null,
         boxShadow: widget.showBorder
             ? (focused ? style.inputFocusBoxShadow : style.inputBoxShadow)

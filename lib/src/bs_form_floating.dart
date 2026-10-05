@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import 'bs_box.dart';
 import 'bs_form_control.dart';
 import 'bs_theme.dart';
 import 'tokens/bs_form_style.dart';
@@ -20,6 +21,8 @@ class BsFormFloating extends StatefulWidget {
     this.autofocus = false,
     this.keyboardType,
     this.valid,
+    this.roundedTop,
+    this.roundedBottom,
     this.onChanged,
     this.onSubmitted,
     this.style,
@@ -49,6 +52,12 @@ class BsFormFloating extends StatefulWidget {
   /// `.is-valid`/`.is-invalid`: tints the border [BsFormStyle.validColor] or
   /// [BsFormStyle.invalidColor]. Null renders neither.
   final bool? valid;
+
+  /// `rounded-top-*` on the input (`rounded-top-0`).
+  final BsRounded? roundedTop;
+
+  /// `rounded-bottom-*` on the input.
+  final BsRounded? roundedBottom;
 
   final ValueChanged<String>? onChanged;
 
@@ -94,25 +103,31 @@ class _BsFormFloatingState extends State<BsFormFloating> {
   Widget build(BuildContext context) {
     final isDark = BsTheme.of(context) == Brightness.dark;
     final duration = BsTransitions.resolve(context, _duration);
-    final style = (isDark ? BsFormStyle.darkDefaults : BsFormStyle.defaults).merge(widget.style);
+    final style = (isDark ? BsFormStyle.darkDefaults : BsFormStyle.defaults)
+        .merge(widget.style);
     final height = style.floatingHeight ?? BsFormStyle.defaultFloatingHeight;
     final horizontalPadding =
         (style.floatingPadding ?? BsFormStyle.defaultFloatingPadding)
             .horizontal /
         2;
     final fontSize = style.inputFontSize ?? BsFormStyle.defaultInputFontSize;
+    final borderWidth =
+        style.inputBorderWidth ?? BsFormStyle.defaultInputBorderWidth;
     final labelColor =
         style.inputPlaceholderColor ?? BsFormStyle.defaultInputPlaceholderColor;
     final floatedOpacity =
         style.floatingLabelOpacity ?? BsFormStyle.defaultFloatingLabelOpacity;
     final inputPaddingTop =
-        style.floatingInputPaddingTop ?? BsFormStyle.defaultFloatingInputPaddingTop;
+        style.floatingInputPaddingTop ??
+        BsFormStyle.defaultFloatingInputPaddingTop;
     final inputPaddingBottom =
-        style.floatingInputPaddingBottom ?? BsFormStyle.defaultFloatingInputPaddingBottom;
+        style.floatingInputPaddingBottom ??
+        BsFormStyle.defaultFloatingInputPaddingBottom;
     final lineHeight =
         style.floatingLineHeight ?? BsFormStyle.defaultFloatingLineHeight;
     final disabledLabelColor =
-        style.floatingLabelDisabledColor ?? BsFormStyle.defaultFloatingLabelDisabledColor;
+        style.floatingLabelDisabledColor ??
+        BsFormStyle.defaultFloatingLabelDisabledColor;
 
     return SizedBox(
       height: height,
@@ -128,6 +143,8 @@ class _BsFormFloatingState extends State<BsFormFloating> {
               obscureText: widget.obscureText,
               keyboardType: widget.keyboardType,
               valid: widget.valid,
+              roundedTop: widget.roundedTop,
+              roundedBottom: widget.roundedBottom,
               onChanged: (value) {
                 widget.onChanged?.call(value);
                 setState(() {});
@@ -148,23 +165,30 @@ class _BsFormFloatingState extends State<BsFormFloating> {
             child: AnimatedAlign(
               duration: duration,
               curve: Curves.easeOut,
-              alignment: _floated ? AlignmentDirectional.topStart : AlignmentDirectional.centerStart,
+              alignment: _floated
+                  ? AlignmentDirectional.topStart
+                  : AlignmentDirectional.centerStart,
               child: Padding(
+                // The label's own box has the control's `1px` border too.
                 padding: EdgeInsets.only(
-                  left: horizontalPadding,
-                  right: horizontalPadding,
+                  left: horizontalPadding + borderWidth,
+                  right: horizontalPadding + borderWidth,
                   top: _floated ? height * 0.22 : 0,
                 ),
                 child: AnimatedDefaultTextStyle(
                   duration: duration,
                   curve: Curves.easeOut,
-                  style: TextStyle(
-                    fontSize: _floated ? fontSize * 0.85 : fontSize,
-                    color: !widget.enabled
-                        ? disabledLabelColor
-                        : _floated
-                        ? labelColor.withValues(alpha: floatedOpacity)
-                        : labelColor,
+                  // (this replaces the ambient style, so it starts from it: the
+                  // line height and how it is split above/below the text)
+                  style: DefaultTextStyle.of(context).style.merge(
+                    TextStyle(
+                      fontSize: _floated ? fontSize * 0.85 : fontSize,
+                      color: !widget.enabled
+                          ? disabledLabelColor
+                          : _floated
+                          ? labelColor.withValues(alpha: floatedOpacity)
+                          : labelColor,
+                    ),
                   ),
                   child: widget.label,
                 ),
