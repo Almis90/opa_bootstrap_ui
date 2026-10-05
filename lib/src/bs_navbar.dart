@@ -66,6 +66,8 @@ class BsNavbar extends StatefulWidget {
     this.centerItems = false,
     this.endItems = false,
     this.offcanvasBuilder,
+    this.onToggle,
+    this.bareToggler = false,
     this.collapseBuilder,
     this.style,
     this.collapseController,
@@ -115,6 +117,15 @@ class BsNavbar extends StatefulWidget {
   /// rendered nav links, instead of revealing a [BsCollapse].
   final Widget Function(BuildContext context, List<Widget> links)?
   offcanvasBuilder;
+
+  /// Called when the toggler is tapped, in place of opening the collapse or
+  /// offcanvas: for a navbar whose menu is the caller's own (the page then
+  /// shows it wherever it likes).
+  final VoidCallback? onToggle;
+
+  /// `navbar-toggler p-0 border-0`: just the hamburger icon, with no padding or
+  /// border.
+  final bool bareToggler;
 
   /// The `.navbar-collapse`'s whole content, for navbars that lay it out in
   /// their own way (a three-column "centered nav"): replaces the default
@@ -274,7 +285,10 @@ class _BsNavbarState extends State<BsNavbar> {
                     ?brand,
                     _BsNavbarToggler(
                       isOpen: _controller.isExpanded,
-                      onTap: widget.offcanvasBuilder == null
+                      bare: widget.bareToggler,
+                      onTap: widget.onToggle != null
+                          ? widget.onToggle!
+                          : widget.offcanvasBuilder == null
                           ? _controller.toggle
                           : () => showBsOffcanvas<void>(
                               context: context,
@@ -286,7 +300,7 @@ class _BsNavbarState extends State<BsNavbar> {
                     ),
                   ],
                 ),
-                if (widget.offcanvasBuilder == null)
+                if (widget.offcanvasBuilder == null && widget.onToggle == null)
                   BsCollapse(
                     controller: _controller,
                     onShow: widget.onShow,
@@ -441,7 +455,10 @@ class _BsNavbarToggler extends StatefulWidget {
     required this.isOpen,
     required this.onTap,
     required this.style,
+    this.bare = false,
   });
+
+  final bool bare;
 
   final bool isOpen;
   final VoidCallback onTap;
@@ -470,11 +487,13 @@ class _BsNavbarTogglerState extends State<_BsNavbarToggler> {
                   BsNavbarStyle.defaultTogglerTransitionDuration,
             ),
             decoration: BoxDecoration(
-              border: Border.all(
-                color:
-                    style.togglerBorderColor ??
-                    BsNavbarStyle.lightTogglerBorderColor,
-              ),
+              border: widget.bare
+                  ? null
+                  : Border.all(
+                      color:
+                          style.togglerBorderColor ??
+                          BsNavbarStyle.lightTogglerBorderColor,
+                    ),
               borderRadius: BorderRadius.circular(
                 style.togglerBorderRadius ??
                     BsNavbarStyle.defaultTogglerBorderRadius,
@@ -490,8 +509,10 @@ class _BsNavbarTogglerState extends State<_BsNavbarToggler> {
               ],
             ),
             child: Padding(
-              padding:
-                  style.togglerPadding ?? BsNavbarStyle.defaultTogglerPadding,
+              padding: widget.bare
+                  ? EdgeInsets.zero
+                  : (style.togglerPadding ??
+                        BsNavbarStyle.defaultTogglerPadding),
               child: CustomPaint(
                 // `.navbar-toggler-icon`: `1.5em` square.
                 size: Size.square(

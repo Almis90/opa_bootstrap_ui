@@ -47,6 +47,7 @@ import 'pages/examples/navbar_fixed_example_page.dart';
 import 'pages/examples/navbar_static_example_page.dart';
 import 'pages/examples/navbars_example_page.dart';
 import 'pages/examples/navbars_offcanvas_example_page.dart';
+import 'pages/examples/offcanvas_navbar_example_page.dart';
 import 'pages/getting_started/introduction_page.dart';
 import 'pages/layout/breakpoints_page.dart';
 import 'pages/layout/containers_page.dart';
@@ -224,5 +225,11 @@ final _examples = [
     title: 'Navbars offcanvas',
     description: 'Navbars whose toggler opens an offcanvas menu, one of them responsive.',
     builder: (_) => const NavbarsOffcanvasExamplePage(),
+  ),
+  ExampleEntry(
+    title: 'Offcanvas navbar',
+    description: 'A fixed navbar whose menu slides in below lg, a scrolling secondary nav and update cards.',
+    builder: (_) => const OffcanvasNavbarExamplePage(),
+    fixed: OffcanvasNavbarExamplePage.fixed,
   ),
 ];

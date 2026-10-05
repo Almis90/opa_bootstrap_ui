@@ -83,25 +83,31 @@ class NavbarExampleBody extends StatelessWidget {
 /// `<form class="d-flex"><input class="form-control me-2" type="search"> <button
 /// class="btn btn-outline-success">Search</button></form>`.
 class NavbarSearchForm extends StatelessWidget {
-  const NavbarSearchForm({super.key});
+  const NavbarSearchForm({super.key, this.fill = false});
+
+  /// A form as wide as its container (the input takes what the button leaves),
+  /// not the input's own width.
+  final bool fill;
 
   @override
   Widget build(BuildContext context) {
+    const input = BsFormControl(placeholder: 'Search');
     return BsFlex(
-      inline: true,
+      inline: !fill,
       children: [
-        const BsFlexItem(
+        BsFlexItem(
           me: BsSpacing.s2,
-          child: SizedBox(
-            width: 193,
-            child: BsFormControl(placeholder: 'Search'),
-          ),
+          flexGrow: fill,
+          child: fill ? input : const SizedBox(width: 193, child: input),
         ),
-        BsButton(
-          variant: BsVariant.success,
-          outline: true,
-          onPressed: () {},
-          child: const Text('Search'),
+        BsFlexItem(
+          flexShrink: false,
+          child: BsButton(
+            variant: BsVariant.success,
+            outline: true,
+            onPressed: () {},
+            child: const Text('Search'),
+          ),
         ),
       ],
     );
