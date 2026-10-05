@@ -76,25 +76,41 @@ class _ExamplesIndex extends StatelessWidget {
         final isMobile = constraints.maxWidth < BsBreakpoint.md.minWidth;
         final horizontalPadding = isMobile ? 16.0 : 40.0;
         return SingleChildScrollView(
-          padding: EdgeInsets.fromLTRB(horizontalPadding, isMobile ? 20 : 32, horizontalPadding, 48),
+          padding: EdgeInsets.fromLTRB(
+            horizontalPadding,
+            isMobile ? 20 : 32,
+            horizontalPadding,
+            48,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 'Examples',
-                style: TextStyle(fontSize: isMobile ? 26 : 32, fontWeight: FontWeight.w600, color: BsBody.colorOf(context)),
+                style: TextStyle(
+                  fontSize: isMobile ? 26 : 32,
+                  fontWeight: FontWeight.w600,
+                  color: BsBody.colorOf(context),
+                ),
               ),
               const SizedBox(height: 12),
               Text(
                 'Full, real-world pages built entirely from opa_bootstrap_ui widgets — the same idea as '
                 "Bootstrap's own examples gallery, showing components working together rather than in isolation.",
-                style: TextStyle(fontSize: 18, color: BsBody.secondaryColorOf(context), height: 1.5),
+                style: TextStyle(
+                  fontSize: 18,
+                  color: BsBody.secondaryColorOf(context),
+                  height: 1.5,
+                ),
               ),
               const SizedBox(height: 32),
               Wrap(
                 spacing: 24,
                 runSpacing: 24,
-                children: [for (final entry in examples) _ExampleCard(entry: entry, onTap: () => onSelect(entry))],
+                children: [
+                  for (final entry in examples)
+                    _ExampleCard(entry: entry, onTap: () => onSelect(entry)),
+                ],
               ),
             ],
           ),
@@ -131,11 +147,30 @@ class _ExampleCardState extends State<_ExampleCard> {
             style: BsCardStyle(borderColor: _hovered ? BsColors.blue : null),
             child: BsCardBody(
               children: [
-                Text(widget.entry.title, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: BsBody.colorOf(context))),
+                Text(
+                  widget.entry.title,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: BsBody.colorOf(context),
+                  ),
+                ),
                 const SizedBox(height: 8),
-                Text(widget.entry.description, style: TextStyle(color: BsBody.secondaryColorOf(context), height: 1.4)),
+                Text(
+                  widget.entry.description,
+                  style: TextStyle(
+                    color: BsBody.secondaryColorOf(context),
+                    height: 1.4,
+                  ),
+                ),
                 const SizedBox(height: 12),
-                Text('View example →', style: TextStyle(color: BsColors.blue, fontWeight: FontWeight.w500)),
+                Text(
+                  'View example →',
+                  style: TextStyle(
+                    color: BsColors.blue,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
               ],
             ),
           ),
@@ -150,7 +185,7 @@ class _ExampleCardState extends State<_ExampleCard> {
 /// `<body>` with just a fixed-position mode toggle in the corner). Unlike the
 /// real site this app has no URL per example, so [onBack] is bound to the
 /// Escape key rather than a visible control the original doesn't have.
-class _ExampleDetail extends StatelessWidget {
+class _ExampleDetail extends StatefulWidget {
   const _ExampleDetail({
     required this.entry,
     required this.themeMode,
@@ -164,20 +199,57 @@ class _ExampleDetail extends StatelessWidget {
   final VoidCallback onBack;
 
   @override
+  State<_ExampleDetail> createState() => _ExampleDetailState();
+}
+
+class _ExampleDetailState extends State<_ExampleDetail>
+    with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  /// The browser's back button (or the system back gesture): back to the
+  /// gallery. The app's Navigator is asked first, so an open dialog or
+  /// modal closes before this does.
+  @override
+  Future<bool> didPopRoute() async {
+    widget.onBack();
+    return true;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return CallbackShortcuts(
-      bindings: {const SingleActivator(LogicalKeyboardKey.escape): onBack},
+      bindings: {
+        const SingleActivator(LogicalKeyboardKey.escape): widget.onBack,
+      },
       child: Focus(
         autofocus: true,
         child: Stack(
           children: [
-            Positioned.fill(child: SingleChildScrollView(child: Builder(builder: entry.builder))),
-            if (entry.fixed != null) Builder(builder: entry.fixed!),
+            Positioned.fill(
+              child: SingleChildScrollView(
+                child: Builder(builder: widget.entry.builder),
+              ),
+            ),
+            if (widget.entry.fixed != null)
+              Builder(builder: widget.entry.fixed!),
             // `.position-fixed.bottom-0.end-0.mb-3.me-3.bd-mode-toggle`
             Positioned(
               bottom: 16,
               right: 16,
-              child: ExampleThemeToggler(mode: themeMode, onChanged: onThemeModeChanged),
+              child: ExampleThemeToggler(
+                mode: widget.themeMode,
+                onChanged: widget.onThemeModeChanged,
+              ),
             ),
           ],
         ),
