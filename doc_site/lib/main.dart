@@ -178,6 +178,11 @@ final _examples = [
     builder: (_) => const AlbumExamplePage(),
   ),
   ExampleEntry(
+    title: 'Album RTL',
+    description: 'The album page, right to left in Arabic.',
+    builder: (_) => const AlbumExamplePage(rtl: true),
+  ),
+  ExampleEntry(
     title: 'Headers',
     description: 'Eight header layouts, from a bare brand-and-nav bar to a two-tier icon navigation bar.',
     builder: (_) => const HeadersExamplePage(),

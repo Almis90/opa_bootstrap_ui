@@ -30,6 +30,7 @@ class FloatEndText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final direction = Directionality.of(context);
     final base = DefaultTextStyle.of(context).style;
     final floatStyle = base.merge(this.floatStyle);
     final textStyle = base.merge(this.textStyle);
@@ -38,7 +39,7 @@ class FloatEndText extends StatelessWidget {
         final width = constraints.maxWidth;
         final floatPainter = TextPainter(
           text: TextSpan(text: floatText, style: floatStyle),
-          textDirection: TextDirection.ltr,
+          textDirection: direction,
         )..layout();
         final floatWidth = floatPainter.width;
         final lineHeight =
@@ -48,7 +49,7 @@ class FloatEndText extends StatelessWidget {
         // The lines that start above the float's bottom edge are beside it.
         final narrow = TextPainter(
           text: TextSpan(text: text, style: textStyle),
-          textDirection: TextDirection.ltr,
+          textDirection: direction,
         )..layout(maxWidth: width - floatWidth);
         final lines = narrow.computeLineMetrics();
         var beside = 0;
@@ -77,16 +78,16 @@ class FloatEndText extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Padding(
-                    padding: EdgeInsets.only(right: floatWidth),
+                    padding: EdgeInsetsDirectional.only(end: floatWidth),
                     child: Text(first, style: textStyle),
                   ),
                   if (rest.isNotEmpty) Text(rest, style: textStyle),
                 ],
               ),
             ),
-            Positioned(
+            PositionedDirectional(
               top: 0,
-              right: 0,
+              end: 0,
               child: Text(floatText, style: floatStyle),
             ),
           ],

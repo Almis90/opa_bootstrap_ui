@@ -10,7 +10,10 @@ import '../../src/placeholder_image.dart';
 /// intro with two buttons, a `row-cols` grid of nine thumbnail cards on a
 /// tertiary background, and a footer.
 class AlbumExamplePage extends StatefulWidget {
-  const AlbumExamplePage({super.key});
+  const AlbumExamplePage({super.key, this.rtl = false});
+
+  /// The `album-rtl` page: `dir="rtl"`, in Arabic.
+  final bool rtl;
 
   @override
   State<AlbumExamplePage> createState() => _AlbumExamplePageState();
@@ -19,9 +22,11 @@ class AlbumExamplePage extends StatefulWidget {
 class _AlbumExamplePageState extends State<AlbumExamplePage> {
   bool _headerOpen = false;
 
+  _Strings get _t => widget.rtl ? _Strings.ar : _Strings.en;
+
   @override
   Widget build(BuildContext context) {
-    return Column(
+    final page = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _header(context),
@@ -30,6 +35,10 @@ class _AlbumExamplePageState extends State<AlbumExamplePage> {
         _footer(context),
       ],
     );
+    // <html dir="rtl">
+    return widget.rtl
+        ? Directionality(textDirection: TextDirection.rtl, child: page)
+        : page;
   }
 
   // --- <header data-bs-theme="dark"> ---
@@ -59,19 +68,19 @@ class _AlbumExamplePageState extends State<AlbumExamplePage> {
                 expandBreakpoint: null,
                 onToggle: () => setState(() => _headerOpen = !_headerOpen),
                 // <a class="navbar-brand d-flex align-items-center">
-                brand: const Row(
+                brand: Row(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    BootstrapIcon(
+                    const BootstrapIcon(
                       BootstrapIconData.camera,
                       width: 20,
                       height: 20,
                     ),
-                    SizedBox(width: 8),
+                    const SizedBox(width: 8),
                     Text(
-                      'Album',
-                      style: TextStyle(fontWeight: FontWeight.w700),
+                      _t.brand,
+                      style: const TextStyle(fontWeight: FontWeight.w700),
                     ),
                   ],
                 ),
@@ -105,15 +114,11 @@ class _AlbumExamplePageState extends State<AlbumExamplePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const BsHeading(BsHeadingLevel.h4, child: Text('About')),
+              BsHeading(BsHeadingLevel.h4, child: Text(_t.about)),
               Padding(
                 padding: const EdgeInsets.only(bottom: 16),
                 child: Text(
-                  'Add some information about the album below, the author, or '
-                  'any other background context. Make it a few sentences long '
-                  'so folks can pick up some informative tidbits. Then, link '
-                  'them off to some social networking sites or contact '
-                  'information.',
+                  _t.aboutText,
                   style: TextStyle(
                     color: BsTextColor.bodySecondary.of(context),
                   ),
@@ -130,16 +135,12 @@ class _AlbumExamplePageState extends State<AlbumExamplePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const BsHeading(BsHeadingLevel.h4, child: Text('Contact')),
+              BsHeading(BsHeadingLevel.h4, child: Text(_t.contact)),
               Padding(
                 padding: const EdgeInsets.only(bottom: 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    link('Follow on X'),
-                    link('Like on Facebook'),
-                    link('Email me'),
-                  ],
+                  children: [for (final text in _t.contactLinks) link(text)],
                 ),
               ),
             ],
@@ -170,10 +171,10 @@ class _AlbumExamplePageState extends State<AlbumExamplePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const BsHeading(
+                  BsHeading(
                     BsHeadingLevel.h1,
                     fw: BsFw.light,
-                    child: Text('Album example'),
+                    child: Text(_t.title),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(bottom: 16),
@@ -182,12 +183,7 @@ class _AlbumExamplePageState extends State<AlbumExamplePage> {
                         style: TextStyle(
                           color: BsTextColor.bodySecondary.of(context),
                         ),
-                        child: const Text(
-                          'Something short and leading about the collection '
-                          'below—its contents, the creator, etc. Make it short '
-                          'and sweet, but not too short so folks don’t simply '
-                          'skip over it entirely.',
-                        ),
+                        child: Text(_t.lead),
                       ),
                     ),
                   ),
@@ -203,7 +199,7 @@ class _AlbumExamplePageState extends State<AlbumExamplePage> {
                           padding: const EdgeInsets.symmetric(vertical: 8),
                           child: BsButton(
                             onPressed: () {},
-                            child: const Text('Main call to action'),
+                            child: Text(_t.primaryAction),
                           ),
                         ),
 
@@ -212,7 +208,7 @@ class _AlbumExamplePageState extends State<AlbumExamplePage> {
                           child: BsButton(
                             variant: BsVariant.secondary,
                             onPressed: () {},
-                            child: const Text('Secondary action'),
+                            child: Text(_t.secondaryAction),
                           ),
                         ),
                       ],
@@ -249,11 +245,11 @@ class _AlbumExamplePageState extends State<AlbumExamplePage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const BsCardImg(
+          BsCardImg(
             position: BsCardImgPosition.top,
             child: PlaceholderImage(
               height: 225,
-              text: 'Thumbnail',
+              text: _t.thumbnail,
               background: Color(0xFF55595C),
               color: Color(0xFFECEEEF),
             ),
@@ -263,14 +259,7 @@ class _AlbumExamplePageState extends State<AlbumExamplePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const BsBox(
-                  mb: BsSpacing.s3,
-                  child: Text(
-                    'This is a wider card with supporting text below as a '
-                    'natural lead-in to additional content. This content is a '
-                    'little bit longer.',
-                  ),
-                ),
+                BsBox(mb: BsSpacing.s3, child: Text(_t.cardText)),
                 BsFlex(
                   justifyContent: BsJustify.between,
                   alignItems: BsAlign.center,
@@ -282,20 +271,20 @@ class _AlbumExamplePageState extends State<AlbumExamplePage> {
                           outline: true,
                           size: BsSize.sm,
                           onPressed: () {},
-                          child: const Text('View'),
+                          child: Text(_t.view),
                         ),
                         BsButton(
                           variant: BsVariant.secondary,
                           outline: true,
                           size: BsSize.sm,
                           onPressed: () {},
-                          child: const Text('Edit'),
+                          child: Text(_t.edit),
                         ),
                       ],
                     ),
                     BsBox(
                       textColor: BsTextColor.bodySecondary,
-                      child: const BsSmall(child: Text('9 mins')),
+                      child: BsSmall(child: Text(_t.time)),
                     ),
                   ],
                 ),
@@ -329,20 +318,18 @@ class _AlbumExamplePageState extends State<AlbumExamplePage> {
             // <p class="float-end mb-1"><a href="#">Back to top</a></p>
             // <p class="mb-1">Album example is …
             FloatEndText(
-              floatText: 'Back to top',
+              floatText: _t.backToTop,
               floatStyle: linkStyle,
-              text:
-                  'Album example is © Bootstrap, but please download and '
-                  'customize it for yourself!',
+              text: _t.copyright,
               bottomMargin: 4,
             ),
             Text.rich(
               TextSpan(
                 children: [
-                  const TextSpan(text: 'New to Bootstrap? '),
-                  anchor('Visit the homepage'),
-                  const TextSpan(text: ' or read our '),
-                  anchor('getting started guide'),
+                  TextSpan(text: _t.newTo),
+                  anchor(_t.homepage),
+                  TextSpan(text: _t.orRead),
+                  anchor(_t.guide),
                   const TextSpan(text: '.'),
                 ],
               ),
@@ -352,4 +339,120 @@ class _AlbumExamplePageState extends State<AlbumExamplePage> {
       ),
     );
   }
+}
+
+/// The page's texts: the English original and the `album-rtl` Arabic one.
+class _Strings {
+  const _Strings({
+    required this.about,
+    required this.aboutText,
+    required this.contact,
+    required this.contactLinks,
+    required this.brand,
+    required this.title,
+    required this.lead,
+    required this.primaryAction,
+    required this.secondaryAction,
+    required this.thumbnail,
+    required this.cardText,
+    required this.view,
+    required this.edit,
+    required this.time,
+    required this.backToTop,
+    required this.copyright,
+    required this.newTo,
+    required this.homepage,
+    required this.orRead,
+    required this.guide,
+  });
+
+  final String about;
+  final String aboutText;
+  final String contact;
+  final List<String> contactLinks;
+  final String brand;
+  final String title;
+  final String lead;
+  final String primaryAction;
+  final String secondaryAction;
+  final String thumbnail;
+  final String cardText;
+  final String view;
+  final String edit;
+  final String time;
+  final String backToTop;
+  final String copyright;
+  final String newTo;
+  final String homepage;
+  final String orRead;
+  final String guide;
+
+  static const en = _Strings(
+    about: 'About',
+    aboutText:
+        'Add some information about the album below, the author, or any other '
+        'background context. Make it a few sentences long so folks can pick up '
+        'some informative tidbits. Then, link them off to some social '
+        'networking sites or contact information.',
+    contact: 'Contact',
+    contactLinks: ['Follow on X', 'Like on Facebook', 'Email me'],
+    brand: 'Album',
+    title: 'Album example',
+    lead:
+        'Something short and leading about the collection below—its contents, '
+        'the creator, etc. Make it short and sweet, but not too short so folks '
+        'don’t simply skip over it entirely.',
+    primaryAction: 'Main call to action',
+    secondaryAction: 'Secondary action',
+    thumbnail: 'Thumbnail',
+    cardText:
+        'This is a wider card with supporting text below as a natural lead-in '
+        'to additional content. This content is a little bit longer.',
+    view: 'View',
+    edit: 'Edit',
+    time: '9 mins',
+    backToTop: 'Back to top',
+    copyright:
+        'Album example is © Bootstrap, but please download and customize it '
+        'for yourself!',
+    newTo: 'New to Bootstrap? ',
+    homepage: 'Visit the homepage',
+    orRead: ' or read our ',
+    guide: 'getting started guide',
+  );
+
+  static const ar = _Strings(
+    about: 'حول',
+    aboutText:
+        'أضف بعض المعلومات حول الألبوم، المؤلف، أو أي سياق خلفية آخر. اجعلها '
+        'بضع جمل حتى يتمكن الزوار من التقاط بعض التلميحات المفيدة. ثم اربطها '
+        'ببعض مواقع التواصل الاجتماعي أو معلومات الاتصال.',
+    contact: 'تواصل معي',
+    contactLinks: [
+      'تابعني على تويتر',
+      'شاركني الإعجاب في فيسبوك',
+      'راسلني على البريد الإلكتروني',
+    ],
+    brand: 'الألبوم',
+    title: 'مثال الألبوم',
+    lead:
+        'وصف قصير حول الألبوم أدناه (محتوياته ، ومنشؤه ، وما إلى ذلك). اجعله '
+        'قصير ولطيف، ولكن ليست قصير جدًا حتى لا يتخطى الناس هذا الألبوم '
+        'تمامًا.',
+    primaryAction: 'الدعوة الرئيسية للعمل',
+    secondaryAction: 'عمل ثانوي',
+    thumbnail: 'صورة مصغرة',
+    cardText:
+        'هذه بطاقة أوسع مع نص داعم أدناه كمقدمة طبيعية لمحتوى إضافي. هذا '
+        'المحتوى أطول قليلاً.',
+    view: 'عرض',
+    edit: 'تعديل',
+    time: '9 دقائق',
+    backToTop: 'عد إلى الأعلى',
+    copyright: 'مثال الألبوم هو © Bootstrap ، ولكن يرجى تنزيله وتخصيصه لنفسك!',
+    newTo: 'جديد على Bootstrap؟ ',
+    homepage: 'تفضل بزيارة الصفحة الرئيسية',
+    orRead: ' أو اقرأ ',
+    guide: 'دليل البدء',
+  );
 }

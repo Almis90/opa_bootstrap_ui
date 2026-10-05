@@ -29,6 +29,7 @@ void main() {
   for (final width in [375.0, 1000.0, 1300.0]) {
     for (final entry in {
       'Album': () => const AlbumExamplePage(),
+      'Album RTL': () => const AlbumExamplePage(rtl: true),
       'Headers': () => const HeadersExamplePage(),
       'Heroes': () => const HeroesExamplePage(),
       'Jumbotron': () => const JumbotronExamplePage(),
