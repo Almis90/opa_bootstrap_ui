@@ -45,6 +45,7 @@ import 'pages/examples/cover_example_page.dart';
 import 'pages/examples/dashboard_example_page.dart';
 import 'pages/examples/dropdowns_example_page.dart';
 import 'pages/examples/features_example_page.dart';
+import 'pages/examples/footers_example_page.dart';
 import 'pages/examples/headers_example_page.dart';
 import 'pages/examples/heroes_example_page.dart';
 import 'pages/examples/jumbotron_example_page.dart';
@@ -254,6 +255,11 @@ final _examples = [
     title: 'Features',
     description: 'Feature sections: icon columns, hanging icons, photo cards and an icon grid.',
     builder: (_) => const FeaturesExamplePage(),
+  ),
+  ExampleEntry(
+    title: 'Footers',
+    description: 'Footer layouts: logo and nav, social icons, link columns and a newsletter form.',
+    builder: (_) => const FootersExamplePage(),
   ),
   ExampleEntry(
     title: 'Headers',

@@ -1218,6 +1218,7 @@ class BsRow extends StatelessWidget {
     this.pb,
     this.ps,
     this.border = false,
+    this.borderTop = false,
     this.rounded,
     this.shadow,
     this.masonry = false,
@@ -1265,6 +1266,10 @@ class BsRow extends StatelessWidget {
   /// `border`.
   final bool border;
 
+  /// `border-top` (`<footer class="row … border-top">`: the line spans the row
+  /// and its negative margins).
+  final bool borderTop;
+
   /// `rounded-*`.
   final BsRounded? rounded;
 
@@ -1290,6 +1295,7 @@ class BsRow extends StatelessWidget {
         pb: pb,
         ps: ps,
         border: border,
+        borderTop: borderTop,
         rounded: rounded,
         shadow: shadow,
         child: BsFlex._row(
