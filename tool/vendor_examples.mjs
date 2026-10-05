@@ -6,9 +6,9 @@
 // The originals are Astro templates. Rather than installing Astro and the
 // whole docs site, this expands the handful of Astro features the examples
 // actually use (frontmatter exports, getVersionedDocsPath, the year, the
-// <Placeholder /> shortcode) and wraps each page in a copy of
-// ExamplesLayout.astro, theme toggler included. Examples that need more
-// (the cheatsheet) are listed as unsupported.
+// <Placeholder /> and <Example /> shortcodes, getData('theme-colors')) and
+// wraps each page in a copy of ExamplesLayout.astro, theme toggler included.
+// Examples that need more are listed as unsupported.
 //
 //   node tool/vendor_examples.mjs            build, then serve on :8800
 //   node tool/vendor_examples.mjs --port 9000
@@ -122,6 +122,107 @@ function renderPlaceholder(attrSrc) {
   )
 }
 
+// ------------------------------------------------------------- <Example />
+// Expands the docs' `<Example code={`...`} />` shortcode (the cheatsheet's
+// building block): the `code` prop is a JS expression (template literals with
+// `${}`, arrays, `getData(...)`), evaluated here and wrapped the way
+// site/src/components/shortcodes/Example.astro does (preview only).
+
+function skipString(s, i, q) {
+  for (i++; i < s.length; i++) {
+    if (s[i] === '\\') i++
+    else if (s[i] === q) return i
+  }
+  return s.length
+}
+function skipTemplate(s, i) {
+  for (i++; i < s.length; i++) {
+    if (s[i] === '\\') i++
+    else if (s[i] === '`') return i
+    else if (s[i] === '$' && s[i + 1] === '{') i = scanBraces(s, i + 1) - 1
+  }
+  return s.length
+}
+/** The index just past the `}` matching the `{` at `i`. */
+function scanBraces(s, i) {
+  let depth = 0
+  for (; i < s.length; i++) {
+    const c = s[i]
+    if (c === '{') depth++
+    else if (c === '}') {
+      if (--depth === 0) return i + 1
+    } else if (c === "'" || c === '"') i = skipString(s, i, c)
+    else if (c === '`') i = skipTemplate(s, i)
+  }
+  return s.length
+}
+
+function themeColors() {
+  const yml = read(path.join(VENDOR, 'site/data/theme-colors.yml'))
+  return [...yml.matchAll(/- name: (\w+)\n\s+hex: '([^']+)'(?:\n\s+contrast_color: (\w+))?/g)].map((m) => ({
+    name: m[1],
+    hex: m[2],
+    contrast_color: m[3],
+    title: m[1][0].toUpperCase() + m[1].slice(1),
+  }))
+}
+const getData = (name) => {
+  if (name === 'theme-colors') return themeColors()
+  throw new Error(`getData('${name}') is not supported`)
+}
+
+function expandExamples(body) {
+  let out = ''
+  let i = 0
+  for (;;) {
+    const at = body.indexOf('<Example', i)
+    if (at < 0 || !/\s/.test(body[at + 8] ?? '')) {
+      if (at >= 0) {
+        out += body.slice(i, at + 8)
+        i = at + 8
+        continue
+      }
+      return out + body.slice(i)
+    }
+    out += body.slice(i, at)
+    // Attributes, up to the closing `/>`.
+    const props = {}
+    let j = at + 8
+    for (;;) {
+      while (/\s/.test(body[j])) j++
+      if (body.startsWith('/>', j)) {
+        j += 2
+        break
+      }
+      const m = /^[\w:-]+/.exec(body.slice(j))
+      if (!m) throw new Error(`cannot parse <Example> near: ${body.slice(j, j + 60)}`)
+      const name = m[0]
+      j += name.length
+      if (body[j] !== '=') {
+        props[name] = true
+        continue
+      }
+      j++
+      if (body[j] === '{') {
+        const end = scanBraces(body, j)
+        const expr = body.slice(j + 1, end - 1)
+        props[name] = new Function('getData', 'getVersionedDocsPath', `return (${expr})`)(getData, (p) => docsPath(p))
+        j = end
+      } else {
+        const q = body[j]
+        const end = skipString(body, j, q)
+        props[name] = body.slice(j + 1, end)
+        j = end + 1
+      }
+    }
+    const markup = Array.isArray(props.code) ? props.code.join('\n') : props.code
+    const cls = ['bd-example m-0 border-0', props.class].filter(Boolean).join(' ')
+    const id = props.id ? ` id="${props.id}"` : ''
+    out += `<div class="bd-example-snippet bd-code-snippet">${props.showPreview === false ? '' : `<div${id} class="${cls}">${markup}</div>`}</div>`
+    i = j
+  }
+}
+
 // ---------------------------------------------------------------- layout
 
 const layoutSource = read(path.join(VENDOR, 'site/src/layouts/ExamplesLayout.astro'))
@@ -205,10 +306,6 @@ function buildExample(name) {
   const source = read(path.join(dir, 'index.astro'))
   const [, frontmatter, rawBody] = source.split(/^---\s*$/m)
 
-  if (/<Example[\s>]/.test(rawBody) || /getData\(/.test(frontmatter)) {
-    return { name, unsupported: 'uses Astro components/data this builder does not expand' }
-  }
-
   // Frontmatter is JS: drop the imports, turn `export const` into `const`, evaluate.
   const code = frontmatter
     .split('\n')
@@ -219,7 +316,7 @@ function buildExample(name) {
   const meta = new Function(`${code}\nreturn {${names.map((n) => `${n}: typeof ${n} === 'undefined' ? undefined : ${n}`).join(',')}}`)()
 
   const year = String(new Date().getFullYear())
-  let body = rawBody
+  let body = expandExamples(rawBody)
     .replace(/=\{getVersionedDocsPath\((['"])(.*?)\1\)\}/g, (_, __, p) => `="${docsPath(p)}"`)
     .replace(/\{new Date\(\)\.getFullYear\(\)\}/g, year)
     .replace(/<Placeholder\s+([\s\S]*?)\/>/g, (_, attrs) => renderPlaceholder(attrs))
