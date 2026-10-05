@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
@@ -54,38 +56,14 @@ class BsImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final frame = border ? 2 * BsBorders.width : 0.0;
-    final image = LayoutBuilder(
-      builder: (context, constraints) {
-        var w = width;
-        if (fluid && constraints.hasBoundedWidth) {
-          // (The border box may take the container's whole width, so the room
-          // for the image itself is that much more than what's left inside it.)
-          final room = constraints.maxWidth + frame;
-          w = w == null ? room : w.clamp(0, room);
-        }
-        final img = Image(
-          image: this.image,
-          width: w == null ? null : w - frame,
-          fit: BoxFit.fitWidth,
-          filterQuality: FilterQuality.medium,
-          semanticLabel: alt,
-          excludeFromSemantics: alt == null || alt!.isEmpty,
-          // A broken image is an empty box of its size, not an error.
-          errorBuilder: (context, error, stackTrace) =>
-              SizedBox(width: w == null ? null : w - frame),
-        );
-        // A plain <img width=…> keeps that width even where its container is
-        // narrower (it overflows, to be clipped by `overflow-hidden`); and a
-        // block-level image is its own width, not its container's.
-        return Align(
-          alignment: AlignmentDirectional.topStart,
-          widthFactor: 1,
-          heightFactor: 1,
-          child: !fluid && w != null
-              ? _Overflowing(width: w - frame, child: img)
-              : img,
-        );
-      },
+    final img = Image(
+      image: image,
+      fit: BoxFit.fitWidth,
+      filterQuality: FilterQuality.medium,
+      semanticLabel: alt,
+      excludeFromSemantics: alt == null || alt!.isEmpty,
+      // A broken image is an empty box, not an error.
+      errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
     );
     return BsBox(
       border: border,
@@ -93,45 +71,121 @@ class BsImage extends StatelessWidget {
       shadow: shadow,
       overflowHidden: rounded != null,
       inlineBlock: !block,
-      child: image,
+      child: _ImageWidth(
+        width: width,
+        frame: frame,
+        fluid: fluid,
+        textDirection: Directionality.of(context),
+        child: img,
+      ),
     );
   }
 }
 
-/// Lays [child] out at exactly [width] whatever the constraints, and reports
-/// the constrained size — so a parent that clips (an `overflow-hidden` box)
-/// cuts the excess off, and nothing complains about the overflow.
-class _Overflowing extends SingleChildRenderObjectWidget {
-  const _Overflowing({required this.width, required super.child});
+/// Sizes an image the way an `<img width=… class="img-fluid">` is: [width] is
+/// the border box's (so [frame], the borders, comes off it), [fluid] caps that
+/// at the container's width, and the height follows from the aspect ratio. A
+/// plain `<img width=…>` keeps its width even where its container is narrower
+/// — it overflows, to be clipped by `overflow-hidden` — and an image is its own
+/// width, at the start, not its container's.
+class _ImageWidth extends SingleChildRenderObjectWidget {
+  const _ImageWidth({
+    required this.width,
+    required this.frame,
+    required this.fluid,
+    required this.textDirection,
+    required super.child,
+  });
 
-  final double width;
+  final double? width;
+  final double frame;
+  final bool fluid;
+  final TextDirection textDirection;
 
   @override
-  RenderObject createRenderObject(BuildContext context) =>
-      _RenderOverflowing(width);
+  RenderObject createRenderObject(BuildContext context) => _RenderImageWidth(
+    width: width,
+    frame: frame,
+    fluid: fluid,
+    textDirection: textDirection,
+  );
 
   @override
-  void updateRenderObject(BuildContext context, _RenderOverflowing renderObject) {
-    renderObject.width = width;
+  void updateRenderObject(
+    BuildContext context,
+    _RenderImageWidth renderObject,
+  ) {
+    renderObject
+      ..width = width
+      ..frame = frame
+      ..fluid = fluid
+      ..textDirection = textDirection;
   }
 }
 
-class _RenderOverflowing extends RenderShiftedBox {
-  _RenderOverflowing(this._width) : super(null);
+// The private fields can't be named constructor parameters.
+// ignore_for_file: prefer_initializing_formals
+class _RenderImageWidth extends RenderAligningShiftedBox {
+  _RenderImageWidth({
+    required double? width,
+    required double frame,
+    required bool fluid,
+    required TextDirection textDirection,
+  }) : _width = width,
+       _frame = frame,
+       _fluid = fluid,
+       super(
+         alignment: AlignmentDirectional.topStart,
+         textDirection: textDirection,
+       );
 
-  double _width;
-  set width(double v) {
+  double? _width;
+  set width(double? v) {
     if (v != _width) {
       _width = v;
       markNeedsLayout();
     }
   }
 
-  BoxConstraints _inner(BoxConstraints c) => BoxConstraints(
-    minWidth: _width,
-    maxWidth: _width,
-    maxHeight: c.maxHeight,
-  );
+  double _frame;
+  set frame(double v) {
+    if (v != _frame) {
+      _frame = v;
+      markNeedsLayout();
+    }
+  }
+
+  bool _fluid;
+  set fluid(bool v) {
+    if (v != _fluid) {
+      _fluid = v;
+      markNeedsLayout();
+    }
+  }
+
+  BoxConstraints _inner(BoxConstraints c) {
+    final room = c.hasBoundedWidth ? c.maxWidth + _frame : double.infinity;
+    final box = _width == null
+        ? null
+        : (_fluid ? math.min(_width!, room) : _width!);
+    if (box == null) {
+      // The image's natural width (capped by the container if it is fluid).
+      return BoxConstraints(
+        maxWidth: _fluid && c.hasBoundedWidth ? c.maxWidth : double.infinity,
+      );
+    }
+    final content = math.max(0.0, box - _frame);
+    return BoxConstraints(minWidth: content, maxWidth: content);
+  }
+
+  @override
+  double computeMinIntrinsicWidth(double height) =>
+      _fluid || _width == null ? 0 : _width! - _frame;
+
+  @override
+  double computeMaxIntrinsicWidth(double height) => _width == null
+      ? (child?.getMaxIntrinsicWidth(height) ?? 0)
+      : _width! - _frame;
 
   @override
   Size computeDryLayout(BoxConstraints constraints) {
@@ -148,5 +202,6 @@ class _RenderOverflowing extends RenderShiftedBox {
     }
     child.layout(_inner(constraints), parentUsesSize: true);
     size = constraints.constrain(child.size);
+    alignChild();
   }
 }

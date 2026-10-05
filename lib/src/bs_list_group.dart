@@ -1,5 +1,7 @@
 import 'package:flutter/widgets.dart';
 
+import 'bs_box.dart';
+import 'bs_spacing.dart';
 import 'bs_theme.dart';
 import 'bs_variant.dart';
 import 'tokens/bs_body.dart';
@@ -17,7 +19,15 @@ enum BsListGroupOrientation {
 
 /// A single row in a [BsListGroup].
 class BsListGroupItem {
-  const BsListGroupItem({required this.child, this.onTap, this.active = false, this.disabled = false, this.variant});
+  const BsListGroupItem({
+    required this.child,
+    this.onTap,
+    this.active = false,
+    this.disabled = false,
+    this.variant,
+    this.py,
+    this.bg,
+  });
 
   final Widget child;
 
@@ -35,6 +45,12 @@ class BsListGroupItem {
   /// via the same [BsVariant.bgSubtle]/[BsVariant.textEmphasis] recipe
   /// [BsAlert] uses.
   final BsVariant? variant;
+
+  /// `py-*`: vertical padding in place of the group's.
+  final BsSpacing? py;
+
+  /// `bg-*` on the item (`bg-body-tertiary`), in place of the group's.
+  final BsBg? bg;
 }
 
 /// A Bootstrap list group (`.list-group`): a series of [items] rendered as
@@ -73,7 +89,9 @@ class BsListGroup extends StatelessWidget {
     if (items.isEmpty) return const SizedBox.shrink();
 
     final isDark = BsTheme.of(context) == Brightness.dark;
-    final style = (isDark ? BsListGroupStyle.darkDefaults : BsListGroupStyle.defaults).merge(this.style);
+    final style =
+        (isDark ? BsListGroupStyle.darkDefaults : BsListGroupStyle.defaults)
+            .merge(this.style);
     final horizontal = orientation == BsListGroupOrientation.horizontal;
 
     final children = [
@@ -93,9 +111,17 @@ class BsListGroup extends StatelessWidget {
       // IntrinsicHeight bounds the row's height so crossAxisAlignment.stretch
       // can equalize every item's height instead of inheriting an unbounded
       // height from an enclosing scroll view.
-      return IntrinsicHeight(child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: children));
+      return IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: children,
+        ),
+      );
     }
-    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: children);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: children,
+    );
   }
 }
 
@@ -141,10 +167,13 @@ class _BsListGroupItemWidgetState extends State<_BsListGroupItemWidget> {
     final interactive = item.onTap != null;
     final enabled = interactive && !item.disabled;
 
-    final borderWidth = style.borderWidth ?? BsListGroupStyle.defaultBorderWidth;
+    final borderWidth =
+        style.borderWidth ?? BsListGroupStyle.defaultBorderWidth;
     final borderColor = item.active
         ? style.activeBorderColor ?? BsListGroupStyle.defaultActiveBackground
-        : item.variant?.borderSubtle ?? style.borderColor ?? BsListGroupStyle.defaultBorderColor;
+        : item.variant?.borderSubtle ??
+              style.borderColor ??
+              BsListGroupStyle.defaultBorderColor;
     final side = BorderSide(color: borderColor, width: borderWidth);
 
     // BorderDirectional for the horizontal orientation's shared seam, so
@@ -156,7 +185,9 @@ class _BsListGroupItemWidgetState extends State<_BsListGroupItemWidget> {
     final BoxBorder border;
     if (widget.flush) {
       final dividerSide = widget.isLast ? BorderSide.none : side;
-      border = widget.horizontal ? BorderDirectional(end: dividerSide) : Border(bottom: dividerSide);
+      border = widget.horizontal
+          ? BorderDirectional(end: dividerSide)
+          : Border(bottom: dividerSide);
     } else if (widget.horizontal) {
       // Not BorderSide.none: BorderDirectional.paint() requires every
       // side to share one color whenever borderRadius is non-null, even
@@ -166,17 +197,26 @@ class _BsListGroupItemWidgetState extends State<_BsListGroupItemWidget> {
         top: side,
         end: side,
         bottom: side,
-        start: widget.isFirst ? side : BorderSide(color: borderColor, style: BorderStyle.none),
+        start: widget.isFirst
+            ? side
+            : BorderSide(color: borderColor, style: BorderStyle.none),
       );
     } else {
-      border = Border(left: side, right: side, bottom: side, top: widget.isFirst ? side : BorderSide.none);
+      border = Border(
+        left: side,
+        right: side,
+        bottom: side,
+        top: widget.isFirst ? side : BorderSide.none,
+      );
     }
 
     final BorderRadiusGeometry? borderRadius;
     if (widget.flush) {
       borderRadius = BorderRadius.zero;
     } else if (widget.horizontal) {
-      final radius = Radius.circular(style.borderRadius ?? BsListGroupStyle.defaultBorderRadius);
+      final radius = Radius.circular(
+        style.borderRadius ?? BsListGroupStyle.defaultBorderRadius,
+      );
       // An item sandwiched between two neighbors squares off every
       // corner — geometrically zero, but BorderDirectional.paint() (see
       // above) only special-cases a *null* borderRadius for a
@@ -189,7 +229,9 @@ class _BsListGroupItemWidgetState extends State<_BsListGroupItemWidget> {
               end: widget.isLast ? radius : Radius.zero,
             );
     } else {
-      final radius = Radius.circular(style.borderRadius ?? BsListGroupStyle.defaultBorderRadius);
+      final radius = Radius.circular(
+        style.borderRadius ?? BsListGroupStyle.defaultBorderRadius,
+      );
       borderRadius = BorderRadius.vertical(
         top: widget.isFirst ? radius : Radius.zero,
         bottom: widget.isLast ? radius : Radius.zero,
@@ -199,27 +241,50 @@ class _BsListGroupItemWidgetState extends State<_BsListGroupItemWidget> {
     final Color background;
     final Color? color;
     if (item.disabled) {
-      background = style.disabledBackground ?? BsListGroupStyle.defaultDisabledBackground;
+      background =
+          style.disabledBackground ??
+          BsListGroupStyle.defaultDisabledBackground;
       color = style.disabledColor ?? BsListGroupStyle.defaultActionColor;
     } else if (item.active) {
-      background = style.activeBackground ?? BsListGroupStyle.defaultActiveBackground;
+      background =
+          style.activeBackground ?? BsListGroupStyle.defaultActiveBackground;
       color = style.activeColor ?? BsListGroupStyle.defaultActiveColor;
     } else if (_pressed && enabled) {
-      background = style.actionActiveBackground ?? BsListGroupStyle.defaultActionActiveBackground;
+      background =
+          style.actionActiveBackground ??
+          BsListGroupStyle.defaultActionActiveBackground;
       color = style.actionActiveColor ?? BsBody.color;
     } else if (_hovered && enabled) {
-      background = style.hoverBackground ?? BsListGroupStyle.defaultHoverBackground;
-      color = style.actionHoverColor ?? BsListGroupStyle.defaultActionHoverColor;
+      background =
+          style.hoverBackground ?? BsListGroupStyle.defaultHoverBackground;
+      color =
+          style.actionHoverColor ?? BsListGroupStyle.defaultActionHoverColor;
     } else if (item.variant != null) {
       background = item.variant!.bgSubtle;
       color = item.variant!.textEmphasis;
     } else {
-      background = style.background ?? BsListGroupStyle.defaultBackground;
-      color = interactive ? (style.actionColor ?? BsListGroupStyle.defaultActionColor) : (style.color ?? BsBody.color);
+      background =
+          item.bg?.of(context) ??
+          style.background ??
+          BsListGroupStyle.defaultBackground;
+      color = interactive
+          ? (style.actionColor ?? BsListGroupStyle.defaultActionColor)
+          : (style.color ?? BsBody.color);
     }
 
+    final basePadding =
+        (style.itemPadding ?? BsListGroupStyle.defaultItemPadding).resolve(
+          Directionality.of(context),
+        );
     final content = Padding(
-      padding: style.itemPadding ?? BsListGroupStyle.defaultItemPadding,
+      padding: item.py == null
+          ? basePadding
+          : EdgeInsets.fromLTRB(
+              basePadding.left,
+              item.py!.size,
+              basePadding.right,
+              item.py!.size,
+            ),
       child: DefaultTextStyle.merge(
         style: TextStyle(color: color),
         child: widget.number == null
@@ -244,8 +309,15 @@ class _BsListGroupItemWidgetState extends State<_BsListGroupItemWidget> {
         onTapUp: enabled ? (_) => _setPressed(false) : null,
         onTapCancel: enabled ? () => _setPressed(false) : null,
         onTap: enabled ? item.onTap : null,
-        child: BsDecoratedBox(
-          decoration: BoxDecoration(color: background, border: border, borderRadius: borderRadius),
+        // A container, not a bare DecoratedBox: the border adds to the item's
+        // size (a `.list-group-item` is `padding + border`), instead of being
+        // painted over its padding.
+        child: BsDecoratedContainer(
+          decoration: BoxDecoration(
+            color: background,
+            border: border,
+            borderRadius: borderRadius,
+          ),
           child: content,
         ),
       ),

@@ -4,6 +4,7 @@ import 'bs_box.dart';
 import 'bs_breakpoint.dart';
 import 'bs_color_utils.dart';
 import 'bs_css_line_height.dart';
+import 'bs_spacing.dart';
 import 'bs_colors.dart';
 import 'bs_theme.dart';
 import 'tokens/bs_typography.dart';
@@ -20,7 +21,14 @@ enum BsHeadingLevel { h1, h2, h3, h4, h5, h6 }
 /// [fw] and [lh] are the `fw-*`/`lh-*` utilities for the heading's own element
 /// (a [BsBox] around a heading can't override its weight or line-height).
 class BsHeading extends StatelessWidget {
-  const BsHeading(this.level, {super.key, required this.child, this.fw, this.lh});
+  const BsHeading(
+    this.level, {
+    super.key,
+    required this.child,
+    this.fw,
+    this.lh,
+    this.mb,
+  });
 
   final BsHeadingLevel level;
   final Widget child;
@@ -30,6 +38,9 @@ class BsHeading extends StatelessWidget {
 
   /// `lh-*`.
   final BsLh? lh;
+
+  /// `mb-*`: the bottom margin, in place of the headings' `.5rem` (`h6 mb-0`).
+  final BsSpacing? mb;
 
   static double _fontSizeFor(BsHeadingLevel level, double viewportWidth) =>
       switch (level) {
@@ -46,7 +57,9 @@ class BsHeading extends StatelessWidget {
     final fontSize = _fontSizeFor(level, MediaQuery.sizeOf(context).width);
     final height = lh?.height ?? BsTypography.headingsLineHeight;
     return Padding(
-      padding: const EdgeInsets.only(bottom: BsTypography.headingsMarginBottom),
+      padding: EdgeInsets.only(
+        bottom: mb?.size ?? BsTypography.headingsMarginBottom,
+      ),
       child: DefaultTextStyle.merge(
         style: TextStyle(
           fontSize: fontSize,
@@ -94,7 +107,13 @@ enum BsDisplayLevel {
 /// [fw] and [lh] are the `fw-*`/`lh-*` utilities for the heading's own element
 /// (`<h1 class="display-5 fw-bold lh-1">`).
 class BsDisplayHeading extends StatelessWidget {
-  const BsDisplayHeading(this.level, {super.key, required this.child, this.fw, this.lh});
+  const BsDisplayHeading(
+    this.level, {
+    super.key,
+    required this.child,
+    this.fw,
+    this.lh,
+  });
 
   final BsDisplayLevel level;
   final Widget child;
@@ -146,11 +165,15 @@ class BsLead extends StatelessWidget {
 /// `small`/`.small`: text at `.875em` — 87.5% of the surrounding size.
 ///
 /// As an inline element it doesn't shrink the lines it sits on: they stay as
-/// tall as the surrounding block's (24px in a 16px/1.5 block, not 21px).
+/// tall as the surrounding block's (24px in a 16px/1.5 block, not 21px). As a
+/// [block] (`small.d-block`, or a flex item) its lines are its own, 21px.
 class BsSmall extends StatelessWidget {
-  const BsSmall({super.key, required this.child});
+  const BsSmall({super.key, required this.child, this.block = false});
 
   final Widget child;
+
+  /// `d-block`: a box of its own rather than inline text.
+  final bool block;
 
   @override
   Widget build(BuildContext context) {
@@ -160,7 +183,9 @@ class BsSmall extends StatelessWidget {
     return DefaultTextStyle.merge(
       style: TextStyle(
         fontSize: size,
-        height: base * (parent.height ?? BsTypography.lineHeightBase) / size,
+        height: block
+            ? parent.height
+            : base * (parent.height ?? BsTypography.lineHeightBase) / size,
       ),
       child: child,
     );
@@ -208,7 +233,9 @@ class BsBlockquote extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: BsTypography.blockquoteMarginY),
+      padding: const EdgeInsets.symmetric(
+        vertical: BsTypography.blockquoteMarginY,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,

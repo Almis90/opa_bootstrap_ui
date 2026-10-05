@@ -5,6 +5,7 @@ import 'package:doc_site/pages/examples/headers_example_page.dart';
 import 'package:doc_site/pages/examples/heroes_example_page.dart';
 import 'package:doc_site/pages/examples/jumbotron_example_page.dart';
 import 'package:doc_site/pages/examples/jumbotrons_example_page.dart';
+import 'package:doc_site/pages/examples/list_groups_example_page.dart';
 
 import '../test_utils.dart';
 
@@ -15,6 +16,7 @@ void main() {
       'Heroes': () => const HeroesExamplePage(),
       'Jumbotron': () => const JumbotronExamplePage(),
       'Jumbotrons': () => const JumbotronsExamplePage(),
+      'List groups': () => const ListGroupsExamplePage(),
     }.entries) {
       testWidgets('${entry.key} example lays out without errors at ${width.toInt()}px', (tester) async {
         tester.view.physicalSize = Size(width, 900);

@@ -24,7 +24,7 @@ flutter:
     # Bootstrap's own screenshots for the Heroes example.
     - assets/examples/heroes/
   fonts:
-    # Roboto (Apache 2.0): static Light/Regular/Medium/Bold instances of the
+    # Roboto (Apache 2.0): static Light/Regular/Medium/SemiBold/Bold instances of the
     # latin subset of Google Fonts' variable Roboto — the very file Bootstrap's
     # pages get with `--font roboto` (tool/vendor_examples.mjs). The web
     # engine's own fallback Roboto has no real Light/Medium/Bold, so `fw-bold`,
@@ -38,5 +38,7 @@ flutter:
           weight: 400
         - asset: assets/fonts/Roboto-Medium.ttf
           weight: 500
+        - asset: assets/fonts/Roboto-SemiBold.ttf
+          weight: 600
         - asset: assets/fonts/Roboto-Bold.ttf
           weight: 700

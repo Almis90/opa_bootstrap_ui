@@ -33,7 +33,7 @@ To try it in a Chrome you launch yourself, enable
 
 ## Bundled assets
 
-- `assets/fonts/Roboto-{Light,Regular,Medium,Bold}.ttf`: static instances (Apache
+- `assets/fonts/Roboto-{Light,Regular,Medium,SemiBold,Bold}.ttf`: static instances (Apache
   2.0) of the latin subset of Google Fonts' variable Roboto — the file Bootstrap's
   own pages get when they run with `node tool/vendor_examples.mjs --font roboto`.
   Without them the web engine's fallback Roboto has no real light/medium/bold

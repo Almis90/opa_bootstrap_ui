@@ -233,6 +233,7 @@ class BsFlexItem extends ParentDataWidget<_BsFlexParentData> {
     this.alignSelf,
     this.flexGrow = false,
     this.flexShrink,
+    this.maxWidth,
   });
 
   /// `col-*`: width as a share of 12 columns; the item doesn't shrink.
@@ -271,6 +272,10 @@ class BsFlexItem extends ParentDataWidget<_BsFlexParentData> {
   /// `align-self-*`.
   final BsResponsive<BsAlign>? alignSelf;
 
+  /// A `max-width` in logical pixels (an inline style or custom CSS: Bootstrap
+  /// has no utility for it, only the `mw-100` of 100%).
+  final double? maxWidth;
+
   /// `flex-grow-1`: take a share of the line's free space.
   final bool flexGrow;
 
@@ -301,7 +306,8 @@ class BsFlexItem extends ParentDataWidget<_BsFlexParentData> {
       ..ps = ps
       ..alignSelf = alignSelf
       ..flexGrow = flexGrow
-      ..flexShrink = flexShrink;
+      ..flexShrink = flexShrink
+      ..maxWidth = maxWidth;
     renderObject.parent?.markNeedsLayout();
   }
 
@@ -318,6 +324,7 @@ class _BsFlexParentData extends ContainerBoxParentData<RenderBox> {
   BsResponsive<BsAlign>? alignSelf;
   bool flexGrow = false;
   bool? flexShrink;
+  double? maxWidth;
 }
 
 class _BsFlexRenderObjectWidget extends MultiChildRenderObjectWidget {
@@ -394,6 +401,7 @@ class _Item {
   bool autoStart = false, autoEnd = false;
   double? fraction;
   double offsetFraction = 0;
+  double maxWidth = double.infinity;
   bool grow = false;
   bool shrink = true;
   BsAlign? alignSelf;
@@ -593,6 +601,7 @@ class _RenderBsFlex extends RenderBox
         item.shrink = d.flexShrink ?? (col == null);
       }
       item.grow = d.flexGrow;
+      item.maxWidth = d.maxWidth ?? double.infinity;
       item.alignSelf = d.alignSelf?.resolve(_breakpoint);
       item.mt += _gutterY;
       // `.row > *` pads by half the gutter; p-* utilities override that.
@@ -715,26 +724,72 @@ class _RenderBsFlex extends RenderBox
 
       if (bounded && used() > maxW + 0.01) {
         // flex-shrink: take the overflow from the shrinkable items, in
-        // proportion to their widths.
-        final shrinkable = line.items.where((i) => i.shrink).toList();
-        final basisSum = shrinkable.fold<double>(0, (s, i) => s + i.width);
-        if (basisSum > 0) {
-          final overflow = used() - maxW;
-          for (final item in shrinkable) {
-            final target = math.max(
-              0.0,
-              item.width - overflow * item.width / basisSum,
-            );
-            if ((target - item.width).abs() > 0.01) {
-              final size = _measure(
-                item,
-                BoxConstraints.tightFor(width: target),
-                dry,
-              );
-              item.width = size.width;
-              item.height = size.height;
+        // proportion to their widths — but never below an item's content
+        // (`min-width: auto`: its min-content width), freezing the items that
+        // hit that and sharing what is left among the rest.
+        // (Only for content that can wrap, whose min-content is less than its
+        // width: a fixed-size box has no content to protect, and a `text-nowrap`
+        // item says so with `flexShrink: false`.)
+        final floors = <_Item, double>{
+          for (final item in line.items)
+            if (item.shrink)
+              item: () {
+                final min =
+                    item.child.getMinIntrinsicWidth(double.infinity) +
+                    item.padL +
+                    item.padR;
+                return min < item.width - 0.01 ? min : 0.0;
+              }(),
+        };
+        final active = line.items.where((i) => i.shrink).toList();
+        final targets = <_Item, double>{};
+        var overflow = used() - maxW;
+        while (active.isNotEmpty && overflow > 0.01) {
+          final basisSum = active.fold<double>(0, (s, i) => s + i.width);
+          if (basisSum <= 0) break;
+          var frozen = false;
+          for (final item in List<_Item>.of(active)) {
+            final target = item.width - overflow * item.width / basisSum;
+            if (target < floors[item]!) {
+              targets[item] = floors[item]!;
+              overflow -= item.width - floors[item]!;
+              active.remove(item);
+              frozen = true;
+              break;
             }
           }
+          if (!frozen) {
+            for (final item in active) {
+              targets[item] = item.width - overflow * item.width / basisSum;
+            }
+            break;
+          }
+        }
+        for (final entry in targets.entries) {
+          final item = entry.key;
+          final target = math.max(0.0, entry.value);
+          if ((target - item.width).abs() > 0.01) {
+            final size = _measure(
+              item,
+              BoxConstraints.tightFor(width: target),
+              dry,
+            );
+            item.width = size.width;
+            item.height = size.height;
+          }
+        }
+      }
+
+      // max-width clamps what the items came to.
+      for (final item in line.items) {
+        if (item.width > item.maxWidth + 0.01) {
+          final size = _measure(
+            item,
+            BoxConstraints.tightFor(width: item.maxWidth),
+            dry,
+          );
+          item.width = size.width;
+          item.height = size.height;
         }
       }
 
@@ -880,7 +935,12 @@ class _RenderBsFlex extends RenderBox
       final margins = item.fixedMargins;
       final room = bounded ? math.max(0.0, maxW - margins) : double.infinity;
       final c = item.fraction != null && bounded
-          ? BoxConstraints.tightFor(width: math.max(0.0, maxW * item.fraction!))
+          ? BoxConstraints.tightFor(
+              width: math.min(
+                item.maxWidth,
+                math.max(0.0, maxW * item.fraction!),
+              ),
+            )
           : align == BsAlign.stretch &&
                 bounded &&
                 !item.autoStart &&
@@ -901,12 +961,14 @@ class _RenderBsFlex extends RenderBox
     if (!dry) {
       for (final item in items) {
         final align = item.alignSelf ?? _align;
-        final free = math.max(0.0, size.width - item.outerWidth);
+        // (An item wider than the container still centres: its overflow is
+        // shared by both sides, as in CSS's default `unsafe` alignment.)
+        final free = size.width - item.outerWidth;
         var x = item.ms;
         if (item.autoStart && item.autoEnd) {
-          x += free / 2;
+          x += math.max(0.0, free) / 2;
         } else if (item.autoStart) {
-          x += free;
+          x += math.max(0.0, free);
         } else if (!item.autoEnd) {
           if (align == BsAlign.center) {
             x += free / 2;
@@ -947,8 +1009,7 @@ class _RenderBsFlex extends RenderBox
   double computeMaxIntrinsicWidth(double height) {
     var total = 0.0, widest = 0.0, count = 0;
     for (var child = firstChild; child != null; child = childAfter(child)) {
-      final w =
-          child.getMaxIntrinsicWidth(double.infinity) + _marginsOf(child);
+      final w = child.getMaxIntrinsicWidth(double.infinity) + _marginsOf(child);
       total += w;
       widest = math.max(widest, w);
       count++;

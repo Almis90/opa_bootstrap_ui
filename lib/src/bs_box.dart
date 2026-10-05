@@ -224,6 +224,22 @@ enum BsHeight implements BsResponsive<BsHeight> {
   BsHeight resolve(BsBreakpoint breakpoint) => this;
 }
 
+/// `opacity-0`/`opacity-25`/`opacity-50`/`opacity-75`/`opacity-100`.
+enum BsOpacity {
+  o0(0),
+  o25(0.25),
+  o50(0.5),
+  o75(0.75),
+  o100(1);
+
+  const BsOpacity(this.value);
+
+  final double value;
+
+  /// The CSS class suffix, e.g. `50` in `opacity-50`.
+  String get className => name.substring(1);
+}
+
 /// `fw-*`: Bootstrap's font-weight utilities.
 enum BsFw {
   /// `fw-bold` (700).
@@ -369,6 +385,8 @@ class BsBox extends StatelessWidget {
     this.shadow,
     this.overflowHidden = false,
     this.inlineBlock = false,
+    this.opacity,
+    this.textNoWrap = false,
   });
 
   final Widget? child;
@@ -449,6 +467,12 @@ class BsBox extends StatelessWidget {
   /// class="border">` in a `text-center` block).
   final bool inlineBlock;
 
+  /// `opacity-*`: fades the whole box, content included.
+  final BsOpacity? opacity;
+
+  /// `text-nowrap`.
+  final bool textNoWrap;
+
   /// `overflow-hidden`: clips the content to the box (inside its border, with
   /// its rounded corners).
   final bool overflowHidden;
@@ -483,8 +507,10 @@ class BsBox extends StatelessWidget {
             fontSize != null ||
             align != null ||
             fw != null ||
-            lh != null)) {
+            lh != null ||
+            textNoWrap)) {
       content = DefaultTextStyle.merge(
+        softWrap: textNoWrap ? false : null,
         style: TextStyle(
           color: color,
           fontSize: fontSize,
@@ -544,10 +570,10 @@ class BsBox extends StatelessWidget {
             border: border && borderStyle == BsBorderStyle.dashed
                 ? BsDashedBorder(color: borderColor, width: BsBorders.width)
                 : (border ||
-                    borderTop ||
-                    borderEnd ||
-                    borderBottom ||
-                    borderStart)
+                      borderTop ||
+                      borderEnd ||
+                      borderBottom ||
+                      borderStart)
                 ? BorderDirectional(
                     top: (border || borderTop) ? side : none,
                     end: (border || borderEnd) ? side : none,
@@ -598,6 +624,10 @@ class BsBox extends StatelessWidget {
         },
         child: box,
       );
+    }
+
+    if (opacity != null && opacity != BsOpacity.o100) {
+      box = Opacity(opacity: opacity!.value, child: box);
     }
 
     final height = h?.resolve(breakpoint)?.fraction;
