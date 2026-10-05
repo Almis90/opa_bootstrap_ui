@@ -15,6 +15,8 @@ class BsCloseButtonStyle {
     this.size,
     this.padding,
     this.color,
+    this.background,
+    this.borderRadius,
     this.opacity,
     this.hoverOpacity,
     this.focusOpacity,
@@ -29,6 +31,13 @@ class BsCloseButtonStyle {
 
   /// `$btn-close-color` (`$black`).
   final Color? color;
+
+  /// A background behind the glyph (`bg-secondary bg-opacity-10` on a
+  /// `.btn-close`); none by default. It fades with the button.
+  final Color? background;
+
+  /// The background's corner radius (`rounded-pill`).
+  final BorderRadiusGeometry? borderRadius;
 
   /// `$btn-close-opacity` (`.5`).
   final double? opacity;
@@ -48,6 +57,8 @@ class BsCloseButtonStyle {
       size: other.size ?? size,
       padding: other.padding ?? padding,
       color: other.color ?? color,
+      background: other.background ?? background,
+      borderRadius: other.borderRadius ?? borderRadius,
       opacity: other.opacity ?? opacity,
       hoverOpacity: other.hoverOpacity ?? hoverOpacity,
       focusOpacity: other.focusOpacity ?? focusOpacity,

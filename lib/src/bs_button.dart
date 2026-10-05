@@ -32,6 +32,7 @@ class BsButton extends StatefulWidget {
     this.px,
     this.py,
     this.fw,
+    this.rounded,
     this.focusNode,
     this.autofocus = false,
   });
@@ -77,6 +78,9 @@ class BsButton extends StatefulWidget {
   /// `fw-*`: the text's weight (`btn fw-bold`).
   final BsFw? fw;
 
+  /// `rounded-*` (`btn rounded-pill`): the corners, in place of the [size]'s.
+  final BsRounded? rounded;
+
   final FocusNode? focusNode;
   final bool autofocus;
 
@@ -106,6 +110,9 @@ class _BsButtonState extends State<BsButton> {
       outline: widget.outline,
       size: widget.size,
     ).merge(widget.style);
+    final borderRadius = widget.rounded == null
+        ? style.borderRadius
+        : BorderRadius.circular(widget.rounded!.radius);
     final padding = style.padding?.resolve(Directionality.of(context));
     final effectivePadding = widget.px == null && widget.py == null
         ? style.padding
@@ -180,7 +187,7 @@ class _BsButtonState extends State<BsButton> {
                 decoration: BoxDecoration(
                   color: background,
                   borderRadius:
-                      style.borderRadius ??
+                      borderRadius ??
                       BorderRadius.circular(BsButtonStyle.borderRadiusBase),
                   border: Border.all(
                     color: borderColor,

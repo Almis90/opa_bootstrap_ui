@@ -3,6 +3,7 @@ import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 
 import '../../src/bootstrap_icon.dart';
 import '../../src/example_divider.dart';
+import '../../src/inline_line.dart';
 
 /// The "Headers" example: a port of Bootstrap's own `examples/headers` page.
 ///
@@ -183,7 +184,7 @@ class HeadersExamplePage extends StatelessWidget {
               // (a block's inline content sits at its start, at its natural size)
               child: BsBox(
                 textAlign: BsTextAlign.start,
-                child: _InlineLine(
+                child: InlineLine(
                   child: BsAnchor(
                     textDecorationNone: true,
                     linkColor: BsTextColor.bodyEmphasis,
@@ -745,34 +746,6 @@ class _Logo extends StatelessWidget {
   @override
   Widget build(BuildContext context) =>
       const BootstrapIcon(BootstrapIconData.bootstrap, width: 40, height: 32);
-}
-
-/// An inline-level box sitting in a block's line box, as the original's
-/// `<div class="col-md-3"><a class="d-inline-flex">` does: the line box is the
-/// strut's descent taller than the box, so the logo rests at the top of its
-/// column rather than in its middle.
-///
-/// The descent is font-metric dependent: Chrome rounds Roboto's ascent (0.928em)
-/// and descent (0.244em) to whole *device* pixels, adds the line-height's
-/// leading around them (the ascent side gets the floored half), and the
-/// descent side is what's left — 7px at 1x, 6.5px at 2x.
-class _InlineLine extends StatelessWidget {
-  const _InlineLine({required this.child});
-
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    final dpr = MediaQuery.devicePixelRatioOf(context);
-    final ascent = (0.9277 * 16 * dpr).round();
-    final descent = (0.2441 * 16 * dpr).round();
-    final lineHeight = 24 * dpr;
-    final above = ascent + ((lineHeight - ascent - descent) / 2).floor();
-    return Padding(
-      padding: EdgeInsets.only(bottom: (lineHeight - above) / dpr),
-      child: child,
-    );
-  }
 }
 
 /// `<a class="nav-link text-*"><svg class="bi d-block mx-auto mb-1" width="24"

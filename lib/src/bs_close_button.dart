@@ -76,6 +76,8 @@ class _BsCloseButtonState extends State<BsCloseButton> {
                   child: BsAnimatedContainer(
                     duration: BsTransitions.resolve(context, const Duration(milliseconds: 150)),
                     decoration: BoxDecoration(
+                      color: style.background,
+                      borderRadius: style.borderRadius,
                       boxShadow: [
                         if (focused)
                           BoxShadow(color: BsFocusRing.color(), spreadRadius: BsCloseButtonStyle.defaultFocusRingWidth),

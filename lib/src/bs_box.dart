@@ -12,6 +12,7 @@ import 'tokens/bs_body.dart';
 import 'tokens/bs_borders.dart';
 import 'tokens/bs_shadows.dart';
 import 'bs_css_line_height.dart';
+import 'bs_dashed_border.dart';
 import 'bs_decorated_box.dart';
 
 /// `fs-1`…`fs-6`: Bootstrap's responsive font sizes. Below the `xl` breakpoint
@@ -308,6 +309,11 @@ enum BsShadow {
   };
 }
 
+/// `border-solid`/`border-dashed`: the style of a [BsBox]'s border. (Bootstrap
+/// has no `border-dashed`; its Jumbotrons example defines one. Only a border on
+/// all four sides can be dashed.)
+enum BsBorderStyle { solid, dashed }
+
 /// A block element with Bootstrap's utility classes on it — the `<div
 /// class="py-3 mb-4 border-bottom text-bg-dark">` of a Bootstrap page.
 ///
@@ -348,6 +354,7 @@ class BsBox extends StatelessWidget {
     this.borderEnd = false,
     this.borderBottom = false,
     this.borderStart = false,
+    this.borderStyle = BsBorderStyle.solid,
     this.bg,
     this.rounded,
     this.textBg,
@@ -396,6 +403,9 @@ class BsBox extends StatelessWidget {
 
   /// `border-start`.
   final bool borderStart;
+
+  /// `border-dashed`: the style of [border] (all four sides).
+  final BsBorderStyle borderStyle;
 
   /// `bg-*`.
   final BsBg? bg;
@@ -531,8 +541,9 @@ class BsBox extends StatelessWidget {
             borderRadius: rounded == null
                 ? null
                 : BorderRadius.circular(rounded!.radius),
-            border:
-                (border ||
+            border: border && borderStyle == BsBorderStyle.dashed
+                ? BsDashedBorder(color: borderColor, width: BsBorders.width)
+                : (border ||
                     borderTop ||
                     borderEnd ||
                     borderBottom ||

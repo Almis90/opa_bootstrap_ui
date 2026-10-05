@@ -297,4 +297,18 @@ void main() {
     );
     expect(tester.getSize(find.byType(BsBox)).height, 120);
   });
+
+  testWidgets('a dashed border adds to the size like a solid one', (tester) async {
+    await pump(
+      tester,
+      const BsBox(
+        border: true,
+        borderStyle: BsBorderStyle.dashed,
+        rounded: BsRounded.r3,
+        child: SizedBox(key: Key('c'), height: 10),
+      ),
+    );
+    expect(tester.getSize(find.byKey(const Key('c'))).height, 10);
+    expect(tester.getSize(find.byType(BsDecoratedBox)).height, 12);
+  });
 }

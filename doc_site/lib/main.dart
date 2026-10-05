@@ -38,6 +38,7 @@ import 'pages/forms/select_page.dart';
 import 'pages/examples/headers_example_page.dart';
 import 'pages/examples/heroes_example_page.dart';
 import 'pages/examples/jumbotron_example_page.dart';
+import 'pages/examples/jumbotrons_example_page.dart';
 import 'pages/getting_started/introduction_page.dart';
 import 'pages/layout/breakpoints_page.dart';
 import 'pages/layout/containers_page.dart';
@@ -168,5 +169,10 @@ final _examples = [
     title: 'Jumbotron',
     description: 'A jumbotron rebuilt from utilities, with two equal-height variations beneath it.',
     builder: (_) => const JumbotronExamplePage(),
+  ),
+  ExampleEntry(
+    title: 'Jumbotrons',
+    description: 'Four jumbotron variations: with an icon, faded placeholder, full-width, and basic.',
+    builder: (_) => const JumbotronsExamplePage(),
   ),
 ];
