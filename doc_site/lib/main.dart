@@ -41,6 +41,7 @@ import 'pages/examples/jumbotron_example_page.dart';
 import 'pages/examples/jumbotrons_example_page.dart';
 import 'pages/examples/list_groups_example_page.dart';
 import 'pages/examples/masonry_example_page.dart';
+import 'pages/examples/modals_example_page.dart';
 import 'pages/getting_started/introduction_page.dart';
 import 'pages/layout/breakpoints_page.dart';
 import 'pages/layout/containers_page.dart';
@@ -186,5 +187,10 @@ final _examples = [
     title: 'Masonry',
     description: 'Cards packed into the shortest column with a masonry layout inside the Bootstrap grid.',
     builder: (_) => const MasonryExamplePage(),
+  ),
+  ExampleEntry(
+    title: 'Modals',
+    description: 'Four modal sheets shown in place: a bottom sheet, a choice, a feature tour and a sign-up form.',
+    builder: (_) => const ModalsExamplePage(),
   ),
 ];

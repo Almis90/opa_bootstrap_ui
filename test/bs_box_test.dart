@@ -298,7 +298,9 @@ void main() {
     expect(tester.getSize(find.byType(BsBox)).height, 120);
   });
 
-  testWidgets('a dashed border adds to the size like a solid one', (tester) async {
+  testWidgets('a dashed border adds to the size like a solid one', (
+    tester,
+  ) async {
     await pump(
       tester,
       const BsBox(
@@ -310,5 +312,25 @@ void main() {
     );
     expect(tester.getSize(find.byKey(const Key('c'))).height, 10);
     expect(tester.getSize(find.byType(BsDecoratedBox)).height, 12);
+  });
+
+  testWidgets('a heading with fs-* keeps the heading weight and line-height', (
+    tester,
+  ) async {
+    await pump(
+      tester,
+      const BsHeading(
+        BsHeadingLevel.h1,
+        fs: BsFs.fs5,
+        child: Text('x', key: Key('c')),
+      ),
+      width: 400,
+    );
+    final style = DefaultTextStyle.of(
+      tester.element(find.byKey(const Key('c'))),
+    ).style;
+    expect(style.fontSize, 20);
+    expect(style.fontWeight, FontWeight.w500);
+    expect(style.height, 1.2);
   });
 }

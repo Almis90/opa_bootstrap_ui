@@ -30,6 +30,7 @@ class BsHeading extends StatelessWidget {
     this.fw,
     this.lh,
     this.mb,
+    this.fs,
   });
 
   final BsHeadingLevel level;
@@ -44,6 +45,10 @@ class BsHeading extends StatelessWidget {
   /// `mb-*`: the bottom margin, in place of the headings' `.5rem` (`h6 mb-0`).
   final BsSpacing? mb;
 
+  /// `fs-*`: a size in place of the level's (`<h1 class="fs-2">` is still an
+  /// `h1`: medium weight, `1.2` line-height).
+  final BsFs? fs;
+
   static double _fontSizeFor(BsHeadingLevel level, double viewportWidth) =>
       switch (level) {
         BsHeadingLevel.h1 => BsFs.fs1.sizeFor(viewportWidth),
@@ -56,7 +61,8 @@ class BsHeading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final fontSize = _fontSizeFor(level, MediaQuery.sizeOf(context).width);
+    final width = MediaQuery.sizeOf(context).width;
+    final fontSize = fs?.sizeFor(width) ?? _fontSizeFor(level, width);
     final height = lh?.height ?? BsTypography.headingsLineHeight;
     return Padding(
       padding: EdgeInsets.only(
