@@ -83,6 +83,7 @@ class BsNav extends StatelessWidget {
     this.variant = BsNavVariant.plain,
     this.vertical = false,
     this.fill = false,
+    this.nowrap = false,
     this.justifyContent,
     this.style,
   });
@@ -98,6 +99,11 @@ class BsNav extends StatelessWidget {
   /// `.nav-fill`/`.nav-justified`: stretches every item to equal width
   /// (only meaningful when not [vertical]).
   final bool fill;
+
+  /// `flex-nowrap`: a horizontal nav keeps all its links on one line (however
+  /// narrow its space) instead of wrapping onto more, as in a scrolling
+  /// `.nav-scroller`.
+  final bool nowrap;
 
   /// `justify-content-*` on the `.nav` (a flex container): where each line of
   /// a horizontal nav sits when it has more room than its links need, and how
@@ -166,6 +172,33 @@ class BsNav extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: children,
           )
+        : nowrap
+        ? Row(
+            mainAxisSize: justifyContent == null
+                ? MainAxisSize.min
+                : MainAxisSize.max,
+            mainAxisAlignment: _mainAxisAlignment(
+              justifyContent?.resolve(
+                BsBreakpoint.forWidth(MediaQuery.sizeOf(context).width),
+              ),
+            ),
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              for (var i = 0; i < items.length; i++)
+                Padding(
+                  // (`.nav-underline`'s flex `gap`)
+                  padding: EdgeInsetsDirectional.only(
+                    end: isUnderline && i < items.length - 1 ? gap : 0,
+                  ),
+                  child: _BsNavLinkWidget(
+                    item: items[i],
+                    variant: variant,
+                    style: style,
+                    expand: false,
+                  ),
+                ),
+            ],
+          )
         : Wrap(
             alignment: _wrapAlignment(
               justifyContent?.resolve(
@@ -210,6 +243,15 @@ WrapAlignment _wrapAlignment(BsJustify? justify) => switch (justify) {
   BsJustify.evenly => WrapAlignment.spaceEvenly,
 };
 
+MainAxisAlignment _mainAxisAlignment(BsJustify? justify) => switch (justify) {
+  null || BsJustify.start => MainAxisAlignment.start,
+  BsJustify.end => MainAxisAlignment.end,
+  BsJustify.center => MainAxisAlignment.center,
+  BsJustify.between => MainAxisAlignment.spaceBetween,
+  BsJustify.around => MainAxisAlignment.spaceAround,
+  BsJustify.evenly => MainAxisAlignment.spaceEvenly,
+};
+
 class _BsNavLinkWidget extends StatefulWidget {
   const _BsNavLinkWidget({
     required this.item,
@@ -241,6 +283,16 @@ class _BsNavLinkWidgetState extends State<_BsNavLinkWidget> {
       resolved.right,
       (vertical ?? resolved.bottom) + (item.borderBottom ? 1 : 0),
     );
+  }
+
+  EdgeInsets _underlinePadding(BsNavStyle style) {
+    final padding = style.linkPadding;
+    final custom = padding != null && padding != BsNavStyle.defaultLinkPadding;
+    final border =
+        style.underlineBorderWidth ?? BsNavStyle.defaultUnderlineBorderWidth;
+    return custom
+        ? (padding as EdgeInsets) + EdgeInsets.only(bottom: border)
+        : EdgeInsets.only(top: 8, bottom: 8 + border);
   }
 
   @override
@@ -321,7 +373,7 @@ class _BsNavLinkWidgetState extends State<_BsNavLinkWidget> {
               bottom: BorderSide(color: color, width: underlineWidth),
             );
           } else {
-            color = _hovered ? hoverColor : restColor;
+            color = textColor ?? (_hovered ? hoverColor : restColor);
             border = Border(
               bottom: BorderSide(
                 color: _hovered ? hoverColor : const Color(0x00000000),
@@ -358,7 +410,13 @@ class _BsNavLinkWidgetState extends State<_BsNavLinkWidget> {
         ],
       ),
       child: Padding(
-        padding: _padding(style.linkPadding ?? BsNavStyle.defaultLinkPadding),
+        padding: _padding(
+          // `.nav-underline .nav-link { padding-right/left: 0; border-bottom:
+          // .125rem solid transparent }`: the border adds to the link's height.
+          widget.variant == BsNavVariant.underline
+              ? _underlinePadding(style)
+              : style.linkPadding ?? BsNavStyle.defaultLinkPadding,
+        ),
         child: DefaultTextStyle.merge(
           style: TextStyle(color: color, fontWeight: fontWeight),
           textAlign: widget.expand ? TextAlign.center : null,
