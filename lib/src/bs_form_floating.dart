@@ -113,8 +113,8 @@ class _BsFormFloatingState extends State<BsFormFloating> {
     final fontSize = style.inputFontSize ?? BsFormStyle.defaultInputFontSize;
     final borderWidth =
         style.inputBorderWidth ?? BsFormStyle.defaultInputBorderWidth;
-    final labelColor =
-        style.inputPlaceholderColor ?? BsFormStyle.defaultInputPlaceholderColor;
+    // `.form-floating > label { color: rgba(var(--bs-body-color-rgb), .65) }`
+    final labelColor = isDark ? const Color(0xA6DEE2E6) : const Color(0xA6212529);
     final floatedOpacity =
         style.floatingLabelOpacity ?? BsFormStyle.defaultFloatingLabelOpacity;
     final inputPaddingTop =

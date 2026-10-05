@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 
 import 'bs_dashed_border.dart';
 import 'bs_theme.dart';
+import 'bs_variant.dart';
 import 'tokens/bs_form_style.dart';
 import 'tokens/bs_transitions.dart';
 import 'bs_decorated_box.dart';
@@ -28,12 +29,17 @@ class BsFormCheck extends StatelessWidget {
     required this.value,
     required this.onChanged,
     this.label,
+    this.valid,
     this.style,
   });
 
   final BsFormCheckType type;
 
   final bool value;
+
+  /// `.is-valid`/`.is-invalid` (or the `was-validated` states of a form): the
+  /// control's border and the [label] take the success or danger color.
+  final bool? valid;
 
   /// Disables the control (rendered at [BsFormStyle.checkInputDisabledOpacity])
   /// when null.
@@ -52,12 +58,20 @@ class BsFormCheck extends StatelessWidget {
     final enabled = onChanged != null;
     final onTap = enabled ? () => onChanged!(!value) : null;
 
+    final accent = valid == null
+        ? null
+        : (valid! ? BsVariant.success.color : BsVariant.danger.color);
     final control = switch (type) {
       BsFormCheckType.switchToggle => _BsFormSwitchGlyph(
         value: value,
         style: style,
       ),
-      _ => _BsFormCheckGlyph(type: type, value: value, style: style),
+      _ => _BsFormCheckGlyph(
+        type: type,
+        value: value,
+        style: style,
+        accent: accent,
+      ),
     };
 
     return Opacity(
@@ -74,7 +88,14 @@ class BsFormCheck extends StatelessWidget {
             control,
             if (label != null) ...[
               const SizedBox(width: 8),
-              Flexible(child: label!),
+              Flexible(
+                child: accent == null
+                    ? label!
+                    : DefaultTextStyle.merge(
+                        style: TextStyle(color: accent),
+                        child: label!,
+                      ),
+              ),
             ],
           ],
         ),
@@ -91,11 +112,15 @@ class _BsFormCheckGlyph extends StatelessWidget {
     this.size,
     this.dashed = false,
     this.background,
+    this.accent,
   });
 
   final BsFormCheckType type;
   final bool value;
   final BsFormStyle style;
+
+  /// A validation color for the border (and the checked fill).
+  final Color? accent;
 
   /// The box's side: `1em` of the control's font size (16px by default).
   final double? size;
@@ -118,12 +143,15 @@ class _BsFormCheckGlyph extends StatelessWidget {
         : (style.checkInputBorderRadius ??
               BsFormStyle.defaultCheckInputBorderRadius);
     final checkedBackground =
+        accent ??
         style.checkInputCheckedBackground ??
         BsFormStyle.defaults.checkInputCheckedBackground!;
     // `:checked` keeps the border, in the checked background's color; the glyph
     // is drawn inside it (`background-size: contain` of the padding box).
     final borderSide = value
         ? BorderSide(color: checkedBackground, width: border.width)
+        : accent != null
+        ? BorderSide(color: accent!, width: border.width)
         : border;
 
     return BsDecoratedContainer(

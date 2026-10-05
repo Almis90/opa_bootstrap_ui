@@ -40,6 +40,7 @@ import 'pages/examples/badges_example_page.dart';
 import 'pages/examples/breadcrumbs_example_page.dart';
 import 'pages/examples/buttons_example_page.dart';
 import 'pages/examples/carousel_example_page.dart';
+import 'pages/examples/checkout_example_page.dart';
 import 'pages/examples/headers_example_page.dart';
 import 'pages/examples/heroes_example_page.dart';
 import 'pages/examples/jumbotron_example_page.dart';
@@ -212,6 +213,11 @@ final _examples = [
     description: 'The carousel page, right to left in Arabic.',
     builder: (_) => const CarouselExamplePage(rtl: true),
     fixed: (context) => CarouselExamplePage.fixed(context, rtl: true),
+  ),
+  ExampleEntry(
+    title: 'Checkout',
+    description: 'A checkout form with a cart, billing address and payment sections.',
+    builder: (_) => const CheckoutExamplePage(),
   ),
   ExampleEntry(
     title: 'Headers',

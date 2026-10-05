@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'bs_box.dart';
 import 'bs_colors.dart';
 import 'bs_theme.dart';
+import 'bs_validation_icon.dart';
 import 'tokens/bs_form_style.dart';
 import 'bs_decorated_box.dart';
 
@@ -36,6 +37,7 @@ class BsFormControl extends StatefulWidget {
     this.showBorder = true,
     this.roundedTop,
     this.roundedBottom,
+    this.borderRadius,
     this.onChanged,
     this.onSubmitted,
     this.style,
@@ -83,6 +85,11 @@ class BsFormControl extends StatefulWidget {
   /// `rounded-bottom-*`: the radius of the bottom corners in place of the
   /// control's.
   final BsRounded? roundedBottom;
+
+  /// The four corner radii in place of the control's (and of [roundedTop]/
+  /// [roundedBottom]): `.input-group > .form-control:not(:last-child)` squares
+  /// the side that meets the next element.
+  final BorderRadius? borderRadius;
 
   final ValueChanged<String>? onChanged;
 
@@ -234,7 +241,14 @@ class _BsFormControlState extends State<BsFormControl>
     // DecoratedBox sits *over* its child's box instead of adding to it, which
     // would leave the control 2px short of Bootstrap's `$input-height`
     // (line-height + padding + border).
-    return BsDecoratedContainer(
+    final validated = widget.valid != null;
+    final effectivePadding = !validated
+        ? padding
+        : padding.resolve(Directionality.of(context)).copyWith(
+            // `padding-right: calc(1.5em + .75rem)` for the feedback icon
+            right: fontSize * 1.5 + 12,
+          );
+    final box = BsDecoratedContainer(
       decoration: BoxDecoration(
         color: widget.enabled
             ? (style.inputBackground ?? BsFormStyle.defaultInputBackground)
@@ -249,18 +263,21 @@ class _BsFormControlState extends State<BsFormControl>
               )
             : null,
         borderRadius: widget.showBorder
-            ? BorderRadius.vertical(
-                top: Radius.circular(widget.roundedTop?.radius ?? borderRadius),
-                bottom: Radius.circular(
-                  widget.roundedBottom?.radius ?? borderRadius,
-                ),
-              )
+            ? widget.borderRadius ??
+                  BorderRadius.vertical(
+                    top: Radius.circular(
+                      widget.roundedTop?.radius ?? borderRadius,
+                    ),
+                    bottom: Radius.circular(
+                      widget.roundedBottom?.radius ?? borderRadius,
+                    ),
+                  )
             : null,
         boxShadow: widget.showBorder
             ? (focused ? style.inputFocusBoxShadow : style.inputBoxShadow)
             : null,
       ),
-      padding: padding,
+      padding: effectivePadding,
       child: Stack(
         alignment: AlignmentDirectional.centerStart,
         children: [
@@ -316,6 +333,30 @@ class _BsFormControlState extends State<BsFormControl>
           ),
         ],
       ),
+    );
+    if (!validated) return box;
+    // `.was-validated :valid`/`.is-invalid`: the feedback icon, `.375em +
+    // .1875rem` from the end of the padding box, centred.
+    return Stack(
+      children: [
+        box,
+        Positioned.fill(
+          child: IgnorePointer(
+            child: Padding(
+              padding: EdgeInsetsDirectional.only(
+                end: 1 + fontSize * 0.375 + 3,
+              ),
+              child: Align(
+                alignment: AlignmentDirectional.centerEnd,
+                child: BsValidationIcon(
+                  valid: widget.valid!,
+                  fontSize: fontSize,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

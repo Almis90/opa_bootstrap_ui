@@ -55,6 +55,7 @@ export 'src/bs_thumbnail.dart';
 export 'src/bs_toast.dart';
 export 'src/bs_toggle_button_group.dart';
 export 'src/bs_tooltip.dart';
+export 'src/bs_validation_icon.dart';
 export 'src/bs_variant.dart';
 export 'src/tokens/bs_accordion_style.dart';
 export 'src/tokens/bs_alert_style.dart';

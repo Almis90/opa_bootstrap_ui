@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'bs_dropdown.dart';
 import 'bs_form_control.dart';
 import 'bs_theme.dart';
+import 'bs_validation_icon.dart';
 import 'tokens/bs_form_style.dart';
 import 'bs_decorated_box.dart';
 
@@ -26,6 +27,7 @@ class BsFormSelect<T> extends StatelessWidget {
     required this.onChanged,
     this.placeholder,
     this.size = BsFormControlSize.normal,
+    this.valid,
     this.style,
   });
 
@@ -44,6 +46,9 @@ class BsFormSelect<T> extends StatelessWidget {
 
   /// `.form-select-sm`/`.form-select-lg`.
   final BsFormControlSize size;
+
+  /// `.is-valid`/`.is-invalid`: tints the border and shows the feedback icon.
+  final bool? valid;
 
   /// Style overrides layered on top of [BsFormStyle.defaults].
   final BsFormStyle? style;
@@ -89,10 +94,16 @@ class BsFormSelect<T> extends StatelessWidget {
 
     return BsDropdown(
       toggleBuilder: (context, toggle, isOpen) {
-        final borderColor = isOpen
-            ? (style.inputFocusBorderColor ??
-                  BsFormStyle.defaultInputFocusBorderColor)
-            : (style.inputBorderColor ?? BsFormStyle.defaultInputBorderColor);
+        final borderColor = switch (valid) {
+          false => style.invalidColor ?? BsFormStyle.defaultInvalidColor,
+          true => style.validColor ?? BsFormStyle.defaultValidColor,
+          null =>
+            isOpen
+                ? (style.inputFocusBorderColor ??
+                      BsFormStyle.defaultInputFocusBorderColor)
+                : (style.inputBorderColor ??
+                      BsFormStyle.defaultInputBorderColor),
+        };
 
         return GestureDetector(
           behavior: HitTestBehavior.opaque,
@@ -131,15 +142,21 @@ class BsFormSelect<T> extends StatelessWidget {
                     child: displayed,
                   ),
                 ),
+                if (valid != null) ...[
+                  const SizedBox(width: 12),
+                  BsValidationIcon(valid: valid!, fontSize: fontSize),
+                ],
                 const SizedBox(width: 8),
-                BsDropdownCaret(
-                  color:
-                      style.selectIndicatorColor ??
-                      BsFormStyle.defaultSelectIndicatorColor,
+                // `$form-select-indicator`: a 16x12 chevron (`m2 5 6 6 6-6`, a
+                // 2px round stroke)
+                CustomPaint(
                   size:
-                      (style.selectBackgroundSize ??
-                              BsFormStyle.defaultSelectBackgroundSize)
-                          .width,
+                      style.selectBackgroundSize ??
+                      BsFormStyle.defaultSelectBackgroundSize,
+                  painter: _SelectChevronPainter(
+                    style.selectIndicatorColor ??
+                        BsFormStyle.defaultSelectIndicatorColor,
+                  ),
                 ),
               ],
             ),
@@ -157,4 +174,38 @@ class BsFormSelect<T> extends StatelessWidget {
       ],
     );
   }
+}
+
+class _SelectChevronPainter extends CustomPainter {
+  _SelectChevronPainter(this.color);
+
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    // `viewBox="0 0 16 16"` shown at `16px 12px`: scaled to fit (`meet`) and
+    // centred, so `.75` of its size.
+    final scale = size.width / 16 < size.height / 16
+        ? size.width / 16
+        : size.height / 16;
+    canvas.translate(
+      (size.width - 16 * scale) / 2,
+      (size.height - 16 * scale) / 2,
+    );
+    canvas.drawPath(
+      Path()
+        ..moveTo(2 * scale, 5 * scale)
+        ..lineTo(8 * scale, 11 * scale)
+        ..lineTo(14 * scale, 5 * scale),
+      Paint()
+        ..color = color
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 2 * scale
+        ..strokeCap = StrokeCap.round
+        ..strokeJoin = StrokeJoin.round,
+    );
+  }
+
+  @override
+  bool shouldRepaint(_SelectChevronPainter oldDelegate) => oldDelegate.color != color;
 }

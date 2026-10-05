@@ -66,6 +66,11 @@ class BsBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final style = BsBadgeStyle.defaults.merge(this.style);
+    // `.badge { font-size: .75em; padding: .35em .65em }`: relative to the text
+    // it sits in (a badge in an `h4` is `.75em` of the heading), unless the
+    // style sets its own.
+    final parentSize = DefaultTextStyle.of(context).style.fontSize ?? 16;
+    final fontSize = this.style?.fontSize ?? parentSize * 0.75;
     final dark = BsTheme.of(context) == Brightness.dark;
     final background =
         style.background ??
@@ -82,7 +87,9 @@ class BsBadge extends StatelessWidget {
             : BsColorUtils.contrast(background));
     final borderRadius = style.borderRadius ?? BsBadgeStyle.defaultBorderRadius;
     final borderColor = (borderVariant ?? variant);
-    var padding = style.padding ?? BsBadgeStyle.defaultPadding;
+    var padding =
+        this.style?.padding ??
+        EdgeInsets.symmetric(horizontal: 0.65 * fontSize, vertical: 0.35 * fontSize);
     if (p != null || pe != null) {
       final resolved = padding.resolve(TextDirection.ltr);
       final all = p?.size;
@@ -110,7 +117,7 @@ class BsBadge extends StatelessWidget {
       child: DefaultTextStyle.merge(
         style: TextStyle(
           color: color,
-          fontSize: style.fontSize ?? BsBadgeStyle.defaultFontSize,
+          fontSize: fontSize,
           fontWeight: style.fontWeight ?? BsBadgeStyle.defaultFontWeight,
           height: 1,
         ),

@@ -465,7 +465,7 @@ class BsFormStyle {
   static const double defaultInputBorderRadius = BsBorders.radius;
   static const double defaultInputBorderRadiusSm = BsBorders.radiusSm;
   static const double defaultInputBorderRadiusLg = BsBorders.radiusLg;
-  static const Color defaultInputPlaceholderColor = BsColors.gray600;
+  static const Color defaultInputPlaceholderColor = BsBody.secondaryColor;
 
   /// [defaultInputPlaceholderColor] resolved against `--bs-secondary-color`
   /// in `[data-bs-theme="dark"]`.

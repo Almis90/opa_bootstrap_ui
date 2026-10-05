@@ -18,6 +18,7 @@ class BsInputGroup extends StatelessWidget {
     super.key,
     required this.children,
     this.size = BsFormControlSize.normal,
+    this.valid,
     this.style,
   });
 
@@ -25,6 +26,9 @@ class BsInputGroup extends StatelessWidget {
 
   /// `.input-group-sm`/`.input-group-lg`.
   final BsFormControlSize size;
+
+  /// `.is-valid`/`.is-invalid` (the group's control): tints the shared border.
+  final bool? valid;
 
   /// Style overrides layered on top of [BsFormStyle.defaults].
   final BsFormStyle? style;
@@ -49,7 +53,11 @@ class BsInputGroup extends StatelessWidget {
     return BsDecoratedContainer(
       decoration: BoxDecoration(
         border: Border.all(
-          color: style.inputBorderColor ?? BsFormStyle.defaultInputBorderColor,
+          color: switch (valid) {
+            false => style.invalidColor ?? BsFormStyle.defaultInvalidColor,
+            true => style.validColor ?? BsFormStyle.defaultValidColor,
+            null => style.inputBorderColor ?? BsFormStyle.defaultInputBorderColor,
+          },
           width: style.inputBorderWidth ?? BsFormStyle.defaultInputBorderWidth,
         ),
         borderRadius: BorderRadius.circular(borderRadius),
