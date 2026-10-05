@@ -37,6 +37,7 @@ import 'pages/forms/range_page.dart';
 import 'pages/forms/select_page.dart';
 import 'pages/examples/album_example_page.dart';
 import 'pages/examples/badges_example_page.dart';
+import 'pages/examples/blog_example_page.dart';
 import 'pages/examples/breadcrumbs_example_page.dart';
 import 'pages/examples/buttons_example_page.dart';
 import 'pages/examples/carousel_example_page.dart';
@@ -197,6 +198,16 @@ final _examples = [
     title: 'Badges',
     description: 'Pill badges in every color: solid, subtle, with avatars and dismiss icons.',
     builder: (_) => const BadgesExamplePage(),
+  ),
+  ExampleEntry(
+    title: 'Blog',
+    description: 'A blog: masthead, featured post and cards, posts beside a sidebar.',
+    builder: (_) => const BlogExamplePage(),
+  ),
+  ExampleEntry(
+    title: 'Blog RTL',
+    description: 'The blog page, right to left in Arabic.',
+    builder: (_) => const BlogExamplePage(rtl: true),
   ),
   ExampleEntry(
     title: 'Breadcrumbs',

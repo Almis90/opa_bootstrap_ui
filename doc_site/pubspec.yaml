@@ -42,3 +42,17 @@ flutter:
           weight: 500
         - asset: assets/fonts/Roboto-Bold.ttf
           weight: 700
+    # Blog example's own web fonts (SIL Open Font License), from Google Fonts: its
+    # headings are Playfair Display (Amiri in the RTL page).
+    - family: Playfair Display
+      fonts:
+        - asset: assets/fonts/PlayfairDisplay-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/PlayfairDisplay-Black.ttf
+          weight: 900
+    - family: Amiri
+      fonts:
+        - asset: assets/fonts/Amiri-Regular.woff
+          weight: 400
+        - asset: assets/fonts/Amiri-Bold.woff
+          weight: 700

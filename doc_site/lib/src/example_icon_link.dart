@@ -13,6 +13,7 @@ class ExampleIconLink extends StatelessWidget {
     required this.icon,
     this.iconSize = 16,
     this.iconFirst = false,
+    this.gap = 6,
     this.onTap,
   });
 
@@ -24,6 +25,9 @@ class ExampleIconLink extends StatelessWidget {
 
   /// Markup order: the `<svg>` before the text.
   final bool iconFirst;
+
+  /// The gap between text and icon: `.375rem`, or `gap-1` (`.25rem`).
+  final double gap;
 
   final VoidCallback? onTap;
 
@@ -54,7 +58,7 @@ class ExampleIconLink extends StatelessWidget {
           alignItems: BsAlign.center,
           children: [
             if (iconFirst) glyph else label,
-            const SizedBox(width: 6),
+            SizedBox(width: gap),
             if (iconFirst) label else glyph,
           ],
         ),
