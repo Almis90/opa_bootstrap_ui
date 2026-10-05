@@ -89,3 +89,46 @@ class InlineIconLabel extends StatelessWidget {
     );
   }
 }
+
+/// An `<svg class="bi">` sitting on the baseline of a line of text (hanging
+/// [lowered] below it), in a line of the surrounding [lineHeight]: the icon
+/// is level with the x-height of the text beside it, not centred on the line.
+class InlineIcon extends StatelessWidget {
+  const InlineIcon({
+    super.key,
+    required this.icon,
+    this.size = 16,
+    this.lowered = 2,
+    this.fontSize = 16,
+    this.lineHeight = 24,
+    this.color,
+  });
+
+  final BootstrapIconData icon;
+  final double size;
+  final double lowered;
+  final double fontSize;
+  final double lineHeight;
+  final Color? color;
+
+  @override
+  Widget build(BuildContext context) {
+    final dpr = MediaQuery.devicePixelRatioOf(context);
+    final ascent = (0.9277 * fontSize * dpr).round();
+    final descent = (0.2441 * fontSize * dpr).round();
+    final above = ascent + ((lineHeight * dpr - ascent - descent) / 2).floor();
+    final top = (above - (size - lowered) * dpr) / dpr;
+    return SizedBox(
+      width: size,
+      height: lineHeight,
+      // (an Align: the icon keeps its own size rather than filling the line)
+      child: Align(
+        alignment: Alignment.topLeft,
+        child: Padding(
+          padding: EdgeInsets.only(top: top < 0 ? 0 : top),
+          child: BootstrapIcon(icon, width: size, height: size, color: color),
+        ),
+      ),
+    );
+  }
+}

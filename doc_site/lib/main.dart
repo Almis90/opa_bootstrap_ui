@@ -37,6 +37,7 @@ import 'pages/forms/range_page.dart';
 import 'pages/forms/select_page.dart';
 import 'pages/examples/album_example_page.dart';
 import 'pages/examples/badges_example_page.dart';
+import 'pages/examples/breadcrumbs_example_page.dart';
 import 'pages/examples/headers_example_page.dart';
 import 'pages/examples/heroes_example_page.dart';
 import 'pages/examples/jumbotron_example_page.dart';
@@ -187,6 +188,11 @@ final _examples = [
     title: 'Badges',
     description: 'Pill badges in every color: solid, subtle, with avatars and dismiss icons.',
     builder: (_) => const BadgesExamplePage(),
+  ),
+  ExampleEntry(
+    title: 'Breadcrumbs',
+    description: 'Breadcrumb trails: default, with icon, chevron dividers and arrow tips.',
+    builder: (_) => const BreadcrumbsExamplePage(),
   ),
   ExampleEntry(
     title: 'Headers',
