@@ -12,6 +12,7 @@ import 'package:doc_site/pages/examples/dashboard_example_page.dart';
 import 'package:doc_site/pages/examples/dropdowns_example_page.dart';
 import 'package:doc_site/pages/examples/features_example_page.dart';
 import 'package:doc_site/pages/examples/footers_example_page.dart';
+import 'package:doc_site/pages/examples/grid_example_page.dart';
 import 'package:doc_site/pages/examples/headers_example_page.dart';
 import 'package:doc_site/pages/examples/heroes_example_page.dart';
 import 'package:doc_site/pages/examples/jumbotron_example_page.dart';
@@ -53,6 +54,7 @@ void main() {
       'Dropdowns': () => const DropdownsExamplePage(),
       'Features': () => const FeaturesExamplePage(),
       'Footers': () => const FootersExamplePage(),
+      'Grid': () => const GridExamplePage(),
       'Headers': () => const HeadersExamplePage(),
       'Heroes': () => const HeroesExamplePage(),
       'Jumbotron': () => const JumbotronExamplePage(),
