@@ -283,4 +283,18 @@ void main() {
     expect(await sizeAt(400), closeTo(1.425 * 16 + 400 * 0.021, 0.001));
     expect(await sizeAt(1200), 48);
   });
+
+  testWidgets('h-100 fills a parent that has a height', (tester) async {
+    await pump(
+      tester,
+      const SizedBox(
+        height: 120,
+        child: BsBox(
+          h: BsHeight.h100,
+          child: SizedBox(key: Key('c'), height: 10),
+        ),
+      ),
+    );
+    expect(tester.getSize(find.byType(BsBox)).height, 120);
+  });
 }

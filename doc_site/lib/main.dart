@@ -37,6 +37,7 @@ import 'pages/forms/range_page.dart';
 import 'pages/forms/select_page.dart';
 import 'pages/examples/headers_example_page.dart';
 import 'pages/examples/heroes_example_page.dart';
+import 'pages/examples/jumbotron_example_page.dart';
 import 'pages/getting_started/introduction_page.dart';
 import 'pages/layout/breakpoints_page.dart';
 import 'pages/layout/containers_page.dart';
@@ -162,5 +163,10 @@ final _examples = [
     title: 'Heroes',
     description: 'Six hero sections: centered, with a screenshot, with an image, a sign-up form, bordered, and dark.',
     builder: (_) => const HeroesExamplePage(),
+  ),
+  ExampleEntry(
+    title: 'Jumbotron',
+    description: 'A jumbotron rebuilt from utilities, with two equal-height variations beneath it.',
+    builder: (_) => const JumbotronExamplePage(),
   ),
 ];

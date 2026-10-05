@@ -206,6 +206,23 @@ enum BsTextAlign implements BsResponsive<BsTextAlign> {
   BsTextAlign resolve(BsBreakpoint breakpoint) => this;
 }
 
+/// `h-25`/`h-50`/`h-75`/`h-100`/`h-auto`: a height as a share of the parent's
+/// (which has to have one — a column stretched by a row does).
+enum BsHeight implements BsResponsive<BsHeight> {
+  h25(0.25),
+  h50(0.5),
+  h75(0.75),
+  h100(1),
+  auto(null);
+
+  const BsHeight(this.fraction);
+
+  final double? fraction;
+
+  @override
+  BsHeight resolve(BsBreakpoint breakpoint) => this;
+}
+
 /// `fw-*`: Bootstrap's font-weight utilities.
 enum BsFw {
   /// `fw-bold` (700).
@@ -340,6 +357,7 @@ class BsBox extends StatelessWidget {
     this.lh,
     this.textAlign,
     this.w,
+    this.h,
     this.col,
     this.shadow,
     this.overflowHidden = false,
@@ -405,6 +423,9 @@ class BsBox extends StatelessWidget {
 
   /// `w-25`…`w-100`.
   final BsResponsive<BsWidth>? w;
+
+  /// `h-25`…`h-100`.
+  final BsResponsive<BsHeight>? h;
 
   /// `col-*` outside a row: the box's width as a share of 12 columns of its
   /// parent (`col-lg-6 mx-auto` is half the parent, centred, from `lg`).
@@ -565,6 +586,16 @@ class BsBox extends StatelessWidget {
           _ => AlignmentDirectional.topStart,
         },
         child: box,
+      );
+    }
+
+    final height = h?.resolve(breakpoint)?.fraction;
+    if (height != null) {
+      final inner = box;
+      box = LayoutBuilder(
+        builder: (context, constraints) => constraints.hasBoundedHeight
+            ? SizedBox(height: constraints.maxHeight * height, child: inner)
+            : inner,
       );
     }
 
