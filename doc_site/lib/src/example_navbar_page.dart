@@ -83,18 +83,30 @@ class NavbarExampleBody extends StatelessWidget {
 /// `<form class="d-flex"><input class="form-control me-2" type="search"> <button
 /// class="btn btn-outline-success">Search</button></form>`.
 class NavbarSearchForm extends StatelessWidget {
-  const NavbarSearchForm({super.key, this.fill = false, this.label = 'Search'});
+  const NavbarSearchForm({
+    super.key,
+    this.fill = false,
+    this.label = 'Search',
+    this.placeholder,
+    this.buttonVariant = BsVariant.success,
+  });
 
   /// A form as wide as its container (the input takes what the button leaves),
   /// not the input's own width.
   final bool fill;
 
-  /// The input's placeholder and the button's text.
+  /// The button's text (and the input's placeholder, unless [placeholder]).
   final String label;
+
+  /// The input's placeholder, when it is not the [label].
+  final String? placeholder;
+
+  /// `btn-outline-*`.
+  final BsVariant buttonVariant;
 
   @override
   Widget build(BuildContext context) {
-    final input = BsFormControl(placeholder: label);
+    final input = BsFormControl(placeholder: placeholder ?? label);
     return BsFlex(
       inline: !fill,
       children: [
@@ -106,7 +118,7 @@ class NavbarSearchForm extends StatelessWidget {
         BsFlexItem(
           flexShrink: false,
           child: BsButton(
-            variant: BsVariant.success,
+            variant: buttonVariant,
             outline: true,
             onPressed: () {},
             child: Text(label),
@@ -173,6 +185,10 @@ BsNavbarItem navbarDropdownItem(
   required BsBreakpoint? expandBreakpoint,
   bool up = false,
   bool divider = false,
+  List<String> menu = const ['Action', 'Another action', 'Something else here'],
+  // The markup puts the label on a line of its own, so a space (3.92px)
+  // separates it from the caret.
+  bool spaceBeforeCaret = false,
 }) {
   return BsNavbarItem(
     onTap: () {},
@@ -203,7 +219,9 @@ BsNavbarItem navbarDropdownItem(
                   // .255em off the baseline of the 24px line.
                   Padding(
                     padding: EdgeInsets.only(
-                      left: BsDropdownCaret.marginStart,
+                      left:
+                          BsDropdownCaret.marginStart +
+                          (spaceBeforeCaret ? 3.92 : 0),
                       top: 17 - 4.08 - BsDropdownCaret.heightFor(context),
                     ),
                     child: BsDropdownCaret(up: up),
@@ -213,13 +231,10 @@ BsNavbarItem navbarDropdownItem(
             ),
           ),
           items: [
-            BsDropdownItem(child: const Text('Action'), onTap: () {}),
-            BsDropdownItem(child: const Text('Another action'), onTap: () {}),
+            BsDropdownItem(child: Text(menu[0]), onTap: () {}),
+            BsDropdownItem(child: Text(menu[1]), onTap: () {}),
             if (divider) const BsDropdownDivider(),
-            BsDropdownItem(
-              child: const Text('Something else here'),
-              onTap: () {},
-            ),
+            BsDropdownItem(child: Text(menu[2]), onTap: () {}),
           ],
         );
       },

@@ -7,6 +7,7 @@ import 'package:doc_site/pages/examples/blog_example_page.dart';
 import 'package:doc_site/pages/examples/breadcrumbs_example_page.dart';
 import 'package:doc_site/pages/examples/buttons_example_page.dart';
 import 'package:doc_site/pages/examples/carousel_example_page.dart';
+import 'package:doc_site/pages/examples/cheatsheet_example_page.dart';
 import 'package:doc_site/pages/examples/checkout_example_page.dart';
 import 'package:doc_site/pages/examples/cover_example_page.dart';
 import 'package:doc_site/pages/examples/dashboard_example_page.dart';
@@ -49,6 +50,8 @@ void main() {
       'Buttons': () => const ButtonsExamplePage(),
       'Carousel': () => const CarouselExamplePage(),
       'Carousel RTL': () => const CarouselExamplePage(rtl: true),
+      'Cheatsheet': () => const CheatsheetExamplePage(),
+      'Cheatsheet RTL': () => const CheatsheetExamplePage(rtl: true),
       'Checkout': () => const CheckoutExamplePage(),
       'Checkout RTL': () => const CheckoutExamplePage(rtl: true),
       'Cover': () => const CoverExamplePage(),
@@ -88,7 +91,17 @@ void main() {
           // The test font (Ahem) is far wider than Roboto, so the Sidebars'
           // fixed-width panes and the Dashboard's narrow sidebar overflow in
           // it; that is not a layout bug.
-          if (const {'Sidebars', 'Dashboard', 'Dashboard RTL', 'Dropdowns', 'Features', 'Blog', 'Blog RTL'}.contains(entry.key)) {
+          if (const {
+            'Sidebars',
+            'Dashboard',
+            'Dashboard RTL',
+            'Dropdowns',
+            'Features',
+            'Blog',
+            'Blog RTL',
+            'Cheatsheet',
+            'Cheatsheet RTL',
+          }.contains(entry.key)) {
             final onError = FlutterError.onError;
             FlutterError.onError = (details) {
               if (!details.exceptionAsString().contains('overflowed')) {

@@ -41,6 +41,7 @@ import 'pages/examples/blog_example_page.dart';
 import 'pages/examples/breadcrumbs_example_page.dart';
 import 'pages/examples/buttons_example_page.dart';
 import 'pages/examples/carousel_example_page.dart';
+import 'pages/examples/cheatsheet_example_page.dart';
 import 'pages/examples/checkout_example_page.dart';
 import 'pages/examples/cover_example_page.dart';
 import 'pages/examples/dashboard_example_page.dart';
@@ -230,6 +231,18 @@ final _examples = [
     description: 'The carousel page, right to left in Arabic.',
     builder: (_) => const CarouselExamplePage(rtl: true),
     fixed: (context) => CarouselExamplePage.fixed(context, rtl: true),
+  ),
+  ExampleEntry(
+    title: 'Cheatsheet',
+    description: 'Every component and content style on one page, with a table of contents.',
+    builder: (_) => const CheatsheetExamplePage(),
+    fixed: (context) => CheatsheetExamplePage.fixed(context),
+  ),
+  ExampleEntry(
+    title: 'Cheatsheet RTL',
+    description: 'The cheatsheet, right to left in Arabic.',
+    builder: (_) => const CheatsheetExamplePage(rtl: true),
+    fixed: (context) => CheatsheetExamplePage.fixed(context, rtl: true),
   ),
   ExampleEntry(
     title: 'Checkout',
