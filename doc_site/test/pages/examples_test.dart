@@ -46,6 +46,7 @@ void main() {
       'Checkout RTL': () => const CheckoutExamplePage(rtl: true),
       'Cover': () => const CoverExamplePage(),
       'Dashboard': () => const DashboardExamplePage(),
+      'Dashboard RTL': () => const DashboardExamplePage(rtl: true),
       'Headers': () => const HeadersExamplePage(),
       'Heroes': () => const HeroesExamplePage(),
       'Jumbotron': () => const JumbotronExamplePage(),
@@ -76,7 +77,7 @@ void main() {
           // The test font (Ahem) is far wider than Roboto, so the Sidebars'
           // fixed-width panes and the Dashboard's narrow sidebar overflow in
           // it; that is not a layout bug.
-          if (const {'Sidebars', 'Dashboard'}.contains(entry.key)) {
+          if (const {'Sidebars', 'Dashboard', 'Dashboard RTL'}.contains(entry.key)) {
             final onError = FlutterError.onError;
             FlutterError.onError = (details) {
               if (!details.exceptionAsString().contains('overflowed')) {

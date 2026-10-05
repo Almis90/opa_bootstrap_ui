@@ -232,7 +232,9 @@ class _Brand extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
-      painter: const _BrandPainter(),
+      painter: _BrandPainter(
+        rtl: Directionality.of(context) == TextDirection.rtl,
+      ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         child: Text(text, style: const TextStyle(color: Color(0xFFFFFFFF))),
@@ -242,7 +244,9 @@ class _Brand extends StatelessWidget {
 }
 
 class _BrandPainter extends CustomPainter {
-  const _BrandPainter();
+  const _BrandPainter({required this.rtl});
+
+  final bool rtl;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -250,15 +254,15 @@ class _BrandPainter extends CustomPainter {
       Offset.zero & size,
       Paint()..color = const Color(0x40000000),
     );
-    // box-shadow: inset -1px 0 0 rgba(0, 0, 0, .25)
+    // box-shadow: inset -1px 0 0 rgba(0, 0, 0, .25) (`1px` on the left in RTL)
     canvas.drawRect(
-      Rect.fromLTWH(size.width - 1, 0, 1, size.height),
+      Rect.fromLTWH(rtl ? 0 : size.width - 1, 0, 1, size.height),
       Paint()..color = const Color(0x40000000),
     );
   }
 
   @override
-  bool shouldRepaint(_BrandPainter oldDelegate) => false;
+  bool shouldRepaint(_BrandPainter oldDelegate) => oldDelegate.rtl != rtl;
 }
 
 /// A 16px `svg.bi` on the baseline of a line of text (`.bi { display:
@@ -451,6 +455,25 @@ class _Main extends StatelessWidget {
     ['1,015', 'random', 'tabular', 'information', 'text'],
   ];
 
+  static const _rowsAr = [
+    ['1,001', 'بيانات', 'عشوائية', 'تثري', 'الجدول'],
+    ['1,002', 'تثري', 'مبهة', 'تصميم', 'تنسيق'],
+    ['1,003', 'عشوائية', 'غنية', 'قيمة', 'مفيدة'],
+    ['1,003', 'معلومات', 'تثري', 'توضيحية', 'عشوائية'],
+    ['1,004', 'الجدول', 'بيانات', 'تنسيق', 'قيمة'],
+    ['1,005', 'قيمة', 'مبهة', 'الجدول', 'تثري'],
+    ['1,006', 'قيمة', 'توضيحية', 'غنية', 'عشوائية'],
+    ['1,007', 'تثري', 'مفيدة', 'معلومات', 'مبهة'],
+    ['1,008', 'بيانات', 'عشوائية', 'تثري', 'الجدول'],
+    ['1,009', 'تثري', 'مبهة', 'تصميم', 'تنسيق'],
+    ['1,010', 'عشوائية', 'غنية', 'قيمة', 'مفيدة'],
+    ['1,011', 'معلومات', 'تثري', 'توضيحية', 'عشوائية'],
+    ['1,012', 'الجدول', 'تثري', 'تنسيق', 'قيمة'],
+    ['1,013', 'قيمة', 'مبهة', 'الجدول', 'تصميم'],
+    ['1,014', 'قيمة', 'توضيحية', 'غنية', 'عشوائية'],
+    ['1,015', 'بيانات', 'مفيدة', 'معلومات', 'الجدول'],
+  ];
+
   @override
   Widget build(BuildContext context) {
     final t = strings;
@@ -539,15 +562,7 @@ class _Main extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 24),
           child: ExampleLineChart(
-            labels: const [
-              'Sunday',
-              'Monday',
-              'Tuesday',
-              'Wednesday',
-              'Thursday',
-              'Friday',
-              'Saturday',
-            ],
+            labels: t.days,
             values: const [15339, 21345, 18483, 24003, 23489, 24092, 12034],
           ),
         ),
@@ -572,7 +587,7 @@ class _Main extends StatelessWidget {
                 for (var i = 0; i < 4; i++) Text(t.header),
               ],
               rows: [
-                for (final row in _rows)
+                for (final row in t.arabic ? _rowsAr : _rows)
                   BsTableRow(cells: [for (final cell in row) Text(cell)]),
               ],
             ),
@@ -617,6 +632,8 @@ class _Strings {
     required this.week,
     required this.section,
     required this.header,
+    required this.days,
+    this.arabic = false,
   });
 
   final String company, search;
@@ -624,6 +641,8 @@ class _Strings {
   final String saved, current, quarter, social, yearEnd;
   final String settings, signOut;
   final String title, share, export, week, section, header;
+  final List<String> days;
+  final bool arabic;
 
   static const en = _Strings(
     company: 'Company name',
@@ -647,6 +666,15 @@ class _Strings {
     week: 'This week',
     section: 'Section title',
     header: 'Header',
+    days: [
+      'Sunday',
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+    ],
   );
 
   static const ar = _Strings(
@@ -671,5 +699,15 @@ class _Strings {
     week: 'هذا الأسبوع',
     section: 'عنوان القسم',
     header: 'عنوان',
+    days: [
+      'الأحد',
+      'الإثنين',
+      'الثلاثاء',
+      'الأربعاء',
+      'الخميس',
+      'الجمعة',
+      'السبت',
+    ],
+    arabic: true,
   );
 }

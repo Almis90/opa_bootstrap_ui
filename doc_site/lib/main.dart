@@ -238,6 +238,12 @@ final _examples = [
     fixed: DashboardExamplePage.fixed,
   ),
   ExampleEntry(
+    title: 'Dashboard RTL',
+    description: 'The dashboard, right to left in Arabic.',
+    builder: (_) => const DashboardExamplePage(rtl: true),
+    fixed: (context) => DashboardExamplePage.fixed(context, rtl: true),
+  ),
+  ExampleEntry(
     title: 'Headers',
     description: 'Eight header layouts, from a bare brand-and-nav bar to a two-tier icon navigation bar.',
     builder: (_) => const HeadersExamplePage(),
