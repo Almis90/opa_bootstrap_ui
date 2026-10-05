@@ -54,6 +54,7 @@ import 'pages/examples/sidebars_example_page.dart';
 import 'pages/examples/sign_in_example_page.dart';
 import 'pages/examples/starter_template_example_page.dart';
 import 'pages/examples/sticky_footer_example_page.dart';
+import 'pages/examples/sticky_footer_navbar_example_page.dart';
 import 'pages/getting_started/introduction_page.dart';
 import 'pages/layout/breakpoints_page.dart';
 import 'pages/layout/containers_page.dart';
@@ -268,5 +269,11 @@ final _examples = [
     title: 'Sticky footer',
     description: 'A footer pinned to the bottom of the viewport.',
     builder: (_) => const StickyFooterExamplePage(),
+  ),
+  ExampleEntry(
+    title: 'Sticky footer navbar',
+    description: 'The sticky footer under a fixed top navbar.',
+    builder: (_) => const StickyFooterNavbarExamplePage(),
+    fixed: StickyFooterNavbarExamplePage.fixed,
   ),
 ];
