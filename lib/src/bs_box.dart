@@ -10,6 +10,8 @@ import 'bs_spacing.dart';
 import 'bs_variant.dart';
 import 'tokens/bs_body.dart';
 import 'tokens/bs_borders.dart';
+import 'tokens/bs_shadows.dart';
+import 'bs_css_line_height.dart';
 import 'bs_decorated_box.dart';
 
 /// `fs-1`…`fs-6`: Bootstrap's responsive font sizes. Below the `xl` breakpoint
@@ -204,6 +206,91 @@ enum BsTextAlign implements BsResponsive<BsTextAlign> {
   BsTextAlign resolve(BsBreakpoint breakpoint) => this;
 }
 
+/// `fw-*`: Bootstrap's font-weight utilities.
+enum BsFw {
+  /// `fw-bold` (700).
+  bold(FontWeight.w700),
+
+  /// `fw-bolder` (800).
+  bolder(FontWeight.w800),
+
+  /// `fw-semibold` (600).
+  semibold(FontWeight.w600),
+
+  /// `fw-medium` (500).
+  medium(FontWeight.w500),
+
+  /// `fw-normal` (400).
+  normal(FontWeight.w400),
+
+  /// `fw-light` (300).
+  light(FontWeight.w300),
+
+  /// `fw-lighter` (200).
+  lighter(FontWeight.w200);
+
+  const BsFw(this.weight);
+
+  final FontWeight weight;
+
+  /// The CSS class suffix used by Bootstrap, e.g. `bold` in `fw-bold`.
+  String get className => name;
+}
+
+/// `lh-*`: Bootstrap's line-height utilities.
+enum BsLh {
+  /// `lh-1`.
+  lh1(1),
+
+  /// `lh-sm` (`$line-height-sm`).
+  sm(1.25),
+
+  /// `lh-base` (`$line-height-base`).
+  base(1.5),
+
+  /// `lh-lg` (`$line-height-lg`).
+  lg(2);
+
+  const BsLh(this.height);
+
+  /// The unitless line-height multiplier.
+  final double height;
+
+  /// The CSS class suffix used by Bootstrap, e.g. `1` in `lh-1`.
+  String get className => switch (this) {
+    lh1 => '1',
+    _ => name,
+  };
+}
+
+/// `shadow`, `shadow-sm`, `shadow-lg`, `shadow-none`: Bootstrap's box-shadow
+/// utilities.
+enum BsShadow {
+  /// `shadow-none`.
+  none(<BoxShadow>[]),
+
+  /// `shadow-sm` (`$box-shadow-sm`).
+  sm(BsShadows.shadowSm),
+
+  /// `shadow` (`$box-shadow`).
+  normal(BsShadows.shadow),
+
+  /// `shadow-lg` (`$box-shadow-lg`).
+  lg(BsShadows.shadowLg);
+
+  const BsShadow(this.shadows);
+
+  final List<BoxShadow> shadows;
+
+  /// The CSS class Bootstrap uses, e.g. `shadow-lg`.
+  String get className => switch (this) {
+    none => 'shadow-none',
+    sm => 'shadow-sm',
+    normal => 'shadow',
+    lg => 'shadow-lg',
+  };
+}
+
 /// A block element with Bootstrap's utility classes on it — the `<div
 /// class="py-3 mb-4 border-bottom text-bg-dark">` of a Bootstrap page.
 ///
@@ -249,8 +336,14 @@ class BsBox extends StatelessWidget {
     this.textBg,
     this.textColor,
     this.fs,
+    this.fw,
+    this.lh,
     this.textAlign,
     this.w,
+    this.col,
+    this.shadow,
+    this.overflowHidden = false,
+    this.inlineBlock = false,
   });
 
   final Widget? child;
@@ -301,11 +394,33 @@ class BsBox extends StatelessWidget {
   /// `fs-*`.
   final BsResponsive<BsFs>? fs;
 
+  /// `fw-*`.
+  final BsFw? fw;
+
+  /// `lh-*`.
+  final BsLh? lh;
+
   /// `text-start`/`text-center`/`text-end`.
   final BsResponsive<BsTextAlign>? textAlign;
 
   /// `w-25`…`w-100`.
   final BsResponsive<BsWidth>? w;
+
+  /// `col-*` outside a row: the box's width as a share of 12 columns of its
+  /// parent (`col-lg-6 mx-auto` is half the parent, centred, from `lg`).
+  final BsResponsive<BsCol>? col;
+
+  /// `shadow`, `shadow-sm`, `shadow-lg`.
+  final BsShadow? shadow;
+
+  /// `d-inline-block`: as wide as its content rather than its parent, placed
+  /// by the inherited `text-*` alignment as inline content is (an `<img
+  /// class="border">` in a `text-center` block).
+  final bool inlineBlock;
+
+  /// `overflow-hidden`: clips the content to the box (inside its border, with
+  /// its rounded corners).
+  final bool overflowHidden;
 
   @override
   Widget build(BuildContext context) {
@@ -333,9 +448,18 @@ class BsBox extends StatelessWidget {
     final fontSize = fs?.resolve(breakpoint)?.sizeFor(viewport);
     final align = textAlign?.resolve(breakpoint);
     if (content != null &&
-        (color != null || fontSize != null || align != null)) {
+        (color != null ||
+            fontSize != null ||
+            align != null ||
+            fw != null ||
+            lh != null)) {
       content = DefaultTextStyle.merge(
-        style: TextStyle(color: color, fontSize: fontSize),
+        style: TextStyle(
+          color: color,
+          fontSize: fontSize,
+          fontWeight: fw?.weight,
+          height: lh?.height,
+        ),
         textAlign: switch (align) {
           BsTextAlign.start => TextAlign.start,
           BsTextAlign.center => TextAlign.center,
@@ -345,12 +469,11 @@ class BsBox extends StatelessWidget {
         child: content,
       );
       if (fontSize != null) {
-        content = _LineHeightAdjust(
-          delta: _cssLineHeightDelta(
-            fontSize,
-            DefaultTextStyle.of(context).style.height ?? 1.5,
-            MediaQuery.devicePixelRatioOf(context),
-          ),
+        content = BsCssLineHeight(
+          fontSize: fontSize,
+          lineHeight:
+              lh?.height ?? DefaultTextStyle.of(context).style.height ?? 1.5,
+          perLine: true,
           child: content,
         );
       }
@@ -379,9 +502,11 @@ class BsBox extends StatelessWidget {
             borderTop ||
             borderEnd ||
             borderBottom ||
-            borderStart)
+            borderStart ||
+            (shadow != null && shadow != BsShadow.none))
         ? BoxDecoration(
             color: bg?.of(context) ?? textBg?.color,
+            boxShadow: shadow?.shadows,
             borderRadius: rounded == null
                 ? null
                 : BorderRadius.circular(rounded!.radius),
@@ -406,13 +531,47 @@ class BsBox extends StatelessWidget {
       bottom: px0(pick([pb, py, p])),
       start: px0(pick([ps, px, p])),
     );
+    final hasPadding = padding != EdgeInsetsDirectional.zero;
+    if (overflowHidden && content != null) {
+      // Clipped to the padding box: inside the border, with its (inner) corners.
+      final inner = rounded == null
+          ? BorderRadius.zero
+          : BorderRadius.circular(
+              (rounded!.radius - (border ? BsBorders.width : 0)).clamp(
+                0,
+                double.infinity,
+              ),
+            );
+      content = ClipRRect(
+        borderRadius: inner,
+        child: hasPadding ? Padding(padding: padding, child: content) : content,
+      );
+    }
     Widget box = BsDecoratedContainer(
       decoration: decoration,
-      padding: padding == EdgeInsetsDirectional.zero ? null : padding,
+      padding: hasPadding && !(overflowHidden && content != null)
+          ? padding
+          : null,
       child: content,
     );
 
-    final width = w?.resolve(breakpoint)?.fraction;
+    if (inlineBlock) {
+      box = _TextAligned(
+        alignment: switch (DefaultTextStyle.of(context).textAlign) {
+          TextAlign.center => AlignmentDirectional.topCenter,
+          TextAlign.end => AlignmentDirectional.topEnd,
+          TextAlign.right => Alignment.topRight,
+          TextAlign.left => Alignment.topLeft,
+          _ => AlignmentDirectional.topStart,
+        },
+        child: box,
+      );
+    }
+
+    final colWidth = col?.resolve(breakpoint);
+    final width =
+        (colWidth?.columns == null ? null : colWidth!.columns! / 12) ??
+        w?.resolve(breakpoint)?.fraction;
     if (width != null) {
       box = FractionallySizedBox(
         widthFactor: width,
@@ -449,84 +608,6 @@ class BsBox extends StatelessWidget {
       );
     }
     return box;
-  }
-}
-
-/// How much taller (or shorter) a single CSS line of text is than Flutter's.
-///
-/// CSS keeps `line-height` fractional (to 1/64px) — `fs-4` at 390px is 21.57px
-/// × 1.5 = 32.34px — while Flutter rounds a text line to whole pixels (32px).
-/// (The browser lays out in device pixels, so the 1/64px floor is taken there.)
-/// Over a page of such titles the difference adds up to visible drift, so
-/// [BsBox] makes up for it on `fs-*` content (exact for single-line text).
-/// The boxes' edges are snapped to device pixels when painted
-/// ([BsDecoratedBox]), as a browser does, so the fractions don't blur borders.
-double _cssLineHeightDelta(double fontSize, double lineHeight, double dpr) {
-  final css = (fontSize * lineHeight * dpr * 64).floorToDouble() / 64 / dpr;
-  return css - (fontSize * lineHeight).roundToDouble();
-}
-
-/// Makes [child] [delta] logical pixels taller, keeping it vertically centred
-/// in the extra (half-leading) space, as CSS splits a line box's leading.
-class _LineHeightAdjust extends SingleChildRenderObjectWidget {
-  const _LineHeightAdjust({required this.delta, required super.child});
-
-  final double delta;
-
-  @override
-  RenderObject createRenderObject(BuildContext context) =>
-      _RenderLineHeightAdjust(delta);
-
-  @override
-  void updateRenderObject(
-    BuildContext context,
-    _RenderLineHeightAdjust renderObject,
-  ) {
-    renderObject.delta = delta;
-  }
-}
-
-class _RenderLineHeightAdjust extends RenderShiftedBox {
-  _RenderLineHeightAdjust(this._delta) : super(null);
-
-  double _delta;
-  set delta(double value) {
-    if (_delta != value) {
-      _delta = value;
-      markNeedsLayout();
-    }
-  }
-
-  @override
-  double computeMinIntrinsicHeight(double width) =>
-      (child?.getMinIntrinsicHeight(width) ?? 0) + _delta;
-
-  @override
-  double computeMaxIntrinsicHeight(double width) =>
-      (child?.getMaxIntrinsicHeight(width) ?? 0) + _delta;
-
-  @override
-  Size computeDryLayout(BoxConstraints constraints) {
-    final child = this.child;
-    if (child == null) {
-      return constraints.smallest;
-    }
-    final size = child.getDryLayout(constraints);
-    return constraints.constrain(Size(size.width, size.height + _delta));
-  }
-
-  @override
-  void performLayout() {
-    final child = this.child;
-    if (child == null) {
-      size = constraints.smallest;
-      return;
-    }
-    child.layout(constraints, parentUsesSize: true);
-    size = constraints.constrain(
-      Size(child.size.width, child.size.height + _delta),
-    );
-    (child.parentData! as BoxParentData).offset = Offset(0, _delta / 2);
   }
 }
 

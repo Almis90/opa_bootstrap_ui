@@ -5,24 +5,30 @@ import 'package:flutter/painting.dart';
 /// Mirrors the `box-shadow-variables` group from Bootstrap's SCSS source
 /// (`$box-shadow*`), using [BoxShadow.blurStyle] `inner` to replicate CSS
 /// `inset` shadows.
+///
+/// CSS and Flutter size a blur differently: CSS's blur radius `B` is a Gaussian
+/// of standard deviation `B / 2`, Flutter turns a [BoxShadow.blurRadius] `r`
+/// into `r * 0.57735 + 0.5`. The `blurRadius`es below are `(B / 2 - 0.5) /
+/// 0.57735` for the CSS `B` in each doc comment, so the shadows fall off as
+/// they do in the browser.
 abstract final class BsShadows {
   /// `$box-shadow: 0 .5rem 1rem rgba($black, .15)`.
   static const List<BoxShadow> shadow = [
-    BoxShadow(color: Color(0x26000000), offset: Offset(0, 8), blurRadius: 16),
+    BoxShadow(color: Color(0x26000000), offset: Offset(0, 8), blurRadius: 12.99),
   ];
 
   /// `$box-shadow-sm: 0 .125rem .25rem rgba($black, .075)`.
   static const List<BoxShadow> shadowSm = [
-    BoxShadow(color: Color(0x13000000), offset: Offset(0, 2), blurRadius: 4),
+    BoxShadow(color: Color(0x13000000), offset: Offset(0, 2), blurRadius: 2.6),
   ];
 
   /// `$box-shadow-lg: 0 1rem 3rem rgba($black, .175)`.
   static const List<BoxShadow> shadowLg = [
-    BoxShadow(color: Color(0x2D000000), offset: Offset(0, 16), blurRadius: 48),
+    BoxShadow(color: Color(0x2D000000), offset: Offset(0, 16), blurRadius: 40.7),
   ];
 
   /// `$box-shadow-inset: inset 0 1px 2px rgba($black, .075)`.
   static const List<BoxShadow> shadowInset = [
-    BoxShadow(color: Color(0x13000000), offset: Offset(0, 1), blurRadius: 2, blurStyle: BlurStyle.inner),
+    BoxShadow(color: Color(0x13000000), offset: Offset(0, 1), blurRadius: 0.87, blurStyle: BlurStyle.inner),
   ];
 }

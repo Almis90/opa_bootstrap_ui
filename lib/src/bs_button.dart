@@ -1,8 +1,10 @@
 import 'package:flutter/widgets.dart';
 
+import 'bs_box.dart';
 import 'bs_button_style.dart';
 import 'bs_focusable.dart';
 import 'bs_size.dart';
+import 'bs_spacing.dart';
 import 'bs_variant.dart';
 import 'tokens/bs_transitions.dart';
 import 'bs_decorated_box.dart';
@@ -27,6 +29,9 @@ class BsButton extends StatefulWidget {
     this.style,
     this.active = false,
     this.noWrap = false,
+    this.px,
+    this.py,
+    this.fw,
     this.focusNode,
     this.autofocus = false,
   });
@@ -63,6 +68,15 @@ class BsButton extends StatefulWidget {
   /// lines, mirroring Bootstrap's `$btn-white-space: nowrap` option.
   final bool noWrap;
 
+  /// `px-*`: horizontal padding in place of the [size]'s (`btn btn-lg px-4`).
+  final BsSpacing? px;
+
+  /// `py-*`: vertical padding in place of the [size]'s.
+  final BsSpacing? py;
+
+  /// `fw-*`: the text's weight (`btn fw-bold`).
+  final BsFw? fw;
+
   final FocusNode? focusNode;
   final bool autofocus;
 
@@ -92,6 +106,13 @@ class _BsButtonState extends State<BsButton> {
       outline: widget.outline,
       size: widget.size,
     ).merge(widget.style);
+    final padding = style.padding?.resolve(Directionality.of(context));
+    final effectivePadding = widget.px == null && widget.py == null
+        ? style.padding
+        : EdgeInsets.symmetric(
+            horizontal: widget.px?.size ?? padding?.left ?? BsButtonStyle.paddingXBase,
+            vertical: widget.py?.size ?? padding?.top ?? BsButtonStyle.paddingYBase,
+          );
 
     final isActive = widget.active || _pressed;
 
@@ -151,7 +172,7 @@ class _BsButtonState extends State<BsButton> {
                 curve:
                     style.transitionCurve ?? BsButtonStyle.defaultTransitionCurve,
                 padding:
-                    style.padding ??
+                    effectivePadding ??
                     const EdgeInsets.symmetric(
                       horizontal: BsButtonStyle.paddingXBase,
                       vertical: BsButtonStyle.paddingYBase,
@@ -170,6 +191,7 @@ class _BsButtonState extends State<BsButton> {
                 child: DefaultTextStyle(
                   style: (style.textStyle ?? const TextStyle()).copyWith(
                     color: color,
+                    fontWeight: widget.fw?.weight,
                   ),
                   textAlign: TextAlign.center,
                   child: widget.noWrap

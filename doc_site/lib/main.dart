@@ -36,6 +36,7 @@ import 'pages/forms/input_group_page.dart';
 import 'pages/forms/range_page.dart';
 import 'pages/forms/select_page.dart';
 import 'pages/examples/headers_example_page.dart';
+import 'pages/examples/heroes_example_page.dart';
 import 'pages/getting_started/introduction_page.dart';
 import 'pages/layout/breakpoints_page.dart';
 import 'pages/layout/containers_page.dart';
@@ -156,5 +157,10 @@ final _examples = [
     title: 'Headers',
     description: 'Eight header layouts, from a bare brand-and-nav bar to a two-tier icon navigation bar.',
     builder: (_) => const HeadersExamplePage(),
+  ),
+  ExampleEntry(
+    title: 'Heroes',
+    description: 'Six hero sections: centered, with a screenshot, with an image, a sign-up form, bordered, and dark.',
+    builder: (_) => const HeroesExamplePage(),
   ),
 ];

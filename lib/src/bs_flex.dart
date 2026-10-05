@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
+import 'bs_box.dart';
 import 'bs_breakpoint.dart';
 import 'bs_responsive_value.dart';
 import 'bs_spacing.dart';
@@ -38,6 +39,33 @@ enum BsAlign implements BsResponsive<BsAlign> {
 
   @override
   BsAlign resolve(BsBreakpoint breakpoint) => this;
+}
+
+/// `flex-row`, `flex-row-reverse`, `flex-column`, `flex-column-reverse`: the
+/// direction a [BsFlex] lays its items out in.
+///
+/// A column stacks the items vertically, stretching them to the container's
+/// width unless `alignItems` says otherwise — which is also what Bootstrap's
+/// `d-grid gap-2` (a one-column grid) looks like, so `d-grid d-sm-flex` is a
+/// `flex-column flex-sm-row`.
+enum BsFlexDirection implements BsResponsive<BsFlexDirection> {
+  row,
+  rowReverse,
+  column,
+  columnReverse;
+
+  /// The CSS class suffix used by Bootstrap, e.g. `row-reverse` in
+  /// `flex-row-reverse`.
+  String get className => switch (this) {
+    rowReverse => 'row-reverse',
+    columnReverse => 'column-reverse',
+    _ => name,
+  };
+
+  bool get isColumn => this == column || this == columnReverse;
+
+  @override
+  BsFlexDirection resolve(BsBreakpoint breakpoint) => this;
 }
 
 /// `.col-*`: a [BsFlexItem]'s width as a share of a 12-column row —
@@ -108,9 +136,33 @@ class BsFlex extends StatelessWidget {
     this.justifyContent,
     this.alignItems,
     this.gap,
-  });
+    this.direction,
+  }) : _gutterX = 0,
+       _gutterY = 0,
+       _row = false;
+
+  /// A `.row`'s flex: items are `width: 100%` (unless a `col-*` says
+  /// otherwise), padded by half the horizontal gutter on each side, and
+  /// separated vertically by the vertical gutter.
+  const BsFlex._row({
+    required this.children,
+    required double gutterX,
+    required double gutterY,
+    this.justifyContent,
+    this.alignItems,
+    this.direction,
+  }) : _gutterX = gutterX,
+       _gutterY = gutterY,
+       _row = true,
+       wrap = true,
+       inline = false,
+       gap = null;
 
   final List<Widget> children;
+
+  final double _gutterX;
+  final double _gutterY;
+  final bool _row;
 
   /// `flex-wrap` (the default, `flex-nowrap`, shrinks items instead).
   final bool wrap;
@@ -128,6 +180,9 @@ class BsFlex extends StatelessWidget {
   /// `gap-*`: the space between items, and between wrapped lines.
   final BsResponsive<BsSpacing>? gap;
 
+  /// `flex-row`, `flex-column-reverse`…. Defaults to `row`.
+  final BsResponsive<BsFlexDirection>? direction;
+
   @override
   Widget build(BuildContext context) {
     final breakpoint = BsBreakpoint.forWidth(MediaQuery.sizeOf(context).width);
@@ -137,6 +192,10 @@ class BsFlex extends StatelessWidget {
       justify: justifyContent?.resolve(breakpoint) ?? BsJustify.start,
       align: alignItems?.resolve(breakpoint) ?? BsAlign.stretch,
       gap: gap?.resolve(breakpoint)?.size ?? 0,
+      direction: direction?.resolve(breakpoint) ?? BsFlexDirection.row,
+      gutterX: _gutterX,
+      gutterY: _gutterY,
+      row: _row,
       breakpoint: breakpoint,
       textDirection: Directionality.of(context),
       children: children,
@@ -155,6 +214,7 @@ class BsFlexItem extends ParentDataWidget<_BsFlexParentData> {
     super.key,
     required super.child,
     this.col,
+    this.offset,
     this.w,
     this.m,
     this.mx,
@@ -163,6 +223,13 @@ class BsFlexItem extends ParentDataWidget<_BsFlexParentData> {
     this.me,
     this.mb,
     this.ms,
+    this.p,
+    this.px,
+    this.py,
+    this.pt,
+    this.pe,
+    this.pb,
+    this.ps,
     this.alignSelf,
     this.flexGrow = false,
     this.flexShrink,
@@ -170,6 +237,10 @@ class BsFlexItem extends ParentDataWidget<_BsFlexParentData> {
 
   /// `col-*`: width as a share of 12 columns; the item doesn't shrink.
   final BsResponsive<BsCol>? col;
+
+  /// `offset-*`: a start margin of that many columns (`BsCol(1)` is
+  /// `offset-1`, 8.33% of the line).
+  final BsResponsive<BsCol>? offset;
 
   /// `w-*`: width as a share of the container's; the item may still shrink.
   final BsResponsive<BsWidth>? w;
@@ -186,6 +257,17 @@ class BsFlexItem extends ParentDataWidget<_BsFlexParentData> {
   /// `ms-*`: margin at the inline start (left in LTR).
   final BsResponsive<BsSpacing>? ms;
 
+  /// The item's own padding (`p-3`, `pt-lg-3`…), laid out inside its box — and,
+  /// in a [BsRow], replacing the gutter's padding on the sides it names, as the
+  /// utilities' `!important` does.
+  final BsResponsive<BsSpacing>? p;
+  final BsResponsive<BsSpacing>? px;
+  final BsResponsive<BsSpacing>? py;
+  final BsResponsive<BsSpacing>? pt;
+  final BsResponsive<BsSpacing>? pe;
+  final BsResponsive<BsSpacing>? pb;
+  final BsResponsive<BsSpacing>? ps;
+
   /// `align-self-*`.
   final BsResponsive<BsAlign>? alignSelf;
 
@@ -201,6 +283,7 @@ class BsFlexItem extends ParentDataWidget<_BsFlexParentData> {
     final data = renderObject.parentData! as _BsFlexParentData;
     data
       ..col = col
+      ..colOffset = offset
       ..w = w
       ..m = m
       ..mx = mx
@@ -209,6 +292,13 @@ class BsFlexItem extends ParentDataWidget<_BsFlexParentData> {
       ..me = me
       ..mb = mb
       ..ms = ms
+      ..p = p
+      ..px = px
+      ..py = py
+      ..pt = pt
+      ..pe = pe
+      ..pb = pb
+      ..ps = ps
       ..alignSelf = alignSelf
       ..flexGrow = flexGrow
       ..flexShrink = flexShrink;
@@ -221,8 +311,10 @@ class BsFlexItem extends ParentDataWidget<_BsFlexParentData> {
 
 class _BsFlexParentData extends ContainerBoxParentData<RenderBox> {
   BsResponsive<BsCol>? col;
+  BsResponsive<BsCol>? colOffset;
   BsResponsive<BsWidth>? w;
   BsResponsive<BsSpacing>? m, mx, my, mt, me, mb, ms;
+  BsResponsive<BsSpacing>? p, px, py, pt, pe, pb, ps;
   BsResponsive<BsAlign>? alignSelf;
   bool flexGrow = false;
   bool? flexShrink;
@@ -236,10 +328,18 @@ class _BsFlexRenderObjectWidget extends MultiChildRenderObjectWidget {
     required this.justify,
     required this.align,
     required this.gap,
+    required this.direction,
+    required this.gutterX,
+    required this.gutterY,
+    required this.row,
     required this.breakpoint,
     required this.textDirection,
   });
 
+  final BsFlexDirection direction;
+  final double gutterX;
+  final double gutterY;
+  final bool row;
   final bool wrap;
   final bool inline;
   final BsJustify justify;
@@ -255,6 +355,10 @@ class _BsFlexRenderObjectWidget extends MultiChildRenderObjectWidget {
     justify: justify,
     align: align,
     gap: gap,
+    direction: direction,
+    gutterX: gutterX,
+    gutterY: gutterY,
+    row: row,
     breakpoint: breakpoint,
     textDirection: textDirection,
   );
@@ -267,6 +371,10 @@ class _BsFlexRenderObjectWidget extends MultiChildRenderObjectWidget {
       ..justify = justify
       ..align = align
       ..gap = gap
+      ..direction = direction
+      ..gutterX = gutterX
+      ..gutterY = gutterY
+      ..row = row
       ..breakpoint = breakpoint
       ..textDirection = textDirection;
   }
@@ -280,8 +388,12 @@ class _Item {
   // Margins along the main axis are *logical* (start/end): layout runs in
   // reading order and mirrors the result for RTL at the end.
   double ms = 0, me = 0, mt = 0, mb = 0;
+  // Padding, physical: the gutter's (or the item's own utilities') inset of
+  // the child inside the item's box.
+  double padL = 0, padR = 0, padT = 0, padB = 0;
   bool autoStart = false, autoEnd = false;
   double? fraction;
+  double offsetFraction = 0;
   bool grow = false;
   bool shrink = true;
   BsAlign? alignSelf;
@@ -311,15 +423,59 @@ class _RenderBsFlex extends RenderBox
     required BsJustify justify,
     required BsAlign align,
     required double gap,
+    required BsFlexDirection direction,
+    required double gutterX,
+    required double gutterY,
+    required bool row,
     required BsBreakpoint breakpoint,
     required TextDirection textDirection,
-  }) : _wrap = wrap,
+  }) : _direction = direction,
+       _gutterX = gutterX,
+       _gutterY = gutterY,
+       _row = row,
+       _wrap = wrap,
        _inline = inline,
        _justify = justify,
        _align = align,
        _gap = gap,
        _breakpoint = breakpoint,
        _textDirection = textDirection;
+
+  BsFlexDirection _direction;
+  set direction(BsFlexDirection v) {
+    if (v == _direction) {
+      return;
+    }
+    _direction = v;
+    markNeedsLayout();
+  }
+
+  double _gutterX;
+  set gutterX(double v) {
+    if (v == _gutterX) {
+      return;
+    }
+    _gutterX = v;
+    markNeedsLayout();
+  }
+
+  double _gutterY;
+  set gutterY(double v) {
+    if (v == _gutterY) {
+      return;
+    }
+    _gutterY = v;
+    markNeedsLayout();
+  }
+
+  bool _row;
+  set row(bool v) {
+    if (v == _row) {
+      return;
+    }
+    _row = v;
+    markNeedsLayout();
+  }
 
   bool _inline;
   set inline(bool v) {
@@ -394,8 +550,9 @@ class _RenderBsFlex extends RenderBox
 
   // ---------------------------------------------------------------- resolve
 
-  List<_Item> _resolveItems() {
+  List<_Item> _resolveItems([double lineWidth = 0]) {
     final items = <_Item>[];
+    final reversed = _direction == BsFlexDirection.rowReverse;
     for (var child = firstChild; child != null; child = childAfter(child)) {
       final d = child.parentData! as _BsFlexParentData;
       final item = _Item(child);
@@ -427,12 +584,38 @@ class _RenderBsFlex extends RenderBox
       if (col != null && col.columns != null) {
         item.fraction = col.columns! / 12;
         item.shrink = d.flexShrink ?? false;
+      } else if (_row && col == null && w == null) {
+        // `.row > *`: width 100% and no shrinking, unless a col-* says otherwise.
+        item.fraction = 1;
+        item.shrink = d.flexShrink ?? false;
       } else {
         item.fraction = w?.fraction;
         item.shrink = d.flexShrink ?? (col == null);
       }
       item.grow = d.flexGrow;
       item.alignSelf = d.alignSelf?.resolve(_breakpoint);
+      item.mt += _gutterY;
+      // `.row > *` pads by half the gutter; p-* utilities override that.
+      final padStart = pick([d.ps, d.px, d.p])?.size ?? _gutterX / 2;
+      final padEnd = pick([d.pe, d.px, d.p])?.size ?? _gutterX / 2;
+      final rtl = _textDirection == TextDirection.rtl;
+      item.padL = rtl ? padEnd : padStart;
+      item.padR = rtl ? padStart : padEnd;
+      item.padT = pick([d.pt, d.py, d.p])?.size ?? 0;
+      item.padB = pick([d.pb, d.py, d.p])?.size ?? 0;
+      final offsetColumns = d.colOffset?.resolve(_breakpoint)?.columns;
+      if (offsetColumns != null) {
+        item.ms += offsetColumns / 12 * lineWidth;
+      }
+      if (reversed) {
+        // The line flows from the end: what is the start margin of the
+        // reading direction is the *end* one of the flow.
+        final ms = item.ms, autoStart = item.autoStart;
+        item.ms = item.me;
+        item.autoStart = item.autoEnd;
+        item.me = ms;
+        item.autoEnd = autoStart;
+      }
       items.add(item);
     }
     return items;
@@ -448,18 +631,36 @@ class _RenderBsFlex extends RenderBox
 
   // ----------------------------------------------------------------- layout
 
+  /// The size of [item]'s box — its child plus the item's padding.
   Size _measure(_Item item, BoxConstraints c, bool dry) {
+    final padX = item.padL + item.padR, padY = item.padT + item.padB;
+    final inner = padX == 0 && padY == 0
+        ? c
+        : BoxConstraints(
+            minWidth: math.max(0.0, c.minWidth - padX),
+            maxWidth: math.max(0.0, c.maxWidth - padX),
+            minHeight: math.max(0.0, c.minHeight - padY),
+            maxHeight: math.max(0.0, c.maxHeight - padY),
+          );
+    Size size;
     if (dry) {
-      return item.child.getDryLayout(c);
+      size = item.child.getDryLayout(inner);
+    } else {
+      item.child.layout(inner, parentUsesSize: true);
+      size = item.child.size;
     }
-    item.child.layout(c, parentUsesSize: true);
-    return item.child.size;
+    return Size(size.width + padX, size.height + padY);
   }
 
   /// Lays the items out with flexbox's rules. With [dry] no child is laid out
   /// for real and nothing is positioned; otherwise each child gets its offset.
   Size _computeLayout(BoxConstraints constraints, {required bool dry}) {
-    final items = _resolveItems();
+    if (_direction.isColumn) {
+      return _computeColumn(constraints, dry: dry);
+    }
+    final items = _resolveItems(
+      constraints.hasBoundedWidth ? constraints.maxWidth : 0,
+    );
     if (items.isEmpty) {
       return constraints.constrain(
         Size(constraints.hasBoundedWidth ? constraints.maxWidth : 0, 0),
@@ -643,14 +844,83 @@ class _RenderBsFlex extends RenderBox
         }
         if (!dry) {
           final logicalLeft = xs[item]! + item.ms;
-          final left = _textDirection == TextDirection.rtl
-              ? width - logicalLeft - item.width
-              : logicalLeft;
+          final mirror =
+              (_textDirection == TextDirection.rtl) !=
+              (_direction == BsFlexDirection.rowReverse);
+          final left = mirror ? width - logicalLeft - item.width : logicalLeft;
           (item.child.parentData! as _BsFlexParentData).offset = Offset(
-            left,
-            top,
+            left + item.padL,
+            top + item.padT,
           );
         }
+      }
+    }
+    return size;
+  }
+
+  /// `flex-column` (and a `d-grid`'s single column): items stacked
+  /// vertically, stretched to the container's width unless aligned otherwise.
+  Size _computeColumn(BoxConstraints constraints, {required bool dry}) {
+    final bounded = constraints.hasBoundedWidth;
+    final maxW = constraints.maxWidth;
+    var items = _resolveItems(bounded ? maxW : 0);
+    if (_direction == BsFlexDirection.columnReverse) {
+      items = items.reversed.toList();
+    }
+    final fillsWidth = bounded && !_inline && !_isFlexItem();
+    if (items.isEmpty) {
+      return constraints.constrain(Size(fillsWidth ? maxW : 0, 0));
+    }
+
+    var y = 0.0, contentWidth = 0.0;
+    final ys = <_Item, double>{};
+    for (var i = 0; i < items.length; i++) {
+      final item = items[i];
+      final align = item.alignSelf ?? _align;
+      final margins = item.fixedMargins;
+      final room = bounded ? math.max(0.0, maxW - margins) : double.infinity;
+      final c = item.fraction != null && bounded
+          ? BoxConstraints.tightFor(width: math.max(0.0, maxW * item.fraction!))
+          : align == BsAlign.stretch &&
+                bounded &&
+                !item.autoStart &&
+                !item.autoEnd
+          ? BoxConstraints.tightFor(width: room)
+          : BoxConstraints(maxWidth: room);
+      final size = _measure(item, c, dry);
+      item.width = size.width;
+      item.height = size.height;
+      y += i == 0 ? 0 : _gap;
+      ys[item] = y + item.mt;
+      y += item.mt + item.height + item.mb;
+      contentWidth = math.max(contentWidth, item.outerWidth);
+    }
+
+    final width = fillsWidth ? maxW : math.min(contentWidth, maxW);
+    final size = constraints.constrain(Size(width, y));
+    if (!dry) {
+      for (final item in items) {
+        final align = item.alignSelf ?? _align;
+        final free = math.max(0.0, size.width - item.outerWidth);
+        var x = item.ms;
+        if (item.autoStart && item.autoEnd) {
+          x += free / 2;
+        } else if (item.autoStart) {
+          x += free;
+        } else if (!item.autoEnd) {
+          if (align == BsAlign.center) {
+            x += free / 2;
+          } else if (align == BsAlign.end) {
+            x += free;
+          }
+        }
+        final left = _textDirection == TextDirection.rtl
+            ? size.width - x - item.width
+            : x;
+        (item.child.parentData! as _BsFlexParentData).offset = Offset(
+          left + item.padL,
+          ys[item]! + item.padT,
+        );
       }
     }
     return size;
@@ -670,22 +940,25 @@ class _RenderBsFlex extends RenderBox
   double _marginsOf(RenderBox child) {
     final items = _resolveItems();
     final item = items.firstWhere((i) => i.child == child);
-    return item.fixedMargins;
+    return item.fixedMargins + item.padL + item.padR;
   }
 
   @override
   double computeMaxIntrinsicWidth(double height) {
-    var total = 0.0, count = 0;
+    var total = 0.0, widest = 0.0, count = 0;
     for (var child = firstChild; child != null; child = childAfter(child)) {
-      total += child.getMaxIntrinsicWidth(double.infinity) + _marginsOf(child);
+      final w =
+          child.getMaxIntrinsicWidth(double.infinity) + _marginsOf(child);
+      total += w;
+      widest = math.max(widest, w);
       count++;
     }
-    return total + _gap * math.max(0, count - 1);
+    return _direction.isColumn ? widest : total + _gap * math.max(0, count - 1);
   }
 
   @override
   double computeMinIntrinsicWidth(double height) {
-    if (_wrap) {
+    if (_wrap || _direction.isColumn) {
       var widest = 0.0;
       for (var child = firstChild; child != null; child = childAfter(child)) {
         widest = math.max(
@@ -722,4 +995,210 @@ class _RenderBsFlex extends RenderBox
   @override
   bool hitTestChildren(BoxHitTestResult result, {required Offset position}) =>
       defaultHitTestChildren(result, position: position);
+}
+
+/// `.row` (with its `g-*`/`gx-*`/`gy-*` gutters) — a wrapping [BsFlex] whose
+/// items are `col-*` wide ([BsFlexItem.col]), padded by half the horizontal
+/// gutter on each side, and spaced by the vertical one. The row itself is
+/// pulled out by half the gutter on both sides (`margin-inline: -½gutter`), so
+/// the first and last columns' content lines up with the row's parent.
+///
+/// An item with no `col` is `width: 100%`, as in `.row > *`. The row's own
+/// element can carry utilities too ([p], [border], [rounded], [shadow]…).
+///
+/// ```dart
+/// // <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
+/// BsRow(
+///   direction: BsFlexDirection.rowReverse (from lg),
+///   alignItems: BsAlign.center,
+///   g: BsSpacing.s5,
+///   py: BsSpacing.s5,
+///   children: [BsFlexItem(col: ..., child: ...), ...],
+/// )
+/// ```
+class BsRow extends StatelessWidget {
+  const BsRow({
+    super.key,
+    required this.children,
+    this.g,
+    this.gx,
+    this.gy,
+    this.alignItems,
+    this.justifyContent,
+    this.direction,
+    this.p,
+    this.px,
+    this.py,
+    this.pt,
+    this.pe,
+    this.pb,
+    this.ps,
+    this.border = false,
+    this.rounded,
+    this.shadow,
+  });
+
+  final List<Widget> children;
+
+  /// `g-*`: both gutters. The default is `$grid-gutter-width` (`g-4`, 1.5rem)
+  /// horizontally and none vertically.
+  final BsResponsive<BsSpacing>? g;
+
+  /// `gx-*` (wins over [g]).
+  final BsResponsive<BsSpacing>? gx;
+
+  /// `gy-*` (wins over [g]).
+  final BsResponsive<BsSpacing>? gy;
+
+  /// `align-items-*`.
+  final BsResponsive<BsAlign>? alignItems;
+
+  /// `justify-content-*`.
+  final BsResponsive<BsJustify>? justifyContent;
+
+  /// `flex-row-reverse`, `flex-lg-column`….
+  final BsResponsive<BsFlexDirection>? direction;
+
+  final BsResponsive<BsSpacing>? p;
+  final BsResponsive<BsSpacing>? px;
+  final BsResponsive<BsSpacing>? py;
+  final BsResponsive<BsSpacing>? pt;
+  final BsResponsive<BsSpacing>? pe;
+  final BsResponsive<BsSpacing>? pb;
+  final BsResponsive<BsSpacing>? ps;
+
+  /// `border`.
+  final bool border;
+
+  /// `rounded-*`.
+  final BsRounded? rounded;
+
+  /// `shadow-*`.
+  final BsShadow? shadow;
+
+  @override
+  Widget build(BuildContext context) {
+    final breakpoint = BsBreakpoint.forWidth(MediaQuery.sizeOf(context).width);
+    final x =
+        (gx ?? g)?.resolve(breakpoint)?.size ??
+        BsSpacing.s4.size; // --bs-gutter-x: 1.5rem
+    final y = (gy ?? g)?.resolve(breakpoint)?.size ?? 0.0;
+    return _RowMargin(
+      gutterX: x,
+      gutterY: y,
+      child: BsBox(
+        p: p,
+        px: px,
+        py: py,
+        pt: pt,
+        pe: pe,
+        pb: pb,
+        ps: ps,
+        border: border,
+        rounded: rounded,
+        shadow: shadow,
+        child: BsFlex._row(
+          gutterX: x,
+          gutterY: y,
+          justifyContent: justifyContent,
+          alignItems: alignItems,
+          direction: direction,
+          children: children,
+        ),
+      ),
+    );
+  }
+}
+
+/// `margin: calc(-1 * var(--bs-gutter-y)) calc(-.5 * var(--bs-gutter-x)) 0`.
+class _RowMargin extends SingleChildRenderObjectWidget {
+  const _RowMargin({
+    required this.gutterX,
+    required this.gutterY,
+    required super.child,
+  });
+
+  final double gutterX;
+  final double gutterY;
+
+  @override
+  RenderObject createRenderObject(BuildContext context) =>
+      _RenderRowMargin(gutterX, gutterY);
+
+  @override
+  void updateRenderObject(BuildContext context, _RenderRowMargin renderObject) {
+    renderObject
+      ..gutterX = gutterX
+      ..gutterY = gutterY;
+  }
+}
+
+class _RenderRowMargin extends RenderShiftedBox {
+  _RenderRowMargin(this._gutterX, this._gutterY) : super(null);
+
+  double _gutterX;
+  set gutterX(double v) {
+    if (v != _gutterX) {
+      _gutterX = v;
+      markNeedsLayout();
+    }
+  }
+
+  double _gutterY;
+  set gutterY(double v) {
+    if (v != _gutterY) {
+      _gutterY = v;
+      markNeedsLayout();
+    }
+  }
+
+  BoxConstraints _childConstraints(BoxConstraints c) => c.hasBoundedWidth
+      ? c.copyWith(
+          minWidth: c.minWidth + _gutterX,
+          maxWidth: c.maxWidth + _gutterX,
+          minHeight: 0,
+        )
+      : c.copyWith(minHeight: 0);
+
+  Size _sizeFor(BoxConstraints c, Size childSize) => c.constrain(
+    Size(
+      c.hasBoundedWidth ? childSize.width - _gutterX : childSize.width,
+      math.max(0.0, childSize.height - _gutterY),
+    ),
+  );
+
+  @override
+  Size computeDryLayout(BoxConstraints constraints) {
+    final child = this.child;
+    if (child == null) {
+      return constraints.smallest;
+    }
+    return _sizeFor(
+      constraints,
+      child.getDryLayout(_childConstraints(constraints)),
+    );
+  }
+
+  @override
+  void performLayout() {
+    final child = this.child;
+    if (child == null) {
+      size = constraints.smallest;
+      return;
+    }
+    child.layout(_childConstraints(constraints), parentUsesSize: true);
+    size = _sizeFor(constraints, child.size);
+    (child.parentData! as BoxParentData).offset = Offset(
+      constraints.hasBoundedWidth ? -_gutterX / 2 : 0,
+      -_gutterY,
+    );
+  }
+
+  @override
+  double computeMinIntrinsicHeight(double width) =>
+      getDryLayout(BoxConstraints(maxWidth: width)).height;
+
+  @override
+  double computeMaxIntrinsicHeight(double width) =>
+      getDryLayout(BoxConstraints(maxWidth: width)).height;
 }

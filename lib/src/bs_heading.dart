@@ -1,6 +1,9 @@
 import 'package:flutter/widgets.dart';
 
+import 'bs_box.dart';
+import 'bs_breakpoint.dart';
 import 'bs_color_utils.dart';
+import 'bs_css_line_height.dart';
 import 'bs_colors.dart';
 import 'bs_theme.dart';
 import 'tokens/bs_typography.dart';
@@ -10,34 +13,52 @@ import 'tokens/bs_typography.dart';
 enum BsHeadingLevel { h1, h2, h3, h4, h5, h6 }
 
 /// A Bootstrap heading (`h1`-`h6`), sized per [level] from [BsTypography]'s
-/// `$h#-font-size` scale, with a bottom margin matching
+/// `$h#-font-size` scale — fluid below the `xl` breakpoint, as Bootstrap's
+/// responsive font sizes make `h1`-`h4` — with a bottom margin matching
 /// [BsTypography.headingsMarginBottom].
+///
+/// [fw] and [lh] are the `fw-*`/`lh-*` utilities for the heading's own element
+/// (a [BsBox] around a heading can't override its weight or line-height).
 class BsHeading extends StatelessWidget {
-  const BsHeading(this.level, {super.key, required this.child});
+  const BsHeading(this.level, {super.key, required this.child, this.fw, this.lh});
 
   final BsHeadingLevel level;
   final Widget child;
 
-  static double _fontSizeFor(BsHeadingLevel level) => switch (level) {
-    BsHeadingLevel.h1 => BsTypography.h1FontSize,
-    BsHeadingLevel.h2 => BsTypography.h2FontSize,
-    BsHeadingLevel.h3 => BsTypography.h3FontSize,
-    BsHeadingLevel.h4 => BsTypography.h4FontSize,
-    BsHeadingLevel.h5 => BsTypography.h5FontSize,
-    BsHeadingLevel.h6 => BsTypography.h6FontSize,
-  };
+  /// `fw-*`.
+  final BsFw? fw;
+
+  /// `lh-*`.
+  final BsLh? lh;
+
+  static double _fontSizeFor(BsHeadingLevel level, double viewportWidth) =>
+      switch (level) {
+        BsHeadingLevel.h1 => BsFs.fs1.sizeFor(viewportWidth),
+        BsHeadingLevel.h2 => BsFs.fs2.sizeFor(viewportWidth),
+        BsHeadingLevel.h3 => BsFs.fs3.sizeFor(viewportWidth),
+        BsHeadingLevel.h4 => BsFs.fs4.sizeFor(viewportWidth),
+        BsHeadingLevel.h5 => BsTypography.h5FontSize,
+        BsHeadingLevel.h6 => BsTypography.h6FontSize,
+      };
 
   @override
   Widget build(BuildContext context) {
+    final fontSize = _fontSizeFor(level, MediaQuery.sizeOf(context).width);
+    final height = lh?.height ?? BsTypography.headingsLineHeight;
     return Padding(
       padding: const EdgeInsets.only(bottom: BsTypography.headingsMarginBottom),
       child: DefaultTextStyle.merge(
         style: TextStyle(
-          fontSize: _fontSizeFor(level),
-          fontWeight: BsTypography.headingsFontWeight,
-          height: BsTypography.headingsLineHeight,
+          fontSize: fontSize,
+          fontWeight: fw?.weight ?? BsTypography.headingsFontWeight,
+          height: height,
         ),
-        child: child,
+        child: BsCssLineHeight(
+          fontSize: fontSize,
+          lineHeight: height,
+          perLine: true,
+          child: child,
+        ),
       ),
     );
   }
@@ -45,34 +66,61 @@ class BsHeading extends StatelessWidget {
 
 /// `.display-1`-`.display-6`: which [BsTypography] display size a
 /// [BsDisplayHeading] renders at.
-enum BsDisplayLevel { d1, d2, d3, d4, d5, d6 }
+enum BsDisplayLevel {
+  d1(5, 1.625, 0.045),
+  d2(4.5, 1.575, 0.039),
+  d3(4, 1.525, 0.033),
+  d4(3.5, 1.475, 0.027),
+  d5(3, 1.425, 0.021),
+  d6(2.5, 1.375, 0.015);
+
+  const BsDisplayLevel(this._rem, this._baseRem, this._vw);
+
+  final double _rem;
+  final double _baseRem;
+  final double _vw;
+
+  /// The font size at a viewport [width]: `calc(<base>rem + <n>vw)` below the
+  /// `xl` breakpoint (Bootstrap's responsive font sizes), `$display-font-sizes`
+  /// from there up.
+  double sizeFor(double width) => width >= BsBreakpoint.xl.minWidth
+      ? _rem * 16
+      : _baseRem * 16 + width * _vw;
+}
 
 /// A Bootstrap display heading (`.display-1`-`.display-6`): larger, lighter
 /// weight than [BsHeading], for hero-style text.
+///
+/// [fw] and [lh] are the `fw-*`/`lh-*` utilities for the heading's own element
+/// (`<h1 class="display-5 fw-bold lh-1">`).
 class BsDisplayHeading extends StatelessWidget {
-  const BsDisplayHeading(this.level, {super.key, required this.child});
+  const BsDisplayHeading(this.level, {super.key, required this.child, this.fw, this.lh});
 
   final BsDisplayLevel level;
   final Widget child;
 
-  static double _fontSizeFor(BsDisplayLevel level) => switch (level) {
-    BsDisplayLevel.d1 => BsTypography.displayFontSize1,
-    BsDisplayLevel.d2 => BsTypography.displayFontSize2,
-    BsDisplayLevel.d3 => BsTypography.displayFontSize3,
-    BsDisplayLevel.d4 => BsTypography.displayFontSize4,
-    BsDisplayLevel.d5 => BsTypography.displayFontSize5,
-    BsDisplayLevel.d6 => BsTypography.displayFontSize6,
-  };
+  /// `fw-*`.
+  final BsFw? fw;
+
+  /// `lh-*`.
+  final BsLh? lh;
 
   @override
   Widget build(BuildContext context) {
+    final fontSize = level.sizeFor(MediaQuery.sizeOf(context).width);
+    final height = lh?.height ?? BsTypography.displayLineHeight;
     return DefaultTextStyle.merge(
       style: TextStyle(
-        fontSize: _fontSizeFor(level),
-        fontWeight: BsTypography.displayFontWeight,
-        height: BsTypography.displayLineHeight,
+        fontSize: fontSize,
+        fontWeight: fw?.weight ?? BsTypography.displayFontWeight,
+        height: height,
       ),
-      child: child,
+      child: BsCssLineHeight(
+        fontSize: fontSize,
+        lineHeight: height,
+        perLine: true,
+        child: child,
+      ),
     );
   }
 }
@@ -89,6 +137,30 @@ class BsLead extends StatelessWidget {
       style: const TextStyle(
         fontSize: BsTypography.leadFontSize,
         fontWeight: BsTypography.leadFontWeight,
+      ),
+      child: child,
+    );
+  }
+}
+
+/// `small`/`.small`: text at `.875em` — 87.5% of the surrounding size.
+///
+/// As an inline element it doesn't shrink the lines it sits on: they stay as
+/// tall as the surrounding block's (24px in a 16px/1.5 block, not 21px).
+class BsSmall extends StatelessWidget {
+  const BsSmall({super.key, required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final parent = DefaultTextStyle.of(context).style;
+    final base = parent.fontSize ?? 16;
+    final size = base * 0.875;
+    return DefaultTextStyle.merge(
+      style: TextStyle(
+        fontSize: size,
+        height: base * (parent.height ?? BsTypography.lineHeightBase) / size,
       ),
       child: child,
     );

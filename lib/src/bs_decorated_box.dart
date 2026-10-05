@@ -37,20 +37,73 @@ class _RenderBsDecoratedBox extends RenderDecoratedBox {
 
   BoxPainter? _painter;
   Decoration? _painterDecoration;
+  BoxPainter? _shadowPainter;
+  Decoration? _shadowDecoration;
 
   BoxPainter _painterFor(Decoration decoration) {
     if (_painter == null || _painterDecoration != decoration) {
       _painter?.dispose();
       _painter = decoration.createBoxPainter(markNeedsPaint);
       _painterDecoration = decoration;
+      _shadowPainter?.dispose();
+      _shadowPainter = null;
+      _shadowDecoration = null;
     }
     return _painter!;
+  }
+
+  /// A box-shadow is only ever visible *outside* the border box in CSS, whereas
+  /// Flutter paints it under the box too, which shows through a background
+  /// that is transparent (or translucent). So the shadows are painted
+  /// separately, clipped to the outside of the box's shape, and the rest of the
+  /// decoration without them.
+  Decoration _withoutShadows(BoxDecoration d) => BoxDecoration(
+    color: d.color,
+    image: d.image,
+    border: d.border,
+    borderRadius: d.borderRadius,
+    gradient: d.gradient,
+    backgroundBlendMode: d.backgroundBlendMode,
+    shape: d.shape,
+  );
+
+  void _paintShadows(
+    PaintingContext context,
+    BoxDecoration d,
+    Rect rect,
+    ImageConfiguration configuration,
+  ) {
+    _shadowDecoration ??= BoxDecoration(
+      boxShadow: d.boxShadow,
+      borderRadius: d.borderRadius,
+      shape: d.shape,
+    );
+    _shadowPainter ??= _shadowDecoration!.createBoxPainter(markNeedsPaint);
+    final shape = d.shape == BoxShape.circle
+        ? (Path()..addOval(rect))
+        : d.borderRadius != null
+        ? (Path()..addRRect(d.borderRadius!
+              .resolve(configuration.textDirection ?? TextDirection.ltr)
+              .toRRect(rect)))
+        : (Path()..addRect(rect));
+    final canvas = context.canvas;
+    canvas.save();
+    canvas.clipPath(
+      Path()
+        ..fillType = PathFillType.evenOdd
+        ..addRect(rect.inflate(1e5))
+        ..addPath(shape, Offset.zero),
+    );
+    _shadowPainter!.paint(canvas, rect.topLeft, configuration);
+    canvas.restore();
   }
 
   @override
   void detach() {
     _painter?.dispose();
     _painter = null;
+    _shadowPainter?.dispose();
+    _shadowPainter = null;
     super.detach();
     markNeedsPaint();
   }
@@ -59,6 +112,8 @@ class _RenderBsDecoratedBox extends RenderDecoratedBox {
   void dispose() {
     _painter?.dispose();
     _painter = null;
+    _shadowPainter?.dispose();
+    _shadowPainter = null;
     super.dispose();
   }
 
@@ -91,10 +146,18 @@ class _RenderBsDecoratedBox extends RenderDecoratedBox {
 
   @override
   void paint(PaintingContext context, Offset offset) {
-    final painter = _painterFor(decoration);
+    final source = decoration;
+    final shadows =
+        position == DecorationPosition.background &&
+        source is BoxDecoration &&
+        (source.boxShadow?.isNotEmpty ?? false);
+    final painter = _painterFor(shadows ? _withoutShadows(source) : source);
     final rect = _snappedRect(offset);
     final snapped = configuration.copyWith(size: rect.size);
     if (position == DecorationPosition.background) {
+      if (shadows) {
+        _paintShadows(context, source, rect, snapped);
+      }
       painter.paint(context.canvas, rect.topLeft, snapped);
       if (decoration.isComplex) {
         context.setIsComplexHint();

@@ -1,7 +1,10 @@
 import 'package:flutter/widgets.dart';
 
 import 'bs_breakpoint.dart';
+import 'bs_flex.dart';
 import 'bs_grid.dart';
+import 'bs_responsive_value.dart';
+import 'bs_spacing.dart';
 
 /// A Bootstrap container (`.container`): a centered, width-capped box that
 /// applies [BsGrid.containerPaddingX] and constrains itself to
@@ -18,6 +21,10 @@ class BsContainer extends StatelessWidget {
     super.key,
     required this.child,
     this.padding,
+    this.px,
+    this.py,
+    this.my,
+    this.col,
     this.alignment = Alignment.topCenter,
   }) : fluid = false,
        minBreakpoint = null;
@@ -27,6 +34,10 @@ class BsContainer extends StatelessWidget {
     super.key,
     required this.child,
     this.padding,
+    this.px,
+    this.py,
+    this.my,
+    this.col,
     this.alignment = Alignment.topCenter,
   }) : fluid = false;
 
@@ -34,6 +45,10 @@ class BsContainer extends StatelessWidget {
     super.key,
     required this.child,
     this.padding,
+    this.px,
+    this.py,
+    this.my,
+    this.col,
     this.alignment = Alignment.topCenter,
   }) : fluid = true,
        minBreakpoint = null;
@@ -52,6 +67,20 @@ class BsContainer extends StatelessWidget {
   /// Horizontal (and any vertical) padding. Defaults to
   /// `EdgeInsets.symmetric(horizontal: BsGrid.containerPaddingX)`.
   final EdgeInsetsGeometry? padding;
+
+  /// `px-*` on the container: horizontal padding in place of the default
+  /// `$grid-gutter-width`/2 (`container px-4`). Ignored if [padding] is given.
+  final BsResponsive<BsSpacing>? px;
+
+  /// `py-*`: vertical padding. Ignored if [padding] is given.
+  final BsResponsive<BsSpacing>? py;
+
+  /// `my-*`: vertical margin (`container my-5`).
+  final BsResponsive<BsSpacing>? my;
+
+  /// `col-*` on the container (`container col-xxl-8`): its width as a share of
+  /// 12 columns of its parent, still capped by the container's max-width.
+  final BsResponsive<BsCol>? col;
 
   /// How to align the (possibly narrower-than-parent) container box.
   final AlignmentGeometry alignment;
@@ -72,23 +101,38 @@ class BsContainer extends StatelessWidget {
             ? BsGrid.containerMaxWidthFor(breakpoint)
             : null;
 
-        return Align(
+        final columns = col?.resolve(breakpoint)?.columns;
+        final width = columns != null && constraints.hasBoundedWidth
+            ? constraints.maxWidth * columns / 12
+            : double.infinity;
+        final margin = my?.resolve(breakpoint)?.size ?? 0;
+        Widget container = Align(
           alignment: alignment,
           child: ConstrainedBox(
             constraints: BoxConstraints(maxWidth: maxWidth ?? double.infinity),
             child: SizedBox(
-              width: double.infinity,
+              width: width,
               child: Padding(
                 padding:
                     padding ??
-                    const EdgeInsets.symmetric(
-                      horizontal: BsGrid.containerPaddingX,
+                    EdgeInsets.symmetric(
+                      horizontal:
+                          px?.resolve(breakpoint)?.size ??
+                          BsGrid.containerPaddingX,
+                      vertical: py?.resolve(breakpoint)?.size ?? 0,
                     ),
                 child: child,
               ),
             ),
           ),
         );
+        if (margin != 0) {
+          container = Padding(
+            padding: EdgeInsets.symmetric(vertical: margin),
+            child: container,
+          );
+        }
+        return container;
       },
     );
   }

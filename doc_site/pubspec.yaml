@@ -20,3 +20,6 @@ dev_dependencies:
 
 flutter:
   uses-material-design: false
+  assets:
+    # Bootstrap's own screenshots for the Heroes example.
+    - assets/examples/heroes/
