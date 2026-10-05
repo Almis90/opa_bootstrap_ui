@@ -299,6 +299,34 @@ class BsButtonStyle {
     );
   }
 
+  /// `.btn-link`: a link-colored, underlined button with no background or
+  /// border, whose text takes `--bs-link-hover-color` on hover and while
+  /// pressed.
+  factory BsButtonStyle.link({
+    required Color color,
+    required Color hoverColor,
+  }) {
+    const transparent = Color(0x00000000);
+    return BsButtonStyle(
+      color: color,
+      background: transparent,
+      borderColor: transparent,
+      hoverColor: hoverColor,
+      hoverBackground: transparent,
+      hoverBorderColor: transparent,
+      activeColor: hoverColor,
+      activeBackground: transparent,
+      activeBorderColor: transparent,
+      focusRingColor: color,
+      textStyle: defaultTextStyle.copyWith(decoration: TextDecoration.underline),
+      borderWidth: defaultBorderWidth,
+      disabledOpacity: defaultDisabledOpacity,
+      focusRingWidth: defaultFocusRingWidth,
+      transitionDuration: defaultTransitionDuration,
+      transitionCurve: defaultTransitionCurve,
+    );
+  }
+
   /// Replicates Bootstrap's `button-size()` mixin, using the
   /// `$btn-padding-*`/`$btn-font-size-*`/`$btn-border-radius-*` values
   /// (assuming the default `1rem == 16px` root font size).

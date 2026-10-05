@@ -90,9 +90,50 @@ class InlineIconLabel extends StatelessWidget {
   }
 }
 
-/// An `<svg class="bi">` sitting on the baseline of a line of text (hanging
-/// [lowered] below it), in a line of the surrounding [lineHeight]: the icon
-/// is level with the x-height of the text beside it, not centred on the line.
+/// A box (an `<svg class="bi">`, a `.spinner-border`) sitting on the baseline
+/// of a line of text, hanging [lowered] below it (`vertical-align: -.125em`),
+/// in a line of the surrounding [lineHeight]: it is level with the x-height of
+/// the text beside it, not centred on the line.
+class InlineBox extends StatelessWidget {
+  const InlineBox({
+    super.key,
+    required this.size,
+    required this.child,
+    this.lowered = 2,
+    this.fontSize = 16,
+    this.lineHeight = 24,
+  });
+
+  /// The box's width and height.
+  final double size;
+  final Widget child;
+  final double lowered;
+  final double fontSize;
+  final double lineHeight;
+
+  @override
+  Widget build(BuildContext context) {
+    final dpr = MediaQuery.devicePixelRatioOf(context);
+    final ascent = (0.9277 * fontSize * dpr).round();
+    final descent = (0.2441 * fontSize * dpr).round();
+    final above = ascent + ((lineHeight * dpr - ascent - descent) / 2).floor();
+    final top = (above - (size - lowered) * dpr) / dpr;
+    return SizedBox(
+      width: size,
+      height: lineHeight,
+      // (an Align: the box keeps its own size rather than filling the line)
+      child: Align(
+        alignment: Alignment.topLeft,
+        child: Padding(
+          padding: EdgeInsets.only(top: top < 0 ? 0 : top),
+          child: SizedBox(width: size, height: size, child: child),
+        ),
+      ),
+    );
+  }
+}
+
+/// An `<svg class="bi">` on the baseline of a line of text: see [InlineBox].
 class InlineIcon extends StatelessWidget {
   const InlineIcon({
     super.key,
@@ -113,22 +154,12 @@ class InlineIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dpr = MediaQuery.devicePixelRatioOf(context);
-    final ascent = (0.9277 * fontSize * dpr).round();
-    final descent = (0.2441 * fontSize * dpr).round();
-    final above = ascent + ((lineHeight * dpr - ascent - descent) / 2).floor();
-    final top = (above - (size - lowered) * dpr) / dpr;
-    return SizedBox(
-      width: size,
-      height: lineHeight,
-      // (an Align: the icon keeps its own size rather than filling the line)
-      child: Align(
-        alignment: Alignment.topLeft,
-        child: Padding(
-          padding: EdgeInsets.only(top: top < 0 ? 0 : top),
-          child: BootstrapIcon(icon, width: size, height: size, color: color),
-        ),
-      ),
+    return InlineBox(
+      size: size,
+      lowered: lowered,
+      fontSize: fontSize,
+      lineHeight: lineHeight,
+      child: BootstrapIcon(icon, width: size, height: size, color: color),
     );
   }
 }

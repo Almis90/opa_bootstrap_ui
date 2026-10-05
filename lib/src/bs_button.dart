@@ -6,6 +6,7 @@ import 'bs_focusable.dart';
 import 'bs_size.dart';
 import 'bs_spacing.dart';
 import 'bs_variant.dart';
+import 'tokens/bs_link.dart';
 import 'tokens/bs_transitions.dart';
 import 'bs_decorated_box.dart';
 
@@ -25,6 +26,7 @@ class BsButton extends StatefulWidget {
     required this.onPressed,
     this.variant = BsVariant.primary,
     this.outline = false,
+    this.link = false,
     this.size = BsSize.normal,
     this.style,
     this.active = false,
@@ -50,6 +52,10 @@ class BsButton extends StatefulWidget {
   /// Whether to render the outline style (`.btn-outline-*`) instead of the
   /// solid style (`.btn-*`).
   final bool outline;
+
+  /// `.btn-link`: a link-colored, underlined button with no background or
+  /// border ([variant] and [outline] are ignored).
+  final bool link;
 
   /// The button's size.
   final BsSize size;
@@ -105,11 +111,18 @@ class _BsButtonState extends State<BsButton> {
   @override
   Widget build(BuildContext context) {
     final enabled = widget._enabled;
-    final style = BsButtonStyle.forVariant(
-      widget.variant,
-      outline: widget.outline,
-      size: widget.size,
-    ).merge(widget.style);
+    final style =
+        (widget.link
+                ? BsButtonStyle.link(
+                    color: BsLink.colorOf(context),
+                    hoverColor: BsLink.hoverColorOf(context),
+                  ).merge(BsButtonStyle.size(widget.size))
+                : BsButtonStyle.forVariant(
+                    widget.variant,
+                    outline: widget.outline,
+                    size: widget.size,
+                  ))
+            .merge(widget.style);
     final borderRadius = widget.rounded == null
         ? style.borderRadius
         : BorderRadius.circular(widget.rounded!.radius);
@@ -117,8 +130,10 @@ class _BsButtonState extends State<BsButton> {
     final effectivePadding = widget.px == null && widget.py == null
         ? style.padding
         : EdgeInsets.symmetric(
-            horizontal: widget.px?.size ?? padding?.left ?? BsButtonStyle.paddingXBase,
-            vertical: widget.py?.size ?? padding?.top ?? BsButtonStyle.paddingYBase,
+            horizontal:
+                widget.px?.size ?? padding?.left ?? BsButtonStyle.paddingXBase,
+            vertical:
+                widget.py?.size ?? padding?.top ?? BsButtonStyle.paddingYBase,
           );
 
     final isActive = widget.active || _pressed;
@@ -174,10 +189,12 @@ class _BsButtonState extends State<BsButton> {
               child: BsAnimatedContainer(
                 duration: BsTransitions.resolve(
                   context,
-                  style.transitionDuration ?? BsButtonStyle.defaultTransitionDuration,
+                  style.transitionDuration ??
+                      BsButtonStyle.defaultTransitionDuration,
                 ),
                 curve:
-                    style.transitionCurve ?? BsButtonStyle.defaultTransitionCurve,
+                    style.transitionCurve ??
+                    BsButtonStyle.defaultTransitionCurve,
                 padding:
                     effectivePadding ??
                     const EdgeInsets.symmetric(
@@ -191,7 +208,8 @@ class _BsButtonState extends State<BsButton> {
                       BorderRadius.circular(BsButtonStyle.borderRadiusBase),
                   border: Border.all(
                     color: borderColor,
-                    width: style.borderWidth ?? BsButtonStyle.defaultBorderWidth,
+                    width:
+                        style.borderWidth ?? BsButtonStyle.defaultBorderWidth,
                   ),
                   boxShadow: boxShadow.isEmpty ? null : boxShadow,
                 ),
