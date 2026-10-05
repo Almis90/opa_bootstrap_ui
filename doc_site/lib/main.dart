@@ -42,6 +42,7 @@ import 'pages/examples/buttons_example_page.dart';
 import 'pages/examples/carousel_example_page.dart';
 import 'pages/examples/checkout_example_page.dart';
 import 'pages/examples/cover_example_page.dart';
+import 'pages/examples/dashboard_example_page.dart';
 import 'pages/examples/headers_example_page.dart';
 import 'pages/examples/heroes_example_page.dart';
 import 'pages/examples/jumbotron_example_page.dart';
@@ -229,6 +230,12 @@ final _examples = [
     title: 'Cover',
     description: 'A full-page dark cover with a masthead and a call to action.',
     builder: (_) => const CoverExamplePage(),
+  ),
+  ExampleEntry(
+    title: 'Dashboard',
+    description: 'A dashboard: a sticky header, a sidebar, a chart and a table.',
+    builder: (_) => const DashboardExamplePage(),
+    fixed: DashboardExamplePage.fixed,
   ),
   ExampleEntry(
     title: 'Headers',

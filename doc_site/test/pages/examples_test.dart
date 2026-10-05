@@ -8,6 +8,7 @@ import 'package:doc_site/pages/examples/buttons_example_page.dart';
 import 'package:doc_site/pages/examples/carousel_example_page.dart';
 import 'package:doc_site/pages/examples/checkout_example_page.dart';
 import 'package:doc_site/pages/examples/cover_example_page.dart';
+import 'package:doc_site/pages/examples/dashboard_example_page.dart';
 import 'package:doc_site/pages/examples/headers_example_page.dart';
 import 'package:doc_site/pages/examples/heroes_example_page.dart';
 import 'package:doc_site/pages/examples/jumbotron_example_page.dart';
@@ -44,6 +45,7 @@ void main() {
       'Checkout': () => const CheckoutExamplePage(),
       'Checkout RTL': () => const CheckoutExamplePage(rtl: true),
       'Cover': () => const CoverExamplePage(),
+      'Dashboard': () => const DashboardExamplePage(),
       'Headers': () => const HeadersExamplePage(),
       'Heroes': () => const HeroesExamplePage(),
       'Jumbotron': () => const JumbotronExamplePage(),
@@ -72,8 +74,9 @@ void main() {
           tester.view.devicePixelRatio = 1;
           addTearDown(tester.view.reset);
           // The test font (Ahem) is far wider than Roboto, so the Sidebars'
-          // fixed-width panes overflow in it; that is not a layout bug.
-          if (entry.key == 'Sidebars') {
+          // fixed-width panes and the Dashboard's narrow sidebar overflow in
+          // it; that is not a layout bug.
+          if (const {'Sidebars', 'Dashboard'}.contains(entry.key)) {
             final onError = FlutterError.onError;
             FlutterError.onError = (details) {
               if (!details.exceptionAsString().contains('overflowed')) {
