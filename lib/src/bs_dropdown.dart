@@ -589,7 +589,13 @@ class _BsDropdownHeaderWidget extends StatelessWidget {
 /// than 9.6x4.8, and so it is here. Pass [size] for a caret of an explicit
 /// width instead (its height is then 70% of it).
 class BsDropdownCaret extends StatelessWidget {
-  const BsDropdownCaret({super.key, this.color, this.size, this.fontSize = 16});
+  const BsDropdownCaret({
+    super.key,
+    this.color,
+    this.size,
+    this.fontSize = 16,
+    this.up = false,
+  });
 
   /// `.dropdown-toggle::after`'s `margin-left` (`.255em` of 16px).
   static const double marginStart = 4.08;
@@ -601,6 +607,9 @@ class BsDropdownCaret extends StatelessWidget {
 
   /// The toggle's font size, which `.3em` is relative to.
   final double fontSize;
+
+  /// `.dropup`'s caret: pointing up.
+  final bool up;
 
   /// The height of the stylesheet's caret (its border width) at the ambient
   /// device pixel ratio, for a toggle of [fontSize].
@@ -624,27 +633,35 @@ class BsDropdownCaret extends StatelessWidget {
         color ??
             DefaultTextStyle.of(context).style.color ??
             const Color(0xFF000000),
+        up: up,
       ),
     );
   }
 }
 
 class _BsDropdownCaretPainter extends CustomPainter {
-  _BsDropdownCaretPainter(this.color);
+  _BsDropdownCaretPainter(this.color, {required this.up});
 
   final Color color;
+  final bool up;
 
   @override
   void paint(Canvas canvas, Size size) {
-    final path = Path()
-      ..moveTo(0, 0)
-      ..lineTo(size.width, 0)
-      ..lineTo(size.width / 2, size.height)
-      ..close();
+    final path = up
+        ? (Path()
+            ..moveTo(0, size.height)
+            ..lineTo(size.width, size.height)
+            ..lineTo(size.width / 2, 0)
+            ..close())
+        : (Path()
+            ..moveTo(0, 0)
+            ..lineTo(size.width, 0)
+            ..lineTo(size.width / 2, size.height)
+            ..close());
     canvas.drawPath(path, Paint()..color = color);
   }
 
   @override
   bool shouldRepaint(covariant _BsDropdownCaretPainter oldDelegate) =>
-      oldDelegate.color != color;
+      oldDelegate.color != color || oldDelegate.up != up;
 }

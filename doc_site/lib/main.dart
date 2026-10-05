@@ -42,6 +42,7 @@ import 'pages/examples/jumbotrons_example_page.dart';
 import 'pages/examples/list_groups_example_page.dart';
 import 'pages/examples/masonry_example_page.dart';
 import 'pages/examples/modals_example_page.dart';
+import 'pages/examples/navbar_bottom_example_page.dart';
 import 'pages/examples/navbar_fixed_example_page.dart';
 import 'pages/examples/navbar_static_example_page.dart';
 import 'pages/getting_started/introduction_page.dart';
@@ -194,6 +195,12 @@ final _examples = [
     title: 'Modals',
     description: 'Four modal sheets shown in place: a bottom sheet, a choice, a feature tour and a sign-up form.',
     builder: (_) => const ModalsExamplePage(),
+  ),
+  ExampleEntry(
+    title: 'Navbar bottom',
+    description: 'A navbar fixed to the bottom of the viewport, with a dropup.',
+    builder: (_) => const NavbarBottomExamplePage(),
+    fixed: NavbarBottomExamplePage.fixed,
   ),
   ExampleEntry(
     title: 'Navbar fixed',
