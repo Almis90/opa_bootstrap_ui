@@ -15,6 +15,7 @@ import 'package:doc_site/pages/examples/navbars_example_page.dart';
 import 'package:doc_site/pages/examples/navbars_offcanvas_example_page.dart';
 import 'package:doc_site/pages/examples/offcanvas_navbar_example_page.dart';
 import 'package:doc_site/pages/examples/pricing_example_page.dart';
+import 'package:doc_site/pages/examples/product_example_page.dart';
 
 import '../test_utils.dart';
 
@@ -35,14 +36,21 @@ void main() {
       'Navbars offcanvas': () => const NavbarsOffcanvasExamplePage(),
       'Offcanvas navbar': () => const OffcanvasNavbarExamplePage(),
       'Pricing': () => const PricingExamplePage(),
+      'Product': () => const ProductExamplePage(),
     }.entries) {
-      testWidgets('${entry.key} example lays out without errors at ${width.toInt()}px', (tester) async {
-        tester.view.physicalSize = Size(width, 900);
-        tester.view.devicePixelRatio = 1;
-        addTearDown(tester.view.reset);
-        await pumpDocPage(tester, SingleChildScrollView(child: entry.value()));
-        expect(tester.takeException(), isNull);
-      });
+      testWidgets(
+        '${entry.key} example lays out without errors at ${width.toInt()}px',
+        (tester) async {
+          tester.view.physicalSize = Size(width, 900);
+          tester.view.devicePixelRatio = 1;
+          addTearDown(tester.view.reset);
+          await pumpDocPage(
+            tester,
+            SingleChildScrollView(child: entry.value()),
+          );
+          expect(tester.takeException(), isNull);
+        },
+      );
     }
   }
 }

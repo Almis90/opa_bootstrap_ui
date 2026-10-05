@@ -37,10 +37,19 @@ class BootstrapIconPath {
 
 /// An SVG `<symbol>`: its paths and `viewBox` size (origin is always 0,0).
 class BootstrapIconData {
-  const BootstrapIconData(this.paths, {this.viewBox = const Size(16, 16)});
+  const BootstrapIconData(
+    this.paths, {
+    this.viewBox = const Size(16, 16),
+    this.strokeWidth,
+  });
 
   final List<BootstrapIconPath> paths;
   final Size viewBox;
+
+  /// For a line icon (`fill="none" stroke="currentColor" stroke-width="2"
+  /// stroke-linecap="round" stroke-linejoin="round"`): the stroke's width,
+  /// instead of filling the paths.
+  final double? strokeWidth;
 
   static const check2 = BootstrapIconData([
       BootstrapIconPath('M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z'),
@@ -116,6 +125,24 @@ class BootstrapIconData {
       BootstrapIconPath('M106.342 0c-29.214 0-50.827 25.58-49.86 53.32.927 26.647-.278 61.165-8.966 89.31C38.802 170.862 24.07 188.707 0 191v26c24.069 2.293 38.802 20.138 47.516 48.37 8.688 28.145 9.893 62.663 8.965 89.311C55.515 382.42 77.128 408 106.342 408h299.353c29.214 0 50.827-25.58 49.861-53.319-.928-26.648.277-61.166 8.964-89.311 8.715-28.232 23.411-46.077 47.48-48.37v-26c-24.069-2.293-38.765-20.138-47.48-48.37-8.687-28.145-9.892-62.663-8.964-89.31C456.522 25.58 434.909 0 405.695 0H106.342zm236.559 251.102c0 38.197-28.501 61.355-75.798 61.355h-87.202a2 2 0 01-2-2v-213a2 2 0 012-2h86.74c39.439 0 65.322 21.354 65.322 54.138 0 23.008-17.409 43.61-39.594 47.219v1.203c30.196 3.309 50.532 24.212 50.532 53.085zm-84.58-128.125h-45.91v64.814h38.669c29.888 0 46.373-12.03 46.373-33.535 0-20.151-14.174-31.279-39.132-31.279zm-45.91 90.53v71.431h47.605c31.12 0 47.605-12.482 47.605-35.941 0-23.46-16.947-35.49-49.608-35.49h-45.602z'),
   ], viewBox: Size(512, 408));
 
+  /// Product example's `#aperture`: a line icon, `viewBox="0 0 24 24"`.
+  static const aperture = BootstrapIconData(
+    [
+      BootstrapIconPath('M12 2a10 10 0 1 0 0 20a10 10 0 1 0 0-20z'),
+      BootstrapIconPath('M14.31 8l5.74 9.94M9.69 8h11.48M7.38 12l5.74-9.94M9.69 16L3.95 6.06M14.31 16H2.83m13.79-4l-5.74 9.94'),
+    ],
+    viewBox: Size(24, 24),
+    strokeWidth: 2,
+  );
+
+  static const cart = BootstrapIconData([
+      BootstrapIconPath('M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .49.598l-1 5a.5.5 0 0 1-.465.401l-9.397.472L4.415 11H13a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l.84 4.479 9.144-.459L13.89 4H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z'),
+  ]);
+
+  static const chevronRight = BootstrapIconData([
+      BootstrapIconPath('M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z', evenOdd: true),
+  ]);
+
   static const home = BootstrapIconData([
       BootstrapIconPath('M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146zM2.5 14V7.707l5.5-5.5 5.5 5.5V14H10v-4a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v4H2.5z'),
   ]);
@@ -152,6 +179,13 @@ class _IconPainter extends CustomPainter {
     canvas.translate((size.width - vb.width * scale) / 2, (size.height - vb.height * scale) / 2);
     canvas.scale(scale);
     final paint = Paint()..color = color;
+    if (icon.strokeWidth != null) {
+      paint
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = icon.strokeWidth!
+        ..strokeCap = StrokeCap.round
+        ..strokeJoin = StrokeJoin.round;
+    }
     for (final p in icon.paths) {
       canvas.drawPath(parseSvgPath(p.d)..fillType = p.evenOdd ? PathFillType.evenOdd : PathFillType.nonZero, paint);
     }

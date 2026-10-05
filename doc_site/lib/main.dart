@@ -49,6 +49,7 @@ import 'pages/examples/navbars_example_page.dart';
 import 'pages/examples/navbars_offcanvas_example_page.dart';
 import 'pages/examples/offcanvas_navbar_example_page.dart';
 import 'pages/examples/pricing_example_page.dart';
+import 'pages/examples/product_example_page.dart';
 import 'pages/getting_started/introduction_page.dart';
 import 'pages/layout/breakpoints_page.dart';
 import 'pages/layout/containers_page.dart';
@@ -237,5 +238,11 @@ final _examples = [
     title: 'Pricing',
     description: 'A pricing table: three plan cards and a feature comparison table.',
     builder: (_) => const PricingExamplePage(),
+  ),
+  ExampleEntry(
+    title: 'Product',
+    description: 'A product landing page: a sticky navbar, a hero with rotated devices and rows of panels.',
+    builder: (_) => const ProductExamplePage(),
+    fixed: ProductExamplePage.fixed,
   ),
 ];

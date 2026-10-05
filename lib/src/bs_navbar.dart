@@ -64,6 +64,8 @@ class BsNavbar extends StatefulWidget {
     this.background,
     this.expandBreakpoint = BsBreakpoint.lg,
     this.centerItems = false,
+    this.spreadItems = false,
+    this.hideBrandWhenExpanded = false,
     this.endItems = false,
     this.offcanvasBuilder,
     this.onToggle,
@@ -105,6 +107,13 @@ class BsNavbar extends StatefulWidget {
   /// `justify-content-md-center` on the `.navbar-collapse`: when expanded the
   /// [items] sit in the middle of the bar rather than after the brand.
   final bool centerItems;
+
+  /// `flex-grow-1 justify-content-between` on the `.navbar-nav`: expanded, the
+  /// [items] spread across the whole bar.
+  final bool spreadItems;
+
+  /// `d-md-none` on the brand: it only shows while collapsed.
+  final bool hideBrandWhenExpanded;
 
   /// `justify-content-end flex-grow-1 pe-3` on the `.navbar-nav` of an
   /// offcanvas navbar: expanded, the [items] sit at the end of the bar, a
@@ -238,7 +247,7 @@ class _BsNavbarState extends State<BsNavbar> {
               return BsFlex(
                 alignItems: BsAlign.center,
                 children: [
-                  ?brand,
+                  if (!widget.hideBrandWhenExpanded) ?brand,
                   BsFlexItem(
                     flexGrow: true,
                     child:
@@ -247,6 +256,8 @@ class _BsNavbarState extends State<BsNavbar> {
                           alignItems: BsAlign.center,
                           justifyContent: widget.centerItems
                               ? BsJustify.center
+                              : widget.spreadItems
+                              ? BsJustify.between
                               : BsJustify.start,
                           children: [
                             if (widget.endItems)
