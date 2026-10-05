@@ -77,12 +77,21 @@ enum BsFlexDirection implements BsResponsive<BsFlexDirection> {
 class BsCol implements BsResponsive<BsCol> {
   const BsCol(int columns)
     : columns = columns,
+      fill = false,
       assert(columns >= 1 && columns <= 12);
 
-  const BsCol._auto() : columns = null;
+  const BsCol._auto() : columns = null, fill = false;
+
+  const BsCol._fill() : columns = null, fill = true;
 
   /// `col-auto`.
   static const BsCol auto = BsCol._auto();
+
+  /// `col`: equal-width columns that share the line (`flex: 1 0 0%`).
+  static const BsCol equal = BsCol._fill();
+
+  /// Whether this is [equal].
+  final bool fill;
 
   /// 1-12, or null for [auto].
   final int? columns;
@@ -140,6 +149,7 @@ class BsFlex extends StatelessWidget {
   }) : _gutterX = 0,
        _gutterY = 0,
        _masonry = false,
+       _rowCols = null,
        _row = false;
 
   /// A `.row`'s flex: items are `width: 100%` (unless a `col-*` says
@@ -153,9 +163,11 @@ class BsFlex extends StatelessWidget {
     this.alignItems,
     this.direction,
     bool masonry = false,
+    int? rowCols,
   }) : _gutterX = gutterX,
        _gutterY = gutterY,
        _masonry = masonry,
+       _rowCols = rowCols,
        _row = true,
        wrap = true,
        inline = false,
@@ -167,6 +179,7 @@ class BsFlex extends StatelessWidget {
   final double _gutterY;
   final bool _row;
   final bool _masonry;
+  final int? _rowCols;
 
   /// `flex-wrap` (the default, `flex-nowrap`, shrinks items instead).
   final bool wrap;
@@ -201,6 +214,7 @@ class BsFlex extends StatelessWidget {
       gutterY: _gutterY,
       row: _row,
       masonry: _masonry,
+      rowCols: _rowCols,
       breakpoint: breakpoint,
       textDirection: Directionality.of(context),
       children: children,
@@ -345,6 +359,7 @@ class _BsFlexRenderObjectWidget extends MultiChildRenderObjectWidget {
     required this.gutterY,
     required this.row,
     required this.masonry,
+    required this.rowCols,
     required this.breakpoint,
     required this.textDirection,
   });
@@ -354,6 +369,7 @@ class _BsFlexRenderObjectWidget extends MultiChildRenderObjectWidget {
   final double gutterY;
   final bool row;
   final bool masonry;
+  final int? rowCols;
   final bool wrap;
   final bool inline;
   final BsJustify justify;
@@ -374,6 +390,7 @@ class _BsFlexRenderObjectWidget extends MultiChildRenderObjectWidget {
     gutterY: gutterY,
     row: row,
     masonry: masonry,
+    rowCols: rowCols,
     breakpoint: breakpoint,
     textDirection: textDirection,
   );
@@ -391,6 +408,7 @@ class _BsFlexRenderObjectWidget extends MultiChildRenderObjectWidget {
       ..gutterY = gutterY
       ..row = row
       ..masonry = masonry
+      ..rowCols = rowCols
       ..breakpoint = breakpoint
       ..textDirection = textDirection;
   }
@@ -410,6 +428,7 @@ class _Item {
   bool autoStart = false, autoEnd = false;
   double? fraction;
   double offsetFraction = 0;
+  bool growEqual = false;
   double maxWidth = double.infinity;
   bool grow = false;
   bool shrink = true;
@@ -445,10 +464,12 @@ class _RenderBsFlex extends RenderBox
     required double gutterY,
     required bool row,
     required bool masonry,
+    required int? rowCols,
     required BsBreakpoint breakpoint,
     required TextDirection textDirection,
   }) : _direction = direction,
        _masonry = masonry,
+       _rowCols = rowCols,
        _gutterX = gutterX,
        _gutterY = gutterY,
        _row = row,
@@ -484,6 +505,15 @@ class _RenderBsFlex extends RenderBox
       return;
     }
     _gutterY = v;
+    markNeedsLayout();
+  }
+
+  int? _rowCols;
+  set rowCols(int? v) {
+    if (v == _rowCols) {
+      return;
+    }
+    _rowCols = v;
     markNeedsLayout();
   }
 
@@ -609,8 +639,17 @@ class _RenderBsFlex extends RenderBox
 
       final col = d.col?.resolve(_breakpoint);
       final w = d.w?.resolve(_breakpoint);
-      if (col != null && col.columns != null) {
+      if (col != null && col.fill) {
+        // `.col`: `flex: 1 0 0%`.
+        item.fraction = 0;
+        item.shrink = false;
+        item.growEqual = true;
+      } else if (col != null && col.columns != null) {
         item.fraction = col.columns! / 12;
+        item.shrink = d.flexShrink ?? false;
+      } else if (_row && _rowCols != null && col == null && w == null) {
+        // `.row-cols-*`: each child is 1/n of the line.
+        item.fraction = 1 / _rowCols!;
         item.shrink = d.flexShrink ?? false;
       } else if (_row && col == null && w == null) {
         // `.row > *`: width 100% and no shrinking, unless a col-* says otherwise.
@@ -620,7 +659,7 @@ class _RenderBsFlex extends RenderBox
         item.fraction = w?.fraction;
         item.shrink = d.flexShrink ?? (col == null);
       }
-      item.grow = d.flexGrow;
+      item.grow = d.flexGrow || item.growEqual;
       item.maxWidth = d.maxWidth ?? double.infinity;
       item.alignSelf = d.alignSelf?.resolve(_breakpoint);
       item.mt += _gutterY;
@@ -1182,9 +1221,14 @@ class BsRow extends StatelessWidget {
     this.rounded,
     this.shadow,
     this.masonry = false,
+    this.rowCols,
   });
 
   final List<Widget> children;
+
+  /// `row-cols-*`: how many equal columns each child takes a share of (`row-cols-1
+  /// row-cols-md-3` is `BsResponsiveValue(xs: 1, md: 3)`).
+  final BsResponsive<int>? rowCols;
 
   /// `data-masonry='{"percentPosition": true}'`: the columns are packed the
   /// way the Masonry plugin does — each item into the shortest column — instead
@@ -1255,6 +1299,7 @@ class BsRow extends StatelessWidget {
           alignItems: alignItems,
           direction: direction,
           masonry: masonry,
+          rowCols: rowCols?.resolve(breakpoint),
           children: children,
         ),
       ),

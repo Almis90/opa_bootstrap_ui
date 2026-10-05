@@ -2,7 +2,11 @@ import 'dart:math' as math;
 
 import 'package:flutter/widgets.dart';
 
+import 'bs_box.dart';
+import 'bs_color_utils.dart';
 import 'bs_breakpoint.dart';
+import 'bs_spacing.dart';
+import 'bs_variant.dart';
 import 'bs_theme.dart';
 import 'tokens/bs_card_style.dart';
 import 'tokens/bs_link.dart';
@@ -26,7 +30,15 @@ enum BsCardImgPosition {
 /// [BsCardFooter], etc. — Bootstrap's card has no fixed structure, so this
 /// widget is just the bordered/rounded shell.
 class BsCard extends StatelessWidget {
-  const BsCard({super.key, required this.child, this.style}) : _groupStartJoin = false, _groupEndJoin = false;
+  const BsCard({
+    super.key,
+    required this.child,
+    this.style,
+    this.rounded,
+    this.shadow,
+    this.borderVariant,
+  }) : _groupStartJoin = false,
+       _groupEndJoin = false;
 
   /// Used by [BsCardGroup] to square off the corners/border shared with a
   /// neighboring card.
@@ -36,7 +48,9 @@ class BsCard extends StatelessWidget {
     this.style,
     required this._groupStartJoin,
     required this._groupEndJoin,
-  });
+  }) : rounded = null,
+       shadow = null,
+       borderVariant = null;
 
   /// The card's content, typically a [Column] of header/body/footer/image
   /// widgets.
@@ -44,6 +58,15 @@ class BsCard extends StatelessWidget {
 
   /// Style overrides layered on top of [BsCardStyle.defaults].
   final BsCardStyle? style;
+
+  /// `rounded-*` on the card (`rounded-3`).
+  final BsRounded? rounded;
+
+  /// `shadow-*` on the card (`shadow-sm`).
+  final BsShadow? shadow;
+
+  /// `border-primary` etc.: the border's color.
+  final BsVariant? borderVariant;
 
   /// Whether this card shares its start edge (left in LTR, right in RTL)
   /// with a preceding card in a [BsCardGroup]: squares off the start
@@ -60,7 +83,15 @@ class BsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = BsTheme.of(context) == Brightness.dark;
-    final style = (isDark ? BsCardStyle.darkDefaults : BsCardStyle.defaults).merge(this.style);
+    final style = (isDark ? BsCardStyle.darkDefaults : BsCardStyle.defaults)
+        .merge(this.style)
+        .merge(
+          BsCardStyle(
+            borderRadius: rounded?.radius,
+            boxShadow: shadow?.shadows,
+            borderColor: borderVariant?.color,
+          ),
+        );
     final borderWidth = style.borderWidth ?? BsCardStyle.defaultBorderWidth;
     final borderRadius = style.borderRadius ?? BsCardStyle.defaultBorderRadius;
     final borderColor = style.borderColor ?? BsCardStyle.defaultBorderColor;
@@ -116,7 +147,9 @@ class BsCard extends StatelessWidget {
           // has a style: none side), not one that's merely zero-valued.
           // Passing null instead sidesteps that assertion; visually a zero
           // radius and no radius already look identical.
-          borderRadius: (_groupStartJoin && _groupEndJoin) ? null : outerBorderRadius,
+          borderRadius: (_groupStartJoin && _groupEndJoin)
+              ? null
+              : outerBorderRadius,
           boxShadow: style.boxShadow,
         ),
         // (Clipped to the padding box — inside the border — so a header's or
@@ -125,7 +158,11 @@ class BsCard extends StatelessWidget {
           borderRadius: innerClipRadius,
           child: DefaultTextStyle.merge(
             style: TextStyle(color: style.color),
-            child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [child]),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [child],
+            ),
           ),
         ),
       ),
@@ -164,35 +201,65 @@ class _BsCardScope extends InheritedWidget {
 
 /// `.card-header`: an optional top cap, e.g. for a title or nav.
 class BsCardHeader extends StatelessWidget {
-  const BsCardHeader({super.key, required this.child});
+  const BsCardHeader({super.key, required this.child, this.py, this.textBg});
 
   final Widget child;
+
+  /// `py-*`: vertical padding in place of the card's cap padding.
+  final BsSpacing? py;
+
+  /// `text-bg-*` (and the same variant's border): a contextual header.
+  final BsVariant? textBg;
 
   @override
   Widget build(BuildContext context) {
     final scope = _BsCardScope._maybeScopeOf(context);
     final isDark = BsTheme.of(context) == Brightness.dark;
-    final style = scope?.style ?? (isDark ? BsCardStyle.darkDefaults : BsCardStyle.defaults);
-    final innerRadius = style.innerBorderRadius ?? BsCardStyle.defaultInnerBorderRadius;
+    final style =
+        scope?.style ??
+        (isDark ? BsCardStyle.darkDefaults : BsCardStyle.defaults);
+    final innerRadius =
+        style.innerBorderRadius ?? BsCardStyle.defaultInnerBorderRadius;
     final radius = Radius.circular(innerRadius);
 
+    final background =
+        textBg?.color ??
+        style.capBackground ??
+        BsCardStyle.defaultCapBackground;
+    final borderColor =
+        textBg?.color ?? style.borderColor ?? BsCardStyle.defaultBorderColor;
     return BsDecoratedContainer(
       decoration: BoxDecoration(
-        color: style.capBackground ?? BsCardStyle.defaultCapBackground,
+        color: background,
         borderRadius: BorderRadiusDirectional.only(
           topStart: scope?.groupStartJoin ?? false ? Radius.zero : radius,
           topEnd: scope?.groupEndJoin ?? false ? Radius.zero : radius,
         ),
         border: Border(
           bottom: BorderSide(
-            color: style.borderColor ?? BsCardStyle.defaultBorderColor,
+            color: borderColor,
             width: style.borderWidth ?? BsCardStyle.defaultBorderWidth,
           ),
         ),
       ),
       child: Padding(
-        padding: style.capPadding ?? BsCardStyle.defaultCapPadding,
-        child: DefaultTextStyle.merge(style: TextStyle(color: style.capColor), child: child),
+        padding: py == null
+            ? (style.capPadding ?? BsCardStyle.defaultCapPadding)
+            : EdgeInsets.symmetric(
+                horizontal:
+                    (style.capPadding ?? BsCardStyle.defaultCapPadding)
+                        .horizontal /
+                    2,
+                vertical: py!.size,
+              ),
+        child: DefaultTextStyle.merge(
+          style: TextStyle(
+            color: textBg == null
+                ? style.capColor
+                : BsColorUtils.contrast(textBg!.color),
+          ),
+          child: child,
+        ),
       ),
     );
   }
@@ -208,8 +275,11 @@ class BsCardFooter extends StatelessWidget {
   Widget build(BuildContext context) {
     final scope = _BsCardScope._maybeScopeOf(context);
     final isDark = BsTheme.of(context) == Brightness.dark;
-    final style = scope?.style ?? (isDark ? BsCardStyle.darkDefaults : BsCardStyle.defaults);
-    final innerRadius = style.innerBorderRadius ?? BsCardStyle.defaultInnerBorderRadius;
+    final style =
+        scope?.style ??
+        (isDark ? BsCardStyle.darkDefaults : BsCardStyle.defaults);
+    final innerRadius =
+        style.innerBorderRadius ?? BsCardStyle.defaultInnerBorderRadius;
     final radius = Radius.circular(innerRadius);
 
     return BsDecoratedContainer(
@@ -228,7 +298,10 @@ class BsCardFooter extends StatelessWidget {
       ),
       child: Padding(
         padding: style.capPadding ?? BsCardStyle.defaultCapPadding,
-        child: DefaultTextStyle.merge(style: TextStyle(color: style.capColor), child: child),
+        child: DefaultTextStyle.merge(
+          style: TextStyle(color: style.capColor),
+          child: child,
+        ),
       ),
     );
   }
@@ -246,7 +319,11 @@ class BsCardBody extends StatelessWidget {
 
     return Padding(
       padding: style.spacing ?? BsCardStyle.defaultSpacing,
-      child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: children),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: children,
+      ),
     );
   }
 }
@@ -262,7 +339,9 @@ class BsCardTitle extends StatelessWidget {
     final style = _BsCardScope.maybeOf(context) ?? BsCardStyle.defaults;
 
     return Padding(
-      padding: EdgeInsets.only(bottom: style.titleSpacerY ?? BsCardStyle.defaultTitleSpacerY),
+      padding: EdgeInsets.only(
+        bottom: style.titleSpacerY ?? BsCardStyle.defaultTitleSpacerY,
+      ),
       child: DefaultTextStyle.merge(
         style: TextStyle(color: style.titleColor, fontWeight: FontWeight.bold),
         child: child,
@@ -284,7 +363,10 @@ class BsCardSubtitle extends StatelessWidget {
 
     return Transform.translate(
       offset: Offset(0, -0.5 * titleSpacerY),
-      child: DefaultTextStyle.merge(style: TextStyle(color: style.subtitleColor), child: child),
+      child: DefaultTextStyle.merge(
+        style: TextStyle(color: style.subtitleColor),
+        child: child,
+      ),
     );
   }
 }
@@ -325,7 +407,9 @@ class _BsCardLinkState extends State<BsCardLink> {
         child: DefaultTextStyle.merge(
           style: TextStyle(
             color: _hovered ? BsLink.hoverColor : BsLink.color,
-            decoration: _hovered ? (BsLink.hoverDecoration ?? BsLink.decoration) : BsLink.decoration,
+            decoration: _hovered
+                ? (BsLink.hoverDecoration ?? BsLink.decoration)
+                : BsLink.decoration,
           ),
           child: widget.child,
         ),
@@ -337,7 +421,11 @@ class _BsCardLinkState extends State<BsCardLink> {
 /// `.card-img`/`.card-img-top`/`.card-img-bottom`: a full-bleed image with
 /// corners rounded to match the card, per [position].
 class BsCardImg extends StatelessWidget {
-  const BsCardImg({super.key, required this.child, this.position = BsCardImgPosition.top});
+  const BsCardImg({
+    super.key,
+    required this.child,
+    this.position = BsCardImgPosition.top,
+  });
 
   /// Typically an [Image].
   final Widget child;
@@ -348,17 +436,26 @@ class BsCardImg extends StatelessWidget {
   Widget build(BuildContext context) {
     final scope = _BsCardScope._maybeScopeOf(context);
     final style = scope?.style ?? BsCardStyle.defaults;
-    final innerRadius = style.innerBorderRadius ?? BsCardStyle.defaultInnerBorderRadius;
+    final innerRadius =
+        style.innerBorderRadius ?? BsCardStyle.defaultInnerBorderRadius;
     final radius = Radius.circular(innerRadius);
     final squareStart = scope?.groupStartJoin ?? false;
     final squareEnd = scope?.groupEndJoin ?? false;
 
     return ClipRRect(
       borderRadius: BorderRadiusDirectional.only(
-        topStart: position != BsCardImgPosition.bottom && !squareStart ? radius : Radius.zero,
-        topEnd: position != BsCardImgPosition.bottom && !squareEnd ? radius : Radius.zero,
-        bottomStart: position != BsCardImgPosition.top && !squareStart ? radius : Radius.zero,
-        bottomEnd: position != BsCardImgPosition.top && !squareEnd ? radius : Radius.zero,
+        topStart: position != BsCardImgPosition.bottom && !squareStart
+            ? radius
+            : Radius.zero,
+        topEnd: position != BsCardImgPosition.bottom && !squareEnd
+            ? radius
+            : Radius.zero,
+        bottomStart: position != BsCardImgPosition.top && !squareStart
+            ? radius
+            : Radius.zero,
+        bottomEnd: position != BsCardImgPosition.top && !squareEnd
+            ? radius
+            : Radius.zero,
       ),
       child: child,
     );
@@ -376,13 +473,16 @@ class BsCardImgOverlay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final style = _BsCardScope.maybeOf(context) ?? BsCardStyle.defaults;
-    final innerRadius = style.innerBorderRadius ?? BsCardStyle.defaultInnerBorderRadius;
+    final innerRadius =
+        style.innerBorderRadius ?? BsCardStyle.defaultInnerBorderRadius;
 
     return Positioned.fill(
       child: ClipRRect(
         borderRadius: BorderRadius.circular(innerRadius),
         child: Padding(
-          padding: EdgeInsets.all(style.imgOverlayPadding ?? BsCardStyle.defaultImgOverlayPadding),
+          padding: EdgeInsets.all(
+            style.imgOverlayPadding ?? BsCardStyle.defaultImgOverlayPadding,
+          ),
           child: child,
         ),
       ),
@@ -420,7 +520,12 @@ class BsCardGroup extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               for (var i = 0; i < children.length; i++)
-                Padding(padding: EdgeInsets.only(bottom: i == children.length - 1 ? 0 : margin), child: children[i]),
+                Padding(
+                  padding: EdgeInsets.only(
+                    bottom: i == children.length - 1 ? 0 : margin,
+                  ),
+                  child: children[i],
+                ),
             ],
           );
         }

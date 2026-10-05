@@ -8,7 +8,12 @@ import 'tokens/bs_table_style.dart';
 /// A single `<tr>`'s cells, plus the row-level modifiers Bootstrap applies
 /// via `.table-{variant}`/`.table-active`.
 class BsTableRow {
-  const BsTableRow({required this.cells, this.variant, this.active = false});
+  const BsTableRow({
+    required this.cells,
+    this.variant,
+    this.active = false,
+    this.groupStart = false,
+  });
 
   /// One widget per column, typically [Text].
   final List<Widget> cells;
@@ -19,6 +24,9 @@ class BsTableRow {
   /// `.table-active`: darkens this row via
   /// [BsTableStyle.activeBackgroundOpacity].
   final bool active;
+
+  /// This row opens a `<tbody class="table-group-divider">`: a 2px rule above it.
+  final bool groupStart;
 }
 
 /// A Bootstrap table (`.table`).
@@ -96,7 +104,8 @@ class _BsTableState extends State<BsTable> {
   @override
   Widget build(BuildContext context) {
     final isDark = BsTheme.of(context) == Brightness.dark;
-    final style = (isDark ? BsTableStyle.darkDefaults : BsTableStyle.defaults).merge(widget.style);
+    final style = (isDark ? BsTableStyle.darkDefaults : BsTableStyle.defaults)
+        .merge(widget.style);
     final padding = widget.small
         ? (style.cellPaddingSm ?? BsTableStyle.defaultCellPaddingSm)
         : (style.cellPadding ?? BsTableStyle.defaultCellPadding);
@@ -116,12 +125,18 @@ class _BsTableState extends State<BsTable> {
         : widget.bordered
         ? TableBorder.all(color: borderColor, width: borderWidth)
         : TableBorder(
+            // (every cell, the last row's included, has a bottom rule)
+            bottom: BorderSide(color: borderColor, width: borderWidth),
             horizontalInside: BorderSide(
               color: borderColor,
               width: borderWidth,
             ),
           );
 
+    // Every cell has a bottom border (collapsed with the next row's top one) that
+    // takes room: Flutter's [Table] only paints its rules, so make it.
+    final rule = widget.borderless || widget.bordered ? 0.0 : borderWidth;
+    final cellPadding = padding.add(EdgeInsets.only(bottom: rule));
     final rows = <TableRow>[
       if (widget.columns != null)
         TableRow(
@@ -130,11 +145,19 @@ class _BsTableState extends State<BsTable> {
           ),
           children: [
             for (final cell in widget.columns!)
-              _cell(cell, padding: padding, fontWeight: FontWeight.bold),
+              _cell(cell, padding: cellPadding, fontWeight: FontWeight.bold),
           ],
         ),
       for (var i = 0; i < widget.rows.length; i++)
-        _buildRow(i, widget.rows[i], style, background, padding, isDark),
+        _buildRow(
+          i,
+          widget.rows[i],
+          style,
+          background,
+          cellPadding,
+          isDark,
+          ruleColor: color,
+        ),
     ];
 
     final table = DefaultTextStyle.merge(
@@ -178,8 +201,9 @@ class _BsTableState extends State<BsTable> {
     BsTableStyle style,
     Color background,
     EdgeInsetsGeometry padding,
-    bool isDark,
-  ) {
+    bool isDark, {
+    required Color ruleColor,
+  }) {
     var rowColor = background;
     if (row.variant != null) {
       rowColor = isDark ? row.variant!.darkBgSubtle : row.variant!.bgSubtle;
@@ -213,11 +237,25 @@ class _BsTableState extends State<BsTable> {
       rowColor,
     );
 
+    // `.table-group-divider`: a 2px `currentcolor` rule above a row group, 1px
+    // more than the ordinary rule it replaces.
+    final groupStart = !widget.bordered && !widget.borderless && row.groupStart;
     return TableRow(
-      decoration: BoxDecoration(color: rowColor),
+      decoration: BoxDecoration(
+        color: rowColor,
+        border: groupStart
+            ? Border(top: BorderSide(color: ruleColor, width: 2))
+            : null,
+      ),
       children: [
         for (final cell in row.cells)
-          _cell(cell, padding: padding, hoverRow: widget.hover ? index : null),
+          _cell(
+            cell,
+            padding: groupStart
+                ? padding.add(const EdgeInsets.only(top: 1))
+                : padding,
+            hoverRow: widget.hover ? index : null,
+          ),
       ],
     );
   }

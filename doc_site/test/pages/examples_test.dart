@@ -14,6 +14,7 @@ import 'package:doc_site/pages/examples/navbar_static_example_page.dart';
 import 'package:doc_site/pages/examples/navbars_example_page.dart';
 import 'package:doc_site/pages/examples/navbars_offcanvas_example_page.dart';
 import 'package:doc_site/pages/examples/offcanvas_navbar_example_page.dart';
+import 'package:doc_site/pages/examples/pricing_example_page.dart';
 
 import '../test_utils.dart';
 
@@ -33,6 +34,7 @@ void main() {
       'Navbars': () => const NavbarsExamplePage(),
       'Navbars offcanvas': () => const NavbarsOffcanvasExamplePage(),
       'Offcanvas navbar': () => const OffcanvasNavbarExamplePage(),
+      'Pricing': () => const PricingExamplePage(),
     }.entries) {
       testWidgets('${entry.key} example lays out without errors at ${width.toInt()}px', (tester) async {
         tester.view.physicalSize = Size(width, 900);

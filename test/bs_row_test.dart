@@ -199,4 +199,35 @@ void main() {
     expect(r(tester, 'c').topLeft, const Offset(200, 40));
     expect(r(tester, 'd').topLeft, const Offset(200, 70));
   });
+
+  testWidgets(
+    'row-cols-2 gives each child half the line; col fills the rest equally',
+    (tester) async {
+      await pump(
+        tester,
+        BsRow(
+          g: BsSpacing.s0,
+          rowCols: const BsResponsiveValue<int>(xs: 2),
+          children: [box('a'), box('b'), box('c')],
+        ),
+      );
+      expect(r(tester, 'a').width, 200);
+      expect(r(tester, 'c').topLeft, const Offset(0, 20));
+
+      await pump(
+        tester,
+        BsRow(
+          g: BsSpacing.s0,
+          children: [
+            BsFlexItem(col: BsCol.equal, child: box('a')),
+            BsFlexItem(col: BsCol.equal, child: box('b')),
+            BsFlexItem(col: const BsCol(6), child: box('c')),
+          ],
+        ),
+      );
+      expect(r(tester, 'a').width, 100);
+      expect(r(tester, 'b').left, 100);
+      expect(r(tester, 'c').left, 200);
+    },
+  );
 }
