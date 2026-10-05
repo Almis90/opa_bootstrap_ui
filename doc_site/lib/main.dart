@@ -208,6 +208,12 @@ final _examples = [
     fixed: CarouselExamplePage.fixed,
   ),
   ExampleEntry(
+    title: 'Carousel RTL',
+    description: 'The carousel page, right to left in Arabic.',
+    builder: (_) => const CarouselExamplePage(rtl: true),
+    fixed: (context) => CarouselExamplePage.fixed(context, rtl: true),
+  ),
+  ExampleEntry(
     title: 'Headers',
     description: 'Eight header layouts, from a bare brand-and-nav bar to a two-tier icon navigation bar.',
     builder: (_) => const HeadersExamplePage(),

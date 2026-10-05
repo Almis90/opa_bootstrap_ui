@@ -38,6 +38,7 @@ void main() {
       'Breadcrumbs': () => const BreadcrumbsExamplePage(),
       'Buttons': () => const ButtonsExamplePage(),
       'Carousel': () => const CarouselExamplePage(),
+      'Carousel RTL': () => const CarouselExamplePage(rtl: true),
       'Headers': () => const HeadersExamplePage(),
       'Heroes': () => const HeroesExamplePage(),
       'Jumbotron': () => const JumbotronExamplePage(),

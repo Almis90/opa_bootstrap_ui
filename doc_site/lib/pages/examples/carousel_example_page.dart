@@ -11,30 +11,48 @@ import '../../src/placeholder_image.dart';
 /// placeholders, three alternating featurettes and a footer. The page's CSS
 /// (`carousel.css`) is translated where it is used.
 class CarouselExamplePage extends StatelessWidget {
-  const CarouselExamplePage({super.key});
+  const CarouselExamplePage({super.key, this.rtl = false});
+
+  /// The `carousel-rtl` page: `dir="rtl"`, in Arabic.
+  final bool rtl;
 
   static const _expand = BsBreakpoint.md;
 
   /// The `position: fixed; top: 0; right: 0; left: 0` navbar.
-  static Widget fixed(BuildContext context) {
-    return Positioned(
+  static Widget fixed(BuildContext context, {bool rtl = false}) {
+    final t = rtl ? _Strings.ar : _Strings.en;
+    final bar = Positioned(
       top: 0,
       left: 0,
       right: 0,
       child: NavbarExampleBar(
-        brand: 'Carousel',
+        brand: t.brand,
         expandBreakpoint: _expand,
-        items: navbarExampleItems(),
-        trailing: const [NavbarSearchForm()],
+        items: navbarExampleItems(
+          home: t.home,
+          link: t.link,
+          disabled: t.disabled,
+        ),
+        trailing: [NavbarSearchForm(label: t.search)],
       ),
     );
+    return rtl
+        ? Positioned.fill(
+            child: Directionality(
+              textDirection: TextDirection.rtl,
+              child: Stack(children: [bar]),
+            ),
+          )
+        : bar;
   }
+
+  _Strings get _t => rtl ? _Strings.ar : _Strings.en;
 
   @override
   Widget build(BuildContext context) {
     // body { padding: 3rem 0 } (and `color: rgb(var(--bs-tertiary-color-rgb))`,
     // which is the body color: its rgb without the alpha)
-    return Padding(
+    final page = Padding(
       padding: const EdgeInsets.symmetric(vertical: 48),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -45,6 +63,10 @@ class CarouselExamplePage extends StatelessWidget {
         ],
       ),
     );
+    // <html dir="rtl">
+    return rtl
+        ? Directionality(textDirection: TextDirection.rtl, child: page)
+        : page;
   }
 
   // --- <div id="myCarousel" class="carousel slide"> ---
@@ -81,8 +103,8 @@ class CarouselExamplePage extends StatelessWidget {
             paragraph(
               Align(
                 alignment: switch (align) {
-                  TextAlign.start => Alignment.centerLeft,
-                  TextAlign.end => Alignment.centerRight,
+                  TextAlign.start => AlignmentDirectional.centerStart,
+                  TextAlign.end => AlignmentDirectional.centerEnd,
                   _ => Alignment.center,
                 },
                 child: BsButton(
@@ -110,30 +132,23 @@ class CarouselExamplePage extends StatelessWidget {
             BsCarouselItem(
               child: placeholder,
               caption: caption(
-                'Example headline.',
-                'Some representative placeholder content for the first slide '
-                    'of the carousel.',
-                'Sign up today',
+                _t.headline1,
+                _t.text1,
+                _t.button1,
                 align: TextAlign.start,
                 faded: true,
               ),
             ),
             BsCarouselItem(
               child: placeholder,
-              caption: caption(
-                'Another example headline.',
-                'Some representative placeholder content for the second slide '
-                    'of the carousel.',
-                'Learn more',
-              ),
+              caption: caption(_t.headline2, _t.text2, _t.button2),
             ),
             BsCarouselItem(
               child: placeholder,
               caption: caption(
-                'One more for good measure.',
-                'Some representative placeholder content for the third slide '
-                    'of this carousel.',
-                'Browse gallery',
+                _t.headline3,
+                _t.text3,
+                _t.button3,
                 align: TextAlign.end,
               ),
             ),
@@ -147,7 +162,7 @@ class CarouselExamplePage extends StatelessWidget {
 
   Widget _marketing(BuildContext context) {
     final secondary = BsTextColor.bodySecondary.of(context);
-    Widget column(String text) {
+    Widget column(String title, String text) {
       return BsFlexItem(
         col: const BsResponsiveValue(xs: BsCol(12), lg: BsCol(4)),
         // .marketing .col-lg-4 { margin-bottom: 1.5rem; text-align: center }
@@ -168,11 +183,7 @@ class CarouselExamplePage extends StatelessWidget {
                   ),
                 ),
               ),
-              const BsHeading(
-                BsHeadingLevel.h2,
-                fw: BsFw.normal,
-                child: Text('Heading'),
-              ),
+              BsHeading(BsHeadingLevel.h2, fw: BsFw.normal, child: Text(title)),
               // .marketing .col-lg-4 p { margin: 0 .75rem 1rem }
               Padding(
                 padding: const EdgeInsets.fromLTRB(12, 0, 12, 16),
@@ -185,7 +196,7 @@ class CarouselExamplePage extends StatelessWidget {
                   child: BsButton(
                     variant: BsVariant.secondary,
                     onPressed: () {},
-                    child: const Text('View details »'),
+                    child: Text(_t.details),
                   ),
                 ),
               ),
@@ -206,48 +217,33 @@ class CarouselExamplePage extends StatelessWidget {
       children: [
         BsRow(
           children: [
-            column(
-              'Some representative placeholder content for the three columns '
-              'of text below the carousel. This is the first column.',
-            ),
-            column(
-              'Another exciting bit of representative placeholder content. '
-              "This time, we've moved on to the second column.",
-            ),
-            column(
-              'And lastly this, the third column of representative '
-              'placeholder content.',
-            ),
+            column(_t.heading1, _t.column1),
+            column(_t.heading2, _t.column2),
+            column(_t.heading3, _t.column3),
           ],
         ),
         divider(),
         _featurette(
           context,
-          'First featurette heading. ',
-          'It’ll blow your mind.',
-          'Some great placeholder content for the first featurette here. '
-              'Imagine some exciting prose here.',
+          _t.featurette1,
+          _t.muted1,
+          _t.lead1,
           imageFirst: false,
         ),
         divider(),
         _featurette(
           context,
-          'Oh yeah, it’s that good. ',
-          'See for yourself.',
-          'Another featurette? Of course. More placeholder content here to give '
-              'you an idea of how this layout would work with some actual '
-              'real-world content in place.',
+          _t.featurette2,
+          _t.muted2,
+          _t.lead2,
           imageFirst: true,
         ),
         divider(),
         _featurette(
           context,
-          'And lastly, this one. ',
-          'Checkmate.',
-          'And yes, this is the last block of representative placeholder '
-              'content. Again, not really intended to be actually read, simply '
-              'here to give you a better view of what this would look like '
-              'with some actual content. Your content.',
+          _t.featurette3,
+          _t.muted3,
+          _t.lead3,
           imageFirst: false,
         ),
         divider(),
@@ -288,6 +284,7 @@ class CarouselExamplePage extends StatelessWidget {
                   heading,
                   muted,
                   secondary,
+                  rtl,
                 ),
               ),
               Padding(
@@ -326,10 +323,12 @@ class CarouselExamplePage extends StatelessWidget {
     String heading,
     String muted,
     Color secondary,
+    bool rtl,
   ) {
     final text = Text.rich(
       TextSpan(
-        style: const TextStyle(letterSpacing: -0.8),
+        // (`rtl:remove`: Arabic keeps its letter-spacing)
+        style: TextStyle(letterSpacing: rtl ? null : -0.8),
         children: [
           TextSpan(text: heading),
           TextSpan(
@@ -369,18 +368,196 @@ class CarouselExamplePage extends StatelessWidget {
       style: TextStyle(color: link, decoration: TextDecoration.underline),
     );
     return FloatEndText(
-      floatText: 'Back to top',
+      floatText: _t.backToTop,
       floatStyle: TextStyle(color: link, decoration: TextDecoration.underline),
       floatMarginBottom: 16,
       bottomMargin: 16,
       span: TextSpan(
         children: [
           TextSpan(text: '© 2017–${DateTime.now().year} Company, Inc. · '),
-          anchor('Privacy'),
+          anchor(_t.privacy),
           const TextSpan(text: ' · '),
-          anchor('Terms'),
+          anchor(_t.terms),
         ],
       ),
     );
   }
+}
+
+/// The page's texts: the English original and the `carousel-rtl` Arabic one.
+class _Strings {
+  const _Strings({
+    required this.brand,
+    required this.home,
+    required this.link,
+    required this.disabled,
+    required this.search,
+    required this.headline1,
+    required this.text1,
+    required this.button1,
+    required this.headline2,
+    required this.text2,
+    required this.button2,
+    required this.headline3,
+    required this.text3,
+    required this.button3,
+    required this.heading1,
+    required this.column1,
+    required this.heading2,
+    required this.column2,
+    required this.heading3,
+    required this.column3,
+    required this.details,
+    required this.featurette1,
+    required this.muted1,
+    required this.lead1,
+    required this.featurette2,
+    required this.muted2,
+    required this.lead2,
+    required this.featurette3,
+    required this.muted3,
+    required this.lead3,
+    required this.backToTop,
+    required this.privacy,
+    required this.terms,
+  });
+
+  final String brand, home, link, disabled, search;
+  final String headline1, text1, button1;
+  final String headline2, text2, button2;
+  final String headline3, text3, button3;
+  final String heading1, column1, heading2, column2, heading3, column3;
+  final String details;
+  final String featurette1, muted1, lead1;
+  final String featurette2, muted2, lead2;
+  final String featurette3, muted3, lead3;
+  final String backToTop, privacy, terms;
+
+  static const en = _Strings(
+    brand: 'Carousel',
+    home: 'Home',
+    link: 'Link',
+    disabled: 'Disabled',
+    search: 'Search',
+    headline1: 'Example headline.',
+    text1:
+        'Some representative placeholder content for the first slide of the '
+        'carousel.',
+    button1: 'Sign up today',
+    headline2: 'Another example headline.',
+    text2:
+        'Some representative placeholder content for the second slide of the '
+        'carousel.',
+    button2: 'Learn more',
+    headline3: 'One more for good measure.',
+    text3:
+        'Some representative placeholder content for the third slide of this '
+        'carousel.',
+    button3: 'Browse gallery',
+    heading1: 'Heading',
+    column1:
+        'Some representative placeholder content for the three columns of text '
+        'below the carousel. This is the first column.',
+    heading2: 'Heading',
+    column2:
+        'Another exciting bit of representative placeholder content. This '
+        "time, we've moved on to the second column.",
+    heading3: 'Heading',
+    column3:
+        'And lastly this, the third column of representative placeholder '
+        'content.',
+    details: 'View details »',
+    featurette1: 'First featurette heading. ',
+    muted1: 'It’ll blow your mind.',
+    lead1:
+        'Some great placeholder content for the first featurette here. '
+        'Imagine some exciting prose here.',
+    featurette2: 'Oh yeah, it’s that good. ',
+    muted2: 'See for yourself.',
+    lead2:
+        'Another featurette? Of course. More placeholder content here to give '
+        'you an idea of how this layout would work with some actual '
+        'real-world content in place.',
+    featurette3: 'And lastly, this one. ',
+    muted3: 'Checkmate.',
+    lead3:
+        'And yes, this is the last block of representative placeholder '
+        'content. Again, not really intended to be actually read, simply here '
+        'to give you a better view of what this would look like with some '
+        'actual content. Your content.',
+    backToTop: 'Back to top',
+    privacy: 'Privacy',
+    terms: 'Terms',
+  );
+
+  static const ar = _Strings(
+    brand: 'شرائح العرض',
+    home: 'الصفحة الرئيسية',
+    link: 'حلقة الوصل',
+    disabled: 'رابط غير مفعل',
+    search: 'بحث',
+    headline1: 'عنوان المثال.',
+    text1:
+        'تشير الدراسات الإحصائية حسب الجمعية الأمريكية للغات بأن الإقبال على '
+        'العربية زاد %126 في الولايات المتحدة الأمريكية وحدها بين عامي 2002 '
+        'و2009م.',
+    button1: 'سجل اليوم',
+    headline2: 'عنوان مثال آخر.',
+    text2:
+        'حسب المجلس الثقافي البريطاني فإن تعليم الإنجليزية داخل بريطانيا يسهم '
+        'في تعزيز اقتصادها بما يتجاوز ملياري جنيه سنوياً، كما أنه وفر أكثر من '
+        '26 ألف وظيفة.',
+    button2: 'أعرف أكثر',
+    headline3: 'واحد أكثر لقياس جيد.',
+    text3:
+        'الإحصاءات لحجم الاستثمار اللغوي خارج بريطانيا تتفاوت من سنة لأخرى إلا '
+        'أن المدير التنفيذي للمجلس الثقافي البريطاني إدي بايرز يرى أن استثمار '
+        'تعليم الإنجليزية في الخارج لا يحسب على المستوى المالي فحسب بل على '
+        'المستوى السياسي أيضاً.',
+    button3: 'تصفح المعرض',
+    heading1: 'عنوان',
+    column1:
+        'تذكر دائماً أن الحاسوب لا يمتلك ذكاءً، ولكنه يكتسب الذكاء الاصطناعي '
+        'من خلال ثلاثة عناصر وظيفية رئيسة، هي: القدرة على التحليل، والقدرة '
+        'على التأليف، والاستدلال المنطقي.',
+    heading2: 'عنوان آخر',
+    column2:
+        'إذا أردنا استخدام الحاسوب الذكي في معالجة اللغة العربية فإننا نجد '
+        'أنفسنا أمام تحدٍّ كبير، خاصة وأن لغتنا تمتاز بتماسك منظوماتها '
+        'وتداخلها، ومع ذلك فإن الذكاء الاصطناعي يمكّننا من الحصول على أربعة '
+        'أنواع من المعالجة، هي: المعالجة الصوتية، والمعالجة الصرفية، '
+        'والمعالجة النحوية، والمعالجة الدلالية.',
+    heading3: 'عنوان ثالث لتأكيد المعلومة',
+    column3:
+        'بفضل بحوث الذكاء الاصطناعي وتقنياته استطعنا الانتقال من مرحلة '
+        'التعامل مع الفيزيائي إلى مرحلة التعامل مع المنطقي، وقد انعكس هذا '
+        'الانتقال بصورة إيجابية على الكيفية التي تتعامل بها الشعوب مع لغاتها '
+        'الحيَّة، وهذا يعني أنه يجب أن ينعكس بصورة إيجابية على كيفية تعاملنا '
+        'مع لغتنا العربية.',
+    details: 'عرض التفاصيل',
+    featurette1: 'العنوان الأول المميز. ',
+    muted1: 'سيذهل عقلك.',
+    lead1:
+        'وجه الإنسان هو جزء معقَّد ومتميِّز للغاية من جسمه. وفي الواقع، إنه '
+        'أحد أكثر أنظمة الإشارات المتاحة تعقيداً لدينا؛ فهو يتضمَّن أكثر من '
+        '40 عضلة مستقلة هيكلياً ووظيفياً، بحيث يمكن تشغيل كل منها بشكل مستقل '
+        'عن البعض الآخر؛ وتشكِّل أحد أقوى مؤشرات العواطف.',
+    featurette2: 'أوه نعم، هذا جيد. ',
+    muted2: 'شاهد بنفسك.',
+    lead2:
+        'عندما نضحك أو نبكي، فإننا نعرض عواطفنا، مما يسمح للآخرين بإلقاء نظرة '
+        'خاطفة على أذهاننا أثناء "قراءة" وجوهنا بناءً على التغييرات في '
+        'مكوّنات الوجه الرئيسة، مثل: العينين والحاجبين والجفنين والأنف '
+        'والشفتين.',
+    featurette3: 'وأخيرًا، هذا. ',
+    muted3: 'كش ملك.',
+    lead3:
+        'إن جميع العضلات في أجسامنا مدعمة بالأعصاب المتصلة من كافة أنحاء '
+        'الجسم بالنخاع الشوكي والدماغ. وهذا الاتصال العصبي هو ثنائي الاتجاه، '
+        'أي إن العصب يتسبَّب في تقلصات العضلات بناءً على إشارات الدماغ، ويقوم '
+        'في الوقت نفسه بإرسال معلومات عن حالة العضلات إلى الدماغ',
+    backToTop: 'عد إلى الأعلى',
+    privacy: 'سياسة الخصوصية',
+    terms: 'شروط الاستخدام',
+  );
 }

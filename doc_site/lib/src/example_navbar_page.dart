@@ -83,22 +83,25 @@ class NavbarExampleBody extends StatelessWidget {
 /// `<form class="d-flex"><input class="form-control me-2" type="search"> <button
 /// class="btn btn-outline-success">Search</button></form>`.
 class NavbarSearchForm extends StatelessWidget {
-  const NavbarSearchForm({super.key, this.fill = false});
+  const NavbarSearchForm({super.key, this.fill = false, this.label = 'Search'});
 
   /// A form as wide as its container (the input takes what the button leaves),
   /// not the input's own width.
   final bool fill;
 
+  /// The input's placeholder and the button's text.
+  final String label;
+
   @override
   Widget build(BuildContext context) {
-    const input = BsFormControl(placeholder: 'Search');
+    final input = BsFormControl(placeholder: label);
     return BsFlex(
       inline: !fill,
       children: [
         BsFlexItem(
           me: BsSpacing.s2,
           flexGrow: fill,
-          child: fill ? input : const SizedBox(width: 193, child: input),
+          child: fill ? input : SizedBox(width: 193, child: input),
         ),
         BsFlexItem(
           flexShrink: false,
@@ -106,7 +109,7 @@ class NavbarSearchForm extends StatelessWidget {
             variant: BsVariant.success,
             outline: true,
             onPressed: () {},
-            child: const Text('Search'),
+            child: Text(label),
           ),
         ),
       ],
@@ -151,10 +154,14 @@ class NavbarExampleBar extends StatelessWidget {
 }
 
 /// The nav links the examples share: Home (active), Link, Disabled.
-List<BsNavbarItem> navbarExampleItems() => [
-  BsNavbarItem(child: const Text('Home'), active: true, onTap: () {}),
-  BsNavbarItem(child: const Text('Link'), onTap: () {}),
-  const BsNavbarItem(child: Text('Disabled'), disabled: true),
+List<BsNavbarItem> navbarExampleItems({
+  String home = 'Home',
+  String link = 'Link',
+  String disabled = 'Disabled',
+}) => [
+  BsNavbarItem(child: Text(home), active: true, onTap: () {}),
+  BsNavbarItem(child: Text(link), onTap: () {}),
+  BsNavbarItem(child: Text(disabled), disabled: true),
 ];
 
 /// `<li class="nav-item dropdown">` (or `dropup`): a `.nav-link.dropdown-toggle`
