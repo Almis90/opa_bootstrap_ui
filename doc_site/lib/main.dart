@@ -40,6 +40,7 @@ import 'pages/examples/heroes_example_page.dart';
 import 'pages/examples/jumbotron_example_page.dart';
 import 'pages/examples/jumbotrons_example_page.dart';
 import 'pages/examples/list_groups_example_page.dart';
+import 'pages/examples/masonry_example_page.dart';
 import 'pages/getting_started/introduction_page.dart';
 import 'pages/layout/breakpoints_page.dart';
 import 'pages/layout/containers_page.dart';
@@ -180,5 +181,10 @@ final _examples = [
     title: 'List groups',
     description: 'Custom list groups: linked rows with avatars, check and radio rows, checkable cards, and a radio grid.',
     builder: (_) => const ListGroupsExamplePage(),
+  ),
+  ExampleEntry(
+    title: 'Masonry',
+    description: 'Cards packed into the shortest column with a masonry layout inside the Bootstrap grid.',
+    builder: (_) => const MasonryExamplePage(),
   ),
 ];

@@ -164,7 +164,6 @@ BsCard(
 )''',
           preview: SizedBox(
             width: 320,
-            height: 180,
             child: BsCard(
               child: Stack(
                 children: [

@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/widgets.dart';
 
 import 'bs_breakpoint.dart';
@@ -75,11 +77,21 @@ class BsCard extends StatelessWidget {
       bottomEnd: _groupEndJoin ? Radius.zero : radius,
     );
 
+    final innerRadius = Radius.circular(
+      math.max(0, borderRadius - borderWidth),
+    );
+    final innerClipRadius = BorderRadiusDirectional.only(
+      topStart: _groupStartJoin ? Radius.zero : innerRadius,
+      bottomStart: _groupStartJoin ? Radius.zero : innerRadius,
+      topEnd: _groupEndJoin ? Radius.zero : innerRadius,
+      bottomEnd: _groupEndJoin ? Radius.zero : innerRadius,
+    );
+
     return _BsCardScope(
       style: style,
       groupStartJoin: _groupStartJoin,
       groupEndJoin: _groupEndJoin,
-      child: BsDecoratedBox(
+      child: BsDecoratedContainer(
         decoration: BoxDecoration(
           color: background,
           border: BorderDirectional(
@@ -107,8 +119,10 @@ class BsCard extends StatelessWidget {
           borderRadius: (_groupStartJoin && _groupEndJoin) ? null : outerBorderRadius,
           boxShadow: style.boxShadow,
         ),
+        // (Clipped to the padding box — inside the border — so a header's or
+        // image's corners follow the inner radius.)
         child: ClipRRect(
-          borderRadius: outerBorderRadius,
+          borderRadius: innerClipRadius,
           child: DefaultTextStyle.merge(
             style: TextStyle(color: style.color),
             child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [child]),
@@ -162,7 +176,7 @@ class BsCardHeader extends StatelessWidget {
     final innerRadius = style.innerBorderRadius ?? BsCardStyle.defaultInnerBorderRadius;
     final radius = Radius.circular(innerRadius);
 
-    return BsDecoratedBox(
+    return BsDecoratedContainer(
       decoration: BoxDecoration(
         color: style.capBackground ?? BsCardStyle.defaultCapBackground,
         borderRadius: BorderRadiusDirectional.only(
@@ -198,7 +212,7 @@ class BsCardFooter extends StatelessWidget {
     final innerRadius = style.innerBorderRadius ?? BsCardStyle.defaultInnerBorderRadius;
     final radius = Radius.circular(innerRadius);
 
-    return BsDecoratedBox(
+    return BsDecoratedContainer(
       decoration: BoxDecoration(
         color: style.capBackground ?? BsCardStyle.defaultCapBackground,
         borderRadius: BorderRadiusDirectional.only(

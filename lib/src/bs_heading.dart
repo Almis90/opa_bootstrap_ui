@@ -1,9 +1,11 @@
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
 import 'bs_box.dart';
 import 'bs_breakpoint.dart';
 import 'bs_color_utils.dart';
 import 'bs_css_line_height.dart';
+import 'bs_flex.dart';
 import 'bs_spacing.dart';
 import 'bs_colors.dart';
 import 'bs_theme.dart';
@@ -232,10 +234,9 @@ class BsBlockquote extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Reboot: `blockquote { margin: 0 0 1rem }`.
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        vertical: BsTypography.blockquoteMarginY,
-      ),
+      padding: const EdgeInsets.only(bottom: BsTypography.blockquoteMarginY),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -255,21 +256,112 @@ class BsBlockquote extends StatelessWidget {
 /// [BsBlockquote], prefixed with an em dash like Bootstrap's
 /// `::before { content: "\2014\00A0"; }`.
 class BsBlockquoteFooter extends StatelessWidget {
-  const BsBlockquoteFooter({super.key, required this.child});
+  const BsBlockquoteFooter({
+    super.key,
+    required this.child,
+    this.color,
+    this.standalone = false,
+  });
 
   final Widget child;
 
+  /// A text color in place of `$blockquote-footer-color` (`text-white`,
+  /// `text-body-secondary` on the `figcaption`).
+  final Color? color;
+
+  /// A `<figcaption class="blockquote-footer">` after a `<blockquote>`, rather
+  /// than inside it: its `margin-top: -1rem` pulls it up over the blockquote's
+  /// `1rem` bottom margin, and it is placed by the surrounding `text-*`.
+  final bool standalone;
+
+  /// `::before { content: "— " }`, flowing into the text when it is a [Text]
+  /// (so a long attribution wraps as one run), or beside it otherwise.
+  static Widget _withDash(Widget child) {
+    if (child is Text) {
+      final span = child.textSpan ?? TextSpan(text: child.data);
+      return Text.rich(
+        TextSpan(text: '—\u00A0', children: [span]),
+        style: child.style,
+        textAlign: child.textAlign,
+        softWrap: child.softWrap,
+        maxLines: child.maxLines,
+        overflow: child.overflow,
+      );
+    }
+    return BsFlex(
+      inline: true,
+      alignItems: BsAlign.start,
+      children: [const Text('—\u00A0'), child],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return DefaultTextStyle.merge(
-      style: const TextStyle(
+    Widget footer = DefaultTextStyle.merge(
+      style: TextStyle(
         fontSize: BsTypography.blockquoteFooterFontSize,
-        color: BsTypography.blockquoteFooterColor,
+        color: color ?? BsTypography.blockquoteFooterColor,
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [const Text('— '), child],
-      ),
+      child: _withDash(child),
     );
+    if (standalone) {
+      footer = _PullUp(
+        amount: BsTypography.blockquoteMarginY,
+        child: BsBox(inlineBlock: true, child: footer),
+      );
+    }
+    return footer;
+  }
+}
+
+/// A negative top margin: [child] sits [amount] higher and takes that much less
+/// room.
+class _PullUp extends SingleChildRenderObjectWidget {
+  const _PullUp({required this.amount, required super.child});
+
+  final double amount;
+
+  @override
+  RenderObject createRenderObject(BuildContext context) =>
+      _RenderPullUp(amount);
+
+  @override
+  void updateRenderObject(BuildContext context, _RenderPullUp renderObject) {
+    renderObject.amount = amount;
+  }
+}
+
+class _RenderPullUp extends RenderShiftedBox {
+  _RenderPullUp(this._amount) : super(null);
+
+  double _amount;
+  set amount(double v) {
+    if (v != _amount) {
+      _amount = v;
+      markNeedsLayout();
+    }
+  }
+
+  Size _size(Size childSize) =>
+      Size(childSize.width, childSize.height - _amount);
+
+  @override
+  Size computeDryLayout(BoxConstraints constraints) {
+    final child = this.child;
+    return child == null
+        ? constraints.smallest
+        : constraints.constrain(_size(child.getDryLayout(constraints)));
+  }
+
+  @override
+  void performLayout() {
+    final child = this.child;
+    if (child == null) {
+      size = constraints.smallest;
+      return;
+    }
+    child.layout(constraints, parentUsesSize: true);
+    size = constraints.constrain(_size(child.size));
+    (child.parentData! as BoxParentData).offset = Offset(0, -_amount);
   }
 }

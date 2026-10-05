@@ -178,4 +178,25 @@ void main() {
     );
     expect(r(tester, 'a').left, 150);
   });
+
+  testWidgets('masonry puts each column in the shortest stack', (tester) async {
+    await pump(
+      tester,
+      BsRow(
+        masonry: true,
+        g: BsSpacing.s0,
+        children: [
+          BsFlexItem(col: const BsCol(6), child: box('a', h: 100)),
+          BsFlexItem(col: const BsCol(6), child: box('b', h: 40)),
+          BsFlexItem(col: const BsCol(6), child: box('c', h: 30)),
+          BsFlexItem(col: const BsCol(6), child: box('d', h: 30)),
+        ],
+      ),
+    );
+    // a and b open the two stacks; c goes under b (the shorter), d under c.
+    expect(r(tester, 'a').topLeft, const Offset(0, 0));
+    expect(r(tester, 'b').topLeft, const Offset(200, 0));
+    expect(r(tester, 'c').topLeft, const Offset(200, 40));
+    expect(r(tester, 'd').topLeft, const Offset(200, 70));
+  });
 }

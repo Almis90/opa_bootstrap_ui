@@ -139,6 +139,7 @@ class BsFlex extends StatelessWidget {
     this.direction,
   }) : _gutterX = 0,
        _gutterY = 0,
+       _masonry = false,
        _row = false;
 
   /// A `.row`'s flex: items are `width: 100%` (unless a `col-*` says
@@ -151,8 +152,10 @@ class BsFlex extends StatelessWidget {
     this.justifyContent,
     this.alignItems,
     this.direction,
+    bool masonry = false,
   }) : _gutterX = gutterX,
        _gutterY = gutterY,
+       _masonry = masonry,
        _row = true,
        wrap = true,
        inline = false,
@@ -163,6 +166,7 @@ class BsFlex extends StatelessWidget {
   final double _gutterX;
   final double _gutterY;
   final bool _row;
+  final bool _masonry;
 
   /// `flex-wrap` (the default, `flex-nowrap`, shrinks items instead).
   final bool wrap;
@@ -196,6 +200,7 @@ class BsFlex extends StatelessWidget {
       gutterX: _gutterX,
       gutterY: _gutterY,
       row: _row,
+      masonry: _masonry,
       breakpoint: breakpoint,
       textDirection: Directionality.of(context),
       children: children,
@@ -339,6 +344,7 @@ class _BsFlexRenderObjectWidget extends MultiChildRenderObjectWidget {
     required this.gutterX,
     required this.gutterY,
     required this.row,
+    required this.masonry,
     required this.breakpoint,
     required this.textDirection,
   });
@@ -347,6 +353,7 @@ class _BsFlexRenderObjectWidget extends MultiChildRenderObjectWidget {
   final double gutterX;
   final double gutterY;
   final bool row;
+  final bool masonry;
   final bool wrap;
   final bool inline;
   final BsJustify justify;
@@ -366,6 +373,7 @@ class _BsFlexRenderObjectWidget extends MultiChildRenderObjectWidget {
     gutterX: gutterX,
     gutterY: gutterY,
     row: row,
+    masonry: masonry,
     breakpoint: breakpoint,
     textDirection: textDirection,
   );
@@ -382,6 +390,7 @@ class _BsFlexRenderObjectWidget extends MultiChildRenderObjectWidget {
       ..gutterX = gutterX
       ..gutterY = gutterY
       ..row = row
+      ..masonry = masonry
       ..breakpoint = breakpoint
       ..textDirection = textDirection;
   }
@@ -435,9 +444,11 @@ class _RenderBsFlex extends RenderBox
     required double gutterX,
     required double gutterY,
     required bool row,
+    required bool masonry,
     required BsBreakpoint breakpoint,
     required TextDirection textDirection,
   }) : _direction = direction,
+       _masonry = masonry,
        _gutterX = gutterX,
        _gutterY = gutterY,
        _row = row,
@@ -473,6 +484,15 @@ class _RenderBsFlex extends RenderBox
       return;
     }
     _gutterY = v;
+    markNeedsLayout();
+  }
+
+  bool _masonry;
+  set masonry(bool v) {
+    if (v == _masonry) {
+      return;
+    }
+    _masonry = v;
     markNeedsLayout();
   }
 
@@ -664,6 +684,9 @@ class _RenderBsFlex extends RenderBox
   /// Lays the items out with flexbox's rules. With [dry] no child is laid out
   /// for real and nothing is positioned; otherwise each child gets its offset.
   Size _computeLayout(BoxConstraints constraints, {required bool dry}) {
+    if (_masonry) {
+      return _computeMasonry(constraints, dry: dry);
+    }
     if (_direction.isColumn) {
       return _computeColumn(constraints, dry: dry);
     }
@@ -913,6 +936,67 @@ class _RenderBsFlex extends RenderBox
     return size;
   }
 
+  /// Masonry's layout (`data-masonry='{"percentPosition": true}'` on a `.row`):
+  /// the first item's width is the column width, the row holds as many such
+  /// columns as fit, and each item goes — in order — into the column (or
+  /// run of columns) whose bottom is highest.
+  Size _computeMasonry(BoxConstraints constraints, {required bool dry}) {
+    final bounded = constraints.hasBoundedWidth;
+    final maxW = bounded ? constraints.maxWidth : 0.0;
+    final items = _resolveItems(maxW);
+    if (items.isEmpty) {
+      return constraints.constrain(Size(maxW, 0));
+    }
+    for (final item in items) {
+      final basis = (item.fraction ?? 1) * maxW;
+      final size = _measure(item, BoxConstraints.tightFor(width: basis), dry);
+      item.width = size.width;
+      item.height = size.height;
+    }
+    final columnWidth = items.first.outerWidth;
+    var columns = columnWidth > 0 ? maxW / columnWidth : 1.0;
+    // Masonry rounds instead of flooring when the last column is nearly whole.
+    final excess = columnWidth - maxW % columnWidth;
+    columns = (excess > 0 && excess < 1
+        ? columns.roundToDouble()
+        : columns.floorToDouble());
+    final count = math.max(1, columns.toInt());
+    final colY = List<double>.filled(count, 0);
+    for (final item in items) {
+      final span = math.min(
+        count,
+        math.max(1, (item.outerWidth / columnWidth - 0.01).ceil()),
+      );
+      var bestCol = 0;
+      var bestY = double.infinity;
+      for (var c = 0; c <= count - span; c++) {
+        var top = 0.0;
+        for (var k = c; k < c + span; k++) {
+          top = math.max(top, colY[k]);
+        }
+        if (top < bestY - 0.0001) {
+          bestY = top;
+          bestCol = c;
+        }
+      }
+      final outerHeight = item.mt + item.height + item.mb;
+      for (var k = bestCol; k < bestCol + span; k++) {
+        colY[k] = bestY + outerHeight;
+      }
+      if (!dry) {
+        final logicalLeft = bestCol * columnWidth + item.ms;
+        final left = _textDirection == TextDirection.rtl
+            ? maxW - logicalLeft - item.width
+            : logicalLeft;
+        (item.child.parentData! as _BsFlexParentData).offset = Offset(
+          left + item.padL,
+          bestY + item.mt + item.padT,
+        );
+      }
+    }
+    return constraints.constrain(Size(maxW, colY.reduce(math.max)));
+  }
+
   /// `flex-column` (and a `d-grid`'s single column): items stacked
   /// vertically, stretched to the container's width unless aligned otherwise.
   Size _computeColumn(BoxConstraints constraints, {required bool dry}) {
@@ -1097,9 +1181,15 @@ class BsRow extends StatelessWidget {
     this.border = false,
     this.rounded,
     this.shadow,
+    this.masonry = false,
   });
 
   final List<Widget> children;
+
+  /// `data-masonry='{"percentPosition": true}'`: the columns are packed the
+  /// way the Masonry plugin does — each item into the shortest column — instead
+  /// of in lines.
+  final bool masonry;
 
   /// `g-*`: both gutters. The default is `$grid-gutter-width` (`g-4`, 1.5rem)
   /// horizontally and none vertically.
@@ -1164,6 +1254,7 @@ class BsRow extends StatelessWidget {
           justifyContent: justifyContent,
           alignItems: alignItems,
           direction: direction,
+          masonry: masonry,
           children: children,
         ),
       ),
