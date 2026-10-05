@@ -4,6 +4,7 @@ import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 import '../../src/bootstrap_icon.dart';
 import '../../src/example_icon_link.dart';
 import '../../src/placeholder_image.dart';
+import '../../src/table_columns.dart';
 import 'blog_example_content.dart';
 
 /// The "Blog" example: a port of Bootstrap's own `examples/blog` page — a
@@ -596,42 +597,10 @@ class BlogExamplePage extends StatelessWidget {
               for (final row in rows)
                 BsTableRow(cells: [for (final cell in row) Text(cell)]),
             ],
-            columnWidths: _tableColumns(context, head.first, rows),
+            columnWidths: proportionalTableColumns(context, head.first, rows),
           ),
         );
     }
-  }
-
-  /// `.table { width: 100% }` with `table-layout: auto`: the width left over
-  /// is shared out in proportion to each column's max-content width (its
-  /// widest cell and the `.5rem` of padding on either side).
-  Map<int, TableColumnWidth> _tableColumns(
-    BuildContext context,
-    List<String> head,
-    List<List<String>> rows,
-  ) {
-    final style = DefaultTextStyle.of(context).style;
-    double measure(String text, FontWeight? weight) {
-      final painter = TextPainter(
-        text: TextSpan(
-          text: text,
-          style: style.copyWith(fontWeight: weight),
-        ),
-        textDirection: Directionality.of(context),
-      )..layout();
-      return painter.width;
-    }
-
-    return {
-      for (var i = 0; i < head.length; i++)
-        i: FlexColumnWidth(
-          [
-                measure(head[i], FontWeight.w700),
-                for (final row in rows) measure(row[i], null),
-              ].reduce((a, b) => a > b ? a : b) +
-              16,
-        ),
-    };
   }
 
   /// A `<li>` of a `ul` (a disc) or `ol` (a `1. `): the marker sits outside the
