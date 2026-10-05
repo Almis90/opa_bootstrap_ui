@@ -31,6 +31,17 @@ to master on 2026-09-12 and already in the beta channel, but not in 3.47.5.
 To try it in a Chrome you launch yourself, enable
 `chrome://flags/#enable-experimental-web-platform-features` instead.
 
+## Bundled assets
+
+- `assets/fonts/Roboto-{Light,Regular,Medium,Bold}.ttf`: static instances (Apache
+  2.0) of the latin subset of Google Fonts' variable Roboto — the file Bootstrap's
+  own pages get when they run with `node tool/vendor_examples.mjs --font roboto`.
+  Without them the web engine's fallback Roboto has no real light/medium/bold
+  weights (`fw-bold`, headings, `.lead`), so they are synthesised and come out
+  too light and a few percent narrower.
+- `assets/examples/heroes/*.png`: Bootstrap's own screenshots for the Heroes
+  example (from `vendor/bootstrap/site/src/assets/examples/heroes`).
+
 ## Bootstrap's original examples, locally
 
 To open Bootstrap's own example pages next to the Flutter port, in the same

@@ -70,6 +70,9 @@ class BsImage extends StatelessWidget {
           filterQuality: FilterQuality.medium,
           semanticLabel: alt,
           excludeFromSemantics: alt == null || alt!.isEmpty,
+          // A broken image is an empty box of its size, not an error.
+          errorBuilder: (context, error, stackTrace) =>
+              SizedBox(width: w == null ? null : w - frame),
         );
         // A plain <img width=…> keeps that width even where its container is
         // narrower (it overflows, to be clipped by `overflow-hidden`); and a

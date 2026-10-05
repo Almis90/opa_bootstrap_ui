@@ -157,7 +157,7 @@ const themeToggler = `
 const fontOverride =
   (font === 'roboto'
     ? `
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
     <style>:root, [data-bs-theme] { --bs-body-font-family: Roboto, sans-serif; }</style>`
     : '') +
   (grayscale ? `\n    <style>html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }</style>` : '')
