@@ -19,6 +19,7 @@ import 'package:doc_site/pages/examples/product_example_page.dart';
 import 'package:doc_site/pages/examples/sidebars_example_page.dart';
 import 'package:doc_site/pages/examples/sign_in_example_page.dart';
 import 'package:doc_site/pages/examples/starter_template_example_page.dart';
+import 'package:doc_site/pages/examples/sticky_footer_example_page.dart';
 
 import '../test_utils.dart';
 
@@ -43,6 +44,7 @@ void main() {
       'Sidebars': () => const SidebarsExamplePage(),
       'Sign-in': () => const SignInExamplePage(),
       'Starter template': () => const StarterTemplateExamplePage(),
+      'Sticky footer': () => const StickyFooterExamplePage(),
     }.entries) {
       testWidgets(
         '${entry.key} example lays out without errors at ${width.toInt()}px',
