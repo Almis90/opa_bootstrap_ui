@@ -348,7 +348,7 @@ class BsOffcanvasHeader extends StatelessWidget {
         children: [
           Expanded(
             child: DefaultTextStyle.merge(
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, height: style.titleLineHeight),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500, height: style.titleLineHeight),
               child: child,
             ),
           ),

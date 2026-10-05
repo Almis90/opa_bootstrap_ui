@@ -159,6 +159,7 @@ BsNavbarItem navbarDropdownItem(
   String label, {
   required BsBreakpoint? expandBreakpoint,
   bool up = false,
+  bool divider = false,
 }) {
   return BsNavbarItem(
     onTap: () {},
@@ -199,12 +200,13 @@ BsNavbarItem navbarDropdownItem(
             ),
           ),
           items: [
-            for (final label in const [
-              'Action',
-              'Another action',
-              'Something else here',
-            ])
-              BsDropdownItem(child: Text(label), onTap: () {}),
+            BsDropdownItem(child: const Text('Action'), onTap: () {}),
+            BsDropdownItem(child: const Text('Another action'), onTap: () {}),
+            if (divider) const BsDropdownDivider(),
+            BsDropdownItem(
+              child: const Text('Something else here'),
+              onTap: () {},
+            ),
           ],
         );
       },

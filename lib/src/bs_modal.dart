@@ -339,7 +339,7 @@ class BsModalHeader extends StatelessWidget {
               child: DefaultTextStyle.merge(
                 style: TextStyle(
                   fontSize: 20,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w500,
                   height: style.titleLineHeight ?? BsModalStyle.defaultTitleLineHeight,
                 ),
                 child: child,

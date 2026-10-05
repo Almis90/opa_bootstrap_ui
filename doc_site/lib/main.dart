@@ -46,6 +46,7 @@ import 'pages/examples/navbar_bottom_example_page.dart';
 import 'pages/examples/navbar_fixed_example_page.dart';
 import 'pages/examples/navbar_static_example_page.dart';
 import 'pages/examples/navbars_example_page.dart';
+import 'pages/examples/navbars_offcanvas_example_page.dart';
 import 'pages/getting_started/introduction_page.dart';
 import 'pages/layout/breakpoints_page.dart';
 import 'pages/layout/containers_page.dart';
@@ -218,5 +219,10 @@ final _examples = [
     title: 'Navbars',
     description: 'Thirteen navbars: never, always and per-breakpoint expansion, containers and centred navs.',
     builder: (_) => const NavbarsExamplePage(),
+  ),
+  ExampleEntry(
+    title: 'Navbars offcanvas',
+    description: 'Navbars whose toggler opens an offcanvas menu, one of them responsive.',
+    builder: (_) => const NavbarsOffcanvasExamplePage(),
   ),
 ];

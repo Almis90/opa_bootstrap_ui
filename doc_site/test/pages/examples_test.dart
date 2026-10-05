@@ -12,6 +12,7 @@ import 'package:doc_site/pages/examples/navbar_bottom_example_page.dart';
 import 'package:doc_site/pages/examples/navbar_fixed_example_page.dart';
 import 'package:doc_site/pages/examples/navbar_static_example_page.dart';
 import 'package:doc_site/pages/examples/navbars_example_page.dart';
+import 'package:doc_site/pages/examples/navbars_offcanvas_example_page.dart';
 
 import '../test_utils.dart';
 
@@ -29,6 +30,7 @@ void main() {
       'Navbar fixed': () => const NavbarFixedExamplePage(),
       'Navbar static': () => const NavbarStaticExamplePage(),
       'Navbars': () => const NavbarsExamplePage(),
+      'Navbars offcanvas': () => const NavbarsOffcanvasExamplePage(),
     }.entries) {
       testWidgets('${entry.key} example lays out without errors at ${width.toInt()}px', (tester) async {
         tester.view.physicalSize = Size(width, 900);

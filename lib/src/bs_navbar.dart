@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'bs_breakpoint.dart';
 import 'bs_collapse.dart';
 import 'bs_flex.dart';
+import 'bs_offcanvas.dart';
 import 'bs_focusable.dart';
 import 'bs_spacing.dart';
 import 'tokens/bs_focus_ring.dart';
@@ -63,6 +64,8 @@ class BsNavbar extends StatefulWidget {
     this.background,
     this.expandBreakpoint = BsBreakpoint.lg,
     this.centerItems = false,
+    this.endItems = false,
+    this.offcanvasBuilder,
     this.collapseBuilder,
     this.style,
     this.collapseController,
@@ -100,6 +103,18 @@ class BsNavbar extends StatefulWidget {
   /// `justify-content-md-center` on the `.navbar-collapse`: when expanded the
   /// [items] sit in the middle of the bar rather than after the brand.
   final bool centerItems;
+
+  /// `justify-content-end flex-grow-1 pe-3` on the `.navbar-nav` of an
+  /// offcanvas navbar: expanded, the [items] sit at the end of the bar, a
+  /// `1rem` before the [trailing] widgets.
+  final bool endItems;
+
+  /// An offcanvas navbar (`data-bs-toggle="offcanvas"` on the toggler, the
+  /// links and form inside an `.offcanvas`): below [expandBreakpoint] the
+  /// toggler opens what this builds — typically a [BsOffcanvas] — given the
+  /// rendered nav links, instead of revealing a [BsCollapse].
+  final Widget Function(BuildContext context, List<Widget> links)?
+  offcanvasBuilder;
 
   /// The `.navbar-collapse`'s whole content, for navbars that lay it out in
   /// their own way (a three-column "centered nav"): replaces the default
@@ -223,9 +238,17 @@ class _BsNavbarState extends State<BsNavbar> {
                               ? BsJustify.center
                               : BsJustify.start,
                           children: [
+                            if (widget.endItems)
+                              const BsFlexItem(
+                                ms: BsSpacing.auto,
+                                child: SizedBox.shrink(),
+                              ),
                             ...links,
+                            if (widget.endItems && widget.trailing.isNotEmpty)
+                              const SizedBox(width: 16), // pe-3
                             if (widget.trailing.isNotEmpty &&
-                                !widget.centerItems)
+                                !widget.centerItems &&
+                                !widget.endItems)
                               const BsFlexItem(
                                 ms: BsSpacing.auto,
                                 child: SizedBox.shrink(),
@@ -242,34 +265,45 @@ class _BsNavbarState extends State<BsNavbar> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 BsFlex(
+                  // `.navbar { flex-wrap: wrap }`: a toggler with no room left
+                  // drops to the next line.
+                  wrap: true,
                   alignItems: BsAlign.center,
                   justifyContent: BsJustify.between,
                   children: [
                     ?brand,
                     _BsNavbarToggler(
                       isOpen: _controller.isExpanded,
-                      onTap: _controller.toggle,
+                      onTap: widget.offcanvasBuilder == null
+                          ? _controller.toggle
+                          : () => showBsOffcanvas<void>(
+                              context: context,
+                              placement: BsOffcanvasPlacement.end,
+                              builder: (context) =>
+                                  widget.offcanvasBuilder!(context, rawLinks),
+                            ),
                       style: style,
                     ),
                   ],
                 ),
-                BsCollapse(
-                  controller: _controller,
-                  onShow: widget.onShow,
-                  onShown: widget.onShown,
-                  onHide: widget.onHide,
-                  onHidden: widget.onHidden,
-                  child:
-                      custom ??
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          // `.navbar-nav.mb-2` (the nav's own bottom margin).
-                          ...rawLinks,
-                          ...widget.trailing,
-                        ],
-                      ),
-                ),
+                if (widget.offcanvasBuilder == null)
+                  BsCollapse(
+                    controller: _controller,
+                    onShow: widget.onShow,
+                    onShown: widget.onShown,
+                    onHide: widget.onHide,
+                    onHidden: widget.onHidden,
+                    child:
+                        custom ??
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            // `.navbar-nav.mb-2` (the nav's own bottom margin).
+                            ...rawLinks,
+                            ...widget.trailing,
+                          ],
+                        ),
+                  ),
               ],
             );
           },
