@@ -355,7 +355,7 @@ class _BsCarouselState extends State<BsCarousel> {
                   Positioned(
                     left: 0,
                     right: 0,
-                    bottom: 0,
+                    bottom: style.indicatorMarginBottom ?? BsCarouselStyle.defaultIndicatorMarginBottom,
                     child: _BsCarouselIndicators(
                       count: count,
                       activeIndex: _controller.index,
@@ -466,19 +466,22 @@ class _BsCarouselChevronPainter extends CustomPainter {
 
   final Color color;
 
+  /// `.carousel-control-next-icon`'s chevron: a 1-unit stroke (of 16) with
+  /// round ends, `(5,2)` to `(11,8)` to `(5,14)`.
   @override
   void paint(Canvas canvas, Size size) {
+    final unit = size.width / 16;
     final paint = Paint()
       ..color = color
       ..style = PaintingStyle.stroke
-      ..strokeWidth = size.width * 0.12
+      ..strokeWidth = unit
       ..strokeCap = StrokeCap.round
       ..strokeJoin = StrokeJoin.round;
 
     final path = Path()
-      ..moveTo(size.width * 0.35, size.height * 0.2)
-      ..lineTo(size.width * 0.65, size.height * 0.5)
-      ..lineTo(size.width * 0.35, size.height * 0.8);
+      ..moveTo(5 * unit, 2 * unit)
+      ..lineTo(11 * unit, 8 * unit)
+      ..lineTo(5 * unit, 14 * unit);
 
     canvas.drawPath(path, paint);
   }
@@ -510,7 +513,8 @@ class _BsCarouselIndicators extends StatelessWidget {
       children: [
         for (var i = 0; i < count; i++)
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: spacer / 2),
+            // `margin-right/left: $carousel-indicator-spacer` on each indicator
+            padding: EdgeInsets.symmetric(horizontal: spacer),
             child: _BsCarouselIndicatorDot(active: i == activeIndex, style: style, onTap: () => onTap(i)),
           ),
       ],

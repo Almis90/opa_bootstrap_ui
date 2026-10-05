@@ -7,13 +7,24 @@ class PlaceholderImage extends StatelessWidget {
   const PlaceholderImage({
     super.key,
     required this.height,
-    required this.text,
+    this.text,
+    this.width,
+    this.fontSize = 18,
     this.background = const Color(0xFF868E96),
     this.color = const Color(0xFFDEE2E6),
   });
 
   final double height;
-  final String text;
+
+  /// The line of centred text; none for a plain fill.
+  final String? text;
+
+  /// A fixed width (`width="140"`); the full width available when null.
+  final double? width;
+
+  /// `.bd-placeholder-img { font-size: 1.125rem }` (`3.5rem` for
+  /// `.bd-placeholder-img-lg` from `md`).
+  final double fontSize;
   final Color background;
   final Color color;
 
@@ -21,15 +32,16 @@ class PlaceholderImage extends StatelessWidget {
   Widget build(BuildContext context) {
     final family = DefaultTextStyle.of(context).style;
     return SizedBox(
-      width: double.infinity,
+      width: width ?? double.infinity,
       height: height,
       child: CustomPaint(
         painter: _PlaceholderPainter(
           text: text,
+          fontSize: fontSize,
           background: background,
           style: family.copyWith(
             color: color,
-            fontSize: 18,
+            fontSize: fontSize,
             fontWeight: FontWeight.w400,
             height: null,
           ),
@@ -42,17 +54,21 @@ class PlaceholderImage extends StatelessWidget {
 class _PlaceholderPainter extends CustomPainter {
   _PlaceholderPainter({
     required this.text,
+    required this.fontSize,
     required this.background,
     required this.style,
   });
 
-  final String text;
+  final String? text;
+  final double fontSize;
   final Color background;
   final TextStyle style;
 
   @override
   void paint(Canvas canvas, Size size) {
     canvas.drawRect(Offset.zero & size, Paint()..color = background);
+    final text = this.text;
+    if (text == null) return;
     final painter = TextPainter(
       text: TextSpan(text: text, style: style),
       textDirection: TextDirection.ltr,
@@ -61,7 +77,7 @@ class _PlaceholderPainter extends CustomPainter {
       TextBaseline.alphabetic,
     );
     // dy=".3em": the baseline sits .3em below the vertical middle.
-    final y = size.height / 2 + 0.3 * 18;
+    final y = size.height / 2 + 0.3 * fontSize;
     painter.paint(
       canvas,
       Offset((size.width - painter.width) / 2, y - baseline),
@@ -71,6 +87,7 @@ class _PlaceholderPainter extends CustomPainter {
   @override
   bool shouldRepaint(_PlaceholderPainter oldDelegate) =>
       oldDelegate.text != text ||
+      oldDelegate.fontSize != fontSize ||
       oldDelegate.background != background ||
       oldDelegate.style != style;
 }

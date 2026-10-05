@@ -1,16 +1,18 @@
 import 'package:flutter/widgets.dart';
 
 /// A `<p class="float-end mb-1">` [floatText] (a link) and the paragraph that
-/// follows it, [text]: the paragraph's lines wrap around the float — while
-/// they are level with it (its line, `24px`, and the `mb-1` under it) they are
-/// as much narrower as it is wide — and run full width below.
+/// follows it, [text] (or [span], for text with links in it): the paragraph's
+/// lines wrap around the float — while they are level with it (its line, and
+/// the `mb-1` under it) they are as much narrower as it is wide — and run full
+/// width below.
 ///
 /// [floatStyle] and [textStyle] are merged over the ambient text style.
 class FloatEndText extends StatelessWidget {
   const FloatEndText({
     super.key,
     required this.floatText,
-    required this.text,
+    this.text = '',
+    this.span,
     this.floatStyle,
     this.textStyle,
     this.floatMarginBottom = 4,
@@ -18,7 +20,10 @@ class FloatEndText extends StatelessWidget {
   });
 
   final String floatText;
+
+  /// The paragraph's text — or [span].
   final String text;
+  final InlineSpan? span;
   final TextStyle? floatStyle;
   final TextStyle? textStyle;
 
@@ -34,6 +39,8 @@ class FloatEndText extends StatelessWidget {
     final base = DefaultTextStyle.of(context).style;
     final floatStyle = base.merge(this.floatStyle);
     final textStyle = base.merge(this.textStyle);
+    final content = span ?? TextSpan(text: text);
+    final plain = content.toPlainText();
     return LayoutBuilder(
       builder: (context, constraints) {
         final width = constraints.maxWidth;
@@ -48,27 +55,26 @@ class FloatEndText extends StatelessWidget {
 
         // The lines that start above the float's bottom edge are beside it.
         final narrow = TextPainter(
-          text: TextSpan(text: text, style: textStyle),
+          text: TextSpan(style: textStyle, children: [content]),
           textDirection: direction,
         )..layout(maxWidth: width - floatWidth);
-        final lines = narrow.computeLineMetrics();
         var beside = 0;
         var top = 0.0;
-        for (final line in lines) {
+        for (final line in narrow.computeLineMetrics()) {
           if (top < floatBottom) beside++;
           top += line.height;
         }
         var split = 0;
-        for (var i = 0; i < beside && split < text.length; i++) {
+        for (var i = 0; i < beside && split < plain.length; i++) {
           var boundary = narrow.getLineBoundary(TextPosition(offset: split));
           // (an offset on the break may still report the line above it)
-          if (boundary.end <= split && split + 1 < text.length) {
+          if (boundary.end <= split && split + 1 < plain.length) {
             boundary = narrow.getLineBoundary(TextPosition(offset: split + 1));
           }
           split = boundary.end;
         }
-        final first = text.substring(0, split).trimRight();
-        final rest = text.substring(split).trimLeft();
+        final first = _slice(content, 0, split);
+        final rest = _slice(content, split, plain.length);
 
         return Stack(
           children: [
@@ -79,9 +85,11 @@ class FloatEndText extends StatelessWidget {
                 children: [
                   Padding(
                     padding: EdgeInsetsDirectional.only(end: floatWidth),
-                    child: Text(first, style: textStyle),
+                    child: first == null
+                        ? const SizedBox.shrink()
+                        : Text.rich(first, style: textStyle),
                   ),
-                  if (rest.isNotEmpty) Text(rest, style: textStyle),
+                  if (rest != null) Text.rich(rest, style: textStyle),
                 ],
               ),
             ),
@@ -94,5 +102,79 @@ class FloatEndText extends StatelessWidget {
         );
       },
     );
+  }
+
+  /// The part of [span] between the plain-text offsets [start] and [end], with
+  /// its styles; the leading spaces of a continuation are dropped. Null when
+  /// that is empty.
+  static TextSpan? _slice(InlineSpan span, int start, int end) {
+    var offset = 0;
+    TextSpan? walk(InlineSpan node) {
+      if (node is! TextSpan) {
+        offset += 1; // a placeholder
+        return null;
+      }
+      final children = <InlineSpan>[];
+      String? text;
+      final own = node.text;
+      if (own != null) {
+        final from = offset;
+        offset += own.length;
+        final a = (start - from).clamp(0, own.length);
+        final b = (end - from).clamp(0, own.length);
+        if (b > a) text = own.substring(a, b);
+      }
+      for (final child in node.children ?? const <InlineSpan>[]) {
+        final sliced = walk(child);
+        if (sliced != null) children.add(sliced);
+      }
+      if (text == null && children.isEmpty) return null;
+      return TextSpan(text: text, style: node.style, children: children);
+    }
+
+    final sliced = walk(span);
+    if (sliced == null) return null;
+    final plain = sliced.toPlainText();
+    if (plain.trim().isEmpty) return null;
+    return start == 0 ? _trimEnd(sliced) : _trimStart(sliced);
+  }
+
+  static TextSpan _trimStart(TextSpan span) {
+    var done = false;
+    TextSpan go(TextSpan node) {
+      var text = node.text;
+      if (!done && text != null) {
+        text = text.trimLeft();
+        if (text.isNotEmpty) done = true;
+      }
+      final children = <InlineSpan>[];
+      for (final child in node.children ?? const <InlineSpan>[]) {
+        children.add(child is TextSpan ? go(child) : child);
+      }
+      return TextSpan(text: text, style: node.style, children: children);
+    }
+
+    return go(span);
+  }
+
+  static TextSpan _trimEnd(TextSpan span) {
+    final plain = span.toPlainText();
+    final trimmed = plain.trimRight().length;
+    var offset = 0;
+    TextSpan go(TextSpan node) {
+      var text = node.text;
+      if (text != null) {
+        final keep = (trimmed - offset).clamp(0, text.length);
+        offset += text.length;
+        text = text.substring(0, keep);
+      }
+      final children = <InlineSpan>[];
+      for (final child in node.children ?? const <InlineSpan>[]) {
+        children.add(child is TextSpan ? go(child) : child);
+      }
+      return TextSpan(text: text, style: node.style, children: children);
+    }
+
+    return go(span);
   }
 }

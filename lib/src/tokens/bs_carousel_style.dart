@@ -20,6 +20,7 @@ class BsCarouselStyle {
     this.indicatorHeight,
     this.indicatorHitAreaHeight,
     this.indicatorSpacer,
+    this.indicatorMarginBottom,
     this.indicatorOpacity,
     this.indicatorActiveBackground,
     this.indicatorActiveOpacity,
@@ -61,6 +62,9 @@ class BsCarouselStyle {
   /// `$carousel-indicator-spacer` (`3px`).
   final double? indicatorSpacer;
 
+  /// `.carousel-indicators { margin-bottom: 1rem }`.
+  final double? indicatorMarginBottom;
+
   /// `$carousel-indicator-opacity` (`.5`).
   final double? indicatorOpacity;
 
@@ -101,6 +105,7 @@ class BsCarouselStyle {
       indicatorHeight: other.indicatorHeight ?? indicatorHeight,
       indicatorHitAreaHeight: other.indicatorHitAreaHeight ?? indicatorHitAreaHeight,
       indicatorSpacer: other.indicatorSpacer ?? indicatorSpacer,
+      indicatorMarginBottom: other.indicatorMarginBottom ?? indicatorMarginBottom,
       indicatorOpacity: other.indicatorOpacity ?? indicatorOpacity,
       indicatorActiveBackground: other.indicatorActiveBackground ?? indicatorActiveBackground,
       indicatorActiveOpacity: other.indicatorActiveOpacity ?? indicatorActiveOpacity,
@@ -121,8 +126,9 @@ class BsCarouselStyle {
   static const double defaultControlIconSize = 32;
   static const double defaultIndicatorWidth = 30;
   static const double defaultIndicatorHeight = 3;
-  static const double defaultIndicatorHitAreaHeight = 10;
+  static const double defaultIndicatorHitAreaHeight = 23;
   static const double defaultIndicatorSpacer = 3;
+  static const double defaultIndicatorMarginBottom = 16;
   static const double defaultIndicatorOpacity = 0.5;
   static const Color defaultIndicatorActiveBackground = BsColors.white;
   static const double defaultIndicatorActiveOpacity = 1;
@@ -144,6 +150,7 @@ class BsCarouselStyle {
     indicatorHeight: defaultIndicatorHeight,
     indicatorHitAreaHeight: defaultIndicatorHitAreaHeight,
     indicatorSpacer: defaultIndicatorSpacer,
+    indicatorMarginBottom: defaultIndicatorMarginBottom,
     indicatorOpacity: defaultIndicatorOpacity,
     indicatorActiveBackground: defaultIndicatorActiveBackground,
     indicatorActiveOpacity: defaultIndicatorActiveOpacity,

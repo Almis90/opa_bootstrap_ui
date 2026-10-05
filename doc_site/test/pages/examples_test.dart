@@ -5,6 +5,7 @@ import 'package:doc_site/pages/examples/album_example_page.dart';
 import 'package:doc_site/pages/examples/badges_example_page.dart';
 import 'package:doc_site/pages/examples/breadcrumbs_example_page.dart';
 import 'package:doc_site/pages/examples/buttons_example_page.dart';
+import 'package:doc_site/pages/examples/carousel_example_page.dart';
 import 'package:doc_site/pages/examples/headers_example_page.dart';
 import 'package:doc_site/pages/examples/heroes_example_page.dart';
 import 'package:doc_site/pages/examples/jumbotron_example_page.dart';
@@ -36,6 +37,7 @@ void main() {
       'Badges': () => const BadgesExamplePage(),
       'Breadcrumbs': () => const BreadcrumbsExamplePage(),
       'Buttons': () => const ButtonsExamplePage(),
+      'Carousel': () => const CarouselExamplePage(),
       'Headers': () => const HeadersExamplePage(),
       'Heroes': () => const HeroesExamplePage(),
       'Jumbotron': () => const JumbotronExamplePage(),
