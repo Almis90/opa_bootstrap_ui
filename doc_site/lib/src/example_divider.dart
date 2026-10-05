@@ -6,10 +6,22 @@ import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 /// at .1 and `inset 0 .125em .5em` at .15) separating stacked examples on the
 /// same page — docs-only CSS, not part of Bootstrap itself.
 class ExampleDivider extends StatelessWidget {
-  const ExampleDivider({super.key});
+  const ExampleDivider({super.key}) : vertical = false;
+
+  /// `.b-example-vr`: the same band, `1.5rem` wide and as tall as the row it
+  /// stands in (its top and bottom borders close the band at the row's ends).
+  const ExampleDivider.vertical({super.key}) : vertical = true;
+
+  final bool vertical;
 
   @override
   Widget build(BuildContext context) {
+    if (vertical) {
+      return const SizedBox(
+        width: 24,
+        child: BsDecoratedBox(decoration: _DividerDecoration()),
+      );
+    }
     return const SizedBox(
       height: 48,
       width: double.infinity,

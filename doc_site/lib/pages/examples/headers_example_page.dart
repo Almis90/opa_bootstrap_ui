@@ -3,6 +3,7 @@ import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 
 import '../../src/bootstrap_icon.dart';
 import '../../src/example_divider.dart';
+import '../../src/github_avatar.dart';
 import '../../src/inline_line.dart';
 
 /// The "Headers" example: a port of Bootstrap's own `examples/headers` page.
@@ -788,7 +789,7 @@ class _AvatarToggle extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const _GithubAvatar(),
+        const GithubAvatar(),
         const SizedBox(
           width: BsDropdownCaret.marginStart + HeadersExamplePage._inlineSpace,
         ),
@@ -799,40 +800,6 @@ class _AvatarToggle extends StatelessWidget {
           child: const BsDropdownCaret(),
         ),
       ],
-    );
-  }
-}
-
-/// The same avatar Bootstrap's own dropdown examples use (`github.com/mdo.png`).
-/// That URL redirects to `avatars.githubusercontent.com` without CORS headers
-/// on the redirect, which Flutter web's canvas image loader needs, so the
-/// final URL is used directly.
-class _GithubAvatar extends StatelessWidget {
-  const _GithubAvatar();
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipOval(
-      child: Image.network(
-        'https://avatars.githubusercontent.com/u/98681?v=4',
-        width: 32,
-        height: 32,
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) => Container(
-          width: 32,
-          height: 32,
-          alignment: Alignment.center,
-          color: BsColors.gray400,
-          child: const Text(
-            'M',
-            style: TextStyle(
-              color: BsColors.white,
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
-      ),
     );
   }
 }

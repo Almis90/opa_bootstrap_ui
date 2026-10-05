@@ -1,10 +1,13 @@
 import 'package:flutter/widgets.dart';
 
+import 'bs_box.dart';
 import 'bs_breakpoint.dart';
 import 'bs_flex.dart';
 import 'bs_focusable.dart';
 import 'bs_responsive_value.dart';
+import 'bs_spacing.dart';
 import 'bs_theme.dart';
+import 'tokens/bs_borders.dart';
 import 'tokens/bs_nav_style.dart';
 import 'tokens/bs_transitions.dart';
 import 'bs_decorated_box.dart';
@@ -32,6 +35,10 @@ class BsNavItem {
     this.onTap,
     this.active = false,
     this.disabled = false,
+    this.textColor,
+    this.py,
+    this.rounded,
+    this.borderBottom = false,
   });
 
   final Widget child;
@@ -42,6 +49,20 @@ class BsNavItem {
 
   /// `.disabled`: dims the item and ignores taps.
   final bool disabled;
+
+  /// `text-white`, `link-body-emphasis`…: the link's color in place of the
+  /// nav's, unchanged under the pointer. An [active] item keeps its own.
+  final BsTextColor? textColor;
+
+  /// `py-*`: vertical padding in place of the nav link's `.5rem`.
+  final BsSpacing? py;
+
+  /// `rounded-*` (`rounded-0`): a corner radius in place of the variant's.
+  final BsRounded? rounded;
+
+  /// `border-bottom`: a 1px bottom border (inside the item's box, below its
+  /// padding), in the border color.
+  final bool borderBottom;
 }
 
 /// A Bootstrap nav (`.nav`): a row (or, per [vertical], column) of
@@ -209,14 +230,29 @@ class _BsNavLinkWidget extends StatefulWidget {
 class _BsNavLinkWidgetState extends State<_BsNavLinkWidget> {
   bool _hovered = false;
 
+  EdgeInsetsGeometry _padding(EdgeInsetsGeometry base) {
+    final item = widget.item;
+    if (item.py == null && !item.borderBottom) return base;
+    final resolved = base.resolve(TextDirection.ltr);
+    final vertical = item.py?.size;
+    return EdgeInsets.fromLTRB(
+      resolved.left,
+      vertical ?? resolved.top,
+      resolved.right,
+      (vertical ?? resolved.bottom) + (item.borderBottom ? 1 : 0),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final item = widget.item;
     final style = widget.style;
     final enabled = item.onTap != null && !item.disabled;
-    final radius = widget.variant == BsNavVariant.pills
-        ? style.pillsBorderRadius ?? BsNavStyle.defaultPillsBorderRadius
-        : style.tabsBorderRadius ?? BsNavStyle.defaultTabsBorderRadius;
+    final radius =
+        item.rounded?.radius ??
+        (widget.variant == BsNavVariant.pills
+            ? style.pillsBorderRadius ?? BsNavStyle.defaultPillsBorderRadius
+            : style.tabsBorderRadius ?? BsNavStyle.defaultTabsBorderRadius);
     final borderRadius = BorderRadius.circular(radius);
 
     Color? color;
@@ -226,13 +262,14 @@ class _BsNavLinkWidgetState extends State<_BsNavLinkWidget> {
 
     final restColor = style.linkColor ?? BsNavStyle.defaultLinkColor;
     final hoverColor = style.linkHoverColor ?? restColor;
+    final textColor = item.textColor?.of(context);
 
     if (item.disabled) {
       color = style.linkDisabledColor ?? BsNavStyle.defaultLinkDisabledColor;
     } else {
       switch (widget.variant) {
         case BsNavVariant.plain:
-          color = _hovered ? hoverColor : restColor;
+          color = textColor ?? (_hovered ? hoverColor : restColor);
         case BsNavVariant.tabs:
           final borderColor =
               style.tabsBorderColor ?? BsNavStyle.defaultTabsBorderColor;
@@ -269,7 +306,7 @@ class _BsNavLinkWidgetState extends State<_BsNavLinkWidget> {
                 style.pillsLinkActiveBackground ??
                 BsNavStyle.defaultPillsLinkActiveBackground;
           } else {
-            color = _hovered ? hoverColor : restColor;
+            color = textColor ?? (_hovered ? hoverColor : restColor);
           }
         case BsNavVariant.underline:
           final underlineWidth =
@@ -295,6 +332,10 @@ class _BsNavLinkWidgetState extends State<_BsNavLinkWidget> {
       }
     }
 
+    if (item.borderBottom) {
+      border = Border(bottom: BorderSide(color: BsBorders.colorOf(context)));
+    }
+
     Widget content(bool focused) => BsDecoratedBox(
       decoration: BoxDecoration(
         color: background,
@@ -317,7 +358,7 @@ class _BsNavLinkWidgetState extends State<_BsNavLinkWidget> {
         ],
       ),
       child: Padding(
-        padding: style.linkPadding ?? BsNavStyle.defaultLinkPadding,
+        padding: _padding(style.linkPadding ?? BsNavStyle.defaultLinkPadding),
         child: DefaultTextStyle.merge(
           style: TextStyle(color: color, fontWeight: fontWeight),
           textAlign: widget.expand ? TextAlign.center : null,

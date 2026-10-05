@@ -50,6 +50,7 @@ import 'pages/examples/navbars_offcanvas_example_page.dart';
 import 'pages/examples/offcanvas_navbar_example_page.dart';
 import 'pages/examples/pricing_example_page.dart';
 import 'pages/examples/product_example_page.dart';
+import 'pages/examples/sidebars_example_page.dart';
 import 'pages/getting_started/introduction_page.dart';
 import 'pages/layout/breakpoints_page.dart';
 import 'pages/layout/containers_page.dart';
@@ -244,5 +245,10 @@ final _examples = [
     description: 'A product landing page: a sticky navbar, a hero with rotated devices and rows of panels.',
     builder: (_) => const ProductExamplePage(),
     fixed: ProductExamplePage.fixed,
+  ),
+  ExampleEntry(
+    title: 'Sidebars',
+    description: 'Five sidebars: nav pills, icon-only, collapsible and a list group.',
+    builder: (_) => const SidebarsExamplePage(),
   ),
 ];

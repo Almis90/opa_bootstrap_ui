@@ -1,5 +1,7 @@
 import 'package:flutter/widgets.dart';
 
+import 'bootstrap_icon.dart';
+
 /// An inline-level box sitting in a block's line box, as the original's
 /// `<div class="col-md-3"><a class="d-inline-flex">` or `<svg class="bi">`
 /// does: the line box is the strut's descent taller than the box, so the box
@@ -29,6 +31,61 @@ class InlineLine extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(bottom: below > lowered ? below - lowered : 0),
       child: child,
+    );
+  }
+}
+
+/// `<svg class="bi me-2" width="16" height="16"> Label` in one line of text:
+/// the icon sits on the baseline (hanging [lowered] below it, `.bi`'s
+/// `vertical-align: -.125em`), so it is level with the label's x-height rather
+/// than centred on its line. The line keeps the surrounding block's
+/// [lineHeight].
+class InlineIconLabel extends StatelessWidget {
+  const InlineIconLabel({
+    super.key,
+    required this.icon,
+    required this.label,
+    this.iconWidth = 16,
+    this.iconHeight = 16,
+    this.gap = 8,
+    this.lowered = 2,
+    this.fontSize = 16,
+    this.lineHeight = 24,
+  });
+
+  final BootstrapIconData icon;
+  final Widget label;
+  final double iconWidth;
+  final double iconHeight;
+
+  /// The width of the space between the `<svg>` and the label in the
+  /// markup (Roboto's, at 16px).
+  static const inlineSpace = 3.92;
+
+  /// `me-2`.
+  final double gap;
+  final double lowered;
+  final double fontSize;
+  final double lineHeight;
+
+  @override
+  Widget build(BuildContext context) {
+    final dpr = MediaQuery.devicePixelRatioOf(context);
+    final ascent = (0.9277 * fontSize * dpr).round();
+    final descent = (0.2441 * fontSize * dpr).round();
+    final above = ascent + ((lineHeight * dpr - ascent - descent) / 2).floor();
+    final top = (above - (iconHeight - lowered) * dpr) / dpr;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.only(top: top < 0 ? 0 : top),
+          child: BootstrapIcon(icon, width: iconWidth, height: iconHeight),
+        ),
+        SizedBox(width: gap + inlineSpace),
+        label,
+      ],
     );
   }
 }
