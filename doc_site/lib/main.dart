@@ -41,6 +41,7 @@ import 'pages/examples/breadcrumbs_example_page.dart';
 import 'pages/examples/buttons_example_page.dart';
 import 'pages/examples/carousel_example_page.dart';
 import 'pages/examples/checkout_example_page.dart';
+import 'pages/examples/cover_example_page.dart';
 import 'pages/examples/headers_example_page.dart';
 import 'pages/examples/heroes_example_page.dart';
 import 'pages/examples/jumbotron_example_page.dart';
@@ -223,6 +224,11 @@ final _examples = [
     title: 'Checkout RTL',
     description: 'The checkout form, right to left in Arabic.',
     builder: (_) => const CheckoutExamplePage(rtl: true),
+  ),
+  ExampleEntry(
+    title: 'Cover',
+    description: 'A full-page dark cover with a masthead and a call to action.',
+    builder: (_) => const CoverExamplePage(),
   ),
   ExampleEntry(
     title: 'Headers',
