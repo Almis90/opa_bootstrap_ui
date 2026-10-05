@@ -10,7 +10,11 @@ import '../../src/example_container960.dart';
 /// required fields show their validation state once the form is submitted
 /// (`needs-validation` / `was-validated`), and a footer.
 class CheckoutExamplePage extends StatefulWidget {
-  const CheckoutExamplePage({super.key});
+  const CheckoutExamplePage({super.key, this.rtl = false});
+
+  /// The `checkout-rtl` page: `dir="rtl"`, in Arabic (and `g-3` between the
+  /// cart and the form).
+  final bool rtl;
 
   @override
   State<CheckoutExamplePage> createState() => _CheckoutExamplePageState();
@@ -26,6 +30,8 @@ class _CheckoutExamplePageState extends State<CheckoutExamplePage> {
   bool _sameAddress = false;
   bool _saveInfo = false;
   String _payment = 'credit';
+
+  _Strings get _t => widget.rtl ? _Strings.ar : _Strings.en;
 
   TextEditingController _controller(String name) =>
       _text.putIfAbsent(name, TextEditingController.new);
@@ -48,7 +54,7 @@ class _CheckoutExamplePageState extends State<CheckoutExamplePage> {
 
   @override
   Widget build(BuildContext context) {
-    return ConstrainedBox(
+    final page = ConstrainedBox(
       constraints: BoxConstraints(minHeight: MediaQuery.sizeOf(context).height),
       child: BsBox(
         bg: BsBg.bodyTertiary,
@@ -60,6 +66,10 @@ class _CheckoutExamplePageState extends State<CheckoutExamplePage> {
         ),
       ),
     );
+    // <html dir="rtl">
+    return widget.rtl
+        ? Directionality(textDirection: TextDirection.rtl, child: page)
+        : page;
   }
 
   // --- <main> ---
@@ -74,31 +84,24 @@ class _CheckoutExamplePageState extends State<CheckoutExamplePage> {
           textAlign: BsTextAlign.center,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: const [
-              Align(
+            children: [
+              const Align(
                 alignment: Alignment.topCenter,
                 child: Padding(
                   padding: EdgeInsets.only(bottom: 24),
                   child: BootstrapLogo(),
                 ),
               ),
-              BsHeading(BsHeadingLevel.h2, child: Text('Checkout form')),
+              BsHeading(BsHeadingLevel.h2, child: Text(_t.title)),
               Padding(
-                padding: EdgeInsets.only(bottom: 16),
-                child: BsLead(
-                  child: Text(
-                    'Below is an example form built entirely with Bootstrap’s '
-                    'form controls. Each required form group has a validation '
-                    'state that can be triggered by attempting to submit the '
-                    'form without completing it.',
-                  ),
-                ),
+                padding: const EdgeInsets.only(bottom: 16),
+                child: BsLead(child: Text(_t.lead)),
               ),
             ],
           ),
         ),
         BsRow(
-          g: BsSpacing.s5,
+          g: widget.rtl ? BsSpacing.s3 : BsSpacing.s5,
           direction: const BsResponsiveValue(
             xs: BsFlexDirection.row,
             md: BsFlexDirection.rowReverse,
@@ -189,10 +192,16 @@ class _CheckoutExamplePageState extends State<CheckoutExamplePage> {
             alignItems: BsAlign.center,
             children: [
               DefaultTextStyle.merge(
-                style: TextStyle(color: BsVariant.primary.color),
-                child: const Text('Your cart'),
+                style: TextStyle(
+                  color: widget.rtl ? secondary : BsVariant.primary.color,
+                ),
+                child: Text(_t.cart),
               ),
-              const BsBadge(pill: true, child: Text('3')),
+              BsBadge(
+                variant: widget.rtl ? BsVariant.secondary : BsVariant.primary,
+                pill: true,
+                child: const Text('3'),
+              ),
             ],
           ),
         ),
@@ -200,22 +209,25 @@ class _CheckoutExamplePageState extends State<CheckoutExamplePage> {
           mb: BsSpacing.s3,
           child: BsListGroup(
             items: [
-              item('Product name', 'Brief description', r'$12'),
-              item('Second product', 'Brief description', r'$8'),
-              item('Third item', 'Brief description', r'$5'),
+              item(_t.product1, _t.description, r'$12'),
+              item(_t.product2, _t.description, r'$8'),
+              item(_t.product3, _t.description, r'$5'),
               item(
-                'Promo code',
+                _t.promo,
                 'EXAMPLECODE',
-                '−\$5',
+                widget.rtl ? '-\$5' : '−\$5',
                 color: success,
                 tertiary: true,
               ),
               BsListGroupItem(
                 child: BsFlex(
                   justifyContent: BsJustify.between,
-                  children: const [
-                    Text('Total (USD)'),
-                    Text(r'$20', style: TextStyle(fontWeight: FontWeight.w700)),
+                  children: [
+                    Text(_t.total),
+                    const Text(
+                      r'$20',
+                      style: TextStyle(fontWeight: FontWeight.w700),
+                    ),
                   ],
                 ),
               ),
@@ -232,23 +244,31 @@ class _CheckoutExamplePageState extends State<CheckoutExamplePage> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const Expanded(
+                  Expanded(
                     child: BsFormControl(
-                      placeholder: 'Promo code',
-                      borderRadius: BorderRadius.horizontal(
-                        left: Radius.circular(6),
-                      ),
+                      placeholder: _t.promo,
+                      borderRadius: widget.rtl
+                          ? const BorderRadius.horizontal(
+                              right: Radius.circular(6),
+                            )
+                          : const BorderRadius.horizontal(
+                              left: Radius.circular(6),
+                            ),
                     ),
                   ),
                   BsButton(
                     variant: BsVariant.secondary,
-                    style: const BsButtonStyle(
-                      borderRadius: BorderRadius.horizontal(
-                        right: Radius.circular(6),
-                      ),
+                    style: BsButtonStyle(
+                      borderRadius: widget.rtl
+                          ? const BorderRadius.horizontal(
+                              left: Radius.circular(6),
+                            )
+                          : const BorderRadius.horizontal(
+                              right: Radius.circular(6),
+                            ),
                     ),
                     onPressed: () {},
-                    child: const Text('Redeem'),
+                    child: Text(_t.redeem),
                   ),
                 ],
               ),
@@ -365,7 +385,7 @@ class _CheckoutExamplePageState extends State<CheckoutExamplePage> {
         valid: _validated ? value != null : null,
         items: [BsFormSelectItem(value: option, label: Text(option))],
         value: value,
-        placeholder: const Text('Choose...'),
+        placeholder: Text(_t.choose),
         onChanged: (v) => setState(() => onChanged(v)),
       ),
     );
@@ -394,32 +414,28 @@ class _CheckoutExamplePageState extends State<CheckoutExamplePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const BsHeading(
-          BsHeadingLevel.h4,
-          mb: BsSpacing.s3,
-          child: Text('Billing address'),
-        ),
+        BsHeading(BsHeadingLevel.h4, mb: BsSpacing.s3, child: Text(_t.billing)),
         BsRow(
           g: BsSpacing.s3,
           children: [
             _input(
               'firstName',
-              'First name',
+              _t.firstName,
               col: half,
-              feedback: 'Valid first name is required.',
+              feedback: _t.firstNameFeedback,
             ),
             _input(
               'lastName',
-              'Last name',
+              _t.lastName,
               col: half,
-              feedback: 'Valid last name is required.',
+              feedback: _t.lastNameFeedback,
             ),
             // <div class="input-group has-validation"><span class="input-group-text">@
             _group(
               col: full,
-              label: 'Username',
+              label: _t.username,
               invalid: _invalid('username'),
-              feedback: 'Your username is required.',
+              feedback: _t.usernameFeedback,
               control: BsInputGroup(
                 valid: _validated ? !_invalid('username') : null,
                 children: [
@@ -428,7 +444,7 @@ class _CheckoutExamplePageState extends State<CheckoutExamplePage> {
                     child: BsFormControl(
                       showBorder: false,
                       controller: _controller('username'),
-                      placeholder: 'Username',
+                      placeholder: _t.username,
                       valid: _validated ? !_invalid('username') : null,
                       onChanged: (_) => setState(() {}),
                     ),
@@ -438,43 +454,43 @@ class _CheckoutExamplePageState extends State<CheckoutExamplePage> {
             ),
             _input(
               'email',
-              'Email',
+              _t.email,
               col: full,
-              optional: '(Optional)',
+              optional: _t.optional,
               placeholder: 'you@example.com',
               keyboardType: TextInputType.emailAddress,
             ),
             _input(
               'address',
-              'Address',
+              _t.address,
               col: full,
-              placeholder: '1234 Main St',
-              feedback: 'Please enter your shipping address.',
+              placeholder: _t.addressPlaceholder,
+              feedback: _t.addressFeedback,
             ),
             _input(
               'address2',
-              'Address 2',
+              _t.address2,
               col: full,
-              optional: '(Optional)',
-              placeholder: 'Apartment or suite',
+              optional: _t.optional,
+              placeholder: _t.address2Placeholder,
             ),
             _select(
-              'Country',
-              'United States',
+              _t.country,
+              _t.countryOption,
               col: const BsResponsiveValue<BsCol>(md: BsCol(5)),
               value: _country,
               onChanged: (v) => _country = v,
-              feedback: 'Please select a valid country.',
+              feedback: _t.countryFeedback,
             ),
             _select(
-              'State',
-              'California',
+              _t.state,
+              _t.stateOption,
               col: const BsResponsiveValue<BsCol>(md: BsCol(4)),
               value: _state,
               onChanged: (v) => _state = v,
-              feedback: 'Please provide a valid state.',
+              feedback: _t.stateFeedback,
             ),
-            _input('zip', 'Zip', col: medium3, feedback: 'Zip code required.'),
+            _input('zip', _t.zip, col: medium3, feedback: _t.zipFeedback),
           ],
         ),
         const BsHr(my: BsSpacing.s4),
@@ -483,31 +499,25 @@ class _CheckoutExamplePageState extends State<CheckoutExamplePage> {
             valid: _validated ? true : null,
             value: _sameAddress,
             onChanged: (v) => setState(() => _sameAddress = v),
-            label: const Text(
-              'Shipping address is the same as my billing address',
-            ),
+            label: Text(_t.sameAddress),
           ),
         ),
         BsFormCheck(
           valid: _validated ? true : null,
           value: _saveInfo,
           onChanged: (v) => setState(() => _saveInfo = v),
-          label: const Text('Save this information for next time'),
+          label: Text(_t.saveInfo),
         ),
         const BsHr(my: BsSpacing.s4),
-        const BsHeading(
-          BsHeadingLevel.h4,
-          mb: BsSpacing.s3,
-          child: Text('Payment'),
-        ),
+        BsHeading(BsHeadingLevel.h4, mb: BsSpacing.s3, child: Text(_t.payment)),
         // <div class="my-3"> (its top margin collapses with the heading's)
         BsBox(
           mb: BsSpacing.s3,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              radio('credit', 'Credit card'),
-              radio('debit', 'Debit card'),
+              radio('credit', _t.credit),
+              radio('debit', _t.debit),
               radio('paypal', 'PayPal', last: true),
             ],
           ),
@@ -517,37 +527,33 @@ class _CheckoutExamplePageState extends State<CheckoutExamplePage> {
           children: [
             _input(
               'cc-name',
-              'Name on card',
+              _t.ccName,
               col: medium6,
-              hint: 'Full name as displayed on card',
-              feedback: 'Name on card is required',
+              hint: _t.ccNameHint,
+              feedback: _t.ccNameFeedback,
             ),
             _input(
               'cc-number',
-              'Credit card number',
+              _t.ccNumber,
               col: medium6,
-              feedback: 'Credit card number is required',
+              feedback: _t.ccNumberFeedback,
             ),
             _input(
               'cc-expiration',
-              'Expiration',
+              _t.ccExpiration,
               col: medium3,
-              feedback: 'Expiration date required',
+              feedback: _t.ccExpirationFeedback,
             ),
             _input(
               'cc-cvv',
-              'CVV',
+              _t.ccCvv,
               col: medium3,
-              feedback: 'Security code required',
+              feedback: _t.ccCvvFeedback,
             ),
           ],
         ),
         const BsHr(my: BsSpacing.s4),
-        BsButton(
-          size: BsSize.lg,
-          onPressed: _submit,
-          child: const Text('Continue to checkout'),
-        ),
+        BsButton(size: BsSize.lg, onPressed: _submit, child: Text(_t.submit)),
       ],
     );
   }
@@ -570,7 +576,7 @@ class _CheckoutExamplePageState extends State<CheckoutExamplePage> {
         children: [
           Padding(
             padding: const EdgeInsets.only(bottom: 4),
-            child: Text('© 2017–${DateTime.now().year} Company Name'),
+            child: Text(_t.copyright(DateTime.now().year)),
           ),
           // <ul class="list-inline"> (the items are inline-blocks, with a
           // space between them and a `.5rem` margin after all but the last)
@@ -579,11 +585,202 @@ class _CheckoutExamplePageState extends State<CheckoutExamplePage> {
             child: Wrap(
               alignment: WrapAlignment.center,
               spacing: 8 + 3.92,
-              children: [item('Privacy'), item('Terms'), item('Support')],
+              children: [item(_t.privacy), item(_t.terms), item(_t.support)],
             ),
           ),
         ],
       ),
     );
   }
+}
+
+/// The page's texts: the English original and the `checkout-rtl` Arabic one.
+class _Strings {
+  const _Strings({
+    required this.title,
+    required this.lead,
+    required this.cart,
+    required this.product1,
+    required this.product2,
+    required this.product3,
+    required this.description,
+    required this.promo,
+    required this.total,
+    required this.redeem,
+    required this.billing,
+    required this.firstName,
+    required this.firstNameFeedback,
+    required this.lastName,
+    required this.lastNameFeedback,
+    required this.username,
+    required this.usernameFeedback,
+    required this.email,
+    required this.optional,
+    required this.address,
+    required this.addressPlaceholder,
+    required this.addressFeedback,
+    required this.address2,
+    required this.address2Placeholder,
+    required this.country,
+    required this.countryOption,
+    required this.countryFeedback,
+    required this.state,
+    required this.stateOption,
+    required this.stateFeedback,
+    required this.zip,
+    required this.zipFeedback,
+    required this.choose,
+    required this.sameAddress,
+    required this.saveInfo,
+    required this.payment,
+    required this.credit,
+    required this.debit,
+    required this.ccName,
+    required this.ccNameHint,
+    required this.ccNameFeedback,
+    required this.ccNumber,
+    required this.ccNumberFeedback,
+    required this.ccExpiration,
+    required this.ccExpirationFeedback,
+    required this.ccCvv,
+    required this.ccCvvFeedback,
+    required this.submit,
+    required this.copyright,
+    required this.privacy,
+    required this.terms,
+    required this.support,
+  });
+
+  final String title, lead, cart, product1, product2, product3, description;
+  final String promo, total, redeem, billing;
+  final String firstName, firstNameFeedback, lastName, lastNameFeedback;
+  final String username, usernameFeedback, email, optional;
+  final String address, addressPlaceholder, addressFeedback;
+  final String address2, address2Placeholder;
+  final String country, countryOption, countryFeedback;
+  final String state, stateOption, stateFeedback;
+  final String zip, zipFeedback, choose, sameAddress, saveInfo;
+  final String payment, credit, debit;
+  final String ccName, ccNameHint, ccNameFeedback;
+  final String ccNumber, ccNumberFeedback;
+  final String ccExpiration, ccExpirationFeedback, ccCvv, ccCvvFeedback;
+  final String submit;
+  final String Function(int year) copyright;
+  final String privacy, terms, support;
+
+  static final en = _Strings(
+    title: 'Checkout form',
+    lead:
+        'Below is an example form built entirely with Bootstrap’s form '
+        'controls. Each required form group has a validation state that can be '
+        'triggered by attempting to submit the form without completing it.',
+    cart: 'Your cart',
+    product1: 'Product name',
+    product2: 'Second product',
+    product3: 'Third item',
+    description: 'Brief description',
+    promo: 'Promo code',
+    total: 'Total (USD)',
+    redeem: 'Redeem',
+    billing: 'Billing address',
+    firstName: 'First name',
+    firstNameFeedback: 'Valid first name is required.',
+    lastName: 'Last name',
+    lastNameFeedback: 'Valid last name is required.',
+    username: 'Username',
+    usernameFeedback: 'Your username is required.',
+    email: 'Email',
+    optional: '(Optional)',
+    address: 'Address',
+    addressPlaceholder: '1234 Main St',
+    addressFeedback: 'Please enter your shipping address.',
+    address2: 'Address 2',
+    address2Placeholder: 'Apartment or suite',
+    country: 'Country',
+    countryOption: 'United States',
+    countryFeedback: 'Please select a valid country.',
+    state: 'State',
+    stateOption: 'California',
+    stateFeedback: 'Please provide a valid state.',
+    zip: 'Zip',
+    zipFeedback: 'Zip code required.',
+    choose: 'Choose...',
+    sameAddress: 'Shipping address is the same as my billing address',
+    saveInfo: 'Save this information for next time',
+    payment: 'Payment',
+    credit: 'Credit card',
+    debit: 'Debit card',
+    ccName: 'Name on card',
+    ccNameHint: 'Full name as displayed on card',
+    ccNameFeedback: 'Name on card is required',
+    ccNumber: 'Credit card number',
+    ccNumberFeedback: 'Credit card number is required',
+    ccExpiration: 'Expiration',
+    ccExpirationFeedback: 'Expiration date required',
+    ccCvv: 'CVV',
+    ccCvvFeedback: 'Security code required',
+    submit: 'Continue to checkout',
+    copyright: (year) => '© 2017–$year Company Name',
+    privacy: 'Privacy',
+    terms: 'Terms',
+    support: 'Support',
+  );
+
+  static final ar = _Strings(
+    title: 'نموذج إتمام الشراء',
+    lead:
+        'فيما يلي مثال على نموذج تم إنشاؤه بالكامل باستخدام عناصر تحكم النموذج '
+        'في Bootstrap. لكل مجموعة نماذج مطلوبة حالة تحقق يمكن تشغيلها بمحاولة '
+        'إرسال النموذج دون استكماله.',
+    cart: 'عربة التسوق',
+    product1: 'اسم المنتج',
+    product2: 'المنتج الثاني',
+    product3: 'البند الثالث',
+    description: 'وصف مختصر',
+    promo: 'رمز ترويجي',
+    total: 'مجموع (USD)',
+    redeem: 'تحقق',
+    billing: 'عنوان الفوترة',
+    firstName: 'الاسم الأول',
+    firstNameFeedback: 'يرجى إدخال اسم أول صحيح.',
+    lastName: 'اسم العائلة',
+    lastNameFeedback: 'يرجى إدخال اسم عائلة صحيح.',
+    username: 'اسم المستخدم',
+    usernameFeedback: 'اسم المستخدم الخاص بك مطلوب.',
+    email: 'البريد الإلكتروني',
+    optional: '(اختياري)',
+    address: 'العنوان',
+    addressPlaceholder: '1234 الشارع الأول',
+    addressFeedback: 'يرجى إدخال عنوان الشحن الخاص بك.',
+    address2: 'عنوان 2',
+    address2Placeholder: 'شقة 24',
+    country: 'البلد',
+    countryOption: 'الولايات المتحدة الأمريكية',
+    countryFeedback: 'يرجى اختيار بلد صحيح.',
+    state: 'المنطقة',
+    stateOption: 'كاليفورنيا',
+    stateFeedback: 'يرجى اختيار اسم منطقة صحيح.',
+    zip: 'الرمز البريدي',
+    zipFeedback: 'الرمز البريدي مطلوب.',
+    choose: 'اختر...',
+    sameAddress: 'عنوان الشحن هو نفس عنوان الفوترة الخاص بي',
+    saveInfo: 'احفظ هذه المعلومات في المرة القادمة',
+    payment: 'طريقة الدفع',
+    credit: 'بطاقة ائتمان',
+    debit: 'نقد',
+    ccName: 'الاسم على البطاقة',
+    ccNameHint: 'الاسم الكامل كما هو معروض على البطاقة',
+    ccNameFeedback: 'الاسم على البطاقة مطلوب',
+    ccNumber: 'رقم البطاقة',
+    ccNumberFeedback: 'رقم بطاقة الائتمان مطلوب',
+    ccExpiration: 'تاريخ انتهاء الصلاحية',
+    ccExpirationFeedback: 'تاريخ انتهاء الصلاحية مطلوب',
+    ccCvv: 'الرمز الثلاثي (CVV)',
+    ccCvvFeedback: 'رمز الحماية مطلوب',
+    submit: 'الاستمرار بالدفع',
+    copyright: (year) => '© $year-2017 اسم الشركة',
+    privacy: 'سياسة الخصوصية',
+    terms: 'اتفاقية الاستخدام',
+    support: 'الدعم الفني',
+  );
 }

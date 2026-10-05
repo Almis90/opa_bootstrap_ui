@@ -41,6 +41,7 @@ void main() {
       'Carousel': () => const CarouselExamplePage(),
       'Carousel RTL': () => const CarouselExamplePage(rtl: true),
       'Checkout': () => const CheckoutExamplePage(),
+      'Checkout RTL': () => const CheckoutExamplePage(rtl: true),
       'Headers': () => const HeadersExamplePage(),
       'Heroes': () => const HeroesExamplePage(),
       'Jumbotron': () => const JumbotronExamplePage(),

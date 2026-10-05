@@ -220,6 +220,11 @@ final _examples = [
     builder: (_) => const CheckoutExamplePage(),
   ),
   ExampleEntry(
+    title: 'Checkout RTL',
+    description: 'The checkout form, right to left in Arabic.',
+    builder: (_) => const CheckoutExamplePage(rtl: true),
+  ),
+  ExampleEntry(
     title: 'Headers',
     description: 'Eight header layouts, from a bare brand-and-nav bar to a two-tier icon navigation bar.',
     builder: (_) => const HeadersExamplePage(),
