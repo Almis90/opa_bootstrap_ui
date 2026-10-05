@@ -16,13 +16,24 @@ enum BsNavbarColorScheme { light, dark }
 
 /// A single `.nav-link` within a [BsNavbar].
 class BsNavbarItem {
-  const BsNavbarItem({required this.child, this.onTap, this.active = false, this.disabled = false});
+  const BsNavbarItem({
+    required this.child,
+    this.onTap,
+    this.active = false,
+    this.disabled = false,
+    this.padded = true,
+  });
 
   final Widget child;
   final VoidCallback? onTap;
 
   /// `.active`: highlights this item as the current page.
   final bool active;
+
+  /// Whether the item adds the `.nav-link`'s own padding around [child]. A
+  /// [child] that is a whole `.nav-item` of its own (a `.dropdown` anchoring its
+  /// menu to the item's box) passes false and pads itself.
+  final bool padded;
 
   /// `.disabled`: dims the item and ignores taps.
   final bool disabled;
@@ -114,7 +125,9 @@ class BsNavbar extends StatefulWidget {
 class _BsNavbarState extends State<BsNavbar> {
   BsCollapseController? _ownedController;
 
-  BsCollapseController get _controller => widget.collapseController ?? (_ownedController ??= BsCollapseController());
+  BsCollapseController get _controller =>
+      widget.collapseController ??
+      (_ownedController ??= BsCollapseController());
 
   @override
   void initState() {
@@ -133,7 +146,9 @@ class _BsNavbarState extends State<BsNavbar> {
 
   @override
   Widget build(BuildContext context) {
-    final baseStyle = widget.colorScheme == BsNavbarColorScheme.dark ? BsNavbarStyle.dark : BsNavbarStyle.light;
+    final baseStyle = widget.colorScheme == BsNavbarColorScheme.dark
+        ? BsNavbarStyle.dark
+        : BsNavbarStyle.light;
     final style = baseStyle.merge(widget.style);
 
     return BsDecoratedBox(
@@ -143,14 +158,24 @@ class _BsNavbarState extends State<BsNavbar> {
         child: LayoutBuilder(
           builder: (context, constraints) {
             final expanded =
-                widget.expandBreakpoint != null && constraints.maxWidth >= widget.expandBreakpoint!.minWidth;
+                widget.expandBreakpoint != null &&
+                constraints.maxWidth >= widget.expandBreakpoint!.minWidth;
 
             final brandAndToggler = Row(
               children: [
-                if (widget.brand != null) _BsNavbarBrand(onTap: widget.onBrandTap, style: style, child: widget.brand!),
+                if (widget.brand != null)
+                  _BsNavbarBrand(
+                    onTap: widget.onBrandTap,
+                    style: style,
+                    child: widget.brand!,
+                  ),
                 const Spacer(),
                 if (!expanded)
-                  _BsNavbarToggler(isOpen: _controller.isExpanded, onTap: _controller.toggle, style: style),
+                  _BsNavbarToggler(
+                    isOpen: _controller.isExpanded,
+                    onTap: _controller.toggle,
+                    style: style,
+                  ),
               ],
             );
 
@@ -159,8 +184,13 @@ class _BsNavbarState extends State<BsNavbar> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   if (widget.brand != null)
-                    _BsNavbarBrand(onTap: widget.onBrandTap, style: style, child: widget.brand!),
-                  for (final item in widget.items) _BsNavbarLink(item: item, style: style),
+                    _BsNavbarBrand(
+                      onTap: widget.onBrandTap,
+                      style: style,
+                      child: widget.brand!,
+                    ),
+                  for (final item in widget.items)
+                    _BsNavbarLink(item: item, style: style),
                   const Spacer(),
                   ...widget.trailing,
                 ],
@@ -180,7 +210,8 @@ class _BsNavbarState extends State<BsNavbar> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      for (final item in widget.items) _BsNavbarLink(item: item, style: style),
+                      for (final item in widget.items)
+                        _BsNavbarLink(item: item, style: style),
                       ...widget.trailing,
                     ],
                   ),
@@ -195,7 +226,11 @@ class _BsNavbarState extends State<BsNavbar> {
 }
 
 class _BsNavbarBrand extends StatefulWidget {
-  const _BsNavbarBrand({required this.child, required this.onTap, required this.style});
+  const _BsNavbarBrand({
+    required this.child,
+    required this.onTap,
+    required this.style,
+  });
 
   final Widget child;
   final VoidCallback? onTap;
@@ -227,12 +262,14 @@ class _BsNavbarBrandState extends State<_BsNavbarBrand> {
           // actually applied to the logical end side, not always physical
           // right — Padding.padding is EdgeInsetsGeometry, so this
           // resolves against the ambient Directionality automatically.
-          padding: EdgeInsetsDirectional.only(end: style.brandMarginEnd ?? BsNavbarStyle.defaultBrandMarginEnd),
+          padding: EdgeInsetsDirectional.only(
+            end: style.brandMarginEnd ?? BsNavbarStyle.defaultBrandMarginEnd,
+          ),
           child: DefaultTextStyle.merge(
             style: TextStyle(
               color: color,
-              fontSize: style.brandFontSize ?? BsNavbarStyle.defaultBrandFontSize,
-              fontWeight: FontWeight.bold,
+              fontSize:
+                  style.brandFontSize ?? BsNavbarStyle.defaultBrandFontSize,
             ),
             child: widget.child,
           ),
@@ -280,10 +317,14 @@ class _BsNavbarLinkState extends State<_BsNavbarLink> {
         behavior: HitTestBehavior.opaque,
         onTap: enabled ? item.onTap : null,
         child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: style.navLinkPaddingX ?? BsNavbarStyle.defaultNavLinkPaddingX,
-            vertical: 8,
-          ),
+          padding: item.padded
+              ? EdgeInsets.symmetric(
+                  horizontal:
+                      style.navLinkPaddingX ??
+                      BsNavbarStyle.defaultNavLinkPaddingX,
+                  vertical: 8,
+                )
+              : EdgeInsets.zero,
           child: DefaultTextStyle.merge(
             style: TextStyle(color: color),
             child: item.child,
@@ -295,7 +336,11 @@ class _BsNavbarLinkState extends State<_BsNavbarLink> {
 }
 
 class _BsNavbarToggler extends StatefulWidget {
-  const _BsNavbarToggler({required this.isOpen, required this.onTap, required this.style});
+  const _BsNavbarToggler({
+    required this.isOpen,
+    required this.onTap,
+    required this.style,
+  });
 
   final bool isOpen;
   final VoidCallback onTap;
@@ -306,8 +351,6 @@ class _BsNavbarToggler extends StatefulWidget {
 }
 
 class _BsNavbarTogglerState extends State<_BsNavbarToggler> {
-  bool _hovered = false;
-
   @override
   Widget build(BuildContext context) {
     final style = widget.style;
@@ -315,8 +358,6 @@ class _BsNavbarTogglerState extends State<_BsNavbarToggler> {
 
     return MouseRegion(
       cursor: SystemMouseCursors.click,
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() => _hovered = false),
       child: BsFocusableBuilder(
         builder: (context, focused) => GestureDetector(
           behavior: HitTestBehavior.opaque,
@@ -324,29 +365,39 @@ class _BsNavbarTogglerState extends State<_BsNavbarToggler> {
           child: BsAnimatedContainer(
             duration: BsTransitions.resolve(
               context,
-              style.togglerTransitionDuration ?? BsNavbarStyle.defaultTogglerTransitionDuration,
+              style.togglerTransitionDuration ??
+                  BsNavbarStyle.defaultTogglerTransitionDuration,
             ),
             decoration: BoxDecoration(
               border: Border.all(
-                color: (style.togglerBorderColor ?? BsNavbarStyle.lightTogglerBorderColor).withValues(
-                  alpha: _hovered ? 1 : 0.6,
-                ),
+                color:
+                    style.togglerBorderColor ??
+                    BsNavbarStyle.lightTogglerBorderColor,
               ),
               borderRadius: BorderRadius.circular(
-                style.togglerBorderRadius ?? BsNavbarStyle.defaultTogglerBorderRadius,
+                style.togglerBorderRadius ??
+                    BsNavbarStyle.defaultTogglerBorderRadius,
               ),
               boxShadow: [
                 if (focused)
                   BoxShadow(
                     color: style.togglerFocusRingColor ?? BsFocusRing.color(),
-                    spreadRadius: style.togglerFocusRingWidth ?? BsNavbarStyle.defaultTogglerFocusRingWidth,
+                    spreadRadius:
+                        style.togglerFocusRingWidth ??
+                        BsNavbarStyle.defaultTogglerFocusRingWidth,
                   ),
               ],
             ),
             child: Padding(
-              padding: style.togglerPadding ?? BsNavbarStyle.defaultTogglerPadding,
+              padding:
+                  style.togglerPadding ?? BsNavbarStyle.defaultTogglerPadding,
               child: CustomPaint(
-                size: Size.square(style.togglerFontSize ?? BsNavbarStyle.defaultTogglerFontSize),
+                // `.navbar-toggler-icon`: `1.5em` square.
+                size: Size.square(
+                  1.5 *
+                      (style.togglerFontSize ??
+                          BsNavbarStyle.defaultTogglerFontSize),
+                ),
                 painter: _BsNavbarTogglerIconPainter(iconColor),
               ),
             ),
@@ -362,18 +413,26 @@ class _BsNavbarTogglerIconPainter extends CustomPainter {
 
   final Color color;
 
+  /// The icon's own SVG: `M4 7h22M4 15h22M4 23h22` in a 30-unit viewBox,
+  /// stroked 2 units wide with round caps.
   @override
   void paint(Canvas canvas, Size size) {
+    final unit = size.width / 30;
     final paint = Paint()
       ..color = color
-      ..strokeWidth = size.height * 0.1
-      ..strokeCap = StrokeCap.round;
-    for (final fraction in [0.2, 0.5, 0.8]) {
-      final y = size.height * fraction;
-      canvas.drawLine(Offset(0, y), Offset(size.width, y), paint);
+      ..strokeWidth = 2 * unit
+      ..strokeCap = StrokeCap.round
+      ..style = PaintingStyle.stroke;
+    for (final y in [7.0, 15.0, 23.0]) {
+      canvas.drawLine(
+        Offset(4 * unit, y * unit),
+        Offset(26 * unit, y * unit),
+        paint,
+      );
     }
   }
 
   @override
-  bool shouldRepaint(covariant _BsNavbarTogglerIconPainter oldDelegate) => oldDelegate.color != color;
+  bool shouldRepaint(covariant _BsNavbarTogglerIconPainter oldDelegate) =>
+      oldDelegate.color != color;
 }

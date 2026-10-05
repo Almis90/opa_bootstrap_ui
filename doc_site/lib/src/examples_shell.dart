@@ -172,6 +172,7 @@ class _ExampleDetail extends StatelessWidget {
         child: Stack(
           children: [
             Positioned.fill(child: SingleChildScrollView(child: Builder(builder: entry.builder))),
+            if (entry.fixed != null) Builder(builder: entry.fixed!),
             // `.position-fixed.bottom-0.end-0.mb-3.me-3.bd-mode-toggle`
             Positioned(
               bottom: 16,
