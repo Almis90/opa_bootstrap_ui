@@ -23,6 +23,7 @@ flutter:
   assets:
     # Bootstrap's own screenshots for the Heroes example.
     - assets/examples/heroes/
+    - assets/examples/features/
   fonts:
     # Roboto (Apache 2.0): static Light/Regular/Medium/Bold instances of the
     # latin subset of Google Fonts' variable Roboto — the very file Bootstrap's

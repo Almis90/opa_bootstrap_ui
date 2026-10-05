@@ -44,6 +44,7 @@ import 'pages/examples/checkout_example_page.dart';
 import 'pages/examples/cover_example_page.dart';
 import 'pages/examples/dashboard_example_page.dart';
 import 'pages/examples/dropdowns_example_page.dart';
+import 'pages/examples/features_example_page.dart';
 import 'pages/examples/headers_example_page.dart';
 import 'pages/examples/heroes_example_page.dart';
 import 'pages/examples/jumbotron_example_page.dart';
@@ -248,6 +249,11 @@ final _examples = [
     title: 'Dropdowns',
     description: 'Static dropdown menus in light and dark: lists, filters, icons, calendars and mega menus.',
     builder: (_) => const DropdownsExamplePage(),
+  ),
+  ExampleEntry(
+    title: 'Features',
+    description: 'Feature sections: icon columns, hanging icons, photo cards and an icon grid.',
+    builder: (_) => const FeaturesExamplePage(),
   ),
   ExampleEntry(
     title: 'Headers',
