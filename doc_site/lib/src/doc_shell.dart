@@ -4,6 +4,7 @@ import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 import 'app_section.dart';
 import 'doc_nav.dart';
 import 'doc_sidebar.dart';
+import 'doc_theme_menu.dart';
 import 'example_entry.dart';
 import 'examples_shell.dart';
 
@@ -20,8 +21,6 @@ class DocShell extends StatefulWidget {
     super.key,
     required this.sections,
     required this.examples,
-    required this.brightness,
-    required this.onToggleBrightness,
     required this.themeMode,
     required this.onThemeModeChanged,
   });
@@ -31,16 +30,8 @@ class DocShell extends StatefulWidget {
   /// The Examples tab's gallery.
   final List<ExampleEntry> examples;
 
-  /// The app's current [BsTheme] brightness, mirrored from [BsApp.brightness]
-  /// so the header toggle can show the right icon/label.
-  final Brightness brightness;
-
-  /// Flips [brightness] between light and dark.
-  final VoidCallback onToggleBrightness;
-
-  /// [BsApp.brightness] as set, where null is `auto` — unlike [brightness],
-  /// which is already resolved. An example's own theme dropdown needs the
-  /// difference.
+  /// [BsApp.brightness] as set, where null is `auto` (follow the OS): the
+  /// theme menus show the mode, not the brightness it resolves to.
   final Brightness? themeMode;
   final ValueChanged<Brightness?> onThemeModeChanged;
 
@@ -99,50 +90,54 @@ class _DocShellState extends State<DocShell> {
         return Column(
           children: [
             if (!_exampleDetailOpen)
-              Container(
-                width: double.infinity,
-                color: _headerColor,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 12,
-                ),
-                child: Row(
-                  children: [
-                    if (isMobile && _section == AppSection.docs) ...[
-                      _HamburgerButton(
-                        key: const Key('doc-shell-hamburger'),
-                        onTap: () => _openMobileNav(context),
+              // `<nav class="navbar navbar-expand-md bg-… " data-bs-theme="dark">`
+              BsTheme(
+                brightness: Brightness.dark,
+                child: BsDecoratedBox(
+                  decoration: const BoxDecoration(color: _headerColor),
+                  child: BsContainer.fluid(
+                    child: BsNavbar(
+                      colorScheme: BsNavbarColorScheme.dark,
+                      expandBreakpoint: BsBreakpoint.md,
+                      brand: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // The docs sidebar's own toggle, below `md`.
+                          if (isMobile && _section == AppSection.docs) ...[
+                            _HamburgerButton(
+                              key: const Key('doc-shell-hamburger'),
+                              onTap: () => _openMobileNav(context),
+                            ),
+                            const SizedBox(width: 16),
+                          ],
+                          // The package's logo, at Bootstrap's own 40x32.
+                          Image.asset(
+                            'assets/brand/logo.png',
+                            height: 32,
+                            filterQuality: FilterQuality.high,
+                          ),
+                        ],
                       ),
-                      const SizedBox(width: 16),
-                    ],
-                    // The package's logo, in place of its name.
-                    Image.asset(
-                      'assets/brand/logo.png',
-                      height: 32,
-                      filterQuality: FilterQuality.high,
+                      items: [
+                        BsNavbarItem(
+                          active: _section == AppSection.docs,
+                          onTap: () => _selectSection(AppSection.docs),
+                          child: const Text('Docs'),
+                        ),
+                        BsNavbarItem(
+                          active: _section == AppSection.examples,
+                          onTap: () => _selectSection(AppSection.examples),
+                          child: const Text('Examples'),
+                        ),
+                      ],
+                      trailing: [
+                        DocThemeMenu(
+                          mode: widget.themeMode,
+                          onChanged: widget.onThemeModeChanged,
+                        ),
+                      ],
                     ),
-                    SizedBox(width: isMobile ? 16 : 24),
-                    _SectionTab(
-                      key: const Key('doc-shell-tab-docs'),
-                      label: 'Docs',
-                      selected: _section == AppSection.docs,
-                      onTap: () => _selectSection(AppSection.docs),
-                    ),
-                    const SizedBox(width: 8),
-                    _SectionTab(
-                      key: const Key('doc-shell-tab-examples'),
-                      label: 'Examples',
-                      selected: _section == AppSection.examples,
-                      onTap: () => _selectSection(AppSection.examples),
-                    ),
-                    const Spacer(),
-                    _BrightnessToggle(
-                      key: const Key('doc-shell-brightness-toggle'),
-                      brightness: widget.brightness,
-                      showLabel: !isMobile,
-                      onTap: widget.onToggleBrightness,
-                    ),
-                  ],
+                  ),
                 ),
               ),
             Expanded(
@@ -186,105 +181,6 @@ class _DocShellState extends State<DocShell> {
           ],
         );
       },
-    );
-  }
-}
-
-/// A "Docs"/"Examples" tab in the header, underlined when [selected].
-class _SectionTab extends StatelessWidget {
-  const _SectionTab({
-    super.key,
-    required this.label,
-    required this.selected,
-    required this.onTap,
-  });
-
-  final String label;
-  final bool selected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-          decoration: BoxDecoration(
-            border: Border(
-              bottom: BorderSide(
-                color: selected ? BsColors.white : const Color(0x00FFFFFF),
-                width: 2,
-              ),
-            ),
-          ),
-          child: Text(
-            label,
-            style: TextStyle(
-              color: selected ? BsColors.white : const Color(0xD9FFFFFF),
-              fontSize: 14,
-              fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// A sun/moon toggle in the header that flips the app's [BsTheme]
-/// brightness — Bootstrap's docs site has the same control in its navbar.
-class _BrightnessToggle extends StatelessWidget {
-  const _BrightnessToggle({
-    super.key,
-    required this.brightness,
-    required this.onTap,
-    this.showLabel = true,
-  });
-
-  final Brightness brightness;
-  final VoidCallback onTap;
-
-  /// Hides the "Light"/"Dark" text, leaving just the icon — used on mobile
-  /// where the header has no room to spare.
-  final bool showLabel;
-
-  @override
-  Widget build(BuildContext context) {
-    final isDark = brightness == Brightness.dark;
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-          decoration: BoxDecoration(
-            border: Border.all(color: const Color(0x80FFFFFF)),
-            borderRadius: BorderRadius.circular(BsBorders.radiusPill),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                isDark ? '☀' : '☽',
-                style: const TextStyle(color: BsColors.white, fontSize: 14),
-              ),
-              if (showLabel) ...[
-                const SizedBox(width: 6),
-                Text(
-                  isDark ? 'Light' : 'Dark',
-                  style: const TextStyle(
-                    color: BsColors.white,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ],
-          ),
-        ),
-      ),
     );
   }
 }

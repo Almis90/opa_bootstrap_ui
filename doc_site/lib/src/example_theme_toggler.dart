@@ -11,7 +11,11 @@ import 'bootstrap_icon.dart';
 /// [mode] is Bootstrap's `data-bs-theme`: [Brightness.light],
 /// [Brightness.dark], or null for `auto` (follow the OS).
 class ExampleThemeToggler extends StatelessWidget {
-  const ExampleThemeToggler({super.key, required this.mode, required this.onChanged});
+  const ExampleThemeToggler({
+    super.key,
+    required this.mode,
+    required this.onChanged,
+  });
 
   final Brightness? mode;
   final ValueChanged<Brightness?> onChanged;
@@ -22,7 +26,8 @@ class ExampleThemeToggler extends StatelessWidget {
   static const _violetHover = Color(0xFF6528E0);
   static const _violetActive = Color(0xFF5A23C8);
 
-  static const _modes = <(Brightness?, String, BootstrapIconData)>[
+  /// Light, Dark, Auto: `data-bs-theme-value`, label and icon of each.
+  static const modes = <(Brightness?, String, BootstrapIconData)>[
     (Brightness.light, 'Light', BootstrapIconData.sunFill),
     (Brightness.dark, 'Dark', BootstrapIconData.moonStarsFill),
     (null, 'Auto', BootstrapIconData.circleHalf),
@@ -30,14 +35,14 @@ class ExampleThemeToggler extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final activeIcon = _modes.firstWhere((m) => m.$1 == mode).$3;
+    final activeIcon = modes.firstWhere((m) => m.$1 == mode).$3;
     return BsDropdown(
       // `.dropdown-menu-end`; sitting at the bottom of the viewport, the menu
       // flips above it on its own, as Popper does for the original.
       alignEnd: true,
       style: const BsDropdownStyle(boxShadow: BsShadows.shadow),
       items: [
-        for (final (value, label, icon) in _modes)
+        for (final (value, label, icon) in modes)
           BsDropdownItem(
             active: value == mode,
             onTap: () => onChanged(value),
@@ -46,7 +51,8 @@ class ExampleThemeToggler extends StatelessWidget {
                 Opacity(opacity: 0.5, child: BootstrapIcon(icon)),
                 const SizedBox(width: 8),
                 Expanded(child: Text(label)),
-                if (value == mode) const BootstrapIcon(BootstrapIconData.check2),
+                if (value == mode)
+                  const BootstrapIcon(BootstrapIconData.check2),
               ],
             ),
           ),
@@ -73,7 +79,10 @@ class ExampleThemeToggler extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             // `.my-1` on the icon.
-            Padding(padding: const EdgeInsets.symmetric(vertical: 4), child: BootstrapIcon(activeIcon)),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              child: BootstrapIcon(activeIcon),
+            ),
             // `.dropdown-toggle::after`: margin-left .255em, then a
             // .3em-border triangle (.6em wide, .3em tall).
             const SizedBox(width: BsDropdownCaret.marginStart),

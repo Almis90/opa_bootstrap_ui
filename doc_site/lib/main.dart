@@ -93,9 +93,6 @@ class _DocAppState extends State<DocApp> with WidgetsBindingObserver {
   /// Bootstrap's `data-bs-theme`; null is `auto` (follow the OS).
   Brightness? _themeMode = Brightness.light;
 
-  /// [_themeMode] with `auto` resolved against the OS.
-  Brightness get _brightness => _themeMode ?? WidgetsBinding.instance.platformDispatcher.platformBrightness;
-
   @override
   void initState() {
     super.initState();
@@ -111,12 +108,6 @@ class _DocAppState extends State<DocApp> with WidgetsBindingObserver {
   @override
   void didChangePlatformBrightness() => setState(() {});
 
-  void _toggleBrightness() {
-    setState(() {
-      _themeMode = _brightness == Brightness.light ? Brightness.dark : Brightness.light;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return BsApp(
@@ -125,8 +116,6 @@ class _DocAppState extends State<DocApp> with WidgetsBindingObserver {
       home: DocShell(
         sections: _sections,
         examples: _examples,
-        brightness: _brightness,
-        onToggleBrightness: _toggleBrightness,
         themeMode: _themeMode,
         onThemeModeChanged: (mode) => setState(() => _themeMode = mode),
       ),
@@ -135,7 +124,9 @@ class _DocAppState extends State<DocApp> with WidgetsBindingObserver {
 }
 
 final _sections = [
-  DocNavSection('Getting started', [DocNavPage('Introduction', (_) => const IntroductionPage())]),
+  DocNavSection('Getting started', [
+    DocNavPage('Introduction', (_) => const IntroductionPage()),
+  ]),
   DocNavSection('Layout', [
     DocNavPage('Breakpoints', (_) => const BreakpointsPage()),
     DocNavPage('Containers', (_) => const ContainersPage()),
@@ -202,7 +193,8 @@ final _examples = [
   ),
   ExampleEntry(
     title: 'Blog',
-    description: 'A blog: masthead, featured post and cards, posts beside a sidebar.',
+    description:
+        'A blog: masthead, featured post and cards, posts beside a sidebar.',
     builder: (_) => const BlogExamplePage(),
   ),
   ExampleEntry(
@@ -217,7 +209,8 @@ final _examples = [
   ),
   ExampleEntry(
     title: 'Buttons',
-    description: 'Buttons: pills, full-width, with icons, loading and circular.',
+    description:
+        'Buttons: pills, full-width, with icons, loading and circular.',
     builder: (_) => const ButtonsExamplePage(),
   ),
   ExampleEntry(
@@ -246,7 +239,8 @@ final _examples = [
   ),
   ExampleEntry(
     title: 'Checkout',
-    description: 'A checkout form with a cart, billing address and payment sections.',
+    description:
+        'A checkout form with a cart, billing address and payment sections.',
     builder: (_) => const CheckoutExamplePage(),
   ),
   ExampleEntry(
@@ -261,7 +255,8 @@ final _examples = [
   ),
   ExampleEntry(
     title: 'Dashboard',
-    description: 'A dashboard: a sticky header, a sidebar, a chart and a table.',
+    description:
+        'A dashboard: a sticky header, a sidebar, a chart and a table.',
     builder: (_) => const DashboardExamplePage(),
     fixed: DashboardExamplePage.fixed,
   ),
@@ -361,7 +356,8 @@ final _examples = [
   ),
   ExampleEntry(
     title: 'Pricing',
-    description: 'A pricing table: three plan cards and a feature comparison table.',
+    description:
+        'A pricing table: three plan cards and a feature comparison table.',
     builder: (_) => const PricingExamplePage(),
   ),
   ExampleEntry(
@@ -372,7 +368,8 @@ final _examples = [
   ),
   ExampleEntry(
     title: 'Sidebars',
-    description: 'Five sidebars: nav pills, icon-only, collapsible and a list group.',
+    description:
+        'Five sidebars: nav pills, icon-only, collapsible and a list group.',
     builder: (_) => const SidebarsExamplePage(),
   ),
   ExampleEntry(
@@ -382,7 +379,8 @@ final _examples = [
   ),
   ExampleEntry(
     title: 'Starter template',
-    description: 'A barebones starter page: header, intro and two columns of links.',
+    description:
+        'A barebones starter page: header, intro and two columns of links.',
     builder: (_) => const StarterTemplateExamplePage(),
   ),
   ExampleEntry(
