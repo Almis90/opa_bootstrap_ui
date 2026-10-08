@@ -16,6 +16,7 @@ class ExamplesShell extends StatefulWidget {
     required this.themeMode,
     required this.onThemeModeChanged,
     this.onDetailChanged,
+    this.initialEntry,
   });
 
   final List<ExampleEntry> examples;
@@ -32,12 +33,16 @@ class ExamplesShell extends StatefulWidget {
   /// back at the gallery.
   final ValueChanged<bool>? onDetailChanged;
 
+  /// An example to open straight away (from a search hit), skipping the
+  /// gallery.
+  final ExampleEntry? initialEntry;
+
   @override
   State<ExamplesShell> createState() => _ExamplesShellState();
 }
 
 class _ExamplesShellState extends State<ExamplesShell> {
-  ExampleEntry? _selected;
+  late ExampleEntry? _selected = widget.initialEntry;
 
   @override
   Widget build(BuildContext context) {

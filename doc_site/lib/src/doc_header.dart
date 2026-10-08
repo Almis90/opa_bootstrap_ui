@@ -5,6 +5,7 @@ import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 
 import 'app_section.dart';
 import 'bootstrap_icon.dart';
+import 'doc_search.dart';
 import 'example_theme_toggler.dart';
 
 /// Bootstrap's own violet (`--bd-violet-bg`, the docs' `.btn-bd-primary`).
@@ -19,8 +20,8 @@ const docHeaderHeight = 64.0;
 
 /// The docs site's top bar, `Navigation.astro` + `_navbar.scss`
 /// (`.navbar.navbar-expand-lg.bd-navbar`): the logo, the Docs / Examples
-/// links, a version dropdown and the theme switcher. (The original's Icons,
-/// Blog, GitHub, X and Open Collective links and its search box have no
+/// links, the search field, a version dropdown and the theme switcher. (The
+/// original's Icons, Blog, GitHub, X and Open Collective links have no
 /// counterpart here.)
 ///
 /// From `lg` up the links sit in the bar; below it they move into an
@@ -34,6 +35,7 @@ class DocHeader extends StatelessWidget {
     required this.themeMode,
     required this.onThemeModeChanged,
     required this.onOpenSidebar,
+    required this.onOpenSearch,
   });
 
   final AppSection section;
@@ -47,12 +49,15 @@ class DocHeader extends StatelessWidget {
   /// on the Docs tab.
   final VoidCallback onOpenSidebar;
 
+  /// Opens the search modal.
+  final VoidCallback onOpenSearch;
+
   static const _version = 'v5.3';
 
   @override
   Widget build(BuildContext context) {
-    final expanded =
-        MediaQuery.sizeOf(context).width >= BsBreakpoint.lg.minWidth;
+    final width = MediaQuery.sizeOf(context).width;
+    final expanded = width >= BsBreakpoint.lg.minWidth;
     // `.bd-navbar::after`: a gradient from the violet to 95% of it over the
     // page's own background.
     final bottom = Color.alphaBlend(
@@ -98,6 +103,19 @@ class DocHeader extends StatelessWidget {
                 ),
               ),
             ),
+            // `.bd-search`: from `lg` up it floats over the middle of the bar,
+            // 200 wide (280 from `xl`) and `.875rem` from the top.
+            if (expanded)
+              Align(
+                alignment: Alignment.topCenter,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 14),
+                  child: SizedBox(
+                    width: width >= BsBreakpoint.xl.minWidth ? 280 : 200,
+                    child: DocSearchButton(onTap: onOpenSearch, field: true),
+                  ),
+                ),
+              ),
           ],
         ),
       ),
@@ -161,18 +179,27 @@ class DocHeader extends StatelessWidget {
         // `.navbar-brand.p-0.me-0`
         const _Brand(),
         const Spacer(),
+        // The search icon, then the menu toggler pulled `.5rem` out of the
+        // gutter: 36 + 32 = 68, the left slot's width, so the logo centers.
         SizedBox(
           width: 68,
-          child: Transform.translate(
-            offset: const Offset(8, 0),
-            child: Align(
-              alignment: AlignmentDirectional.centerEnd,
-              child: _Toggler(
-                key: const Key('doc-shell-nav-toggler'),
-                icon: BootstrapIconData.threeDots,
-                onTap: () => _openMenu(context),
+          child: Row(
+            children: [
+              DocSearchButton(onTap: onOpenSearch, field: false),
+              SizedBox(
+                width: 32,
+                child: OverflowBox(
+                  alignment: AlignmentDirectional.centerStart,
+                  minWidth: 40,
+                  maxWidth: 40,
+                  child: _Toggler(
+                    key: const Key('doc-shell-nav-toggler'),
+                    icon: BootstrapIconData.threeDots,
+                    onTap: () => _openMenu(context),
+                  ),
+                ),
               ),
-            ),
+            ],
           ),
         ),
       ],

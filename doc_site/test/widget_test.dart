@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -94,4 +95,45 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
+
+  testWidgets('Search finds docs pages and examples and opens the pick', (tester) async {
+    tester.view.physicalSize = const Size(1280, 800);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await tester.pumpWidget(const DocApp());
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('doc-search-button')));
+    await tester.pumpAndSettle();
+    expect(find.text('No recent searches'), findsOneWidget);
+
+    await tester.enterText(find.byKey(const Key('doc-search-input')), 'toast');
+    await tester.pumpAndSettle();
+    expect(find.text('Toasts'), findsOneWidget);
+
+    await tester.enterText(find.byKey(const Key('doc-search-input')), 'zzzz');
+    await tester.pumpAndSettle();
+    expect(find.text('No results for "zzzz"'), findsOneWidget);
+
+    // Enter opens the first hit and closes the modal.
+    await tester.enterText(find.byKey(const Key('doc-search-input')), 'toast');
+    await tester.pumpAndSettle();
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('doc-search-input')), findsNothing);
+    expect(find.text('Toasts'), findsWidgets);
+
+    // Ctrl+K reopens it, Escape closes it.
+    await tester.sendKeyDownEvent(LogicalKeyboardKey.controlLeft);
+    await tester.sendKeyEvent(LogicalKeyboardKey.keyK);
+    await tester.sendKeyUpEvent(LogicalKeyboardKey.controlLeft);
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('doc-search-input')), findsOneWidget);
+    await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('doc-search-input')), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
 }

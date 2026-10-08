@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 
@@ -5,6 +6,7 @@ import 'app_section.dart';
 import 'doc_nav.dart';
 import 'doc_sidebar.dart';
 import 'doc_header.dart';
+import 'doc_search.dart';
 import 'example_entry.dart';
 import 'examples_shell.dart';
 
@@ -49,8 +51,70 @@ class _DocShellState extends State<DocShell> {
   /// actually have.
   bool _exampleDetailOpen = false;
 
+  /// An example picked from the search results, opened as the Examples tab is
+  /// built; [_examplesGeneration] makes a fresh tab for each pick.
+  ExampleEntry? _searchedExample;
+  int _examplesGeneration = 0;
+
+  bool _searchOpen = false;
+
+  @override
+  void initState() {
+    super.initState();
+    HardwareKeyboard.instance.addHandler(_onKey);
+  }
+
+  @override
+  void dispose() {
+    HardwareKeyboard.instance.removeHandler(_onKey);
+    super.dispose();
+  }
+
+  /// `Ctrl+K` / `Cmd+K` opens the search, as DocSearch's own shortcut does.
+  bool _onKey(KeyEvent event) {
+    if (event is KeyDownEvent &&
+        event.logicalKey == LogicalKeyboardKey.keyK &&
+        (HardwareKeyboard.instance.isControlPressed ||
+            HardwareKeyboard.instance.isMetaPressed)) {
+      _openSearch();
+      return true;
+    }
+    return false;
+  }
+
+  void _openSearch() {
+    if (_searchOpen || !mounted) return;
+    _searchOpen = true;
+    showDocSearch(context, [
+      for (final section in widget.sections)
+        for (final page in section.pages)
+          DocSearchHit(
+            group: section.title,
+            title: page.title,
+            onSelect: () => setState(() {
+              _selected = page;
+              _section = AppSection.docs;
+              _exampleDetailOpen = false;
+            }),
+          ),
+      for (final example in widget.examples)
+        DocSearchHit(
+          group: 'Examples',
+          title: example.title,
+          keywords: example.description,
+          onSelect: () => setState(() {
+            _section = AppSection.examples;
+            _searchedExample = example;
+            _examplesGeneration++;
+            _exampleDetailOpen = true;
+          }),
+        ),
+    ]).whenComplete(() => _searchOpen = false);
+  }
+
   void _selectSection(AppSection section) => setState(() {
     _section = section;
+    _searchedExample = null;
     _exampleDetailOpen = false;
   });
 
@@ -95,6 +159,8 @@ class _DocShellState extends State<DocShell> {
                   ? ColoredBox(
                       color: BsBody.backgroundOf(context),
                       child: ExamplesShell(
+                        key: ValueKey(_examplesGeneration),
+                        initialEntry: _searchedExample,
                         examples: widget.examples,
                         themeMode: widget.themeMode,
                         onThemeModeChanged: widget.onThemeModeChanged,
@@ -139,6 +205,7 @@ class _DocShellState extends State<DocShell> {
                   themeMode: widget.themeMode,
                   onThemeModeChanged: widget.onThemeModeChanged,
                   onOpenSidebar: () => _openMobileNav(context),
+                  onOpenSearch: _openSearch,
                 ),
               ),
           ],
