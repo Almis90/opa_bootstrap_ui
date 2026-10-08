@@ -118,7 +118,7 @@ class _DocShellState extends State<DocShell> {
                     // The package's logo, in place of its name.
                     Image.asset(
                       'assets/brand/logo.png',
-                      height: isMobile ? 34 : 44,
+                      height: 32,
                       filterQuality: FilterQuality.high,
                     ),
                     SizedBox(width: isMobile ? 16 : 24),
