@@ -259,6 +259,26 @@ class BlogExamplePage extends StatelessWidget {
     );
   }
 
+  /// A flex column [height] tall (null: its content's) whose items keep their
+  /// natural size: if they add up to more than [height] they run past it, as
+  /// flex items do (a `min-height: auto` item doesn't shrink), and the card's
+  /// `overflow-hidden` clips them.
+  Widget _fixedHeight(double? height, Widget column) {
+    if (height == null) return column;
+    return SizedBox(
+      height: height,
+      child: OverflowBox(
+        alignment: AlignmentDirectional.topStart,
+        minHeight: 0,
+        maxHeight: double.infinity,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(minHeight: height),
+          child: IntrinsicHeight(child: column),
+        ),
+      ),
+    );
+  }
+
   /// `<div class="row g-0 border rounded overflow-hidden flex-md-row mb-4
   /// shadow-sm h-md-250 position-relative">`
   Widget _card(BuildContext context, BlogCard card, int index) {
@@ -275,9 +295,9 @@ class BlogExamplePage extends StatelessWidget {
       // <div class="… d-flex flex-column">, stretched to the card's height
       // (the 248px inside its borders — or, with the 250px thumbnail beside it,
       // that — less the 1.5rem of padding above and below).
-      child: SizedBox(
-        height: tall ? (width >= 992 ? 202 : 200) : null,
-        child: Column(
+      child: _fixedHeight(
+        tall ? (width >= 992 ? 202 : 200) : null,
+        Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // <strong class="d-inline-block mb-2 text-primary-emphasis">
@@ -308,8 +328,9 @@ class BlogExamplePage extends StatelessWidget {
                 style: TextStyle(color: BsTextColor.bodySecondary.of(context)),
               ),
             ),
-            // <p class="mb-auto">: takes the free height of the 250px card.
-            if (tall) Expanded(child: Text(card.text)) else Text(card.text),
+            // <p class="mb-auto">: the card's free height goes below it.
+            Text(card.text),
+            if (tall) const Spacer(),
             // <a class="icon-link gap-1 icon-link-hover stretched-link">
             ExampleIconLink(
               text: card.link,
