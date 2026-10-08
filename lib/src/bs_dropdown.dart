@@ -439,7 +439,13 @@ class _BsDropdownMenu extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [for (final entry in items) _buildEntry(entry)],
+                  children: [
+                    for (var i = 0; i < items.length; i++) ...[
+                      if (i > 0 && (style.itemSpacing ?? 0) > 0)
+                        SizedBox(height: style.itemSpacing),
+                      _buildEntry(items[i]),
+                    ],
+                  ],
                 ),
               ),
             ),
@@ -523,8 +529,13 @@ class _BsDropdownItemWidgetState extends State<_BsDropdownItemWidget> {
                 widget.onTap();
               }
             : null,
-        child: ColoredBox(
-          color: background,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: background,
+            borderRadius: style.itemBorderRadius == null
+                ? null
+                : BorderRadius.circular(style.itemBorderRadius!),
+          ),
           child: Padding(
             padding: style.itemPadding ?? BsDropdownStyle.defaultItemPadding,
             child: DefaultTextStyle.merge(

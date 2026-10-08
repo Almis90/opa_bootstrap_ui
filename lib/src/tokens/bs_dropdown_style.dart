@@ -33,6 +33,8 @@ class BsDropdownStyle {
     this.linkActiveBackground,
     this.linkDisabledColor,
     this.itemPadding,
+    this.itemBorderRadius,
+    this.itemSpacing,
     this.headerColor,
     this.headerPadding,
   });
@@ -99,6 +101,15 @@ class BsDropdownStyle {
   /// `$dropdown-item-padding-y`/`$dropdown-item-padding-x` (`.25rem`/`1rem`).
   final EdgeInsetsGeometry? itemPadding;
 
+  /// The corner radius of an item's hover/active background (0 by default: a
+  /// Bootstrap `.dropdown-item` is square, but the docs site's navbar menus
+  /// round theirs to `.25rem`).
+  final double? itemBorderRadius;
+
+  /// The gap between consecutive entries (0 by default; the docs site's
+  /// navbar menus add `li + li { margin-top: .125rem }`).
+  final double? itemSpacing;
+
   /// `$dropdown-header-color` (`$gray-600`).
   final Color? headerColor;
 
@@ -127,6 +138,8 @@ class BsDropdownStyle {
       linkActiveBackground: other.linkActiveBackground ?? linkActiveBackground,
       linkDisabledColor: other.linkDisabledColor ?? linkDisabledColor,
       itemPadding: other.itemPadding ?? itemPadding,
+      itemBorderRadius: other.itemBorderRadius ?? itemBorderRadius,
+      itemSpacing: other.itemSpacing ?? itemSpacing,
       headerColor: other.headerColor ?? headerColor,
       headerPadding: other.headerPadding ?? headerPadding,
     );
@@ -147,9 +160,15 @@ class BsDropdownStyle {
   static const Color defaultLinkActiveColor = BsColors.white;
   static Color get defaultLinkActiveBackground => BsVariant.primary.color;
   static const Color defaultLinkDisabledColor = BsColors.gray400;
-  static const EdgeInsets defaultItemPadding = EdgeInsets.symmetric(horizontal: 16, vertical: 4);
+  static const EdgeInsets defaultItemPadding = EdgeInsets.symmetric(
+    horizontal: 16,
+    vertical: 4,
+  );
   static const Color defaultHeaderColor = BsColors.gray600;
-  static const EdgeInsets defaultHeaderPadding = EdgeInsets.symmetric(horizontal: 16, vertical: 8);
+  static const EdgeInsets defaultHeaderPadding = EdgeInsets.symmetric(
+    horizontal: 16,
+    vertical: 8,
+  );
 
   static BsDropdownStyle get defaults => BsDropdownStyle(
     minWidth: defaultMinWidth,

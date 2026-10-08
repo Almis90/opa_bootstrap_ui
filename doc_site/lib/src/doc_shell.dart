@@ -4,7 +4,7 @@ import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 import 'app_section.dart';
 import 'doc_nav.dart';
 import 'doc_sidebar.dart';
-import 'doc_theme_menu.dart';
+import 'doc_header.dart';
 import 'example_entry.dart';
 import 'examples_shell.dart';
 
@@ -38,9 +38,6 @@ class DocShell extends StatefulWidget {
   @override
   State<DocShell> createState() => _DocShellState();
 }
-
-/// Bootstrap's own violet (`--bd-violet-bg`, the docs' `.btn-bd-primary`).
-const _headerColor = Color(0xFF712CF9);
 
 class _DocShellState extends State<DocShell> {
   late DocNavPage _selected = widget.sections.first.pages.first;
@@ -86,61 +83,14 @@ class _DocShellState extends State<DocShell> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final isMobile = constraints.maxWidth < BsBreakpoint.md.minWidth;
-        return Column(
+        // Bootstrap's docs move the sidebar into an offcanvas below `lg`.
+        final isMobile = constraints.maxWidth < BsBreakpoint.lg.minWidth;
+        final header = !_exampleDetailOpen;
+        // The header goes last so its shadow falls over the page below it.
+        return Stack(
           children: [
-            if (!_exampleDetailOpen)
-              // `<nav class="navbar navbar-expand-md bg-… " data-bs-theme="dark">`
-              BsTheme(
-                brightness: Brightness.dark,
-                child: BsDecoratedBox(
-                  decoration: const BoxDecoration(color: _headerColor),
-                  child: BsContainer.fluid(
-                    child: BsNavbar(
-                      colorScheme: BsNavbarColorScheme.dark,
-                      expandBreakpoint: BsBreakpoint.md,
-                      brand: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          // The docs sidebar's own toggle, below `md`.
-                          if (isMobile && _section == AppSection.docs) ...[
-                            _HamburgerButton(
-                              key: const Key('doc-shell-hamburger'),
-                              onTap: () => _openMobileNav(context),
-                            ),
-                            const SizedBox(width: 16),
-                          ],
-                          // The package's logo, at Bootstrap's own 40x32.
-                          Image.asset(
-                            'assets/brand/logo.png',
-                            height: 32,
-                            filterQuality: FilterQuality.high,
-                          ),
-                        ],
-                      ),
-                      items: [
-                        BsNavbarItem(
-                          active: _section == AppSection.docs,
-                          onTap: () => _selectSection(AppSection.docs),
-                          child: const Text('Docs'),
-                        ),
-                        BsNavbarItem(
-                          active: _section == AppSection.examples,
-                          onTap: () => _selectSection(AppSection.examples),
-                          child: const Text('Examples'),
-                        ),
-                      ],
-                      trailing: [
-                        DocThemeMenu(
-                          mode: widget.themeMode,
-                          onChanged: widget.onThemeModeChanged,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            Expanded(
+            Positioned.fill(
+              top: header ? docHeaderHeight : 0,
               child: _section == AppSection.examples
                   ? ColoredBox(
                       color: BsBody.backgroundOf(context),
@@ -178,42 +128,22 @@ class _DocShellState extends State<DocShell> {
                       ],
                     ),
             ),
+            if (header)
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: DocHeader(
+                  section: _section,
+                  onSelectSection: _selectSection,
+                  themeMode: widget.themeMode,
+                  onThemeModeChanged: widget.onThemeModeChanged,
+                  onOpenSidebar: () => _openMobileNav(context),
+                ),
+              ),
           ],
         );
       },
-    );
-  }
-}
-
-class _HamburgerButton extends StatelessWidget {
-  const _HamburgerButton({super.key, required this.onTap});
-
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-        onTap: onTap,
-        child: SizedBox(
-          width: 24,
-          height: 24,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: List.generate(
-              3,
-              (_) => Container(
-                height: 2,
-                decoration: BoxDecoration(
-                  color: BsColors.white,
-                  borderRadius: BorderRadius.circular(1),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
     );
   }
 }
