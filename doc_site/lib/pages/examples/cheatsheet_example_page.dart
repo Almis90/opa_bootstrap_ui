@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 
@@ -561,8 +562,30 @@ class _TocGroup extends StatefulWidget {
 class _TocGroupState extends State<_TocGroup> {
   bool _expanded = false;
   bool _hovered = false;
+  bool _focused = false;
+  late final FocusNode _focus = FocusNode(onKeyEvent: _onKey);
 
   static const _hoverColor = Color(0x1A7952B3); // rgba(121, 82, 179, .1)
+  static const _focusRing = Color(0xB37952B3); // rgba(121, 82, 179, .7)
+
+  @override
+  void dispose() {
+    _focus.dispose();
+    super.dispose();
+  }
+
+  void _toggle() => setState(() => _expanded = !_expanded);
+
+  /// A `<button>`: Enter and Space press it.
+  KeyEventResult _onKey(FocusNode node, KeyEvent event) {
+    if (event is KeyDownEvent &&
+        (event.logicalKey == LogicalKeyboardKey.enter ||
+            event.logicalKey == LogicalKeyboardKey.space)) {
+      _toggle();
+      return KeyEventResult.handled;
+    }
+    return KeyEventResult.ignored;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -575,49 +598,64 @@ class _TocGroupState extends State<_TocGroup> {
           cursor: SystemMouseCursors.click,
           onEnter: (_) => setState(() => _hovered = true),
           onExit: (_) => setState(() => _hovered = false),
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: () => setState(() => _expanded = !_expanded),
-            child: BsDecoratedBox(
-              decoration: BoxDecoration(
-                color: _hovered ? _hoverColor : null,
-                borderRadius: BorderRadius.circular(BsRounded.r2.radius),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                child: DefaultTextStyle.merge(
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                    color: body,
+          child: Focus(
+            focusNode: _focus,
+            onFocusChange: (focused) => setState(() => _focused = focused),
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                // (a clicked button is focused: `.btn:focus` stays after it)
+                _focus.requestFocus();
+                _toggle();
+              },
+              child: BsDecoratedBox(
+                decoration: BoxDecoration(
+                  color: _hovered || _focused ? _hoverColor : null,
+                  borderRadius: BorderRadius.circular(BsRounded.r2.radius),
+                  // `box-shadow: 0 0 0 1px rgba(121, 82, 179, .7)`
+                  boxShadow: _focused
+                      ? const [BoxShadow(color: _focusRing, spreadRadius: 1)]
+                      : null,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
                   ),
-                  child: BsFlex(
-                    inline: true,
-                    alignItems: BsAlign.center,
-                    children: [
-                      // `::before`: a 1.25em box with the chevron, turning
-                      // a quarter when expanded.
-                      SizedBox(
-                        width: 20,
-                        child: Align(
-                          alignment: AlignmentDirectional.centerStart,
-                          child: AnimatedRotation(
-                            turns: _expanded
-                                ? (rtl ? -0.25 : 0.25)
-                                : (rtl ? 0.5 : 0),
-                            duration: const Duration(milliseconds: 350),
-                            curve: Curves.ease,
-                            child: const BootstrapIcon(
-                              BootstrapIconData.chevronToggle,
-                              width: 16,
-                              height: 16,
-                              color: Color(0xFFCCCCCC),
+                  child: DefaultTextStyle.merge(
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: body,
+                    ),
+                    child: BsFlex(
+                      inline: true,
+                      alignItems: BsAlign.center,
+                      children: [
+                        // `::before`: a 1.25em box with the chevron, turning
+                        // a quarter when expanded.
+                        SizedBox(
+                          width: 20,
+                          child: Align(
+                            alignment: AlignmentDirectional.centerStart,
+                            child: AnimatedRotation(
+                              turns: _expanded
+                                  ? (rtl ? -0.25 : 0.25)
+                                  : (rtl ? 0.5 : 0),
+                              duration: const Duration(milliseconds: 350),
+                              curve: Curves.ease,
+                              child: const BootstrapIcon(
+                                BootstrapIconData.chevronToggle,
+                                width: 16,
+                                height: 16,
+                                color: Color(0xFFCCCCCC),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      Text(widget.title),
-                    ],
+                        Text(widget.title),
+                      ],
+                    ),
                   ),
                 ),
               ),
