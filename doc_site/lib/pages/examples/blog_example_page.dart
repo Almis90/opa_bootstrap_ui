@@ -3,6 +3,7 @@ import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 
 import '../../src/bootstrap_icon.dart';
 import '../../src/example_sticky.dart';
+import '../../src/example_top_link.dart';
 import '../../src/example_icon_link.dart';
 import '../../src/placeholder_image.dart';
 import '../../src/table_columns.dart';
@@ -801,12 +802,23 @@ class BlogExamplePage extends StatelessWidget {
         children: [
           _paragraph(context, _t.footerText),
           // <p class="mb-0"><a href="#">Back to top</a></p>
-          Text.rich(
-            TextSpan(
-              children: _spans(context, [
-                BlogInline(BlogInlineKind.link, _t.backToTop),
-              ]),
-            ),
+          // (`href="#"`: back to the top of the page)
+          ExampleTopLinks(
+            builder: (context, recognizer) {
+              final link = BsLink.colorOf(context);
+              return Text.rich(
+                TextSpan(
+                  text: _t.backToTop,
+                  style: TextStyle(
+                    color: link,
+                    decoration: TextDecoration.underline,
+                    decorationColor: link,
+                  ),
+                  recognizer: recognizer,
+                  mouseCursor: SystemMouseCursors.click,
+                ),
+              );
+            },
           ),
         ],
       ),

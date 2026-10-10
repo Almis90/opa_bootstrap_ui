@@ -4,6 +4,7 @@ import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 import '../../src/example_navbar_page.dart';
 import '../../src/float_end_text.dart';
 import '../../src/placeholder_image.dart';
+import '../../src/example_top_link.dart';
 
 /// The "Carousel" example: a port of Bootstrap's own `examples/carousel`
 /// page — a `fixed-top` dark navbar (see [fixed]) over a 32rem carousel of
@@ -363,23 +364,34 @@ class CarouselExamplePage extends StatelessWidget {
 
   Widget _footer(BuildContext context) {
     final link = BsLink.colorOf(context);
-    TextSpan anchor(String text) => TextSpan(
-      text: text,
-      style: TextStyle(color: link, decoration: TextDecoration.underline),
-    );
-    return FloatEndText(
-      floatText: _t.backToTop,
-      floatStyle: TextStyle(color: link, decoration: TextDecoration.underline),
-      floatMarginBottom: 16,
-      bottomMargin: 16,
-      span: TextSpan(
-        children: [
-          TextSpan(text: '© 2017–${DateTime.now().year} Company, Inc. · '),
-          anchor(_t.privacy),
-          const TextSpan(text: ' · '),
-          anchor(_t.terms),
-        ],
-      ),
+    // (every link is `href="#"`: back to the top of the page)
+    return ExampleTopLinks(
+      builder: (context, recognizer) {
+        TextSpan anchor(String text) => TextSpan(
+          text: text,
+          style: TextStyle(color: link, decoration: TextDecoration.underline),
+          recognizer: recognizer,
+          mouseCursor: SystemMouseCursors.click,
+        );
+        return FloatEndText(
+          floatText: _t.backToTop,
+          floatStyle: TextStyle(
+            color: link,
+            decoration: TextDecoration.underline,
+          ),
+          onFloatTap: () => scrollExampleToTop(context),
+          floatMarginBottom: 16,
+          bottomMargin: 16,
+          span: TextSpan(
+            children: [
+              TextSpan(text: '© 2017–${DateTime.now().year} Company, Inc. · '),
+              anchor(_t.privacy),
+              const TextSpan(text: ' · '),
+              anchor(_t.terms),
+            ],
+          ),
+        );
+      },
     );
   }
 }

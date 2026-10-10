@@ -14,6 +14,7 @@ class FloatEndText extends StatelessWidget {
     this.text = '',
     this.span,
     this.floatStyle,
+    this.onFloatTap,
     this.textStyle,
     this.floatMarginBottom = 4,
     this.bottomMargin = 0,
@@ -25,6 +26,9 @@ class FloatEndText extends StatelessWidget {
   final String text;
   final InlineSpan? span;
   final TextStyle? floatStyle;
+
+  /// Makes [floatText] a link (the pointing hand, this on a tap).
+  final VoidCallback? onFloatTap;
   final TextStyle? textStyle;
 
   /// `mb-1` of the float.
@@ -96,7 +100,16 @@ class FloatEndText extends StatelessWidget {
             PositionedDirectional(
               top: 0,
               end: 0,
-              child: Text(floatText, style: floatStyle),
+              child: onFloatTap == null
+                  ? Text(floatText, style: floatStyle)
+                  : MouseRegion(
+                      cursor: SystemMouseCursors.click,
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: onFloatTap,
+                        child: Text(floatText, style: floatStyle),
+                      ),
+                    ),
             ),
           ],
         );
@@ -129,7 +142,13 @@ class FloatEndText extends StatelessWidget {
         if (sliced != null) children.add(sliced);
       }
       if (text == null && children.isEmpty) return null;
-      return TextSpan(text: text, style: node.style, children: children);
+      return TextSpan(
+        text: text,
+        style: node.style,
+        recognizer: node.recognizer,
+        mouseCursor: node.mouseCursor,
+        children: children,
+      );
     }
 
     final sliced = walk(span);
@@ -151,7 +170,13 @@ class FloatEndText extends StatelessWidget {
       for (final child in node.children ?? const <InlineSpan>[]) {
         children.add(child is TextSpan ? go(child) : child);
       }
-      return TextSpan(text: text, style: node.style, children: children);
+      return TextSpan(
+        text: text,
+        style: node.style,
+        recognizer: node.recognizer,
+        mouseCursor: node.mouseCursor,
+        children: children,
+      );
     }
 
     return go(span);
@@ -172,7 +197,13 @@ class FloatEndText extends StatelessWidget {
       for (final child in node.children ?? const <InlineSpan>[]) {
         children.add(child is TextSpan ? go(child) : child);
       }
-      return TextSpan(text: text, style: node.style, children: children);
+      return TextSpan(
+        text: text,
+        style: node.style,
+        recognizer: node.recognizer,
+        mouseCursor: node.mouseCursor,
+        children: children,
+      );
     }
 
     return go(span);

@@ -6,6 +6,7 @@ import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 import '../../src/bootstrap_icon.dart';
 import '../../src/example_container960.dart';
 import '../../src/example_icon_link.dart';
+import '../../src/example_top_link.dart';
 import '../../src/inline_line.dart';
 
 /// The "Product" example: a port of Bootstrap's own `examples/product` page —
@@ -343,6 +344,8 @@ class ProductExamplePage extends StatelessWidget {
                   Align(
                     alignment: AlignmentDirectional.centerStart,
                     child: BsAnchor(
+                      // (`href="#"`: back to the top of the page)
+                      onTap: () => scrollExampleToTop(context),
                       textDecorationNone: true,
                       linkColor: BsTextColor.secondary,
                       child: Text(item),

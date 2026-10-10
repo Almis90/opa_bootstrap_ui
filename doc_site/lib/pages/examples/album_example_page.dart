@@ -4,6 +4,7 @@ import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 import '../../src/bootstrap_icon.dart';
 import '../../src/float_end_text.dart';
 import '../../src/placeholder_image.dart';
+import '../../src/example_top_link.dart';
 
 /// The "Album" example: a port of Bootstrap's own `examples/album` page — a
 /// dark header whose toggler reveals an "About / Contact" panel, a centred
@@ -320,6 +321,7 @@ class _AlbumExamplePageState extends State<AlbumExamplePage> {
             FloatEndText(
               floatText: _t.backToTop,
               floatStyle: linkStyle,
+              onFloatTap: () => scrollExampleToTop(context),
               text: _t.copyright,
               bottomMargin: 4,
             ),

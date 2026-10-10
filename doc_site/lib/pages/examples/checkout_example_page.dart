@@ -3,6 +3,7 @@ import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 
 import '../../src/bootstrap_logo.dart';
 import '../../src/example_container960.dart';
+import '../../src/example_top_link.dart';
 
 /// The "Checkout" example: a port of Bootstrap's own `examples/checkout` page —
 /// a `bg-body-tertiary` page with a 960px container holding a logo and intro,
@@ -562,9 +563,12 @@ class _CheckoutExamplePageState extends State<CheckoutExamplePage> {
 
   Widget _footer(BuildContext context) {
     final link = BsLink.colorOf(context);
-    Widget item(String text) => Text(
-      text,
-      style: TextStyle(color: link, decoration: TextDecoration.underline),
+    // (`href="#"`: back to the top of the page)
+    Widget item(String text) => ExampleTopLink(
+      child: Text(
+        text,
+        style: TextStyle(color: link, decoration: TextDecoration.underline),
+      ),
     );
     return BsBox(
       my: BsSpacing.s5,
