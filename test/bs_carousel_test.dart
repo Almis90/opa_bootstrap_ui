@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
@@ -246,5 +247,24 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Slide 1'), findsOneWidget);
     expect(dots(), [0.5, 1.0, 0.5]);
+  });
+
+  testWidgets('A horizontal wheel / trackpad scroll does not move the carousel, a drag still does', (tester) async {
+    await tester.pumpWidget(buildCarousel(interval: null));
+    final center = tester.getCenter(find.byType(BsCarousel));
+    final pager = tester.state<ScrollableState>(find.byType(Scrollable));
+    final before = pager.position.pixels;
+
+    // What a two-finger trackpad swipe is on the web: horizontal wheel events.
+    final pointer = TestPointer(1, PointerDeviceKind.mouse);
+    await tester.sendEventToBinding(pointer.hover(center));
+    await tester.sendEventToBinding(pointer.scroll(const Offset(700, 0)));
+    await tester.pumpAndSettle();
+    expect(pager.position.pixels, before);
+
+    // A touch swipe goes on working.
+    await tester.drag(find.byType(BsCarousel), const Offset(-600, 0));
+    await tester.pumpAndSettle();
+    expect(find.text('Slide 1'), findsOneWidget);
   });
 }

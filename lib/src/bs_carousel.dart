@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 
 import 'tokens/bs_carousel_style.dart';
@@ -197,6 +198,22 @@ class _BsCarouselState extends State<BsCarousel> {
   Timer? _timer;
   bool _hovering = false;
 
+  /// True while a wheel / trackpad scroll event is being dispatched to the
+  /// slide under it (see [_swallowWheel]).
+  bool _wheelBlocked = false;
+
+  /// Bootstrap's carousel swipes by touch only: a mouse wheel or a trackpad's
+  /// two-finger scroll does nothing to it. Flutter's [PageView] would take
+  /// them (on the web a two-finger swipe is a stream of horizontal wheel
+  /// events, and one the engine sees consumed is kept from the browser, which
+  /// would otherwise use it to go back). A slide hears the event before the
+  /// [Scrollable] around it does, and the physics refuse it while this is set.
+  void _swallowWheel(PointerSignalEvent event) {
+    if (event is! PointerScrollEvent) return;
+    _wheelBlocked = true;
+    scheduleMicrotask(() => _wheelBlocked = false);
+  }
+
   BsCarouselController get _controller =>
       widget.controller ??
       (_ownedController ??= BsCarouselController(
@@ -326,7 +343,7 @@ class _BsCarouselState extends State<BsCarousel> {
     } else {
       slides = PageView.builder(
         controller: _pageController,
-        physics: count > 1 ? const PageScrollPhysics() : const NeverScrollableScrollPhysics(),
+        physics: count > 1 ? _BsCarouselPhysics(() => _wheelBlocked) : const NeverScrollableScrollPhysics(),
         onPageChanged: _handlePageChanged,
         itemCount: _loops ? count * _virtualMultiplier : count,
         itemBuilder: (context, i) => _buildSlide(widget.items[_loops ? i % count : i], style),
@@ -387,6 +404,14 @@ class _BsCarouselState extends State<BsCarousel> {
   }
 
   Widget _buildSlide(BsCarouselItem item, BsCarouselStyle style) {
+    return Listener(
+      behavior: HitTestBehavior.translucent,
+      onPointerSignal: _swallowWheel,
+      child: _buildSlideContent(item, style),
+    );
+  }
+
+  Widget _buildSlideContent(BsCarouselItem item, BsCarouselStyle style) {
     return Stack(
       fit: StackFit.expand,
       children: [
@@ -574,4 +599,18 @@ class _BsCarouselIndicatorDot extends StatelessWidget {
       ),
     );
   }
+}
+
+/// [PageScrollPhysics] that decline user scrolling while [blocked] says a
+/// wheel event is being handled (drags and swipes are unaffected).
+class _BsCarouselPhysics extends PageScrollPhysics {
+  const _BsCarouselPhysics(this.blocked, {super.parent});
+
+  final bool Function() blocked;
+
+  @override
+  _BsCarouselPhysics applyTo(ScrollPhysics? ancestor) => _BsCarouselPhysics(blocked, parent: buildParent(ancestor));
+
+  @override
+  bool shouldAcceptUserOffset(ScrollMetrics position) => !blocked() && super.shouldAcceptUserOffset(position);
 }
