@@ -185,6 +185,7 @@ final _examples = [
   ),
   ExampleEntry(
     title: 'Album RTL',
+    rtl: true,
     description: 'The album page, right to left in Arabic.',
     builder: (_) => const AlbumExamplePage(rtl: true),
   ),
@@ -201,6 +202,7 @@ final _examples = [
   ),
   ExampleEntry(
     title: 'Blog RTL',
+    rtl: true,
     description: 'The blog page, right to left in Arabic.',
     builder: (_) => const BlogExamplePage(rtl: true),
   ),
@@ -223,6 +225,7 @@ final _examples = [
   ),
   ExampleEntry(
     title: 'Carousel RTL',
+    rtl: true,
     description: 'The carousel page, right to left in Arabic.',
     builder: (_) => const CarouselExamplePage(rtl: true),
     fixed: (context) => CarouselExamplePage.fixed(context, rtl: true),
@@ -235,6 +238,7 @@ final _examples = [
   ),
   ExampleEntry(
     title: 'Cheatsheet RTL',
+    rtl: true,
     description: 'The cheatsheet, right to left in Arabic.',
     builder: (_) => const CheatsheetExamplePage(rtl: true),
     fixed: (context) => CheatsheetExamplePage.fixed(context, rtl: true),
@@ -247,6 +251,7 @@ final _examples = [
   ),
   ExampleEntry(
     title: 'Checkout RTL',
+    rtl: true,
     description: 'The checkout form, right to left in Arabic.',
     builder: (_) => const CheckoutExamplePage(rtl: true),
   ),
@@ -264,6 +269,7 @@ final _examples = [
   ),
   ExampleEntry(
     title: 'Dashboard RTL',
+    rtl: true,
     description: 'The dashboard, right to left in Arabic.',
     builder: (_) => const DashboardExamplePage(rtl: true),
     fixed: (context) => DashboardExamplePage.fixed(context, rtl: true),

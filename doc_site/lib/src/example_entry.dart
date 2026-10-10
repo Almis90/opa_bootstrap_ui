@@ -4,7 +4,7 @@ import 'package:flutter/widgets.dart';
 /// counterpart to Bootstrap's standalone `examples/*` pages (as opposed to
 /// [DocNavPage]s, which are in-place component reference snippets).
 class ExampleEntry {
-  const ExampleEntry({required this.title, required this.description, required this.builder, this.fixed});
+  const ExampleEntry({required this.title, required this.description, required this.builder, this.fixed, this.rtl = false});
 
   final String title;
 
@@ -17,4 +17,8 @@ class ExampleEntry {
   /// `.fixed-bottom` navbar): placed over the page's own scrolling, in the
   /// viewport. Return a `Positioned` (or anything a `Stack` takes).
   final WidgetBuilder? fixed;
+
+  /// A right-to-left page (`dir="rtl"`): the floating theme toggler's `end-0`
+  /// is then its left edge.
+  final bool rtl;
 }

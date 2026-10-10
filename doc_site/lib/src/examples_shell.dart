@@ -261,12 +261,20 @@ class _ExampleDetailState extends State<_ExampleDetail>
             if (widget.entry.fixed != null)
               Builder(builder: widget.entry.fixed!),
             // `.position-fixed.bottom-0.end-0.mb-3.me-3.bd-mode-toggle`
+            // (`end` is the left edge of a right-to-left page, and its menu
+            // opens from there)
             Positioned(
               bottom: 16,
-              right: 16,
-              child: ExampleThemeToggler(
-                mode: widget.themeMode,
-                onChanged: widget.onThemeModeChanged,
+              left: widget.entry.rtl ? 16 : null,
+              right: widget.entry.rtl ? null : 16,
+              child: Directionality(
+                textDirection: widget.entry.rtl
+                    ? TextDirection.rtl
+                    : TextDirection.ltr,
+                child: ExampleThemeToggler(
+                  mode: widget.themeMode,
+                  onChanged: widget.onThemeModeChanged,
+                ),
               ),
             ),
           ],
