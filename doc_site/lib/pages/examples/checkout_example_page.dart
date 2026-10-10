@@ -562,14 +562,9 @@ class _CheckoutExamplePageState extends State<CheckoutExamplePage> {
   // --- <footer class="my-5 pt-5 text-body-secondary text-center"> ---
 
   Widget _footer(BuildContext context) {
-    final link = BsLink.colorOf(context);
     // (`href="#"`: back to the top of the page)
-    Widget item(String text) => ExampleTopLink(
-      child: Text(
-        text,
-        style: TextStyle(color: link, decoration: TextDecoration.underline),
-      ),
-    );
+    Widget item(String text) =>
+        BsAnchor(onTap: () => scrollExampleToTop(context), child: Text(text));
     return BsBox(
       my: BsSpacing.s5,
       pt: BsSpacing.s5,

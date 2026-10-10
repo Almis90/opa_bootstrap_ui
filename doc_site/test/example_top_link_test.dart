@@ -16,11 +16,16 @@ void main() {
       BsApp(
         home: SingleChildScrollView(
           controller: controller,
-          child: const Column(
+          child: Column(
             children: [
-              SizedBox(height: 2000),
-              ExampleTopLink(child: Text('Back to top')),
-              SizedBox(height: 200),
+              const SizedBox(height: 2000),
+              Builder(
+                builder: (context) => BsAnchor(
+                  onTap: () => scrollExampleToTop(context),
+                  child: const Text('Back to top'),
+                ),
+              ),
+              const SizedBox(height: 200),
             ],
           ),
         ),

@@ -305,10 +305,6 @@ class _AlbumExamplePageState extends State<AlbumExamplePage> {
       text: text,
       style: TextStyle(color: link, decoration: TextDecoration.underline),
     );
-    final linkStyle = TextStyle(
-      color: link,
-      decoration: TextDecoration.underline,
-    );
     return BsBox(
       textColor: BsTextColor.bodySecondary,
       py: BsSpacing.s5,
@@ -320,7 +316,6 @@ class _AlbumExamplePageState extends State<AlbumExamplePage> {
             // <p class="mb-1">Album example is …
             FloatEndText(
               floatText: _t.backToTop,
-              floatStyle: linkStyle,
               onFloatTap: () => scrollExampleToTop(context),
               text: _t.copyright,
               bottomMargin: 4,

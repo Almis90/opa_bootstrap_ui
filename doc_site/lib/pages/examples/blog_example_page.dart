@@ -803,22 +803,17 @@ class BlogExamplePage extends StatelessWidget {
           _paragraph(context, _t.footerText),
           // <p class="mb-0"><a href="#">Back to top</a></p>
           // (`href="#"`: back to the top of the page)
-          ExampleTopLinks(
-            builder: (context, recognizer) {
-              final link = BsLink.colorOf(context);
-              return Text.rich(
-                TextSpan(
-                  text: _t.backToTop,
-                  style: TextStyle(
-                    color: link,
-                    decoration: TextDecoration.underline,
-                    decorationColor: link,
+          BsInlineAnchors(
+            builder: (context, anchor) => Text.rich(
+              TextSpan(
+                children: [
+                  anchor(
+                    _t.backToTop,
+                    onTap: () => scrollExampleToTop(context),
                   ),
-                  recognizer: recognizer,
-                  mouseCursor: SystemMouseCursors.click,
-                ),
-              );
-            },
+                ],
+              ),
+            ),
           ),
         ],
       ),

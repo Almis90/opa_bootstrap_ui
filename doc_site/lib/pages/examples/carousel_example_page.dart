@@ -363,31 +363,21 @@ class CarouselExamplePage extends StatelessWidget {
   // --- <footer class="container"> ---
 
   Widget _footer(BuildContext context) {
-    final link = BsLink.colorOf(context);
     // (every link is `href="#"`: back to the top of the page)
-    return ExampleTopLinks(
-      builder: (context, recognizer) {
-        TextSpan anchor(String text) => TextSpan(
-          text: text,
-          style: TextStyle(color: link, decoration: TextDecoration.underline),
-          recognizer: recognizer,
-          mouseCursor: SystemMouseCursors.click,
-        );
+    return BsInlineAnchors(
+      builder: (context, anchor) {
+        void top() => scrollExampleToTop(context);
         return FloatEndText(
           floatText: _t.backToTop,
-          floatStyle: TextStyle(
-            color: link,
-            decoration: TextDecoration.underline,
-          ),
-          onFloatTap: () => scrollExampleToTop(context),
+          onFloatTap: top,
           floatMarginBottom: 16,
           bottomMargin: 16,
           span: TextSpan(
             children: [
               TextSpan(text: '© 2017–${DateTime.now().year} Company, Inc. · '),
-              anchor(_t.privacy),
+              anchor(_t.privacy, onTap: top),
               const TextSpan(text: ' · '),
-              anchor(_t.terms),
+              anchor(_t.terms, onTap: top),
             ],
           ),
         );

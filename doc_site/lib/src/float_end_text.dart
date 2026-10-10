@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 
 /// A `<p class="float-end mb-1">` [floatText] (a link) and the paragraph that
 /// follows it, [text] (or [span], for text with links in it): the paragraph's
@@ -27,7 +28,8 @@ class FloatEndText extends StatelessWidget {
   final InlineSpan? span;
   final TextStyle? floatStyle;
 
-  /// Makes [floatText] a link (the pointing hand, this on a tap).
+  /// Makes [floatText] a [BsAnchor] (its colors, the pointing hand, this on a
+  /// tap): leave the color and decoration out of [floatStyle].
   final VoidCallback? onFloatTap;
   final TextStyle? textStyle;
 
@@ -102,13 +104,11 @@ class FloatEndText extends StatelessWidget {
               end: 0,
               child: onFloatTap == null
                   ? Text(floatText, style: floatStyle)
-                  : MouseRegion(
-                      cursor: SystemMouseCursors.click,
-                      child: GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTap: onFloatTap,
-                        child: Text(floatText, style: floatStyle),
-                      ),
+                  : BsAnchor(
+                      onTap: onFloatTap,
+                      // (just what the caller gave, so the anchor's color and
+                      // decoration come through)
+                      child: Text(floatText, style: this.floatStyle),
                     ),
             ),
           ],
@@ -147,6 +147,8 @@ class FloatEndText extends StatelessWidget {
         style: node.style,
         recognizer: node.recognizer,
         mouseCursor: node.mouseCursor,
+        onEnter: node.onEnter,
+        onExit: node.onExit,
         children: children,
       );
     }
@@ -175,6 +177,8 @@ class FloatEndText extends StatelessWidget {
         style: node.style,
         recognizer: node.recognizer,
         mouseCursor: node.mouseCursor,
+        onEnter: node.onEnter,
+        onExit: node.onExit,
         children: children,
       );
     }
@@ -202,6 +206,8 @@ class FloatEndText extends StatelessWidget {
         style: node.style,
         recognizer: node.recognizer,
         mouseCursor: node.mouseCursor,
+        onEnter: node.onEnter,
+        onExit: node.onExit,
         children: children,
       );
     }
