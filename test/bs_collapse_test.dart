@@ -146,4 +146,43 @@ void main() {
     await tester.pumpAndSettle();
     expect(events, ['shown']);
   });
+
+  testWidgets(
+    'a vertical collapse only animates its height: the content stays put as it opens',
+    (tester) async {
+      var expanded = false;
+      late StateSetter setState;
+
+      // (a start-aligned column, as a sidebar's list would sit in)
+      await tester.pumpWidget(
+        BsApp(
+          home: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              StatefulBuilder(
+                builder: (context, setter) {
+                  setState = setter;
+                  // Content that is only as wide as its text (a start-aligned column).
+                  return BsCollapse(
+                    isExpanded: expanded,
+                    child: const Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [Text('Content')],
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      );
+
+      setState(() => expanded = true);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+      final midway = tester.getTopLeft(find.text('Content')).dx;
+      await tester.pumpAndSettle();
+      expect(tester.getTopLeft(find.text('Content')).dx, midway);
+    },
+  );
 }

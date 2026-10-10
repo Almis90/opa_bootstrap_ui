@@ -184,7 +184,10 @@ class _BsCollapseState extends State<BsCollapse> {
         alignment: horizontal ? AlignmentDirectional.centerStart : Alignment.topCenter,
         onEnd: _handleSizeEnd,
         child: isExpanded
-            ? widget.child
+            // (a vertical collapse is a block, full width collapsed or not:
+            // only its height animates, and the content doesn't slide sideways
+            // while the box grows from the width of nothing)
+            ? (horizontal ? widget.child : SizedBox(width: double.infinity, child: widget.child))
             : (horizontal
                   ? const SizedBox(width: 0, height: double.infinity)
                   : const SizedBox(width: double.infinity, height: 0)),
