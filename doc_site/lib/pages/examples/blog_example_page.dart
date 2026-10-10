@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 
 import '../../src/bootstrap_icon.dart';
+import '../../src/example_sticky.dart';
 import '../../src/example_icon_link.dart';
 import '../../src/placeholder_image.dart';
 import '../../src/table_columns.dart';
@@ -202,7 +203,8 @@ class BlogExamplePage extends StatelessWidget {
             ),
             BsFlexItem(
               col: const BsResponsiveValue(xs: BsCol(12), md: BsCol(4)),
-              child: _sidebar(context),
+              // <div class="position-sticky" style="top: 2rem;">
+              child: ExampleSticky(top: 32, child: _sidebar(context)),
             ),
           ],
         ),
