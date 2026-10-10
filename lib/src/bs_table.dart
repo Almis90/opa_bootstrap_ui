@@ -120,7 +120,14 @@ class _BsTableState extends State<BsTable> {
     final accentBackground =
         style.accentBackground ?? BsTableStyle.defaultAccentBackground;
 
-    final border = widget.borderless
+    // Rows tinted by a variant have borders of their own color
+    // (`mix(text, background, 20%)`), so the rules are drawn per row.
+    final perRowRules =
+        !widget.borderless &&
+        !widget.bordered &&
+        widget.rows.any((row) => row.variant != null);
+
+    final border = widget.borderless || perRowRules
         ? const TableBorder()
         : widget.bordered
         ? TableBorder.all(color: borderColor, width: borderWidth)
@@ -144,8 +151,11 @@ class _BsTableState extends State<BsTable> {
     final rows = <TableRow>[
       if (widget.columns != null)
         TableRow(
-          decoration: BoxDecoration(
+          decoration: _SnappedRowDecoration(
             color: Color.alphaBlend(accentBackground, background),
+            bottom: perRowRules
+                ? BorderSide(color: borderColor, width: borderWidth)
+                : null,
           ),
           children: [
             for (final cell in widget.columns!)
@@ -165,6 +175,9 @@ class _BsTableState extends State<BsTable> {
           i == 0 && widget.columns == null ? firstRowPadding : cellPadding,
           isDark,
           ruleColor: color,
+          rowRule: perRowRules
+              ? BorderSide(color: borderColor, width: borderWidth)
+              : null,
         ),
     ];
 
@@ -211,15 +224,30 @@ class _BsTableState extends State<BsTable> {
     EdgeInsetsGeometry padding,
     bool isDark, {
     required Color ruleColor,
+    BorderSide? rowRule,
   }) {
     var rowColor = background;
-    if (row.variant != null) {
-      rowColor = isDark ? row.variant!.darkBgSubtle : row.variant!.bgSubtle;
+    // A variant row's own text color: Bootstrap's `.table-{variant}` sets
+    // `color` to the contrast of its background (`$table-variants`: the
+    // tints are light, `dark` and `light` are the theme colors themselves).
+    Color? rowText;
+    final variant = row.variant;
+    if (variant == BsVariant.dark) {
+      rowColor = BsColors.gray900;
+      rowText = BsColors.white;
+    } else if (variant == BsVariant.light) {
+      rowColor = BsColors.gray100;
+      rowText = BsColors.black;
+    } else if (variant != null) {
+      rowColor = isDark ? variant.darkBgSubtle : variant.bgSubtle;
+      rowText = isDark ? null : BsColors.black;
     }
+    // (the hover, stripe and active tints are of the text color's kind)
+    final onDark = rowText == BsColors.white;
     if (widget.striped && index.isEven) {
       rowColor = _blend(
         rowColor,
-        style.stripedColor ?? BsTableStyle.defaultColor,
+        onDark ? BsColors.white : style.stripedColor ?? BsTableStyle.defaultColor,
         style.stripedBackgroundOpacity ??
             BsTableStyle.defaultStripedBackgroundOpacity,
       );
@@ -227,7 +255,7 @@ class _BsTableState extends State<BsTable> {
     if (widget.hover && _hoveredRow == index) {
       rowColor = _blend(
         rowColor,
-        style.hoverColor ?? BsTableStyle.defaultColor,
+        onDark ? BsColors.white : style.hoverColor ?? BsTableStyle.defaultColor,
         style.hoverBackgroundOpacity ??
             BsTableStyle.defaultHoverBackgroundOpacity,
       );
@@ -235,7 +263,7 @@ class _BsTableState extends State<BsTable> {
     if (row.active) {
       rowColor = _blend(
         rowColor,
-        style.activeColor ?? BsTableStyle.defaultColor,
+        onDark ? BsColors.white : style.activeColor ?? BsTableStyle.defaultColor,
         style.activeBackgroundOpacity ??
             BsTableStyle.defaultActiveBackgroundOpacity,
       );
@@ -248,12 +276,20 @@ class _BsTableState extends State<BsTable> {
     // `.table-group-divider`: a 2px `currentcolor` rule above a row group, 1px
     // more than the ordinary rule it replaces.
     final groupStart = !widget.bordered && !widget.borderless && row.groupStart;
+    // `border-color: mix(text, background, 20%)` under a variant row.
+    final bottom = rowRule == null
+        ? null
+        : rowText == null
+        ? rowRule
+        : BorderSide(
+            color: Color.alphaBlend(rowText.withValues(alpha: 0.2), rowColor),
+            width: rowRule.width,
+          );
     return TableRow(
-      decoration: BoxDecoration(
+      decoration: _SnappedRowDecoration(
         color: rowColor,
-        border: groupStart
-            ? Border(top: BorderSide(color: ruleColor, width: 2))
-            : null,
+        top: groupStart ? BorderSide(color: ruleColor, width: 2) : null,
+        bottom: bottom,
       ),
       children: [
         for (final cell in row.cells)
@@ -263,6 +299,7 @@ class _BsTableState extends State<BsTable> {
                 ? padding.add(const EdgeInsets.only(top: 1))
                 : padding,
             hoverRow: widget.hover ? index : null,
+            color: rowText,
           ),
       ],
     );
@@ -273,13 +310,14 @@ class _BsTableState extends State<BsTable> {
     required EdgeInsetsGeometry padding,
     FontWeight? fontWeight,
     int? hoverRow,
+    Color? color,
   }) {
     Widget cell = Padding(
       padding: padding,
-      child: fontWeight == null
+      child: fontWeight == null && color == null
           ? child
           : DefaultTextStyle.merge(
-              style: TextStyle(fontWeight: fontWeight),
+              style: TextStyle(fontWeight: fontWeight, color: color),
               child: child,
             ),
     );
@@ -299,4 +337,63 @@ class _BsTableState extends State<BsTable> {
 
   Color _blend(Color base, Color tint, double opacity) =>
       Color.alphaBlend(tint.withValues(alpha: opacity), base);
+}
+
+/// A row's background, with an optional rule along its top and bottom edges,
+/// painted the way a browser paints table cells: every edge snapped to a whole
+/// device pixel, so a 1px rule is one crisp row (CSS layout is fractional, and
+/// Flutter would blur the rule over two rows).
+class _SnappedRowDecoration extends Decoration {
+  const _SnappedRowDecoration({required this.color, this.top, this.bottom});
+
+  final Color color;
+  final BorderSide? top;
+  final BorderSide? bottom;
+
+  @override
+  BoxPainter createBoxPainter([VoidCallback? onChanged]) => _SnappedRowPainter(this);
+
+  @override
+  bool operator ==(Object other) =>
+      other is _SnappedRowDecoration && other.color == color && other.top == top && other.bottom == bottom;
+
+  @override
+  int get hashCode => Object.hash(color, top, bottom);
+}
+
+class _SnappedRowPainter extends BoxPainter {
+  _SnappedRowPainter(this.decoration);
+
+  final _SnappedRowDecoration decoration;
+
+  @override
+  void paint(Canvas canvas, Offset offset, ImageConfiguration configuration) {
+    final size = configuration.size;
+    if (size == null) return;
+    // Device pixels per logical pixel, and where the canvas's origin is.
+    final m = canvas.getTransform();
+    final sx = m[0] == 0 ? 1.0 : m[0];
+    final sy = m[5] == 0 ? 1.0 : m[5];
+    double snapX(double x) => ((m[12] + x * sx).roundToDouble() - m[12]) / sx;
+    double snapY(double y) => ((m[13] + y * sy).roundToDouble() - m[13]) / sy;
+
+    final left = snapX(offset.dx);
+    final right = snapX(offset.dx + size.width);
+    final top = snapY(offset.dy);
+    final bottom = snapY(offset.dy + size.height);
+
+    if (decoration.color.a > 0) {
+      canvas.drawRect(Rect.fromLTRB(left, top, right, bottom), Paint()..color = decoration.color);
+    }
+    final topRule = decoration.top;
+    if (topRule != null && topRule.width > 0) {
+      final h = (topRule.width * sy).roundToDouble().clamp(1, double.infinity) / sy;
+      canvas.drawRect(Rect.fromLTRB(left, top, right, top + h), Paint()..color = topRule.color);
+    }
+    final bottomRule = decoration.bottom;
+    if (bottomRule != null && bottomRule.width > 0) {
+      final h = (bottomRule.width * sy).roundToDouble().clamp(1, double.infinity) / sy;
+      canvas.drawRect(Rect.fromLTRB(left, bottom - h, right, bottom), Paint()..color = bottomRule.color);
+    }
+  }
 }
