@@ -228,4 +228,23 @@ void main() {
     }
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets('Tapping an indicator moves the active dot as well as the slide', (tester) async {
+    await tester.pumpWidget(buildCarousel(interval: null));
+
+    // The dots are the AnimatedOpacity-wrapped colored boxes (the controls are
+    // AnimatedOpacity too): full opacity for the active one.
+    List<double> dots() => [
+      for (final w in tester.widgetList<AnimatedOpacity>(find.byType(AnimatedOpacity)))
+        if (w.child is ColoredBox) w.opacity,
+    ];
+    expect(dots(), [1.0, 0.5, 0.5]);
+
+    // The middle dot: centered, its hit area just above the 1rem bottom margin.
+    final box = tester.getRect(find.byType(BsCarousel));
+    await tester.tapAt(Offset(box.center.dx, box.bottom - 31));
+    await tester.pumpAndSettle();
+    expect(find.text('Slide 1'), findsOneWidget);
+    expect(dots(), [0.5, 1.0, 0.5]);
+  });
 }

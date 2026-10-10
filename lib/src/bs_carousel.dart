@@ -252,6 +252,9 @@ class _BsCarouselState extends State<BsCarousel> {
   void _handleControllerChanged() {
     widget.onIndexChanged?.call(_controller.index);
     widget.onSlide?.call();
+    // (the indicators show the controller's index: slide mode, which only
+    // animates the PageView below, must rebuild them itself)
+    setState(() {});
 
     final duration = BsTransitions.resolve(
       context,
@@ -274,7 +277,7 @@ class _BsCarouselState extends State<BsCarousel> {
         _pageController.animateToPage(currentPage + delta, duration: duration, curve: Curves.easeInOut);
       }
     } else {
-      setState(() {}); // AnimatedSwitcher/KeyedSubtree picks up the new index
+      // (the setState above has AnimatedSwitcher/KeyedSubtree pick up the new index)
       // AnimatedSwitcher has no onEnd of its own to hook onSlid off of, so
       // this approximates it — swiping isn't possible in fade mode, so
       // there's no organic-completion signal to unify with instead.
