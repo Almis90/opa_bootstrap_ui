@@ -437,6 +437,8 @@ class _BsNavLinkWidgetState extends State<_BsNavLinkWidget> {
       onExit: enabled ? (_) => setState(() => _hovered = false) : null,
       child: BsFocusableBuilder(
         enabled: enabled,
+        // `.nav-link:focus-visible`
+        focusVisibleOnly: true,
         builder: (context, focused) => GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: enabled ? item.onTap : null,

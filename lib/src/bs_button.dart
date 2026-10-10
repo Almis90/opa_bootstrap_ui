@@ -166,6 +166,8 @@ class _BsButtonState extends State<BsButton> {
       child: BsFocusableBuilder(
         focusNode: widget.focusNode,
         autofocus: widget.autofocus,
+        // `.btn:focus-visible`
+        focusVisibleOnly: true,
         builder: (context, focused) {
           final boxShadow = <BoxShadow>[
             ...?(isActive ? style.activeShadow : style.boxShadow),
