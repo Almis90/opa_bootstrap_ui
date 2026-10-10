@@ -109,18 +109,38 @@ class BsCollapse extends StatefulWidget {
   State<BsCollapse> createState() => _BsCollapseState();
 }
 
-class _BsCollapseState extends State<BsCollapse> {
+class _BsCollapseState extends State<BsCollapse> with SingleTickerProviderStateMixin {
   BsCollapseController? _ownedController;
   bool _wasExpanded = false;
   bool? _pendingTransitionTarget;
 
+  /// Progresses 0 -> 1 over each transition, whichever way it goes: CSS
+  /// transitions `height` from where it is to where it is going with the same
+  /// timing function either way (`.collapsing`), so closing is `ease` too, not
+  /// opening's curve run backwards.
+  late final AnimationController _transition = AnimationController(vsync: this)
+    ..addListener(() => setState(() {}))
+    ..addStatusListener(_handleTransitionStatus);
+
+  /// The fraction of the content's size shown (0 collapsed, 1 expanded) a
+  /// transition starts from and heads to; just [_to] once it has ended.
+  double _from = 0;
+  double _to = 0;
+
   BsCollapseController get _controller =>
       widget.controller ?? (_ownedController ??= BsCollapseController(initiallyExpanded: widget.isExpanded ?? false));
+
+  double get _sizeFactor {
+    if (!_transition.isAnimating) return _to;
+    final t = (widget.curve ?? BsTransitions.collapseCurve).transform(_transition.value);
+    return (_from + (_to - _from) * t).clamp(0.0, 1.0);
+  }
 
   @override
   void initState() {
     super.initState();
     _wasExpanded = _controller.isExpanded;
+    _from = _to = _wasExpanded ? 1 : 0;
     _controller.addListener(_handleControllerChanged);
   }
 
@@ -135,9 +155,11 @@ class _BsCollapseState extends State<BsCollapse> {
   }
 
   void _handleControllerChanged() {
-    setState(() {}); // reflects the new isExpanded in the AnimatedSize below
     final isExpanded = _controller.isExpanded;
-    if (isExpanded == _wasExpanded) return;
+    if (isExpanded == _wasExpanded) {
+      setState(() {});
+      return;
+    }
     _wasExpanded = isExpanded;
     _pendingTransitionTarget = isExpanded;
     if (isExpanded) {
@@ -145,13 +167,18 @@ class _BsCollapseState extends State<BsCollapse> {
     } else {
       widget.onHide?.call();
     }
+    // From wherever it is now (a transition may be cut short by the next one).
+    _from = _sizeFactor;
+    _to = isExpanded ? 1 : 0;
+    _transition.duration = BsTransitions.resolve(context, widget.duration ?? BsTransitions.collapse);
+    _transition.forward(from: 0);
+    setState(() {});
   }
 
-  void _handleSizeEnd() {
-    // AnimatedSize.onEnd fires for *any* settled size change, not just
-    // expand/collapse — e.g. the child's own intrinsic size changing while
-    // already expanded. Only treat it as onShown/onHidden when it lines up
-    // with a transition _handleControllerChanged actually started.
+  void _handleTransitionStatus(AnimationStatus status) {
+    if (status != AnimationStatus.completed) return;
+    // Only the end of a transition _handleControllerChanged started counts as
+    // onShown/onHidden.
     if (_pendingTransitionTarget == null || _pendingTransitionTarget != _controller.isExpanded) return;
     _pendingTransitionTarget = null;
     if (_controller.isExpanded) {
@@ -165,32 +192,39 @@ class _BsCollapseState extends State<BsCollapse> {
   void dispose() {
     _controller.removeListener(_handleControllerChanged);
     _ownedController?.dispose();
+    _transition.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final horizontal = widget.axis == BsCollapseAxis.horizontal;
-    final isExpanded = _controller.isExpanded;
+    final factor = _sizeFactor;
 
+    // Collapsed (and not on the way anywhere): nothing but the box's footprint.
+    if (!_transition.isAnimating && factor <= 0) {
+      return ClipRect(
+        child: horizontal
+            ? const SizedBox(width: 0, height: double.infinity)
+            : const SizedBox(width: double.infinity, height: 0),
+      );
+    }
+
+    // While it opens or closes the content stays at its full size and is
+    // revealed, or covered, from the start edge (what `.collapsing`'s
+    // `overflow: hidden` and animated height do), rather than being swapped for
+    // nothing the moment a close begins.
     return ClipRect(
-      child: AnimatedSize(
-        duration: BsTransitions.resolve(context, widget.duration ?? BsTransitions.collapse),
-        curve: widget.curve ?? BsTransitions.collapseCurve,
-        // AnimatedSize.alignment is AlignmentGeometry, so centerStart
-        // resolves against the ambient Directionality automatically — the
-        // horizontal collapse grows from the reading-start edge outward,
-        // matching normal RTL block flow instead of always the left.
-        alignment: horizontal ? AlignmentDirectional.centerStart : Alignment.topCenter,
-        onEnd: _handleSizeEnd,
-        child: isExpanded
-            // (a vertical collapse is a block, full width collapsed or not:
-            // only its height animates, and the content doesn't slide sideways
-            // while the box grows from the width of nothing)
-            ? (horizontal ? widget.child : SizedBox(width: double.infinity, child: widget.child))
-            : (horizontal
-                  ? const SizedBox(width: 0, height: double.infinity)
-                  : const SizedBox(width: double.infinity, height: 0)),
+      child: Align(
+        // AlignmentDirectional, so the horizontal collapse grows from the
+        // reading-start edge outward, matching normal RTL block flow instead
+        // of always the left.
+        alignment: horizontal ? AlignmentDirectional.centerStart : AlignmentDirectional.topStart,
+        heightFactor: horizontal ? null : factor,
+        widthFactor: horizontal ? factor : null,
+        // (a vertical collapse is a block, full width however far open: only
+        // its height animates, and the content doesn't shift sideways)
+        child: horizontal ? widget.child : SizedBox(width: double.infinity, child: widget.child),
       ),
     );
   }

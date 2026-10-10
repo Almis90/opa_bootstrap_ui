@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import 'bs_clip_rrect.dart';
+import 'bs_collapse.dart';
 import 'bs_focusable.dart';
 import 'bs_theme.dart';
 import 'tokens/bs_accordion_style.dart';
@@ -466,21 +467,20 @@ class _BsAccordionItemViewState extends State<_BsAccordionItemView> {
                 ),
               ),
             ),
-            AnimatedSize(
+            // `.accordion-collapse.collapse`: Bootstrap's own collapse, so it
+            // opens and closes the way every `.collapse` does.
+            BsCollapse(
+              isExpanded: widget.isExpanded,
               duration: transitionDuration,
-              curve: Curves.easeInOut,
-              alignment: Alignment.topCenter,
-              child: widget.isExpanded
-                  ? Container(
-                      width: double.infinity,
-                      padding: style.bodyPadding ?? style.padding ?? BsAccordionStyle.defaultPadding,
-                      color: background,
-                      child: DefaultTextStyle.merge(
-                        style: TextStyle(color: style.color ?? BsAccordionStyle.defaultColor),
-                        child: widget.item.body,
-                      ),
-                    )
-                  : const SizedBox(width: double.infinity, height: 0),
+              child: Container(
+                width: double.infinity,
+                padding: style.bodyPadding ?? style.padding ?? BsAccordionStyle.defaultPadding,
+                color: background,
+                child: DefaultTextStyle.merge(
+                  style: TextStyle(color: style.color ?? BsAccordionStyle.defaultColor),
+                  child: widget.item.body,
+                ),
+              ),
             ),
           ],
         ),

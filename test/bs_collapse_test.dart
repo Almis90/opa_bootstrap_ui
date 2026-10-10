@@ -185,4 +185,35 @@ void main() {
       expect(tester.getTopLeft(find.text('Content')).dx, midway);
     },
   );
+
+  testWidgets('closing keeps the content in view while the height eases to 0, like `transition: height .35s ease`', (tester) async {
+    var expanded = true;
+    late StateSetter setState;
+
+    await tester.pumpWidget(
+      wrap(
+        StatefulBuilder(
+          builder: (context, setter) {
+            setState = setter;
+            return BsCollapse(isExpanded: expanded, child: const SizedBox(height: 200, child: Text('Content')));
+          },
+        ),
+      ),
+    );
+    final collapse = find.byType(BsCollapse);
+    expect(tester.getSize(collapse).height, 200);
+
+    setState(() => expanded = false);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 175));
+
+    // Halfway through the time `ease` has covered about 80% of the way: some
+    // 20% of the height is left, and the content is still there to see.
+    expect(find.text('Content'), findsOneWidget);
+    expect(tester.getSize(collapse).height, closeTo(200 * (1 - Curves.ease.transform(0.5)), 2));
+
+    await tester.pumpAndSettle();
+    expect(find.text('Content'), findsNothing);
+    expect(tester.getSize(collapse).height, 0);
+  });
 }
