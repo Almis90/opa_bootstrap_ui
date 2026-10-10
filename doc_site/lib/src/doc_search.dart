@@ -121,15 +121,29 @@ class _DocSearchButtonState extends State<DocSearchButton> {
                       for (final key in [_shortcutModifier, 'K'])
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 2),
-                          child: Text(
-                            key,
-                            style: const TextStyle(
-                              color: muted,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                              height: 20 / 14,
-                            ),
-                          ),
+                          // (drawn: a text "⌘" is a glyph the engine
+                          // would have to download a font for)
+                          child: key == '⌘'
+                              ? const SizedBox(
+                                  height: 20,
+                                  child: Center(
+                                    child: BootstrapIcon(
+                                      BootstrapIconData.command,
+                                      width: 12,
+                                      height: 12,
+                                      color: muted,
+                                    ),
+                                  ),
+                                )
+                              : Text(
+                                  key,
+                                  style: const TextStyle(
+                                    color: muted,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                    height: 20 / 14,
+                                  ),
+                                ),
                         ),
                     ],
                   ),
@@ -724,10 +738,8 @@ class _Footer extends StatelessWidget {
       ),
       child: child,
     );
-    Widget glyph(String text) => Text(
-      text,
-      style: TextStyle(color: palette.muted, fontSize: 12, height: 1),
-    );
+    Widget glyph(BootstrapIconData icon) =>
+        BootstrapIcon(icon, width: 12, height: 12, color: palette.muted);
     Widget label(String text) => Padding(
       padding: const EdgeInsets.only(left: 8, right: 16),
       child: Text(
@@ -761,11 +773,11 @@ class _Footer extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 12),
           child: Row(
             children: [
-              key(glyph('↵')),
+              key(glyph(BootstrapIconData.docSearchEnter)),
               label('to select'),
-              key(glyph('↓')),
+              key(glyph(BootstrapIconData.docSearchArrowDown)),
               const SizedBox(width: 4),
-              key(glyph('↑')),
+              key(glyph(BootstrapIconData.docSearchArrowUp)),
               label('to navigate'),
               Container(
                 height: 18,

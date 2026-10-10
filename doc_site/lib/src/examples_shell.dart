@@ -2,6 +2,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 
+import 'bootstrap_icon.dart';
 import 'example_entry.dart';
 import 'example_theme_toggler.dart';
 
@@ -169,12 +170,24 @@ class _ExampleCardState extends State<_ExampleCard> {
                   ),
                 ),
                 const SizedBox(height: 12),
-                Text(
-                  'View example →',
-                  style: TextStyle(
-                    color: BsColors.blue,
-                    fontWeight: FontWeight.w500,
-                  ),
+                // (the arrow is drawn: as a text glyph it is one the web engine
+                // has to download a font for, showing a box until it arrives)
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'View example',
+                      style: TextStyle(
+                        color: BsColors.blue,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    BootstrapIcon(
+                      BootstrapIconData.arrowRight,
+                      color: BsColors.blue,
+                    ),
+                  ],
                 ),
               ],
             ),

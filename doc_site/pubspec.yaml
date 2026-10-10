@@ -51,6 +51,14 @@ flutter:
           weight: 700
         - asset: assets/fonts/PlayfairDisplay-Black.ttf
           weight: 900
+    # The Arabic pages' body text: Noto Sans Arabic Regular (SIL Open Font
+    # License), the arabic subset Google Fonts serves, as a TTF (the web engine
+    # can't read WOFF2). Without it the engine fetches the font from
+    # fonts.gstatic.com the first time Arabic text is drawn, and shows boxes
+    # until it arrives.
+    - family: Noto Sans Arabic
+      fonts:
+        - asset: assets/fonts/NotoSansArabic.ttf
     - family: Amiri
       fonts:
         - asset: assets/fonts/Amiri-Regular.woff

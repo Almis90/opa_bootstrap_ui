@@ -36,6 +36,7 @@ class BsApp extends StatelessWidget {
     this.title,
     this.onGenerateTitle,
     this.textStyle,
+    this.extraFontFamilyFallback = const [],
     this.color,
     this.brightness = Brightness.light,
     this.locale,
@@ -71,6 +72,12 @@ class BsApp extends StatelessWidget {
   /// opt out of the brightness-aware default.
   final TextStyle? textStyle;
 
+  /// Font families tried after [BsTypography.fontFamilySansSerif] for glyphs
+  /// none of them has — typically a bundled font for a script the stack lacks
+  /// (Arabic, say), so the engine need not download one on first use.
+  /// Ignored when [textStyle] is set.
+  final List<String> extraFontFamilyFallback;
+
   /// Defaults to [BsColors.blue]. Only affects the OS task-switcher entry —
   /// this package has no `ThemeData`-style primary color to derive from.
   final Color? color;
@@ -96,11 +103,14 @@ class BsApp extends StatelessWidget {
   final Map<Type, Action<Intent>>? actions;
   final String? restorationScopeId;
 
-  static TextStyle _defaultTextStyle(BuildContext context) {
+  TextStyle _defaultTextStyle(BuildContext context) {
     return TextStyle(
       color: BsBody.colorOf(context),
       fontFamily: BsTypography.fontFamilySansSerif.first,
-      fontFamilyFallback: BsTypography.fontFamilySansSerif.skip(1).toList(),
+      fontFamilyFallback: [
+        ...BsTypography.fontFamilySansSerif.skip(1),
+        ...extraFontFamilyFallback,
+      ],
       fontSize: BsTypography.fontSizeBase,
       fontWeight: BsTypography.fontWeightBase,
       // `body { line-height: $line-height-base }` — every `.nav-link`,
@@ -115,7 +125,8 @@ class BsApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final resolvedBrightness = brightness ?? MediaQuery.platformBrightnessOf(context);
+    final resolvedBrightness =
+        brightness ?? MediaQuery.platformBrightnessOf(context);
     return WidgetsApp(
       navigatorKey: navigatorKey,
       home: home,
@@ -127,7 +138,8 @@ class BsApp extends StatelessWidget {
       navigatorObservers: navigatorObservers,
       pageRouteBuilder: <T>(settings, pageBuilder) => PageRouteBuilder<T>(
         settings: settings,
-        pageBuilder: (context, animation, secondaryAnimation) => pageBuilder(context),
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            pageBuilder(context),
       ),
       builder: (context, child) => BsTheme(
         brightness: resolvedBrightness,

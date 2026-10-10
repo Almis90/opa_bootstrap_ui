@@ -111,6 +111,8 @@ class _DocAppState extends State<DocApp> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return BsApp(
+      // The Arabic pages' font, bundled (see pubspec.yaml).
+      extraFontFamilyFallback: const ['Noto Sans Arabic'],
       brightness: _themeMode,
       debugShowCheckedModeBanner: false,
       home: DocShell(

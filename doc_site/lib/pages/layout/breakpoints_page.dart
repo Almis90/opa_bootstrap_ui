@@ -32,7 +32,7 @@ LayoutBuilder(
             builder: (context, constraints) {
               final breakpoint = BsBreakpoint.forWidth(constraints.maxWidth);
               return Text(
-                'Available width: ${constraints.maxWidth.toStringAsFixed(0)}px  →  '
+                'Available width: ${constraints.maxWidth.toStringAsFixed(0)}px  —  '
                 '${breakpoint.name} (applies at ≥${breakpoint.minWidth.toStringAsFixed(0)}px)',
               );
             },

@@ -217,6 +217,14 @@ class _BsButtonState extends State<BsButton> {
                   style: (style.textStyle ?? const TextStyle()).copyWith(
                     color: color,
                     fontWeight: widget.fw?.weight,
+                    // (this replaces the ambient style, but not its fonts: a
+                    // button's text uses the page's, fallbacks included)
+                    fontFamily:
+                        style.textStyle?.fontFamily ??
+                        DefaultTextStyle.of(context).style.fontFamily,
+                    fontFamilyFallback:
+                        style.textStyle?.fontFamilyFallback ??
+                        DefaultTextStyle.of(context).style.fontFamilyFallback,
                   ),
                   textAlign: TextAlign.center,
                   child: widget.noWrap
