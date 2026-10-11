@@ -4,6 +4,7 @@ import 'bs_dropdown.dart';
 import 'bs_form_control.dart';
 import 'bs_theme.dart';
 import 'bs_validation_icon.dart';
+import 'tokens/bs_dropdown_style.dart';
 import 'tokens/bs_form_style.dart';
 import 'bs_decorated_box.dart';
 
@@ -56,7 +57,8 @@ class BsFormSelect<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = BsTheme.of(context) == Brightness.dark;
-    final style = (isDark ? BsFormStyle.darkDefaults : BsFormStyle.defaults).merge(this.style);
+    final style = (isDark ? BsFormStyle.darkDefaults : BsFormStyle.defaults)
+        .merge(this.style);
     final enabled = onChanged != null;
     final padding = switch (size) {
       BsFormControlSize.small =>
@@ -92,86 +94,94 @@ class BsFormSelect<T> extends StatelessWidget {
     }
     final displayed = selectedLabel ?? placeholder ?? const SizedBox.shrink();
 
-    return BsDropdown(
-      toggleBuilder: (context, toggle, isOpen) {
-        final borderColor = switch (valid) {
-          false => style.invalidColor ?? BsFormStyle.defaultInvalidColor,
-          true => style.validColor ?? BsFormStyle.defaultValidColor,
-          null =>
-            isOpen
-                ? (style.inputFocusBorderColor ??
-                      BsFormStyle.defaultInputFocusBorderColor)
-                : (style.inputBorderColor ??
-                      BsFormStyle.defaultInputBorderColor),
-        };
+    // A `<select>`'s list is at least as wide as the control, however short its
+    // options are: the menu takes the control's width as its minimum.
+    return LayoutBuilder(
+      builder: (context, constraints) => BsDropdown(
+        style: constraints.hasBoundedWidth
+            ? BsDropdownStyle(minWidth: constraints.maxWidth)
+            : null,
+        toggleBuilder: (context, toggle, isOpen) {
+          final borderColor = switch (valid) {
+            false => style.invalidColor ?? BsFormStyle.defaultInvalidColor,
+            true => style.validColor ?? BsFormStyle.defaultValidColor,
+            null =>
+              isOpen
+                  ? (style.inputFocusBorderColor ??
+                        BsFormStyle.defaultInputFocusBorderColor)
+                  : (style.inputBorderColor ??
+                        BsFormStyle.defaultInputBorderColor),
+          };
 
-        return GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: enabled ? toggle : null,
-          child: BsDecoratedContainer(
-            padding: padding,
-            decoration: BoxDecoration(
-              color: enabled
-                  ? (style.inputBackground ??
-                        BsFormStyle.defaultInputBackground)
-                  : (style.inputDisabledBackground ??
-                        BsFormStyle.defaultInputDisabledBackground),
-              border: Border.all(
-                color: borderColor,
-                width:
-                    style.inputBorderWidth ??
-                    BsFormStyle.defaultInputBorderWidth,
+          return GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: enabled ? toggle : null,
+            child: BsDecoratedContainer(
+              padding: padding,
+              decoration: BoxDecoration(
+                color: enabled
+                    ? (style.inputBackground ??
+                          BsFormStyle.defaultInputBackground)
+                    : (style.inputDisabledBackground ??
+                          BsFormStyle.defaultInputDisabledBackground),
+                border: Border.all(
+                  color: borderColor,
+                  width:
+                      style.inputBorderWidth ??
+                      BsFormStyle.defaultInputBorderWidth,
+                ),
+                borderRadius: BorderRadius.circular(borderRadius),
+                boxShadow: isOpen
+                    ? (style.inputFocusBoxShadow ??
+                          BsFormStyle.defaultInputFocusBoxShadow)
+                    : null,
               ),
-              borderRadius: BorderRadius.circular(borderRadius),
-              boxShadow: isOpen
-                  ? (style.inputFocusBoxShadow ??
-                        BsFormStyle.defaultInputFocusBoxShadow)
-                  : null,
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: DefaultTextStyle.merge(
-                    style: TextStyle(
-                      fontSize: fontSize,
-                      fontWeight:
-                          style.inputFontWeight ??
-                          BsFormStyle.defaultInputFontWeight,
-                      color: style.inputColor ?? BsFormStyle.defaultInputColor,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: DefaultTextStyle.merge(
+                      style: TextStyle(
+                        fontSize: fontSize,
+                        fontWeight:
+                            style.inputFontWeight ??
+                            BsFormStyle.defaultInputFontWeight,
+                        color:
+                            style.inputColor ?? BsFormStyle.defaultInputColor,
+                      ),
+                      child: displayed,
                     ),
-                    child: displayed,
                   ),
-                ),
-                if (valid != null) ...[
-                  const SizedBox(width: 12),
-                  BsValidationIcon(valid: valid!, fontSize: fontSize),
+                  if (valid != null) ...[
+                    const SizedBox(width: 12),
+                    BsValidationIcon(valid: valid!, fontSize: fontSize),
+                  ],
+                  const SizedBox(width: 8),
+                  // `$form-select-indicator`: a 16x12 chevron (`m2 5 6 6 6-6`, a
+                  // 2px round stroke)
+                  CustomPaint(
+                    size:
+                        style.selectBackgroundSize ??
+                        BsFormStyle.defaultSelectBackgroundSize,
+                    painter: _SelectChevronPainter(
+                      style.selectIndicatorColor ??
+                          BsFormStyle.defaultSelectIndicatorColor,
+                    ),
+                  ),
                 ],
-                const SizedBox(width: 8),
-                // `$form-select-indicator`: a 16x12 chevron (`m2 5 6 6 6-6`, a
-                // 2px round stroke)
-                CustomPaint(
-                  size:
-                      style.selectBackgroundSize ??
-                      BsFormStyle.defaultSelectBackgroundSize,
-                  painter: _SelectChevronPainter(
-                    style.selectIndicatorColor ??
-                        BsFormStyle.defaultSelectIndicatorColor,
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
-        );
-      },
-      items: [
-        for (final item in items)
-          BsDropdownItem(
-            active: item.value == value,
-            onTap: enabled ? () => onChanged!(item.value) : null,
-            disabled: !enabled,
-            child: item.label,
-          ),
-      ],
+          );
+        },
+        items: [
+          for (final item in items)
+            BsDropdownItem(
+              active: item.value == value,
+              onTap: enabled ? () => onChanged!(item.value) : null,
+              disabled: !enabled,
+              child: item.label,
+            ),
+        ],
+      ),
     );
   }
 }
@@ -207,5 +217,6 @@ class _SelectChevronPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_SelectChevronPainter oldDelegate) => oldDelegate.color != color;
+  bool shouldRepaint(_SelectChevronPainter oldDelegate) =>
+      oldDelegate.color != color;
 }
