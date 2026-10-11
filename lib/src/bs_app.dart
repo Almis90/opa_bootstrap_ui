@@ -149,7 +149,8 @@ class BsApp extends StatelessWidget {
               style: textStyle ?? _defaultTextStyle(context),
               child: child!,
             );
-            return builder == null ? styled : builder!(context, styled);
+            final blurring = _BsBlurOnPointerOutside(child: styled);
+            return builder == null ? blurring : builder!(context, blurring);
           },
         ),
       ),
@@ -170,4 +171,31 @@ class BsApp extends StatelessWidget {
       restorationScopeId: restorationScopeId,
     );
   }
+}
+
+/// A browser takes focus off a control when something else is pressed; Flutter
+/// leaves it where it is. A pointer pressed outside the focused control's box
+/// unfocuses it (and so its focus ring), and a control that was pressed takes
+/// the focus itself as it handles the tap.
+class _BsBlurOnPointerOutside extends StatelessWidget {
+  const _BsBlurOnPointerOutside({required this.child});
+
+  final Widget child;
+
+  static void _onPointerDown(PointerDownEvent event) {
+    final node = FocusManager.instance.primaryFocus;
+    if (node == null || node is FocusScopeNode) return;
+    final box = node.context?.findRenderObject();
+    if (box is RenderBox && box.attached && box.hasSize) {
+      if ((Offset.zero & box.size).contains(box.globalToLocal(event.position))) return;
+    }
+    node.unfocus();
+  }
+
+  @override
+  Widget build(BuildContext context) => Listener(
+    behavior: HitTestBehavior.translucent,
+    onPointerDown: _onPointerDown,
+    child: child,
+  );
 }

@@ -71,4 +71,59 @@ void main() {
     await tester.pump();
     expect(ring(), findsNothing);
   });
+
+  testWidgets(
+    'pressing elsewhere takes the focus (and the ring) off, as a browser does; pressing another control moves it',
+    (tester) async {
+      var a = false, b = false;
+      late StateSetter setState;
+      await tester.pumpWidget(
+        BsApp(
+          home: Align(
+            alignment: Alignment.topLeft,
+            child: StatefulBuilder(
+              builder: (context, setter) {
+                setState = setter;
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    BsFormCheck(
+                      value: a,
+                      onChanged: (v) => setState(() => a = v),
+                      label: const Text('First'),
+                    ),
+                    const SizedBox(height: 40),
+                    BsFormCheck(
+                      value: b,
+                      onChanged: (v) => setState(() => b = v),
+                      label: const Text('Second'),
+                    ),
+                    const SizedBox(key: Key('empty'), width: 200, height: 100),
+                  ],
+                );
+              },
+            ),
+          ),
+        ),
+      );
+
+      await tester.tap(find.text('First'));
+      await tester.pump();
+      expect(ring(), findsOneWidget);
+
+      await tester.tap(find.byKey(const Key('empty')), warnIfMissed: false);
+      await tester.pump();
+      expect(ring(), findsNothing, reason: 'a press elsewhere blurs it');
+
+      await tester.tap(find.text('First'));
+      await tester.pump();
+      await tester.tap(find.text('Second'));
+      await tester.pump();
+      expect(
+        ring(),
+        findsOneWidget,
+        reason: 'only the control last pressed has it',
+      );
+    },
+  );
 }

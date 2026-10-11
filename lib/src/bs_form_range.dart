@@ -116,9 +116,11 @@ class _BsFormRangeState extends State<BsFormRange> {
 
     // `.form-range:focus`: the thumb gets a 1px halo of the page's background
     // and the `.25rem` focus ring (not `:focus-visible`: a clicked range keeps it).
+    // (Flutter paints a list of shadows first to last, CSS last to first: the
+    // halo goes last so it is on top of the ring's translucent fill)
     final focusRing = [
-      BoxShadow(color: BsBody.backgroundOf(context), spreadRadius: 1),
       ...(style.inputFocusBoxShadow ?? BsFormStyle.defaultInputFocusBoxShadow),
+      BoxShadow(color: BsBody.backgroundOf(context), spreadRadius: 1),
     ];
 
     return Focus(
