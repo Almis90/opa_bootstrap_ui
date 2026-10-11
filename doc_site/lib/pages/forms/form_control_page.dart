@@ -3,6 +3,7 @@ import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 
 import '../../src/doc_example.dart';
 import '../../src/doc_page.dart';
+import '../../src/example_file_input.dart';
 
 class FormControlPage extends StatelessWidget {
   const FormControlPage({super.key});
@@ -33,7 +34,9 @@ Column(
             children: [
               BsFormLabel(child: Text('Email address')),
               BsFormControl(placeholder: 'name@example.com'),
-              BsFormText(child: Text("We'll never share your email with anyone else.")),
+              BsFormText(
+                child: Text("We'll never share your email with anyone else."),
+              ),
             ],
           ),
         ),
@@ -46,11 +49,17 @@ BsFormControl(placeholder: 'Default input')
 BsFormControl(size: BsFormControlSize.small, placeholder: 'Small input')''',
           preview: const Column(
             children: [
-              BsFormControl(size: BsFormControlSize.large, placeholder: 'Large input'),
+              BsFormControl(
+                size: BsFormControlSize.large,
+                placeholder: 'Large input',
+              ),
               SizedBox(height: 8),
               BsFormControl(placeholder: 'Default input'),
               SizedBox(height: 8),
-              BsFormControl(size: BsFormControlSize.small, placeholder: 'Small input'),
+              BsFormControl(
+                size: BsFormControlSize.small,
+                placeholder: 'Small input',
+              ),
             ],
           ),
         ),
@@ -67,14 +76,19 @@ BsFormControl(placeholder: 'Please provide a value', valid: false)''',
               SizedBox(height: 8),
               BsFormControl(placeholder: 'Looks good!', valid: true),
               SizedBox(height: 8),
-              BsFormControl(placeholder: 'Please provide a value', valid: false),
+              BsFormControl(
+                placeholder: 'Please provide a value',
+                valid: false,
+              ),
             ],
           ),
         ),
         DocExample(
           title: 'File input',
-          description: 'BsFormFile draws the browser\'s file input — the "Choose File" button and the chosen name. '
-              'The package has no file picker, so pass onPressed to open one and fileName for the result.',
+          description:
+              'BsFormFile draws the browser\'s file input — the "Choose File" button and the chosen name. '
+              'The package has no file picker, so pass onPressed to open one and fileName for the result — '
+              'these examples open the browser\'s own file dialog.',
           code: '''
 BsFormFile(onPressed: () {})
 BsFormFile(fileName: 'photo.png', onPressed: () {})
@@ -82,13 +96,14 @@ BsFormFile(size: BsFormControlSize.small, onPressed: () {})
 BsFormFile(enabled: false)''',
           preview: Column(
             children: [
-              BsFormFile(onPressed: () {}),
+              // (these open the browser's file dialog)
+              const ExampleFileInput(),
               const SizedBox(height: 8),
-              BsFormFile(fileName: 'photo.png', onPressed: () {}),
+              const ExampleFileInput(initialFileName: 'photo.png'),
               const SizedBox(height: 8),
-              BsFormFile(size: BsFormControlSize.small, onPressed: () {}),
+              const ExampleFileInput(size: BsFormControlSize.small),
               const SizedBox(height: 8),
-              const BsFormFile(enabled: false),
+              const ExampleFileInput(enabled: false),
             ],
           ),
         ),

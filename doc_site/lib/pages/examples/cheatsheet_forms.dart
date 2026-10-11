@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 
 import 'cheatsheet_env.dart';
+import '../../src/example_file_input.dart';
 
 /// The "Forms" section of the Cheatsheet: Overview, Disabled forms, Sizing,
 /// Input group, Floating labels and Validation (examples 15-21).
@@ -184,7 +185,7 @@ class _CsFormState extends State<CsForm> {
       ),
       field(
         s[uploadAt],
-        BsFormFile(enabled: !disabled, onPressed: disabled ? null : () {}),
+        ExampleFileInput(enabled: !disabled),
       ),
       _mb3(
         BsFormCheck(
