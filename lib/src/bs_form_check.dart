@@ -1,6 +1,8 @@
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 import 'bs_dashed_border.dart';
+import 'bs_focusable.dart';
 import 'bs_theme.dart';
 import 'bs_variant.dart';
 import 'tokens/bs_form_style.dart';
@@ -61,45 +63,100 @@ class BsFormCheck extends StatelessWidget {
     final accent = valid == null
         ? null
         : (valid! ? BsVariant.success.color : BsVariant.danger.color);
-    final control = switch (type) {
-      BsFormCheckType.switchToggle => _BsFormSwitchGlyph(
-        value: value,
-        style: style,
-      ),
-      _ => _BsFormCheckGlyph(
-        type: type,
-        value: value,
-        style: style,
-        accent: accent,
-      ),
-    };
-
     return Opacity(
       opacity: enabled
           ? 1
           : (style.checkInputDisabledOpacity ??
                 BsFormStyle.defaultCheckInputDisabledOpacity),
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: onTap,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            control,
-            if (label != null) ...[
-              const SizedBox(width: 8),
-              Flexible(
-                child: accent == null
-                    ? label!
-                    : DefaultTextStyle.merge(
-                        style: TextStyle(color: accent),
-                        child: label!,
-                      ),
+      // (a checkbox is toggled with Space)
+      child: _SpaceToggles(
+        enabled: enabled,
+        onToggle: onTap,
+        // `.form-check-input:focus` (not `:focus-visible`: a clicked checkbox
+        // keeps its ring)
+        child: BsFocusableBuilder(
+          enabled: enabled,
+          builder: (context, focused) {
+            final control = switch (type) {
+              BsFormCheckType.switchToggle => _BsFormSwitchGlyph(
+                value: value,
+                style: style,
+                focused: focused,
+                accent: accent,
               ),
-            ],
-          ],
+              _ => _BsFormCheckGlyph(
+                type: type,
+                value: value,
+                style: style,
+                accent: accent,
+                focused: focused,
+              ),
+            };
+            // (a Builder: the focus node is the one just above it)
+            return Builder(
+              builder: (context) => GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: onTap == null
+                    ? null
+                    : () {
+                        Focus.of(context).requestFocus();
+                        onTap();
+                      },
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    control,
+                    if (label != null) ...[
+                      const SizedBox(width: 8),
+                      Flexible(
+                        child: accent == null
+                            ? label!
+                            : DefaultTextStyle.merge(
+                                style: TextStyle(color: accent),
+                                child: label!,
+                              ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            );
+          },
         ),
       ),
+    );
+  }
+}
+
+/// Space presses the [Focus]ed control beneath it, as it does a native
+/// checkbox, radio or switch.
+class _SpaceToggles extends StatelessWidget {
+  const _SpaceToggles({
+    required this.enabled,
+    required this.onToggle,
+    required this.child,
+  });
+
+  final bool enabled;
+  final VoidCallback? onToggle;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Focus(
+      canRequestFocus: false,
+      skipTraversal: true,
+      onKeyEvent: !enabled || onToggle == null
+          ? null
+          : (node, event) {
+              if (event is KeyDownEvent &&
+                  event.logicalKey == LogicalKeyboardKey.space) {
+                onToggle!();
+                return KeyEventResult.handled;
+              }
+              return KeyEventResult.ignored;
+            },
+      child: child,
     );
   }
 }
@@ -113,11 +170,15 @@ class _BsFormCheckGlyph extends StatelessWidget {
     this.dashed = false,
     this.background,
     this.accent,
+    this.focused = false,
   });
 
   final BsFormCheckType type;
   final bool value;
   final BsFormStyle style;
+
+  /// `:focus`: the light-blue border and the ring.
+  final bool focused;
 
   /// A validation color for the border (and the checked fill).
   final Color? accent;
@@ -152,6 +213,13 @@ class _BsFormCheckGlyph extends StatelessWidget {
         ? BorderSide(color: checkedBackground, width: border.width)
         : accent != null
         ? BorderSide(color: accent!, width: border.width)
+        : focused
+        ? BorderSide(
+            color:
+                style.inputFocusBorderColor ??
+                BsFormStyle.defaultInputFocusBorderColor,
+            width: border.width,
+          )
         : border;
 
     return BsDecoratedContainer(
@@ -167,6 +235,7 @@ class _BsFormCheckGlyph extends StatelessWidget {
             ? BsDashedBorder(color: border.color, width: border.width)
             : Border.fromBorderSide(borderSide),
         borderRadius: BorderRadius.circular(radius),
+        boxShadow: focused ? _focusRing(style, accent) : null,
       ),
       child: !value
           ? null
@@ -194,6 +263,12 @@ class _BsFormCheckGlyph extends StatelessWidget {
     );
   }
 }
+
+/// `box-shadow: 0 0 0 .25rem rgba(<color>, .25)` of `:focus`: the primary's, or
+/// the validation color's under `.is-valid`/`.is-invalid`.
+List<BoxShadow> _focusRing(BsFormStyle style, Color? accent) => accent != null
+    ? [BoxShadow(color: accent.withValues(alpha: 0.25), spreadRadius: 4)]
+    : (style.inputFocusBoxShadow ?? BsFormStyle.defaultInputFocusBoxShadow);
 
 /// The checkbox's tick: `M6 10l3 3l6-6` in a 20-unit viewBox, 3 units thick,
 /// with round caps and joins.
@@ -267,24 +342,40 @@ class BsFormCheckInput extends StatelessWidget {
           ? 1
           : (style.checkInputDisabledOpacity ??
                 BsFormStyle.defaultCheckInputDisabledOpacity),
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: enabled ? () => onChanged!(!value) : null,
-        // A fixed `1em` box that a flex line's `align-items: stretch` can't grow.
-        child: Align(
-          alignment: AlignmentDirectional.topStart,
-          widthFactor: 1,
-          heightFactor: 1,
-          child: _BsFormCheckGlyph(
-            type: type,
-            value: value,
-            style: style,
-            size:
-                (style.checkInputSize ?? BsFormStyle.defaultCheckInputSize) *
-                fontSize /
-                16,
-            dashed: dashed,
-            background: background,
+      child: _SpaceToggles(
+        enabled: enabled,
+        onToggle: enabled ? () => onChanged!(!value) : null,
+        child: BsFocusableBuilder(
+          enabled: enabled,
+          builder: (context, focused) => Builder(
+            builder: (context) => GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: enabled
+                  ? () {
+                      Focus.of(context).requestFocus();
+                      onChanged!(!value);
+                    }
+                  : null,
+              // A fixed `1em` box that a flex line's `align-items: stretch` can't grow.
+              child: Align(
+                alignment: AlignmentDirectional.topStart,
+                widthFactor: 1,
+                heightFactor: 1,
+                child: _BsFormCheckGlyph(
+                  type: type,
+                  value: value,
+                  style: style,
+                  size:
+                      (style.checkInputSize ??
+                          BsFormStyle.defaultCheckInputSize) *
+                      fontSize /
+                      16,
+                  dashed: dashed,
+                  background: background,
+                  focused: focused,
+                ),
+              ),
+            ),
           ),
         ),
       ),
@@ -293,10 +384,19 @@ class BsFormCheckInput extends StatelessWidget {
 }
 
 class _BsFormSwitchGlyph extends StatelessWidget {
-  const _BsFormSwitchGlyph({required this.value, required this.style});
+  const _BsFormSwitchGlyph({
+    required this.value,
+    required this.style,
+    this.focused = false,
+    this.accent,
+  });
 
   final bool value;
   final BsFormStyle style;
+
+  /// `:focus`: the light-blue border and thumb, and the ring.
+  final bool focused;
+  final Color? accent;
 
   @override
   Widget build(BuildContext context) {
@@ -307,6 +407,8 @@ class _BsFormSwitchGlyph extends StatelessWidget {
               BsFormStyle.defaults.checkInputCheckedBackground!)
         : (style.switchColor ?? BsFormStyle.defaultSwitchColor);
     final thumbSize = height * 0.75;
+    final focusColor =
+        style.inputFocusBorderColor ?? BsFormStyle.defaultInputFocusBorderColor;
     final transitionDuration = BsTransitions.resolve(
       context,
       style.switchTransitionDuration ??
@@ -325,11 +427,21 @@ class _BsFormSwitchGlyph extends StatelessWidget {
         border: value
             ? null
             : Border.fromBorderSide(
-                style.checkInputBorder ?? BsFormStyle.defaultCheckInputBorder,
+                focused
+                    ? BorderSide(
+                        color: focusColor,
+                        width:
+                            (style.checkInputBorder ??
+                                    BsFormStyle.defaultCheckInputBorder)
+                                .width,
+                      )
+                    : style.checkInputBorder ??
+                          BsFormStyle.defaultCheckInputBorder,
               ),
         borderRadius: BorderRadius.circular(
           style.switchBorderRadius ?? BsFormStyle.defaultSwitchBorderRadius,
         ),
+        boxShadow: focused ? _focusRing(style, accent) : null,
       ),
       child: AnimatedAlign(
         duration: transitionDuration,
@@ -346,6 +458,8 @@ class _BsFormSwitchGlyph extends StatelessWidget {
             color: value
                 ? (style.checkInputCheckedColor ??
                       BsFormStyle.defaultCheckInputCheckedColor)
+                : focused
+                ? focusColor
                 : (style.switchColor ?? BsFormStyle.defaultSwitchColor),
             shape: BoxShape.circle,
           ),
