@@ -3,10 +3,8 @@ import 'package:flutter/painting.dart';
 import 'bs_color_utils.dart';
 import 'bs_colors.dart';
 
-/// Bootstrap contextual color variants.
-///
-/// Mirrors the `$theme-colors` map from Bootstrap's SCSS source
-/// (primary, secondary, success, info, warning, danger, light, dark).
+/// Bootstrap's contextual color variants: primary, secondary, success, info, warning, danger,
+/// light and dark.
 enum BsVariant {
   primary(BsColors.blue),
   secondary(BsColors.gray600),
@@ -19,61 +17,53 @@ enum BsVariant {
 
   const BsVariant(this.color);
 
-  /// The base color this variant resolves to, per Bootstrap's default
-  /// `$theme-colors` map.
+  /// The base color of this variant.
   final Color color;
 
-  /// The CSS class suffix used by Bootstrap, e.g. `btn-primary`, `text-danger`.
+  /// Bootstrap's name for this variant, as used in its utility names.
   String get className => name;
 
-  /// `$#{variant}-text-emphasis`: a darkened, higher-contrast version of
-  /// [color] meant for text on a [bgSubtle] background (e.g. `.alert-*`,
-  /// `.badge-*`). `light`/`dark` are special-cased to `$gray-700` rather
-  /// than the general `shade-color($color, 60%)` formula, per Bootstrap.
+  /// A darkened, higher-contrast version of [color], meant for text on a [bgSubtle] background
+  /// (for example in an alert or a badge). The light and dark variants use a fixed gray rather
+  /// than the general darkening formula.
   Color get textEmphasis => switch (this) {
     BsVariant.light || BsVariant.dark => BsColors.gray700,
     _ => BsColorUtils.shade(color, 0.6),
   };
 
-  /// `$#{variant}-bg-subtle`: a very light tint of [color] meant as a
-  /// background behind [textEmphasis] text. `light`/`dark` are
-  /// special-cased rather than the general `tint-color($color, 80%)`
-  /// formula, per Bootstrap.
+  /// A very light tint of [color], meant as a background behind [textEmphasis] text. The light
+  /// and dark variants use fixed colors rather than the general tint formula.
   Color get bgSubtle => switch (this) {
     BsVariant.light => BsColorUtils.mix(BsColors.gray100, BsColors.white, 0.5),
     BsVariant.dark => BsColors.gray400,
     _ => BsColorUtils.tint(color, 0.8),
   };
 
-  /// `$#{variant}-border-subtle`: a light tint of [color] meant to border a
-  /// [bgSubtle] background. `light`/`dark` are special-cased rather than
-  /// the general `tint-color($color, 60%)` formula, per Bootstrap.
+  /// A light tint of [color], meant to border a [bgSubtle] background. The light and dark
+  /// variants use fixed colors rather than the general tint formula.
   Color get borderSubtle => switch (this) {
     BsVariant.light => BsColors.gray200,
     BsVariant.dark => BsColors.gray500,
     _ => BsColorUtils.tint(color, 0.6),
   };
 
-  /// `$#{variant}-text-emphasis-dark` (`_variables-dark.scss`): the
-  /// `[data-bs-theme="dark"]` counterpart of [textEmphasis] — a *tint*
-  /// rather than a shade of [color], since dark surfaces need lighter text.
+  /// Dark-mode counterpart of [textEmphasis]: a tint rather than a shade of [color], since dark
+  /// surfaces need lighter text.
   Color get darkTextEmphasis => switch (this) {
     BsVariant.light => BsColors.gray100,
     BsVariant.dark => BsColors.gray300,
     _ => BsColorUtils.tint(color, 0.4),
   };
 
-  /// `$#{variant}-bg-subtle-dark`: the `[data-bs-theme="dark"]` counterpart
-  /// of [bgSubtle] — a heavy *shade* rather than a tint, so it reads as a
-  /// dark surface.
+  /// Dark-mode counterpart of [bgSubtle]: a heavy shade rather than a tint, so that it reads as
+  /// a dark surface.
   Color get darkBgSubtle => switch (this) {
     BsVariant.light => BsColors.gray800,
     BsVariant.dark => BsColorUtils.mix(BsColors.gray800, BsColors.black, 0.5),
     _ => BsColorUtils.shade(color, 0.8),
   };
 
-  /// `$#{variant}-border-subtle-dark`: the `[data-bs-theme="dark"]`
-  /// counterpart of [borderSubtle] — a shade rather than a tint.
+  /// Dark-mode counterpart of [borderSubtle]: a shade rather than a tint.
   Color get darkBorderSubtle => switch (this) {
     BsVariant.light => BsColors.gray700,
     BsVariant.dark => BsColors.gray800,

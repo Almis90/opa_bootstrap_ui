@@ -10,10 +10,10 @@ import 'bs_decorated_box.dart';
 
 /// Which way a [BsListGroup] stacks its items.
 enum BsListGroupOrientation {
-  /// `.list-group` (default): items stack top to bottom.
+  /// Items stack top to bottom (the default).
   vertical,
 
-  /// `.list-group-horizontal`: items sit side by side.
+  /// Items sit side by side.
   horizontal,
 }
 
@@ -31,19 +31,18 @@ class BsListGroupItem {
 
   final Widget child;
 
-  /// `.list-group-item-action`: called when tapped. Adds hover/press
-  /// styling; leave null for a plain, non-interactive row.
+  /// Called when tapped. Adds hover and press styling; leave null for a plain,
+  /// non-interactive row.
   final VoidCallback? onTap;
 
-  /// `.active`: highlights this item as the current selection.
+  /// Highlights this item as the current selection.
   final bool active;
 
-  /// `.disabled`: dims the item and ignores taps.
+  /// Dims the item and ignores taps.
   final bool disabled;
 
-  /// `.list-group-item-{variant}`: tints the item with a contextual color,
-  /// via the same [BsVariant.bgSubtle]/[BsVariant.textEmphasis] recipe
-  /// [BsAlert] uses.
+  /// Tints the item with a contextual color, via the same [BsVariant.bgSubtle] and
+  /// [BsVariant.textEmphasis] recipe [BsAlert] uses.
   final BsVariant? variant;
 
   /// `py-*`: vertical padding in place of the group's.
@@ -53,10 +52,9 @@ class BsListGroupItem {
   final BsBg? bg;
 }
 
-/// A Bootstrap list group (`.list-group`): a series of [items] rendered as
-/// one bordered block with a shared border between rows and only the
-/// group's outer corners rounded — the same seam technique [BsCardGroup]
-/// uses for adjoining cards.
+/// A Bootstrap list group: a series of [items] rendered as one bordered block with a shared
+/// border between rows and only the group's outer corners rounded, the same seam technique
+/// [BsCardGroup] uses for adjoining cards.
 class BsListGroup extends StatelessWidget {
   const BsListGroup({
     super.key,
@@ -73,12 +71,11 @@ class BsListGroup extends StatelessWidget {
   /// Whether items stack vertically or sit side by side.
   final BsListGroupOrientation orientation;
 
-  /// `.list-group-flush`: removes the outer border and corner rounding,
-  /// leaving only the dividers between items — for embedding edge to edge
-  /// in a container like [BsCard].
+  /// Removes the outer border and corner rounding, leaving only the dividers between items,
+  /// for embedding edge to edge in a container like [BsCard].
   final bool flush;
 
-  /// `.list-group-numbered`: prefixes each item with its 1-based position.
+  /// Prefixes each item with its 1-based position.
   final bool numbered;
 
   /// Style overrides layered on top of [BsListGroupStyle.defaults].
@@ -309,9 +306,8 @@ class _BsListGroupItemWidgetState extends State<_BsListGroupItemWidget> {
         onTapUp: enabled ? (_) => _setPressed(false) : null,
         onTapCancel: enabled ? () => _setPressed(false) : null,
         onTap: enabled ? item.onTap : null,
-        // A container, not a bare DecoratedBox: the border adds to the item's
-        // size (a `.list-group-item` is `padding + border`), instead of being
-        // painted over its padding.
+        // // A container, not a bare DecoratedBox: the border adds to the item's size instead of being
+        // // painted over its padding.
         child: BsDecoratedContainer(
           decoration: BoxDecoration(
             color: background,

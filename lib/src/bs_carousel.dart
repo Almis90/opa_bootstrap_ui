@@ -9,11 +9,10 @@ import 'tokens/bs_transitions.dart';
 
 /// How [BsCarousel] transitions between slides.
 enum BsCarouselTransition {
-  /// `.carousel` (default): slides horizontally, mirroring how Material's
-  /// `CarouselView` scrolls and snaps between items.
+  /// Slides horizontally, scrolling and snapping between items (the default).
   slide,
 
-  /// `.carousel-fade`: crossfades between slides instead of sliding.
+  /// Crossfades between slides instead of sliding.
   fade,
 }
 
@@ -102,18 +101,16 @@ class BsCarouselItem {
   /// Typically an [Image], filling the carousel's bounds.
   final Widget child;
 
-  /// `.carousel-caption`: optional overlay content (e.g. a title and
-  /// description), centered near the bottom of the slide.
+  /// Optional overlay content (for example a title and description), centered near the bottom
+  /// of the slide.
   final Widget? caption;
 }
 
-/// A Bootstrap carousel (`.carousel`): a slideshow of [BsCarouselItem]s with
-/// prev/next controls and position indicators, cycling automatically on
-/// [interval].
+/// A Bootstrap carousel: a slideshow of [BsCarouselItem]s with previous and next controls and
+/// position indicators, cycling automatically on [interval].
 ///
-/// Needs a bounded size from its parent (e.g. wrap it in a [SizedBox] or
-/// [AspectRatio]), the same way [Image]s need bounds — the carousel itself
-/// doesn't impose one.
+/// Needs a bounded size from its parent (for example wrap it in a [SizedBox] or an
+/// [AspectRatio]), the same way an [Image] does; the carousel itself does not impose one.
 class BsCarousel extends StatefulWidget {
   const BsCarousel({
     super.key,
@@ -138,8 +135,8 @@ class BsCarousel extends StatefulWidget {
   /// The slide shown first.
   final int initialIndex;
 
-  /// How long each slide is shown before automatically advancing to the
-  /// next. Pass null to disable autoplay (`data-bs-interval="false"`).
+  /// How long each slide is shown before automatically advancing to the next. Pass null to
+  /// disable autoplay.
   final Duration? interval;
 
   /// Whether to slide or crossfade between slides.
@@ -154,8 +151,8 @@ class BsCarousel extends StatefulWidget {
   /// Whether hovering the carousel pauses autoplay.
   final bool pauseOnHover;
 
-  /// Whether prev/next and autoplay cycle past the first/last slide back
-  /// around to the other end (`data-bs-wrap`).
+  /// Whether previous, next and autoplay cycle past the first or last slide back around to the
+  /// other end.
   final bool wrap;
 
   /// Style overrides layered on top of [BsCarouselStyle.defaults].
@@ -442,8 +439,8 @@ class _BsCarouselState extends State<BsCarousel> {
   }
 }
 
-/// A prev/next arrow hotspot, spanning `$carousel-control-width` of the
-/// carousel's edge and fading its chevron in on hover.
+/// A previous or next arrow hotspot, spanning a strip of the carousel's edge and fading its
+/// chevron in on hover.
 class _BsCarouselControl extends StatefulWidget {
   const _BsCarouselControl({required this.direction, required this.style, required this.onPressed});
 
@@ -506,8 +503,7 @@ class _BsCarouselChevronPainter extends CustomPainter {
 
   final Color color;
 
-  /// `.carousel-control-next-icon`'s chevron: a 1-unit stroke (of 16) with
-  /// round ends, `(5,2)` to `(11,8)` to `(5,14)`.
+  /// The chevron: a stroke 1 unit wide (of 16) with round ends, from (5, 2) to (11, 8) to (5, 14).
   @override
   void paint(Canvas canvas, Size size) {
     final unit = size.width / 16;
@@ -530,7 +526,7 @@ class _BsCarouselChevronPainter extends CustomPainter {
   bool shouldRepaint(covariant _BsCarouselChevronPainter oldDelegate) => oldDelegate.color != color;
 }
 
-/// The row of tappable `.carousel-indicators` dots.
+/// The row of tappable indicator dots.
 class _BsCarouselIndicators extends StatelessWidget {
   const _BsCarouselIndicators({
     required this.count,
@@ -553,7 +549,7 @@ class _BsCarouselIndicators extends StatelessWidget {
       children: [
         for (var i = 0; i < count; i++)
           Padding(
-            // `margin-right/left: $carousel-indicator-spacer` on each indicator
+            // // The spacing on each side of an indicator.
             padding: EdgeInsets.symmetric(horizontal: spacer),
             child: _BsCarouselIndicatorDot(active: i == activeIndex, style: style, onTap: () => onTap(i)),
           ),
