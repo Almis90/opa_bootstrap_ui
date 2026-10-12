@@ -1,12 +1,9 @@
 import 'package:flutter/painting.dart';
 
-/// Bootstrap's global typography tokens.
-///
-/// Mirrors the `font-variables`, `font-sizes`, `headings-variables`,
-/// `display-headings`, and `type-variables` groups from Bootstrap's SCSS
-/// source, assuming the default `16px` root font size.
+/// Bootstrap's global typography tokens: font stacks, font sizes, heading and display
+/// styles and line heights, assuming the default 16 logical pixel base font size.
 abstract final class BsTypography {
-  /// `$font-family-sans-serif`'s cross-platform fallback stack.
+  /// Cross-platform fallback stack for sans-serif text.
   static const List<String> fontFamilySansSerif = [
     'system-ui',
     '-apple-system',
@@ -17,16 +14,16 @@ abstract final class BsTypography {
     'sans-serif',
   ];
 
-  /// `$font-family-monospace`'s cross-platform fallback stack.
+  /// Cross-platform fallback stack for monospace text.
   static const List<String> fontFamilyMonospace = ['Menlo', 'Monaco', 'Consolas', 'Courier New', 'monospace'];
 
-  /// `$font-size-sm` (`$font-size-base * .875`).
+  /// Font size sm.
   static const double fontSizeSm = 14;
 
-  /// `$font-size-base` (`1rem`).
+  /// Font size base.
   static const double fontSizeBase = 16;
 
-  /// `$font-size-lg` (`$font-size-base * 1.25`).
+  /// Font size lg.
   static const double fontSizeLg = 20;
 
   static const FontWeight fontWeightLighter = FontWeight.w200;
@@ -37,46 +34,46 @@ abstract final class BsTypography {
   static const FontWeight fontWeightBold = FontWeight.w700;
   static const FontWeight fontWeightBolder = FontWeight.w800;
 
-  /// `$font-weight-base` (`$font-weight-normal`).
+  /// Font weight base.
   static const FontWeight fontWeightBase = fontWeightNormal;
 
-  /// `$line-height-base` (`1.5`).
+  /// Line height base.
   static const double lineHeightBase = 1.5;
 
-  /// `$line-height-sm` (`1.25`).
+  /// Line height sm.
   static const double lineHeightSm = 1.25;
 
-  /// `$line-height-lg` (`2`).
+  /// Line height lg.
   static const double lineHeightLg = 2;
 
-  /// `$h1-font-size` (`$font-size-base * 2.5`).
+  /// H1 font size.
   static const double h1FontSize = 40;
 
-  /// `$h2-font-size` (`$font-size-base * 2`).
+  /// H2 font size.
   static const double h2FontSize = 32;
 
-  /// `$h3-font-size` (`$font-size-base * 1.75`).
+  /// H3 font size.
   static const double h3FontSize = 28;
 
-  /// `$h4-font-size` (`$font-size-base * 1.5`).
+  /// H4 font size.
   static const double h4FontSize = 24;
 
-  /// `$h5-font-size` (`$font-size-base * 1.25`).
+  /// H5 font size.
   static const double h5FontSize = 20;
 
-  /// `$h6-font-size` (`$font-size-base`).
+  /// H6 font size.
   static const double h6FontSize = 16;
 
-  /// `$headings-margin-bottom` (`$spacer * .5`).
+  /// Headings margin bottom.
   static const double headingsMarginBottom = 8;
 
-  /// `$headings-font-weight` (`500`).
+  /// Headings font weight.
   static const FontWeight headingsFontWeight = fontWeightMedium;
 
-  /// `$headings-line-height` (`1.2`).
+  /// Headings line height.
   static const double headingsLineHeight = 1.2;
 
-  /// `$display-font-sizes` map (1-6).
+  /// Font sizes of the display headings, from the largest (1) to the smallest (6).
   static const double displayFontSize1 = 80;
   static const double displayFontSize2 = 72;
   static const double displayFontSize3 = 64;
@@ -84,43 +81,42 @@ abstract final class BsTypography {
   static const double displayFontSize5 = 48;
   static const double displayFontSize6 = 40;
 
-  /// `$display-font-weight` (`300`).
+  /// Display font weight.
   static const FontWeight displayFontWeight = fontWeightLight;
 
-  /// `$display-line-height` (`$headings-line-height`).
+  /// Display line height.
   static const double displayLineHeight = headingsLineHeight;
 
-  /// `$lead-font-size` (`$font-size-base * 1.25`).
+  /// Lead font size.
   static const double leadFontSize = 20;
 
-  /// `$lead-font-weight` (`300`).
+  /// Lead font weight.
   static const FontWeight leadFontWeight = fontWeightLight;
 
-  /// `$small-font-size` (`.875em`, relative to the surrounding text).
+  /// Small font size multiplier.
   static const double smallFontSizeMultiplier = 0.875;
 
-  /// `$sub-sup-font-size` (`.75em`, relative to the surrounding text).
+  /// Sub sup font size multiplier.
   static const double subSupFontSizeMultiplier = 0.75;
 
-  /// `$blockquote-font-size` (`$font-size-base * 1.25`).
+  /// Blockquote font size.
   static const double blockquoteFontSize = 20;
 
-  /// `$hr-opacity` (`.25`).
+  /// Hr opacity.
   static const double hrOpacity = 0.25;
 
-  /// `$paragraph-margin-bottom` (`1rem`).
+  /// Paragraph margin bottom.
   static const double paragraphMarginBottom = 16;
 
-  /// `$blockquote-margin-y` (`$spacer`, i.e. `1rem`).
+  /// Blockquote margin y.
   static const double blockquoteMarginY = 16;
 
-  /// `$blockquote-footer-color` (`$gray-600`).
+  /// Blockquote footer color.
   static const Color blockquoteFooterColor = Color(0xFF6C757D);
 
-  /// `$blockquote-footer-font-size` (`$small-font-size`).
+  /// Blockquote footer font size.
   static const double blockquoteFooterFontSize = fontSizeSm;
 
-  /// `$mark-padding` (`.1875em`, assuming a `16px` root font size). Applied
-  /// uniformly on all sides, matching Bootstrap's single-value `padding`.
+  /// Padding of highlighted text, applied on all sides.
   static const double markPadding = 3;
 }

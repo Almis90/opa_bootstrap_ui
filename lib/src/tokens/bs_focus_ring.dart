@@ -2,21 +2,18 @@ import 'package:flutter/painting.dart';
 
 import '../bs_variant.dart';
 
-/// Bootstrap's global focus-ring tokens.
-///
-/// Mirrors the `focus-ring-variables` group from Bootstrap's SCSS source
-/// (`$focus-ring-*`), used by form controls, buttons, and other focusable
-/// components.
+/// Bootstrap's global focus-ring tokens, used by form controls, buttons and other
+/// focusable components.
 abstract final class BsFocusRing {
-  /// `$focus-ring-width` (`.25rem`).
+  /// Width.
   static const double width = 4;
 
-  /// `$focus-ring-opacity` (`.25`).
+  /// Opacity.
   static const double opacity = 0.25;
 
-  /// `$focus-ring-blur` (`0`).
+  /// Blur.
   static const double blur = 0;
 
-  /// `$focus-ring-color: rgba($primary, $focus-ring-opacity)`.
+  /// Default focus ring color: the primary color at the ring's opacity.
   static Color color([Color? base]) => (base ?? BsVariant.primary.color).withValues(alpha: opacity);
 }

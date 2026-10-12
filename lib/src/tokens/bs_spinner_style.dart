@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
 
-/// A Bootstrap `.spinner-border`/`.spinner-grow`'s visual variables.
+/// Visual variables of a Bootstrap spinner.
 ///
-/// Mirrors the `spinner-variables` group from Bootstrap's SCSS source
-/// (`$spinner-*`), assuming the default `16px` root font size.
+/// Every field is nullable: null falls back to the matching `default…` constant.
+/// [merge] layers overrides on top of [defaults] or, in dark mode, [darkDefaults].
 @immutable
 class BsSpinnerStyle {
   const BsSpinnerStyle({
@@ -13,19 +13,16 @@ class BsSpinnerStyle {
     this.verticalAlign,
   });
 
-  /// `$spinner-width`/`$spinner-height` (`2rem`).
+  /// Size of the spinner.
   final double? size;
 
-  /// `$spinner-border-width` (`.25em`).
+  /// Border width.
   final double? borderWidth;
 
-  /// `$spinner-animation-speed` (`.75s`).
+  /// Animation duration.
   final Duration? animationDuration;
 
-  /// `$spinner-vertical-align` (`-.125em`). Nudges the spinner down from
-  /// the baseline it would otherwise sit on, the same way Bootstrap's
-  /// `vertical-align: -.125em` keeps it from riding too high next to
-  /// adjacent inline text (e.g. a spinner inside a button's label row).
+  /// Vertical align.
   final double? verticalAlign;
 
   BsSpinnerStyle merge(BsSpinnerStyle? other) {
@@ -42,14 +39,13 @@ class BsSpinnerStyle {
   static const double defaultBorderWidth = 4;
   static const Duration defaultAnimationDuration = Duration(milliseconds: 750);
 
-  /// `$spinner-vertical-align` (`-.125em`, i.e. `-2px` at the default
-  /// `16px` root font size).
+  /// Default vertical align.
   static const double defaultVerticalAlign = -2;
 
-  /// `$spinner-width-sm`/`$spinner-height-sm` (`1rem`).
+  /// Default size of a small spinner.
   static const double defaultSizeSm = 16;
 
-  /// `$spinner-border-width-sm` (`.2em`).
+  /// Default border width sm.
   static const double defaultBorderWidthSm = 3.2;
 
   static const BsSpinnerStyle defaults = BsSpinnerStyle(

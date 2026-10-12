@@ -4,11 +4,10 @@ import 'package:flutter/painting.dart';
 import '../bs_colors.dart';
 import 'bs_focus_ring.dart';
 
-/// A Bootstrap `.btn-close`'s visual variables.
+/// Visual variables of a Bootstrap close button.
 ///
-/// Mirrors the `close-variables` group from Bootstrap's SCSS source
-/// (`$btn-close-*`), assuming the default `16px` root font size (so `1em`
-/// resolves against the base font size).
+/// Every field is nullable: null falls back to the matching `default…` constant.
+/// [merge] layers overrides on top of [defaults] or, in dark mode, [darkDefaults].
 @immutable
 class BsCloseButtonStyle {
   const BsCloseButtonStyle({
@@ -23,32 +22,31 @@ class BsCloseButtonStyle {
     this.disabledOpacity,
   });
 
-  /// `$btn-close-width`/`$btn-close-height` (`1em`).
+  /// Size of the glyph.
   final double? size;
 
-  /// `$btn-close-padding-x`/`$btn-close-padding-y` (`.25em`).
+  /// Padding around the glyph.
   final EdgeInsetsGeometry? padding;
 
-  /// `$btn-close-color` (`$black`).
+  /// Text color.
   final Color? color;
 
-  /// A background behind the glyph (`bg-secondary bg-opacity-10` on a
-  /// `.btn-close`); none by default. It fades with the button.
+  /// Background behind the glyph; none by default. It fades with the button.
   final Color? background;
 
   /// The background's corner radius (`rounded-pill`).
   final BorderRadiusGeometry? borderRadius;
 
-  /// `$btn-close-opacity` (`.5`).
+  /// Opacity.
   final double? opacity;
 
-  /// `$btn-close-hover-opacity` (`.75`).
+  /// Hover opacity.
   final double? hoverOpacity;
 
-  /// `$btn-close-focus-opacity` (`1`).
+  /// Focus opacity.
   final double? focusOpacity;
 
-  /// `$btn-close-disabled-opacity` (`.25`).
+  /// Disabled opacity.
   final double? disabledOpacity;
 
   BsCloseButtonStyle merge(BsCloseButtonStyle? other) {
@@ -69,13 +67,10 @@ class BsCloseButtonStyle {
   static const double defaultSize = 16;
   static const EdgeInsets defaultPadding = EdgeInsets.all(4);
 
-  /// `$btn-close-color` (`$black`).
+  /// Default color.
   static const Color defaultColor = BsColors.black;
 
-  /// `[data-bs-theme="dark"] .btn-close`'s `filter: $btn-close-white-filter`
-  /// (`invert(1) grayscale(100%)`) — this port paints the glyph with a
-  /// literal color rather than a CSS filter, so the dark-mode equivalent is
-  /// simply white.
+  /// Default glyph color in dark mode: white.
   static const Color defaultDarkColor = BsColors.white;
 
   static const double defaultOpacity = 0.5;
@@ -83,7 +78,7 @@ class BsCloseButtonStyle {
   static const double defaultFocusOpacity = 1;
   static const double defaultDisabledOpacity = 0.25;
 
-  /// `$btn-close-focus-shadow` (`$focus-ring-box-shadow`).
+  /// Default focus ring width.
   static const double defaultFocusRingWidth = BsFocusRing.width;
 
   static const BsCloseButtonStyle defaults = BsCloseButtonStyle(
@@ -96,10 +91,8 @@ class BsCloseButtonStyle {
     disabledOpacity: defaultDisabledOpacity,
   );
 
-  /// [defaults], with [color] swapped for its `[data-bs-theme="dark"]`
-  /// counterpart. Pick this as the base to [merge] a caller's
-  /// [BsCloseButtonStyle] override against when
-  /// `BsTheme.of(context) == Brightness.dark`.
+  /// Dark-mode counterpart of [defaults]: [color] is swapped, the rest is identical. Use it as the
+  /// base to [merge] a caller's override when the ambient brightness is dark.
   static const BsCloseButtonStyle darkDefaults = BsCloseButtonStyle(
     size: defaultSize,
     padding: defaultPadding,

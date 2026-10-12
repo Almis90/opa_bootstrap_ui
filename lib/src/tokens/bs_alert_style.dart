@@ -4,15 +4,10 @@ import 'package:flutter/painting.dart';
 import 'bs_borders.dart';
 import 'bs_typography.dart';
 
-/// A Bootstrap `.alert`'s visual variables.
+/// Visual variables of a Bootstrap alert.
 ///
-/// Mirrors the `alert-variables` group from Bootstrap's SCSS source
-/// (`$alert-*`) plus the `--bs-alert-*` custom properties the
-/// `.alert-{variant}` loop sets. [BsAlert] defaults [color]/[background]/
-/// [borderColor]/[linkColor] from its `variant` (the same way Bootstrap's
-/// loop derives them from `$theme-colors`), but each can be overridden here
-/// independently, the same way a custom `.alert-*` class in Bootstrap would
-/// reassign just the CSS variables it needs.
+/// Every field is nullable: null falls back to the matching `default…` constant.
+/// [merge] layers overrides on top of [defaults] or, in dark mode, [darkDefaults].
 @immutable
 class BsAlertStyle {
   const BsAlertStyle({
@@ -28,41 +23,34 @@ class BsAlertStyle {
     this.dismissiblePaddingEnd,
   });
 
-  /// `--bs-alert-color`, per `.alert-{variant}` (`var(--bs-{variant}-text-emphasis)`).
-  /// Null means "derive from [BsAlert.variant]" via [BsVariant.textEmphasis].
+  /// Text color. Null derives it from [BsAlert.variant] via [BsVariant.textEmphasis].
   final Color? color;
 
-  /// `--bs-alert-bg`, per `.alert-{variant}` (`var(--bs-{variant}-bg-subtle)`).
-  /// Null means "derive from [BsAlert.variant]" via [BsVariant.bgSubtle].
+  /// Background color. Null derives it from [BsAlert.variant] via [BsVariant.bgSubtle].
   final Color? background;
 
-  /// `--bs-alert-border-color`, per `.alert-{variant}`
-  /// (`var(--bs-{variant}-border-subtle)`). Null means "derive from
-  /// [BsAlert.variant]" via [BsVariant.borderSubtle].
+  /// Border color. Null derives it from [BsAlert.variant] via [BsVariant.borderSubtle].
   final Color? borderColor;
 
-  /// `--bs-alert-link-color`, per `.alert-{variant}` — the same value as
-  /// [color] in current Bootstrap (the older `shade-color($color, 20%)`
-  /// formula from `alert-variant()` was deprecated in v5.3.0). Null means
-  /// "use [color]".
+  /// Color of links inside the alert. Null uses [color].
   final Color? linkColor;
 
-  /// `$alert-padding-y`/`$alert-padding-x` (`$spacer`).
+  /// Padding.
   final EdgeInsetsGeometry? padding;
 
-  /// `$alert-margin-bottom` (`1rem`).
+  /// Margin bottom.
   final double? marginBottom;
 
-  /// `$alert-border-radius` (`var(--bs-border-radius)`).
+  /// Corner radius.
   final double? borderRadius;
 
-  /// `$alert-border-width` (`var(--bs-border-width)`).
+  /// Border width.
   final double? borderWidth;
 
-  /// `$alert-link-font-weight` (`$font-weight-bold`).
+  /// Link font weight.
   final FontWeight? linkFontWeight;
 
-  /// `$alert-dismissible-padding-r` (`$alert-padding-x * 3`).
+  /// Dismissible padding end.
   final double? dismissiblePaddingEnd;
 
   BsAlertStyle merge(BsAlertStyle? other) {

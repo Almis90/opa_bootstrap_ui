@@ -7,10 +7,10 @@ import '../bs_variant.dart';
 import 'bs_body.dart';
 import 'bs_borders.dart';
 
-/// A Bootstrap `.accordion`'s visual variables.
+/// Visual variables of a Bootstrap accordion.
 ///
-/// Mirrors the `accordion-variables` group from Bootstrap's SCSS source
-/// (`$accordion-*`).
+/// Every field is nullable: null falls back to the matching `default…` constant.
+/// [merge] layers overrides on top of [defaults] or, in dark mode, [darkDefaults].
 @immutable
 class BsAccordionStyle {
   const BsAccordionStyle({
@@ -36,73 +36,66 @@ class BsAccordionStyle {
     this.focusRingWidth,
   });
 
-  /// `$accordion-button-padding-y`/`$accordion-button-padding-x`
-  /// (`1rem`/`1.25rem`), the header button's own padding.
+  /// Padding of the header button.
   final EdgeInsetsGeometry? padding;
 
-  /// `$accordion-body-padding-y`/`$accordion-body-padding-x`
-  /// (`1rem`/`1.25rem` by default, but independently overridable from
-  /// [padding]).
+  /// Padding of the body. Defaults to the same values as the header button's [padding], but can be
+  /// overridden independently.
   final EdgeInsetsGeometry? bodyPadding;
 
-  /// `$accordion-color` (`var(--bs-body-color)`).
+  /// Text color.
   final Color? color;
 
-  /// `$accordion-bg` (`var(--bs-body-bg)`).
+  /// Background color.
   final Color? background;
 
-  /// `$accordion-border-width` (`var(--bs-border-width)`).
+  /// Border width.
   final double? borderWidth;
 
-  /// `$accordion-border-color` (`var(--bs-border-color)`).
+  /// Border color.
   final Color? borderColor;
 
-  /// `$accordion-border-radius` (`var(--bs-border-radius)`).
+  /// Corner radius.
   final double? borderRadius;
 
-  /// `$accordion-inner-border-radius` (`subtract($accordion-border-radius,
-  /// $accordion-border-width)`) — the slightly smaller radius applied to the
-  /// button/body fill so it nests inside the item's outer border curve.
+  /// Corner radius of the header and body fills: slightly smaller than the item's outer radius so
+  /// that they nest inside its border.
   final double? innerBorderRadius;
 
-  /// `$accordion-button-color` (`var(--bs-body-color)`).
+  /// Button color.
   final Color? buttonColor;
 
-  /// `$accordion-button-bg` (`var(--bs-accordion-bg)`).
+  /// Button background.
   final Color? buttonBackground;
 
-  /// `$accordion-transition` (`$btn-transition`, plus a border-radius
-  /// transition).
+  /// Transition duration.
   final Duration? transitionDuration;
 
-  /// `$accordion-button-active-bg` (`var(--bs-primary-bg-subtle)`).
+  /// Button active background.
   final Color? buttonActiveBackground;
 
-  /// `$accordion-button-active-color` (`var(--bs-primary-text-emphasis)`).
+  /// Button active color.
   final Color? buttonActiveColor;
 
-  /// `$accordion-icon-width` (`1.25rem`).
+  /// Icon width.
   final double? iconWidth;
 
-  /// `$accordion-icon-color` (`$body-color`).
+  /// Icon color.
   final Color? iconColor;
 
-  /// `$accordion-icon-active-color` (`$primary-text-emphasis`).
+  /// Icon active color.
   final Color? iconActiveColor;
 
-  /// `$accordion-icon-transition` (`transform .2s ease-in-out`).
+  /// Icon transition duration.
   final Duration? iconTransitionDuration;
 
-  /// `$accordion-icon-transform` (`rotate(-180deg)`), expressed as
-  /// [AnimatedRotation] turns (a full turn is `1.0`).
+  /// Icon rotation turns.
   final double? iconRotationTurns;
 
-  /// `$accordion-button-focus-box-shadow` (`$btn-focus-box-shadow`, i.e. a
-  /// ring tinted by the primary color).
+  /// Focus ring color.
   final Color? focusRingColor;
 
-  /// The width of the focus ring, per `$btn-focus-width` (`.25rem`, i.e.
-  /// `4` at the default `16px` root font size).
+  /// Width of the focus ring around the header button.
   final double? focusRingWidth;
 
   BsAccordionStyle merge(BsAccordionStyle? other) {
@@ -133,27 +126,24 @@ class BsAccordionStyle {
 
   static const EdgeInsets defaultPadding = EdgeInsets.symmetric(horizontal: 20, vertical: 16);
 
-  /// `$accordion-color`/`$accordion-button-color` (`var(--bs-body-color)`).
+  /// Default text color, for the item and its header button.
   static const Color defaultColor = BsColors.gray900;
 
-  /// [defaultColor] resolved against `--bs-body-color` in
-  /// `[data-bs-theme="dark"]`.
+  /// Default color in dark mode.
   static const Color defaultDarkColor = BsBody.darkColor;
 
-  /// `$accordion-bg`/`$accordion-button-bg` (`var(--bs-body-bg)`).
+  /// Default background color, for the item and its header button.
   static const Color defaultBackground = BsColors.white;
 
-  /// [defaultBackground] resolved against `--bs-body-bg` in
-  /// `[data-bs-theme="dark"]`.
+  /// Default background in dark mode.
   static const Color defaultDarkBackground = BsBody.darkBackground;
 
   static const double defaultBorderWidth = BsBorders.width;
 
-  /// `$accordion-border-color` (`var(--bs-border-color)`).
+  /// Default border color.
   static const Color defaultBorderColor = BsBorders.color;
 
-  /// [defaultBorderColor] resolved against `--bs-border-color` in
-  /// `[data-bs-theme="dark"]`.
+  /// Default border color in dark mode.
   static const Color defaultDarkBorderColor = BsBorders.darkColor;
 
   static const double defaultBorderRadius = BsBorders.radius;
@@ -161,38 +151,30 @@ class BsAccordionStyle {
   static const Duration defaultTransitionDuration = Duration(milliseconds: 150);
   static const double defaultIconWidth = 20;
 
-  /// `$accordion-icon-color` (`$body-color`).
+  /// Default icon color.
   static const Color defaultIconColor = BsColors.gray900;
 
-  /// `$accordion-icon-color-dark` (`$primary-text-emphasis-dark`) — note
-  /// this is *not* simply `$body-color-dark`; Bootstrap explicitly tints
-  /// the dark-mode chevron with the primary color (matching
-  /// [defaultDarkButtonActiveColor]) so it stays visible/on-brand rather
-  /// than fading to plain gray text.
+  /// Default chevron color in dark mode: the primary color's emphasis tone, matching
+  /// [defaultDarkButtonActiveColor], so the chevron stays visible rather than fading to plain gray.
   static Color get defaultDarkIconColor => BsVariant.primary.darkTextEmphasis;
 
   static const Duration defaultIconTransitionDuration = Duration(milliseconds: 200);
-  /// `$accordion-icon-transform` (`rotate(-180deg)`): half a turn counter-clockwise.
+  /// Default rotation of the chevron when open: half a turn counter-clockwise.
   static const double defaultIconRotationTurns = -0.5;
   static Color get defaultButtonActiveBackground => BsColorUtils.tint(BsVariant.primary.color, 0.8);
 
-  /// `$accordion-button-active-bg-dark` has no explicit SCSS override, but
-  /// it reads `var(--bs-primary-bg-subtle)`, which the dark-mode cascade
-  /// does swap.
+  /// Default background of the open header button in dark mode.
   static Color get defaultDarkButtonActiveBackground => BsVariant.primary.darkBgSubtle;
 
   static Color get defaultButtonActiveColor => BsColorUtils.shade(BsVariant.primary.color, 0.6);
 
-  /// `$accordion-button-active-color-dark`: reads
-  /// `var(--bs-primary-text-emphasis)`, swapped by the dark-mode cascade —
-  /// same value Bootstrap uses for [defaultDarkIconColor].
+  /// Default text color of the open header button in dark mode; the same value as
+  /// [defaultDarkIconColor].
   static Color get defaultDarkButtonActiveColor => BsVariant.primary.darkTextEmphasis;
 
   static const double defaultFocusRingWidth = 4;
-  // Matches button-variant's `--bs-btn-focus-shadow-rgb: mix($color,
-  // $border, 15%)`, where $color is primary's contrast text (white) and
-  // $border is primary itself. No `-dark` override exists for this in
-  // Bootstrap's SCSS, so it's the same in both themes.
+  // The same focus ring tint as a primary button: white mixed 15% into the primary color.
+  // It is identical in both themes.
   static Color get defaultFocusRingColor => BsColorUtils.mix(BsColors.white, BsVariant.primary.color, 0.15);
 
   static BsAccordionStyle get defaults => BsAccordionStyle(
@@ -218,13 +200,9 @@ class BsAccordionStyle {
     focusRingWidth: defaultFocusRingWidth,
   );
 
-  /// [defaults], with every brightness-sensitive field ([color],
-  /// [buttonColor], [background], [buttonBackground], [borderColor],
-  /// [iconColor], [buttonActiveBackground], [buttonActiveColor],
-  /// [iconActiveColor]) swapped for its `[data-bs-theme="dark"]`
-  /// counterpart. Pick this as the base to [merge] a caller's
-  /// [BsAccordionStyle] override against when
-  /// `BsTheme.of(context) == Brightness.dark`.
+  /// Dark-mode counterpart of [defaults]: every brightness-sensitive field is swapped. The rest is
+  /// identical.
+  /// Use it as the base to [merge] a caller's override when the ambient brightness is dark.
   static BsAccordionStyle get darkDefaults => BsAccordionStyle(
     padding: defaultPadding,
     bodyPadding: defaultPadding,

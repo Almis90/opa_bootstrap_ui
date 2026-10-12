@@ -3,46 +3,43 @@ import 'package:flutter/widgets.dart';
 import '../bs_colors.dart';
 import '../bs_theme.dart';
 
-/// Bootstrap's global border tokens.
+/// Bootstrap's global border tokens: widths, colors and corner radii, with their
+/// dark-mode counterparts.
 ///
-/// Mirrors the `border-variables` and `border-radius-variables` groups from
-/// Bootstrap's SCSS source (`$border-width`, `$border-color*`,
-/// `$border-radius*`), plus the `-dark` counterparts from
-/// `_variables-dark.scss`. Use [colorOf]/[colorTranslucentOf] to resolve
-/// against the ambient [BsTheme] instead of reading [color]/[darkColor] etc.
-/// directly.
+/// Use [colorOf] and [colorTranslucentOf] to resolve against the ambient [BsTheme]
+/// instead of reading [color] or [darkColor] directly.
 abstract final class BsBorders {
-  /// `$border-width` (`1px`).
+  /// Width.
   static const double width = 1;
 
-  /// `$border-color` (`$gray-300`).
+  /// Text color.
   static const Color color = BsColors.gray300;
 
-  /// `$border-color-dark` (`$gray-700`).
+  /// Color.
   static const Color darkColor = BsColors.gray700;
 
-  /// `$border-color-translucent` (`rgba($black, .175)`).
+  /// Color translucent.
   static const Color colorTranslucent = Color(0x2D000000);
 
-  /// `$border-color-translucent-dark` (`rgba($white, .15)`).
+  /// Color translucent.
   static const Color darkColorTranslucent = Color(0x26FFFFFF);
 
-  /// `$border-radius-sm` (`.25rem`).
+  /// Radius sm.
   static const double radiusSm = 4;
 
-  /// `$border-radius` (`.375rem`).
+  /// Radius.
   static const double radius = 6;
 
-  /// `$border-radius-lg` (`.5rem`).
+  /// Radius lg.
   static const double radiusLg = 8;
 
-  /// `$border-radius-xl` (`1rem`).
+  /// Radius xl.
   static const double radiusXl = 16;
 
-  /// `$border-radius-xxl` (`2rem`).
+  /// Radius xxl.
   static const double radiusXxl = 32;
 
-  /// `$border-radius-pill` (`50rem`).
+  /// Radius pill.
   static const double radiusPill = 800;
 
   static Color colorOf(BuildContext context) =>

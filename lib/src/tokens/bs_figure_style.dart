@@ -4,18 +4,18 @@ import 'package:flutter/painting.dart';
 import '../bs_colors.dart';
 import 'bs_body.dart';
 
-/// A Bootstrap `.figure`'s visual variables.
+/// Visual variables of a Bootstrap figure.
 ///
-/// Mirrors the `figure-variables` group from Bootstrap's SCSS source
-/// (`$figure-*`).
+/// Every field is nullable: null falls back to the matching `default…` constant.
+/// [merge] layers overrides on top of [defaults] or, in dark mode, [darkDefaults].
 @immutable
 class BsFigureStyle {
   const BsFigureStyle({this.captionFontSize, this.captionColor});
 
-  /// `$figure-caption-font-size` (`$small-font-size`, i.e. `.875em`).
+  /// Caption font size.
   final double? captionFontSize;
 
-  /// `$figure-caption-color` (`var(--bs-secondary-color)`).
+  /// Caption color.
   final Color? captionColor;
 
   BsFigureStyle merge(BsFigureStyle? other) {
@@ -26,14 +26,13 @@ class BsFigureStyle {
     );
   }
 
-  /// `$small-font-size` (`.875em`, assuming a `16px` root font size).
+  /// Default caption font size.
   static const double defaultCaptionFontSize = 14;
 
-  /// `$figure-caption-color` (`var(--bs-secondary-color)`).
+  /// Default caption color.
   static const Color defaultCaptionColor = BsColors.gray600;
 
-  /// [defaultCaptionColor] resolved against `--bs-secondary-color` in
-  /// `[data-bs-theme="dark"]`.
+  /// Default caption color in dark mode.
   static const Color defaultDarkCaptionColor = BsBody.darkSecondaryColor;
 
   static const BsFigureStyle defaults = BsFigureStyle(
@@ -41,10 +40,8 @@ class BsFigureStyle {
     captionColor: defaultCaptionColor,
   );
 
-  /// [defaults], with [captionColor] swapped for its
-  /// `[data-bs-theme="dark"]` counterpart. Pick this as the base to
-  /// [merge] a caller's [BsFigureStyle] override against when
-  /// `BsTheme.of(context) == Brightness.dark`.
+  /// Dark-mode counterpart of [defaults]: [captionColor] is swapped, the rest is identical. Use it
+  /// as the base to [merge] a caller's override when the ambient brightness is dark.
   static const BsFigureStyle darkDefaults = BsFigureStyle(
     captionFontSize: defaultCaptionFontSize,
     captionColor: defaultDarkCaptionColor,

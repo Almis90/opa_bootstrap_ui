@@ -6,10 +6,10 @@ import 'bs_body.dart';
 import 'bs_borders.dart';
 import 'bs_shadows.dart';
 
-/// A Bootstrap `.offcanvas`'s visual variables.
+/// Visual variables of a Bootstrap offcanvas.
 ///
-/// Mirrors the `offcanvas-variables` group from Bootstrap's SCSS source
-/// (`$offcanvas-*`).
+/// Every field is nullable: null falls back to the matching `default…` constant.
+/// [merge] layers overrides on top of [defaults] or, in dark mode, [darkDefaults].
 @immutable
 class BsOffcanvasStyle {
   const BsOffcanvasStyle({
@@ -27,42 +27,40 @@ class BsOffcanvasStyle {
     this.backdropOpacity,
   });
 
-  /// `$offcanvas-padding-y`/`$offcanvas-padding-x` (`$modal-inner-padding`).
+  /// Padding of the header and body.
   final EdgeInsetsGeometry? padding;
 
-  /// `$offcanvas-horizontal-width` (`400px`).
+  /// Horizontal width.
   final double? horizontalWidth;
 
-  /// `$offcanvas-vertical-height` (`30vh`, as a 0-1 fraction of the viewport).
+  /// Vertical height fraction.
   final double? verticalHeightFraction;
 
-  /// `$offcanvas-transition-duration` (`.3s`).
+  /// Transition duration.
   final Duration? transitionDuration;
 
-  /// `$offcanvas-border-color` (`$modal-content-border-color`).
+  /// Border color.
   final Color? borderColor;
 
-  /// `$offcanvas-border-width` (`$modal-content-border-width`).
+  /// Border width.
   final double? borderWidth;
 
-  /// `$offcanvas-title-line-height` (`$modal-title-line-height`).
+  /// Title line height.
   final double? titleLineHeight;
 
-  /// `$offcanvas-bg-color` (`var(--bs-body-bg)`).
+  /// Background color.
   final Color? background;
 
-  /// `$offcanvas-color` (`var(--bs-body-color)`).
+  /// Text color.
   final Color? color;
 
-  /// `$offcanvas-box-shadow` (`$modal-content-box-shadow-xs`). Null by
-  /// default: Bootstrap only emits it when `$enable-shadows` is on, which it
-  /// isn't out of the box. Pass [defaultBoxShadow] to opt in.
+  /// Drop shadow of the panel. Null by default (no shadow); pass [defaultBoxShadow] to opt in.
   final List<BoxShadow>? boxShadow;
 
-  /// `$offcanvas-backdrop-bg` (`$modal-backdrop-bg`, i.e. `$black`).
+  /// Backdrop color.
   final Color? backdropColor;
 
-  /// `$offcanvas-backdrop-opacity` (`.5`).
+  /// Backdrop opacity.
   final double? backdropOpacity;
 
   BsOffcanvasStyle merge(BsOffcanvasStyle? other) {
@@ -89,28 +87,24 @@ class BsOffcanvasStyle {
   static const Duration defaultTransitionDuration = Duration(milliseconds: 300);
   static const Color defaultBorderColor = BsBorders.colorTranslucent;
 
-  /// [defaultBorderColor] resolved against `--bs-border-color-translucent`
-  /// in `[data-bs-theme="dark"]` (via `$modal-content-border-color`).
+  /// Default border color in dark mode: translucent white.
   static const Color defaultDarkBorderColor = BsBorders.darkColorTranslucent;
 
   static const double defaultBorderWidth = BsBorders.width;
   static const double defaultTitleLineHeight = 1.5;
   static const Color defaultBackground = BsColors.white;
 
-  /// [defaultBackground] resolved against `--bs-body-bg` in
-  /// `[data-bs-theme="dark"]`.
+  /// Default background in dark mode.
   static const Color defaultDarkBackground = BsBody.darkBackground;
 
   static const Color defaultColor = BsColors.gray900;
 
-  /// [defaultColor] resolved against `--bs-body-color` in
-  /// `[data-bs-theme="dark"]`.
+  /// Default color in dark mode.
   static const Color defaultDarkColor = BsBody.darkColor;
 
   static const List<BoxShadow> defaultBoxShadow = BsShadows.shadowSm;
 
-  /// `$offcanvas-backdrop-bg` (`$modal-backdrop-bg`, i.e. `$black`) — a
-  /// literal with no `-dark` override, unchanged in both themes.
+  /// Default backdrop color: black in both themes.
   static const Color defaultBackdropColor = BsColors.black;
   static const double defaultBackdropOpacity = 0.5;
 
@@ -128,10 +122,9 @@ class BsOffcanvasStyle {
     backdropOpacity: defaultBackdropOpacity,
   );
 
-  /// [defaults], with [borderColor]/[background]/[color] swapped for their
-  /// `[data-bs-theme="dark"]` counterparts. Pick this as the base to
-  /// [merge] a caller's [BsOffcanvasStyle] override against when
-  /// `BsTheme.of(context) == Brightness.dark`.
+  /// Dark-mode counterpart of [defaults]: [borderColor], [background] and [color] are swapped, the
+  /// rest is identical. Use it as the base to [merge] a caller's override when the ambient
+  /// brightness is dark.
   static const BsOffcanvasStyle darkDefaults = BsOffcanvasStyle(
     padding: defaultPadding,
     horizontalWidth: defaultHorizontalWidth,

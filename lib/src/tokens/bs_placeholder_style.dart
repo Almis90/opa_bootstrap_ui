@@ -1,18 +1,17 @@
 import 'package:flutter/foundation.dart';
 
-/// A Bootstrap `.placeholder` (loading skeleton)'s visual variables.
+/// Visual variables of a Bootstrap placeholder.
 ///
-/// Mirrors the `placeholders` group from Bootstrap's SCSS source
-/// (`$placeholder-*`). Bootstrap animates opacity between these two values
-/// via the `placeholder-glow`/`placeholder-wave` classes.
+/// Every field is nullable: null falls back to the matching `default…` constant.
+/// [merge] layers overrides on top of [defaults] or, in dark mode, [darkDefaults].
 @immutable
 class BsPlaceholderStyle {
   const BsPlaceholderStyle({this.opacityMax, this.opacityMin});
 
-  /// `$placeholder-opacity-max` (`.5`).
+  /// Opacity max.
   final double? opacityMax;
 
-  /// `$placeholder-opacity-min` (`.2`).
+  /// Opacity min.
   final double? opacityMin;
 
   BsPlaceholderStyle merge(BsPlaceholderStyle? other) {

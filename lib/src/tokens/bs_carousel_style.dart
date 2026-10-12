@@ -3,10 +3,10 @@ import 'package:flutter/painting.dart';
 
 import '../bs_colors.dart';
 
-/// A Bootstrap `.carousel`'s visual variables.
+/// Visual variables of a Bootstrap carousel.
 ///
-/// Mirrors the `carousel-variables` group from Bootstrap's SCSS source
-/// (`$carousel-*`).
+/// Every field is nullable: null falls back to the matching `default…` constant.
+/// [merge] layers overrides on top of [defaults] or, in dark mode, [darkDefaults].
 @immutable
 class BsCarouselStyle {
   const BsCarouselStyle({
@@ -32,64 +32,64 @@ class BsCarouselStyle {
     this.transitionDuration,
   });
 
-  /// `$carousel-control-color` (`$white`).
+  /// Control color.
   final Color? controlColor;
 
-  /// `$carousel-control-width` (`15%`, as a 0-1 fraction).
+  /// Control width fraction.
   final double? controlWidthFraction;
 
-  /// `$carousel-control-opacity` (`.5`).
+  /// Control opacity.
   final double? controlOpacity;
 
-  /// `$carousel-control-hover-opacity` (`.9`).
+  /// Control hover opacity.
   final double? controlHoverOpacity;
 
-  /// `$carousel-control-transition` (`opacity .15s ease`).
+  /// Control transition duration.
   final Duration? controlTransitionDuration;
 
-  /// `$carousel-control-icon-width` (`2rem`).
+  /// Control icon size.
   final double? controlIconSize;
 
-  /// `$carousel-indicator-width` (`30px`).
+  /// Indicator width.
   final double? indicatorWidth;
 
-  /// `$carousel-indicator-height` (`3px`).
+  /// Indicator height.
   final double? indicatorHeight;
 
-  /// `$carousel-indicator-hit-area-height` (`10px`).
+  /// Indicator hit area height.
   final double? indicatorHitAreaHeight;
 
-  /// `$carousel-indicator-spacer` (`3px`).
+  /// Indicator spacer.
   final double? indicatorSpacer;
 
-  /// `.carousel-indicators { margin-bottom: 1rem }`.
+  /// Space below the indicators.
   final double? indicatorMarginBottom;
 
-  /// `$carousel-indicator-opacity` (`.5`).
+  /// Indicator opacity.
   final double? indicatorOpacity;
 
-  /// `$carousel-indicator-active-bg` (`$white`).
+  /// Indicator active background.
   final Color? indicatorActiveBackground;
 
-  /// `$carousel-indicator-active-opacity` (`1`).
+  /// Indicator active opacity.
   final double? indicatorActiveOpacity;
 
-  /// `$carousel-indicator-transition` (`opacity .6s ease`).
+  /// Indicator transition duration.
   final Duration? indicatorTransitionDuration;
 
-  /// `$carousel-caption-width` (`70%`, as a 0-1 fraction).
+  /// Caption width fraction.
   final double? captionWidthFraction;
 
-  /// `$carousel-caption-color` (`$white`).
+  /// Caption color.
   final Color? captionColor;
 
-  /// `$carousel-caption-padding-y` (`1.25rem`).
+  /// Caption padding y.
   final double? captionPaddingY;
 
-  /// `$carousel-caption-spacer` (`1.25rem`).
+  /// Caption spacer.
   final double? captionSpacer;
 
-  /// `$carousel-transition-duration` (`.6s`).
+  /// Transition duration.
   final Duration? transitionDuration;
 
   BsCarouselStyle merge(BsCarouselStyle? other) {

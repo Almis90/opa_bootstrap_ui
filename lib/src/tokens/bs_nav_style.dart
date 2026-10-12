@@ -8,11 +8,10 @@ import 'bs_borders.dart';
 import 'bs_focus_ring.dart';
 import 'bs_link.dart';
 
-/// A Bootstrap `.nav`'s visual variables (plain nav, tabs, pills, and
-/// underline variants).
+/// Visual variables of a Bootstrap nav.
 ///
-/// Mirrors the `nav-variables` group from Bootstrap's SCSS source
-/// (`$nav-*`).
+/// Every field is nullable: null falls back to the matching `default…` constant.
+/// [merge] layers overrides on top of [defaults] or, in dark mode, [darkDefaults].
 @immutable
 class BsNavStyle {
   const BsNavStyle({
@@ -37,66 +36,62 @@ class BsNavStyle {
     this.underlineLinkActiveColor,
   });
 
-  /// `$nav-link-padding-y`/`$nav-link-padding-x` (`.5rem`/`1rem`).
+  /// Padding of a link.
   final EdgeInsetsGeometry? linkPadding;
 
-  /// `$nav-link-color` (`var(--bs-link-color)`).
+  /// Link color.
   final Color? linkColor;
 
-  /// `$nav-link-hover-color` (`var(--bs-link-hover-color)`).
+  /// Link hover color.
   final Color? linkHoverColor;
 
-  /// `$nav-link-disabled-color` (`var(--bs-secondary-color)`).
+  /// Link disabled color.
   final Color? linkDisabledColor;
 
-  /// `$nav-link-focus-box-shadow` (a focus ring, tinted by [linkFocusRingColor]).
+  /// Link focus ring color.
   final Color? linkFocusRingColor;
 
-  /// The width of [linkFocusRingColor]'s ring, per `$focus-ring-width`
-  /// (`.25rem`, i.e. `4` at the default `16px` root font size).
+  /// Width of the focus ring drawn in [linkFocusRingColor].
   final double? linkFocusRingWidth;
 
-  /// `$nav-tabs-border-color` (`var(--bs-border-color)`).
+  /// Tabs border color.
   final Color? tabsBorderColor;
 
-  /// `$nav-tabs-border-width` (`var(--bs-border-width)`).
+  /// Tabs border width.
   final double? tabsBorderWidth;
 
-  /// `$nav-tabs-border-radius` (`var(--bs-border-radius)`).
+  /// Tabs border radius.
   final double? tabsBorderRadius;
 
-  /// `$nav-tabs-link-active-color` (`var(--bs-emphasis-color)`).
+  /// Tabs link active color.
   final Color? tabsLinkActiveColor;
 
-  /// `$nav-tabs-link-active-bg` (`var(--bs-body-bg)`).
+  /// Tabs link active background.
   final Color? tabsLinkActiveBackground;
 
-  /// `$nav-tabs-link-active-border-color`, resolved to a flat border color
-  /// (the sides use `$nav-tabs-link-active-bg`, the bottom uses
-  /// [tabsLinkActiveBackground]).
+  /// Border color of the active tab, as a single flat color; the bottom edge takes
+  /// [tabsLinkActiveBackground].
   final Color? tabsLinkActiveBorderColor;
 
-  /// `$nav-tabs-link-hover-border-color` (`var(--bs-secondary-bg) var(--bs-secondary-bg) $nav-tabs-border-color`),
-  /// resolved to a flat border color for the non-active hover state (see
-  /// [tabsLinkActiveBorderColor] for why this collapses a 3-value shorthand).
+  /// Tabs link hover border color.
   final Color? tabsLinkHoverBorderColor;
 
-  /// `$nav-pills-border-radius` (`var(--bs-border-radius)`).
+  /// Pills border radius.
   final double? pillsBorderRadius;
 
-  /// `$nav-pills-link-active-color` (`$component-active-color`).
+  /// Pills link active color.
   final Color? pillsLinkActiveColor;
 
-  /// `$nav-pills-link-active-bg` (`$component-active-bg`).
+  /// Pills link active background.
   final Color? pillsLinkActiveBackground;
 
-  /// `$nav-underline-gap` (`1rem`).
+  /// Underline gap.
   final double? underlineGap;
 
-  /// `$nav-underline-border-width` (`.125rem`).
+  /// Underline border width.
   final double? underlineBorderWidth;
 
-  /// `$nav-underline-link-active-color` (`var(--bs-emphasis-color)`).
+  /// Underline link active color.
   final Color? underlineLinkActiveColor;
 
   BsNavStyle merge(BsNavStyle? other) {
@@ -126,21 +121,19 @@ class BsNavStyle {
 
   static const EdgeInsets defaultLinkPadding = EdgeInsets.symmetric(horizontal: 16, vertical: 8);
 
-  /// `$nav-link-color` (`var(--bs-link-color)`, i.e. `$primary`).
+  /// Default link color: the primary color.
   static Color get defaultLinkColor => BsVariant.primary.color;
 
-  /// [defaultLinkColor] resolved against `--bs-link-color` in
-  /// `[data-bs-theme="dark"]` (`$link-color-dark`).
+  /// Default link color in dark mode.
   static Color get defaultDarkLinkColor => BsLink.darkColor;
 
   static Color get defaultLinkHoverColor => BsLink.hoverColor;
   static Color get defaultDarkLinkHoverColor => BsLink.darkHoverColor;
 
-  /// `$nav-link-disabled-color` (`var(--bs-secondary-color)`).
+  /// Default link disabled color.
   static const Color defaultLinkDisabledColor = BsColors.gray600;
 
-  /// [defaultLinkDisabledColor] resolved against `--bs-secondary-color` in
-  /// `[data-bs-theme="dark"]`.
+  /// Default link disabled color in dark mode.
   static const Color defaultDarkLinkDisabledColor = BsBody.darkSecondaryColor;
 
   /// No `-dark` override exists for the focus ring; it's primary-tinted in
@@ -149,55 +142,48 @@ class BsNavStyle {
 
   static const double defaultLinkFocusRingWidth = BsFocusRing.width;
 
-  /// `$nav-tabs-border-color` (`var(--bs-border-color)`).
+  /// Default tabs border color.
   static const Color defaultTabsBorderColor = BsBorders.color;
 
-  /// [defaultTabsBorderColor] resolved against `--bs-border-color` in
-  /// `[data-bs-theme="dark"]`.
+  /// Default tabs border color in dark mode.
   static const Color defaultDarkTabsBorderColor = BsBorders.darkColor;
 
   static const double defaultTabsBorderWidth = BsBorders.width;
   static const double defaultTabsBorderRadius = BsBorders.radius;
 
-  /// `$nav-tabs-link-active-color` (`var(--bs-emphasis-color)`).
+  /// Default tabs link active color.
   static const Color defaultTabsLinkActiveColor = BsColors.black;
 
-  /// [defaultTabsLinkActiveColor] resolved against `--bs-emphasis-color`
-  /// in `[data-bs-theme="dark"]`.
+  /// Default tabs link active color in dark mode.
   static const Color defaultDarkTabsLinkActiveColor = BsBody.darkEmphasisColor;
 
-  /// `$nav-tabs-link-active-bg` (`var(--bs-body-bg)`).
+  /// Default tabs link active background.
   static const Color defaultTabsLinkActiveBackground = BsColors.white;
 
-  /// [defaultTabsLinkActiveBackground] resolved against `--bs-body-bg` in
-  /// `[data-bs-theme="dark"]`.
+  /// Default tabs link active background in dark mode.
   static const Color defaultDarkTabsLinkActiveBackground = BsBody.darkBackground;
 
-  /// `$nav-tabs-link-hover-border-color` (`var(--bs-secondary-bg)`).
+  /// Default tabs link hover border color.
   static const Color defaultTabsLinkHoverBorderColor = BsColors.gray200;
 
-  /// [defaultTabsLinkHoverBorderColor] resolved against
-  /// `--bs-secondary-bg` in `[data-bs-theme="dark"]`.
+  /// Default tabs link hover border color in dark mode.
   static const Color defaultDarkTabsLinkHoverBorderColor = BsBody.darkSecondaryBackground;
 
   static const double defaultPillsBorderRadius = BsBorders.radius;
 
-  /// `$nav-pills-link-active-color` (`$component-active-color`, i.e.
-  /// `$white` — unchanged in both themes).
+  /// Default pills link active color.
   static const Color defaultPillsLinkActiveColor = BsColors.white;
 
-  /// `$nav-pills-link-active-bg` (`$component-active-bg`, i.e. `$primary`
-  /// — unchanged in both themes).
+  /// Default background of the active pill: the primary color, the same in both themes.
   static Color get defaultPillsLinkActiveBackground => BsVariant.primary.color;
 
   static const double defaultUnderlineGap = 16;
   static const double defaultUnderlineBorderWidth = 2;
 
-  /// `$nav-underline-link-active-color` (`var(--bs-emphasis-color)`).
+  /// Default underline link active color.
   static const Color defaultUnderlineLinkActiveColor = BsColors.black;
 
-  /// [defaultUnderlineLinkActiveColor] resolved against
-  /// `--bs-emphasis-color` in `[data-bs-theme="dark"]`.
+  /// Default underline link active color in dark mode.
   static const Color defaultDarkUnderlineLinkActiveColor = BsBody.darkEmphasisColor;
 
   static BsNavStyle get defaults => BsNavStyle(
@@ -222,10 +208,9 @@ class BsNavStyle {
     underlineLinkActiveColor: defaultUnderlineLinkActiveColor,
   );
 
-  /// [defaults], with every brightness-sensitive field swapped for its
-  /// `[data-bs-theme="dark"]` counterpart. Pick this as the base to
-  /// [merge] a caller's [BsNavStyle] override against when
-  /// `BsTheme.of(context) == Brightness.dark`.
+  /// Dark-mode counterpart of [defaults]: every brightness-sensitive field is swapped. The rest is
+  /// identical.
+  /// Use it as the base to [merge] a caller's override when the ambient brightness is dark.
   static BsNavStyle get darkDefaults => BsNavStyle(
     linkPadding: defaultLinkPadding,
     linkColor: defaultDarkLinkColor,

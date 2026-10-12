@@ -4,10 +4,10 @@ import 'package:flutter/painting.dart';
 import '../bs_colors.dart';
 import 'bs_borders.dart';
 
-/// A Bootstrap `.card`'s visual variables.
+/// Visual variables of a Bootstrap card.
 ///
-/// Mirrors the `card-variables` group from Bootstrap's SCSS source
-/// (`$card-*`), assuming the default `16px` root font size.
+/// Every field is nullable: null falls back to the matching `default…` constant.
+/// [merge] layers overrides on top of [defaults] or, in dark mode, [darkDefaults].
 @immutable
 class BsCardStyle {
   const BsCardStyle({
@@ -29,52 +29,52 @@ class BsCardStyle {
     this.groupMargin,
   });
 
-  /// `$card-spacer-y`/`$card-spacer-x` (`$spacer`, i.e. `16`).
+  /// Padding of the card's body.
   final EdgeInsetsGeometry? spacing;
 
-  /// `$card-title-spacer-y` (`$spacer * .5`).
+  /// Title spacer y.
   final double? titleSpacerY;
 
-  /// `$card-title-color` (`null`, inherits [color]).
+  /// Title color.
   final Color? titleColor;
 
-  /// `$card-subtitle-color` (`null`, inherits [color]).
+  /// Subtitle color.
   final Color? subtitleColor;
 
-  /// `$card-border-width` (`var(--bs-border-width)`).
+  /// Border width.
   final double? borderWidth;
 
-  /// `$card-border-color` (`var(--bs-border-color-translucent)`).
+  /// Border color.
   final Color? borderColor;
 
-  /// `$card-border-radius` (`var(--bs-border-radius)`).
+  /// Corner radius.
   final double? borderRadius;
 
-  /// `$card-inner-border-radius` (`subtract($card-border-radius, $card-border-width)`).
+  /// Inner border radius.
   final double? innerBorderRadius;
 
-  /// `$card-cap-padding-y`/`$card-cap-padding-x`.
+  /// Padding of the card's header and footer.
   final EdgeInsetsGeometry? capPadding;
 
-  /// `$card-cap-bg` (`rgba($body-color, .03)`).
+  /// Cap background.
   final Color? capBackground;
 
-  /// `$card-cap-color` (`null`, inherits [color]).
+  /// Cap color.
   final Color? capColor;
 
-  /// `$card-color` (`null`, inherits the surrounding text color).
+  /// Text color.
   final Color? color;
 
-  /// `$card-bg` (`var(--bs-body-bg)`).
+  /// Background color.
   final Color? background;
 
-  /// `$card-box-shadow` (`null`, no shadow by default).
+  /// Drop shadow.
   final List<BoxShadow>? boxShadow;
 
-  /// `$card-img-overlay-padding` (`$spacer`).
+  /// Img overlay padding.
   final double? imgOverlayPadding;
 
-  /// `$card-group-margin` (`$grid-gutter-width * .5`).
+  /// Group margin.
   final double? groupMargin;
 
   BsCardStyle merge(BsCardStyle? other) {
@@ -99,54 +99,50 @@ class BsCardStyle {
     );
   }
 
-  /// `$spacer` (`1rem`).
+  /// Spacer.
   static const double spacer = 16;
 
-  /// `$card-spacer-y`/`$card-spacer-x`.
+  /// Default padding of the card's body.
   static const EdgeInsets defaultSpacing = EdgeInsets.all(spacer);
 
-  /// `$card-title-spacer-y`.
+  /// Default title spacer y.
   static const double defaultTitleSpacerY = spacer * 0.5;
 
-  /// `$card-border-width`.
+  /// Default border width.
   static const double defaultBorderWidth = BsBorders.width;
 
-  /// `$card-border-color`.
+  /// Default border color.
   static const Color defaultBorderColor = BsBorders.colorTranslucent;
 
-  /// `$card-border-radius`.
+  /// Default border radius.
   static const double defaultBorderRadius = BsBorders.radius;
 
-  /// `$card-inner-border-radius`.
+  /// Default inner border radius.
   static const double defaultInnerBorderRadius = defaultBorderRadius - defaultBorderWidth;
 
-  /// `$card-cap-padding-y`/`$card-cap-padding-x`.
+  /// Default padding of the card's header and footer.
   static const EdgeInsets defaultCapPadding = EdgeInsets.symmetric(horizontal: spacer, vertical: spacer * 0.5);
 
-  /// `$card-cap-bg: rgba($body-color, .03)`, resolved against
-  /// `$body-color: $gray-900`.
+  /// Default cap background.
   static const Color defaultCapBackground = Color(0x08212529);
 
-  /// `$card-cap-bg` resolved against `$body-color-dark: $gray-300` — this
-  /// has no explicit `-dark` override in Bootstrap's SCSS because it reads
-  /// the live `--bs-body-color-rgb` custom property, which the CSS cascade
-  /// already swaps for dark mode; here we compute the same result.
+  /// Default header and footer background in dark mode: a faint tint of the dark theme's text
+  /// color.
   static const Color defaultDarkCapBackground = Color(0x08DEE2E6);
 
-  /// `$card-bg` (`var(--bs-body-bg)`).
+  /// Default background.
   static const Color defaultBackground = BsColors.white;
 
-  /// `$card-bg` resolved against `$body-bg-dark: $gray-900`.
+  /// Default background in dark mode.
   static const Color defaultDarkBackground = BsColors.gray900;
 
-  /// `$card-border-color` resolved against
-  /// `$border-color-translucent-dark: rgba($white, .15)`.
+  /// Default border color in dark mode: translucent white.
   static const Color defaultDarkBorderColor = BsBorders.darkColorTranslucent;
 
-  /// `$card-img-overlay-padding`.
+  /// Default img overlay padding.
   static const double defaultImgOverlayPadding = spacer;
 
-  /// `$card-group-margin` (`$grid-gutter-width * .5`, `$grid-gutter-width: 1.5rem`).
+  /// Default group margin.
   static const double defaultGroupMargin = 12;
 
   static const BsCardStyle defaults = BsCardStyle(
@@ -163,11 +159,9 @@ class BsCardStyle {
     groupMargin: defaultGroupMargin,
   );
 
-  /// [defaults], with [background]/[borderColor]/[capBackground] swapped for
-  /// their `[data-bs-theme="dark"]` counterparts. Pick this as the base to
-  /// [merge] a caller's [BsCardStyle] override against when
-  /// `BsTheme.of(context) == Brightness.dark` — every other field is
-  /// brightness-independent, so it's identical to [defaults].
+  /// Dark-mode counterpart of [defaults]: [background], [borderColor] and [capBackground] are
+  /// swapped, the rest is identical. Use it as the base to [merge] a caller's override when the
+  /// ambient brightness is dark.
   static const BsCardStyle darkDefaults = BsCardStyle(
     spacing: defaultSpacing,
     titleSpacerY: defaultTitleSpacerY,

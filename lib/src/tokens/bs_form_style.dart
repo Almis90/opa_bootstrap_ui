@@ -8,15 +8,10 @@ import 'bs_body.dart';
 import 'bs_borders.dart';
 import 'bs_shadows.dart';
 
-/// Bootstrap form controls' visual variables: text inputs/textareas,
-/// selects, checks/radios/switches, ranges, file inputs, floating labels,
-/// input groups, and validation feedback.
+/// Visual variables of a Bootstrap form.
 ///
-/// Mirrors the `form-text-variables`, `form-label-variables`,
-/// `form-input-variables`, `form-check-variables`, `form-switch-variables`,
-/// `input-group-variables`, `form-select-variables`, `form-range-variables`,
-/// `form-file-variables`, `form-floating-variables`, `form-feedback-variables`
-/// and `form-validation-colors` groups from Bootstrap's SCSS source.
+/// Every field is nullable: null falls back to the matching `default…` constant.
+/// [merge] layers overrides on top of [defaults] or, in dark mode, [darkDefaults].
 @immutable
 class BsFormStyle {
   const BsFormStyle({
@@ -101,216 +96,210 @@ class BsFormStyle {
     this.invalidColor,
   });
 
-  /// `$form-text-margin-top` (`.25rem`).
+  /// Text margin top.
   final double? textMarginTop;
 
-  /// `$form-text-font-size` (`$small-font-size`).
+  /// Text font size.
   final double? textFontSize;
 
-  /// `$form-text-color` (`var(--bs-secondary-color)`).
+  /// Text color.
   final Color? textColor;
 
-  /// `$form-label-margin-bottom` (`.5rem`).
+  /// Label margin bottom.
   final double? labelMarginBottom;
 
-  /// `$input-padding-y`/`$input-padding-x` (`.375rem`/`.75rem`).
+  /// Padding of a text input.
   final EdgeInsetsGeometry? inputPadding;
 
-  /// `$input-padding-y-sm`/`$input-padding-x-sm` (`.25rem`/`.5rem`).
+  /// Padding of a small text input.
   final EdgeInsetsGeometry? inputPaddingSm;
 
-  /// `$input-padding-y-lg`/`$input-padding-x-lg` (`.5rem`/`1rem`).
+  /// Padding of a large text input.
   final EdgeInsetsGeometry? inputPaddingLg;
 
-  /// `$input-font-size` (`$font-size-base`).
+  /// Input font size.
   final double? inputFontSize;
 
-  /// `$input-font-size-sm` (`$font-size-sm`).
+  /// Input font size sm.
   final double? inputFontSizeSm;
 
-  /// `$input-font-size-lg` (`$font-size-lg`).
+  /// Input font size lg.
   final double? inputFontSizeLg;
 
-  /// `$input-font-weight` (`$font-weight-base`).
+  /// Input font weight.
   final FontWeight? inputFontWeight;
 
-  /// `$input-line-height` (`$line-height-base`).
+  /// Input line height.
   final double? inputLineHeight;
 
-  /// `$input-color` (`var(--bs-body-color)`).
+  /// Input color.
   final Color? inputColor;
 
-  /// `$input-bg` (`var(--bs-body-bg)`).
+  /// Input background.
   final Color? inputBackground;
 
-  /// `$input-disabled-bg` (`var(--bs-secondary-bg)`).
+  /// Input disabled background.
   final Color? inputDisabledBackground;
 
-  /// `$input-border-color` (`var(--bs-border-color)`).
+  /// Input border color.
   final Color? inputBorderColor;
 
-  /// `$input-border-width` (`var(--bs-border-width)`).
+  /// Input border width.
   final double? inputBorderWidth;
 
-  /// `$input-box-shadow` (`var(--bs-box-shadow-inset)`). Null by default:
-  /// Bootstrap only emits it when `$enable-shadows` is on, which it isn't out
-  /// of the box (the focus ring, [inputFocusBoxShadow], is unconditional).
-  /// Pass [defaultInputBoxShadow] to opt in.
+  /// Inset shadow of a text input. Null by default (no shadow); pass [defaultInputBoxShadow] to opt
+  /// in. The focus ring, [inputFocusBoxShadow], is always shown.
   final List<BoxShadow>? inputBoxShadow;
 
-  /// `$input-border-radius` (`var(--bs-border-radius)`).
+  /// Input border radius.
   final double? inputBorderRadius;
 
-  /// `$input-border-radius-sm` (`var(--bs-border-radius-sm)`).
+  /// Input border radius sm.
   final double? inputBorderRadiusSm;
 
-  /// `$input-border-radius-lg` (`var(--bs-border-radius-lg)`).
+  /// Input border radius lg.
   final double? inputBorderRadiusLg;
 
-  /// `$input-focus-border-color` (`tint-color($component-active-bg, 50%)`).
+  /// Input focus border color.
   final Color? inputFocusBorderColor;
 
-  /// `$input-focus-box-shadow` (`$input-btn-focus-box-shadow`).
+  /// Input focus box shadow.
   final List<BoxShadow>? inputFocusBoxShadow;
 
-  /// `$input-placeholder-color` (`var(--bs-secondary-color)`).
+  /// Input placeholder color.
   final Color? inputPlaceholderColor;
 
-  /// `$input-height` (line-height + padding + border, normal size).
+  /// Input height.
   final double? inputHeight;
 
-  /// `$input-height-sm`.
+  /// Input height sm.
   final double? inputHeightSm;
 
-  /// `$input-height-lg`.
+  /// Input height lg.
   final double? inputHeightLg;
 
-  /// `$input-transition` (`border-color .15s ease-in-out, box-shadow .15s ease-in-out`).
+  /// Input transition duration.
   final Duration? inputTransitionDuration;
 
-  /// `$form-check-input-width` (`1em`).
+  /// Check input size.
   final double? checkInputSize;
 
-  /// `$form-check-padding-start` (`$form-check-input-width + .5em`).
+  /// Check padding start.
   final double? checkPaddingStart;
 
-  /// `$form-check-margin-bottom` (`.125rem`).
+  /// Check margin bottom.
   final double? checkMarginBottom;
 
-  /// `$form-check-input-border` (`var(--bs-border-width) solid var(--bs-border-color)`).
+  /// Check input border.
   final BorderSide? checkInputBorder;
 
-  /// `$form-check-input-border-radius` (`.25em`).
+  /// Check input border radius.
   final double? checkInputBorderRadius;
 
-  /// `$form-check-radio-border-radius` (`50%`).
+  /// Check radio border radius.
   final double? checkRadioBorderRadius;
 
-  /// `$form-check-input-checked-color` (`$component-active-color`).
+  /// Check input checked color.
   final Color? checkInputCheckedColor;
 
-  /// `$form-check-input-checked-bg-color` (`$component-active-bg`).
+  /// Check input checked background.
   final Color? checkInputCheckedBackground;
 
-  /// `$form-check-input-disabled-opacity` (`.5`).
+  /// Check input disabled opacity.
   final double? checkInputDisabledOpacity;
 
-  /// `$form-check-inline-margin-end` (`1rem`).
+  /// Check inline margin end.
   final double? checkInlineMarginEnd;
 
-  /// `$form-switch-width` (`2em`).
+  /// Switch width.
   final double? switchWidth;
 
-  /// `$form-switch-color` (`rgba($black, .25)`), the unchecked thumb color.
+  /// Color of the unchecked switch thumb.
   final Color? switchColor;
 
-  /// `$form-switch-border-radius` (`$form-switch-width`).
+  /// Switch border radius.
   final double? switchBorderRadius;
 
-  /// `$form-switch-transition` (`background-position .15s ease-in-out`).
+  /// Switch transition duration.
   final Duration? switchTransitionDuration;
 
-  /// `$input-group-addon-padding-y`/`$input-group-addon-padding-x`.
+  /// Padding of an input group addon.
   final EdgeInsetsGeometry? inputGroupAddonPadding;
 
-  /// `$input-group-addon-color` (`$input-color`).
+  /// Input group addon color.
   final Color? inputGroupAddonColor;
 
-  /// `$input-group-addon-bg` (`var(--bs-tertiary-bg)`).
+  /// Input group addon background.
   final Color? inputGroupAddonBackground;
 
-  /// `$form-select-indicator-color` (`$gray-800`).
+  /// Select indicator color.
   final Color? selectIndicatorColor;
 
-  /// `$form-select-bg-size` (`16px 12px`).
+  /// Select background size.
   final Size? selectBackgroundSize;
 
-  /// `$form-range-track-height` (`.5rem`).
+  /// Range track height.
   final double? rangeTrackHeight;
 
-  /// `$form-range-track-bg` (`var(--bs-secondary-bg)`).
+  /// Range track background.
   final Color? rangeTrackBackground;
 
-  /// `$form-range-track-border-radius` (`1rem`).
+  /// Range track border radius.
   final double? rangeTrackBorderRadius;
 
-  /// `$form-range-thumb-width`/`$form-range-thumb-height` (`1rem`).
+  /// Size of the range thumb.
   final double? rangeThumbSize;
 
-  /// `$form-range-thumb-bg` (`$component-active-bg`).
+  /// Range thumb background.
   final Color? rangeThumbBackground;
 
-  /// `$form-range-thumb-active-bg` (`tint-color($component-active-bg, 70%)`).
+  /// Range thumb active background.
   final Color? rangeThumbActiveBackground;
 
-  /// `$form-range-thumb-disabled-bg` (`var(--bs-secondary-color)`).
+  /// Range thumb disabled background.
   final Color? rangeThumbDisabledBackground;
 
-  /// `$form-range-thumb-border-radius` (`1rem`).
+  /// Range thumb border radius.
   final double? rangeThumbBorderRadius;
 
-  /// `$form-range-thumb-box-shadow` (`0 .1rem .25rem rgba($black, .1)`). Null
-  /// by default, as with [inputBoxShadow]; pass [defaultRangeThumbBoxShadow]
-  /// to opt in.
+  /// Shadow of the range thumb. Null by default (no shadow); pass [defaultRangeThumbBoxShadow] to
+  /// opt in.
   final List<BoxShadow>? rangeThumbBoxShadow;
 
-  /// `$form-file-button-color` (`$input-color`).
+  /// File button color.
   final Color? fileButtonColor;
 
-  /// `$form-file-button-bg` (`var(--bs-tertiary-bg)`).
+  /// File button background.
   final Color? fileButtonBackground;
 
-  /// `$form-file-button-hover-bg` (`var(--bs-secondary-bg)`).
+  /// File button hover background.
   final Color? fileButtonHoverBackground;
 
-  /// `$form-floating-height` (`add(3.5rem, $input-height-border)`).
+  /// Floating height.
   final double? floatingHeight;
 
-  /// `$form-floating-line-height` (`1.25`), applied to the wrapped
-  /// [BsFormControl] in place of [inputLineHeight].
+  /// Line height of the control wrapped by a floating label, in place of [inputLineHeight].
   final double? floatingLineHeight;
 
-  /// `$form-floating-padding-y`/`$form-floating-padding-x` (`1rem`/`$input-padding-x`).
+  /// Padding of a floating-label field.
   final EdgeInsetsGeometry? floatingPadding;
 
-  /// `$form-floating-input-padding-t` (`1.625rem`): the wrapped control's
-  /// top padding, which makes room for the floated label above the text.
+  /// Top padding of the wrapped control, which makes room for the floated label above the text.
   final double? floatingInputPaddingTop;
 
-  /// `$form-floating-input-padding-b` (`.625rem`): the wrapped control's
-  /// bottom padding.
+  /// Bottom padding of the wrapped control.
   final double? floatingInputPaddingBottom;
 
-  /// `$form-floating-label-opacity` (`.65`).
+  /// Floating label opacity.
   final double? floatingLabelOpacity;
 
-  /// `$form-floating-label-disabled-color` (`$gray-600`).
+  /// Floating label disabled color.
   final Color? floatingLabelDisabledColor;
 
-  /// `$form-valid-color`/`$form-valid-border-color` (`$success`).
+  /// Color of the valid state's border and feedback.
   final Color? validColor;
 
-  /// `$form-invalid-color`/`$form-invalid-border-color` (`$danger`).
+  /// Color of the invalid state's border and feedback.
   final Color? invalidColor;
 
   BsFormStyle merge(BsFormStyle? other) {
@@ -410,11 +399,10 @@ class BsFormStyle {
   static const double defaultTextMarginTop = 4;
   static const double defaultTextFontSize = 14;
 
-  /// `$form-text-color` (`var(--bs-secondary-color)`).
+  /// Default text color.
   static const Color defaultTextColor = BsColors.gray600;
 
-  /// [defaultTextColor] resolved against `--bs-secondary-color` in
-  /// `[data-bs-theme="dark"]`.
+  /// Default text color in dark mode.
   static const Color defaultDarkTextColor = BsBody.darkSecondaryColor;
 
   static const double defaultLabelMarginBottom = 8;
@@ -438,26 +426,22 @@ class BsFormStyle {
   static const double defaultInputLineHeight = 1.5;
   static const Color defaultInputColor = BsColors.gray900;
 
-  /// [defaultInputColor] resolved against `--bs-body-color` in
-  /// `[data-bs-theme="dark"]`.
+  /// Default input color in dark mode.
   static const Color defaultDarkInputColor = BsBody.darkColor;
 
   static const Color defaultInputBackground = BsColors.white;
 
-  /// [defaultInputBackground] resolved against `--bs-body-bg` in
-  /// `[data-bs-theme="dark"]`.
+  /// Default input background in dark mode.
   static const Color defaultDarkInputBackground = BsBody.darkBackground;
 
   static const Color defaultInputDisabledBackground = BsColors.gray200;
 
-  /// [defaultInputDisabledBackground] resolved against `--bs-secondary-bg`
-  /// in `[data-bs-theme="dark"]`.
+  /// Default input disabled background in dark mode.
   static const Color defaultDarkInputDisabledBackground = BsBody.darkSecondaryBackground;
 
   static const Color defaultInputBorderColor = BsBorders.color;
 
-  /// [defaultInputBorderColor] resolved against `--bs-border-color` in
-  /// `[data-bs-theme="dark"]`.
+  /// Default input border color in dark mode.
   static const Color defaultDarkInputBorderColor = BsBorders.darkColor;
 
   static const double defaultInputBorderWidth = BsBorders.width;
@@ -467,14 +451,13 @@ class BsFormStyle {
   static const double defaultInputBorderRadiusLg = BsBorders.radiusLg;
   static const Color defaultInputPlaceholderColor = BsBody.secondaryColor;
 
-  /// [defaultInputPlaceholderColor] resolved against `--bs-secondary-color`
-  /// in `[data-bs-theme="dark"]`.
+  /// Default input placeholder color in dark mode.
   static const Color defaultDarkInputPlaceholderColor = BsBody.darkSecondaryColor;
 
-  /// `$input-height-border` (`$input-border-width * 2`).
+  /// Default input height border.
   static const double defaultInputHeightBorder = defaultInputBorderWidth * 2;
 
-  /// `$input-height`: `$input-line-height * 1em + $input-padding-y * 2 + border`.
+  /// Default height of a text input: its line height, vertical padding and border.
   static const double defaultInputHeight =
       defaultInputLineHeight * defaultInputFontSize +
       12 +
@@ -500,8 +483,7 @@ class BsFormStyle {
     width: defaultInputBorderWidth,
   );
 
-  /// [defaultCheckInputBorder] resolved against `--bs-border-color` in
-  /// `[data-bs-theme="dark"]`.
+  /// Default check input border in dark mode.
   static const BorderSide defaultDarkCheckInputBorder = BorderSide(
     color: defaultDarkInputBorderColor,
     width: defaultInputBorderWidth,
@@ -510,9 +492,7 @@ class BsFormStyle {
   static const double defaultCheckInputBorderRadius = 4;
   static const double defaultCheckRadioBorderRadius = 800;
 
-  /// `$form-check-input-checked-color` (`$component-active-color`, i.e.
-  /// `$white` — a literal with no `-dark` override, unchanged in both
-  /// themes).
+  /// Default check input checked color.
   static const Color defaultCheckInputCheckedColor = BsColors.white;
 
   static const double defaultCheckInputDisabledOpacity = 0.5;
@@ -520,10 +500,10 @@ class BsFormStyle {
 
   static const double defaultSwitchWidth = 32;
 
-  /// `$form-switch-color: rgba($black, .25)`, the unchecked thumb color.
+  /// Default color of the unchecked switch thumb.
   static const Color defaultSwitchColor = Color(0x40000000);
 
-  /// `$form-switch-color-dark: rgba($white, .25)`.
+  /// Default switch color in dark mode.
   static const Color defaultDarkSwitchColor = Color(0x40FFFFFF);
 
   static const double defaultSwitchBorderRadius = defaultSwitchWidth;
@@ -533,24 +513,21 @@ class BsFormStyle {
 
   static const EdgeInsets defaultInputGroupAddonPadding = defaultInputPadding;
 
-  /// `$input-group-addon-color` (`$input-color`).
+  /// Default input group addon color.
   static const Color defaultInputGroupAddonColor = defaultInputColor;
 
-  /// [defaultInputGroupAddonColor] resolved against `--bs-body-color` in
-  /// `[data-bs-theme="dark"]`.
+  /// Default input group addon color in dark mode.
   static const Color defaultDarkInputGroupAddonColor = defaultDarkInputColor;
 
   static const Color defaultInputGroupAddonBackground = BsColors.gray100;
 
-  /// [defaultInputGroupAddonBackground] resolved against
-  /// `--bs-tertiary-bg` in `[data-bs-theme="dark"]`.
+  /// Default input group addon background in dark mode.
   static Color get defaultDarkInputGroupAddonBackground => BsBody.darkTertiaryBackground;
 
-  /// `$form-select-indicator-color` (`$gray-800`).
+  /// Default select indicator color.
   static const Color defaultSelectIndicatorColor = BsColors.gray800;
 
-  /// `$form-select-indicator-color-dark` (`$body-color-dark`) — unlike the
-  /// light default, this one *is* explicitly overridden by Bootstrap.
+  /// Default color of the select's chevron in dark mode.
   static const Color defaultDarkSelectIndicatorColor = BsBody.darkColor;
 
   static const Size defaultSelectBackgroundSize = Size(16, 12);
@@ -558,50 +535,45 @@ class BsFormStyle {
   static const double defaultRangeTrackHeight = 8;
   static const Color defaultRangeTrackBackground = BsColors.gray200;
 
-  /// [defaultRangeTrackBackground] resolved against `--bs-secondary-bg`
-  /// in `[data-bs-theme="dark"]`.
+  /// Default range track background in dark mode.
   static const Color defaultDarkRangeTrackBackground = BsBody.darkSecondaryBackground;
 
   static const double defaultRangeTrackBorderRadius = 16;
   static const double defaultRangeThumbSize = 16;
 
-  /// `$form-range-thumb-disabled-bg` (`var(--bs-secondary-color)`).
+  /// Default range thumb disabled background.
   static const Color defaultRangeThumbDisabledBackground = BsColors.gray600;
 
-  /// [defaultRangeThumbDisabledBackground] resolved against
-  /// `--bs-secondary-color` in `[data-bs-theme="dark"]`.
+  /// Default range thumb disabled background in dark mode.
   static const Color defaultDarkRangeThumbDisabledBackground = BsBody.darkSecondaryColor;
 
-  /// `$form-range-thumb-border-radius` (`1rem`).
+  /// Default range thumb border radius.
   static const double defaultRangeThumbBorderRadius = 16;
 
-  /// `$form-range-thumb-box-shadow: 0 .1rem .25rem rgba($black, .1)`.
+  /// Default range thumb box shadow.
   static const List<BoxShadow> defaultRangeThumbBoxShadow = [
     BoxShadow(color: Color(0x1A000000), offset: Offset(0, 1.6), blurRadius: 4),
   ];
 
   static const Color defaultFileButtonColor = defaultInputColor;
 
-  /// [defaultFileButtonColor] resolved against `--bs-body-color` in
-  /// `[data-bs-theme="dark"]`.
+  /// Default file button color in dark mode.
   static const Color defaultDarkFileButtonColor = defaultDarkInputColor;
 
   static const Color defaultFileButtonBackground = BsColors.gray100;
 
-  /// [defaultFileButtonBackground] resolved against `--bs-tertiary-bg` in
-  /// `[data-bs-theme="dark"]`.
+  /// Default file button background in dark mode.
   static Color get defaultDarkFileButtonBackground => BsBody.darkTertiaryBackground;
 
   static const Color defaultFileButtonHoverBackground = BsColors.gray200;
 
-  /// [defaultFileButtonHoverBackground] resolved against
-  /// `--bs-secondary-bg` in `[data-bs-theme="dark"]`.
+  /// Default file button hover background in dark mode.
   static const Color defaultDarkFileButtonHoverBackground = BsBody.darkSecondaryBackground;
 
-  /// `$form-floating-height` (`add(3.5rem, $input-height-border)`).
+  /// Default floating height.
   static const double defaultFloatingHeight = 56 + defaultInputHeightBorder;
 
-  /// `$form-floating-line-height` (`1.25`).
+  /// Default floating line height.
   static const double defaultFloatingLineHeight = 1.25;
 
   static const EdgeInsets defaultFloatingPadding = EdgeInsets.symmetric(
@@ -609,36 +581,33 @@ class BsFormStyle {
     vertical: 16,
   );
 
-  /// `$form-floating-input-padding-t` (`1.625rem`).
+  /// Default floating input padding top.
   static const double defaultFloatingInputPaddingTop = 26;
 
-  /// `$form-floating-input-padding-b` (`.625rem`).
+  /// Default floating input padding bottom.
   static const double defaultFloatingInputPaddingBottom = 10;
 
   static const double defaultFloatingLabelOpacity = 0.65;
 
-  /// `$form-floating-label-disabled-color` (`$gray-600`).
+  /// Default floating label disabled color.
   static const Color defaultFloatingLabelDisabledColor = BsColors.gray600;
 
-  /// `$form-valid-color`/`$form-valid-border-color` (`$success`).
+  /// Default color of the valid state: the success color.
   static Color get defaultValidColor => BsVariant.success.color;
 
-  /// `$form-valid-color-dark`/`$form-valid-border-color-dark`
-  /// (`$green-300`, i.e. `tint-color($green, 40%)`).
+  /// Default color of the valid state in dark mode: a lighter tint of green.
   static Color get defaultDarkValidColor => BsColorUtils.tint(BsVariant.success.color, 0.4);
 
-  /// `$form-invalid-color`/`$form-invalid-border-color` (`$danger`).
+  /// Default color of the invalid state: the danger color.
   static Color get defaultInvalidColor => BsVariant.danger.color;
 
-  /// `$form-invalid-color-dark`/`$form-invalid-border-color-dark`
-  /// (`$red-300`, i.e. `tint-color($red, 40%)`).
+  /// Default color of the invalid state in dark mode: a lighter tint of red.
   static Color get defaultDarkInvalidColor => BsColorUtils.tint(BsVariant.danger.color, 0.4);
 
   static Color get defaultInputFocusBorderColor =>
       _tint(BsVariant.primary.color, 0.5);
 
-  /// `$input-focus-box-shadow` (`$input-btn-focus-box-shadow` /
-  /// `$focus-ring-box-shadow`): `0 0 0 .25rem rgba($primary, .25)`.
+  /// Default focus ring of a text input: a ring in the translucent primary color.
   static List<BoxShadow> get defaultInputFocusBoxShadow => [
     BoxShadow(
       color: BsVariant.primary.color.withValues(alpha: 0.25),
@@ -722,10 +691,9 @@ class BsFormStyle {
     invalidColor: defaultInvalidColor,
   );
 
-  /// [defaults], with every brightness-sensitive field swapped for its
-  /// `[data-bs-theme="dark"]` counterpart. Pick this as the base to
-  /// [merge] a caller's [BsFormStyle] override against when
-  /// `BsTheme.of(context) == Brightness.dark`.
+  /// Dark-mode counterpart of [defaults]: every brightness-sensitive field is swapped. The rest is
+  /// identical.
+  /// Use it as the base to [merge] a caller's override when the ambient brightness is dark.
   static BsFormStyle get darkDefaults => BsFormStyle(
     textMarginTop: defaultTextMarginTop,
     textFontSize: defaultTextFontSize,
@@ -790,8 +758,7 @@ class BsFormStyle {
     floatingInputPaddingTop: defaultFloatingInputPaddingTop,
     floatingInputPaddingBottom: defaultFloatingInputPaddingBottom,
     floatingLabelOpacity: defaultFloatingLabelOpacity,
-    // `$form-floating-label-disabled-color` has no `-dark` override in
-    // Bootstrap's SCSS — unchanged in both themes.
+    // The disabled floating label color is the same in both themes.
     floatingLabelDisabledColor: defaultFloatingLabelDisabledColor,
     validColor: defaultDarkValidColor,
     invalidColor: defaultDarkInvalidColor,

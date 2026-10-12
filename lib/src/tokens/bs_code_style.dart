@@ -5,11 +5,10 @@ import '../bs_color_utils.dart';
 import '../bs_colors.dart';
 import 'bs_body.dart';
 
-/// `code`/`kbd`/`pre` visual variables.
+/// Visual variables of a Bootstrap code.
 ///
-/// Mirrors the (unmarked) `Code` section of Bootstrap's SCSS source
-/// (`$code-*`, `$kbd-*`, `$pre-*`), assuming the default `16px` root font
-/// size.
+/// Every field is nullable: null falls back to the matching `default…` constant.
+/// [merge] layers overrides on top of [defaults] or, in dark mode, [darkDefaults].
 @immutable
 class BsCodeStyle {
   const BsCodeStyle({
@@ -22,25 +21,25 @@ class BsCodeStyle {
     this.preColor,
   });
 
-  /// `$code-font-size` (`$small-font-size`, i.e. `.875em`).
+  /// Code font size.
   final double? codeFontSize;
 
-  /// `$code-color` (`$pink`).
+  /// Code color.
   final Color? codeColor;
 
-  /// `$kbd-padding-y`/`$kbd-padding-x` (`.1875rem`/`.375rem`).
+  /// Padding of keyboard input.
   final EdgeInsetsGeometry? kbdPadding;
 
-  /// `$kbd-font-size` (`$code-font-size`).
+  /// Kbd font size.
   final double? kbdFontSize;
 
-  /// `$kbd-color` (`var(--bs-body-bg)`).
+  /// Kbd color.
   final Color? kbdColor;
 
-  /// `$kbd-bg` (`var(--bs-body-color)`).
+  /// Kbd background.
   final Color? kbdBackground;
 
-  /// `$pre-color` (`null`, inherits the surrounding text color).
+  /// Pre color.
   final Color? preColor;
 
   BsCodeStyle merge(BsCodeStyle? other) {
@@ -56,30 +55,28 @@ class BsCodeStyle {
     );
   }
 
-  /// `$small-font-size` (`.875em`, assuming a `16px` root font size).
+  /// Default code font size.
   static const double defaultCodeFontSize = 14;
 
-  /// `$code-color` (`$pink`).
+  /// Default code color.
   static const Color defaultCodeColor = BsColors.pink;
 
-  /// `$code-color-dark` (`tint-color($code-color, 40%)`).
+  /// Default code color in dark mode: a lighter tint of [defaultCodeColor].
   static Color get defaultDarkCodeColor => BsColorUtils.tint(defaultCodeColor, 0.4);
 
   static const EdgeInsets defaultKbdPadding = EdgeInsets.symmetric(horizontal: 6, vertical: 3);
   static const double defaultKbdFontSize = defaultCodeFontSize;
 
-  /// `$kbd-color` (`var(--bs-body-bg)`).
+  /// Default kbd color.
   static const Color defaultKbdColor = BsColors.white;
 
-  /// [defaultKbdColor] resolved against `--bs-body-bg` in
-  /// `[data-bs-theme="dark"]`.
+  /// Default kbd color in dark mode.
   static const Color defaultDarkKbdColor = BsBody.darkBackground;
 
-  /// `$kbd-bg` (`var(--bs-body-color)`).
+  /// Default kbd background.
   static const Color defaultKbdBackground = BsColors.gray900;
 
-  /// [defaultKbdBackground] resolved against `--bs-body-color` in
-  /// `[data-bs-theme="dark"]`.
+  /// Default kbd background in dark mode.
   static const Color defaultDarkKbdBackground = BsBody.darkColor;
 
   static const BsCodeStyle defaults = BsCodeStyle(
@@ -91,10 +88,9 @@ class BsCodeStyle {
     kbdBackground: defaultKbdBackground,
   );
 
-  /// [defaults], with every brightness-sensitive field swapped for its
-  /// `[data-bs-theme="dark"]` counterpart. Pick this as the base to
-  /// [merge] a caller's [BsCodeStyle] override against when
-  /// `BsTheme.of(context) == Brightness.dark`.
+  /// Dark-mode counterpart of [defaults]: every brightness-sensitive field is swapped. The rest is
+  /// identical.
+  /// Use it as the base to [merge] a caller's override when the ambient brightness is dark.
   static BsCodeStyle get darkDefaults => BsCodeStyle(
     codeFontSize: defaultCodeFontSize,
     codeColor: defaultDarkCodeColor,

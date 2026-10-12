@@ -5,10 +5,10 @@ import '../bs_colors.dart';
 import 'bs_borders.dart';
 import 'bs_typography.dart';
 
-/// A Bootstrap `.badge`'s visual variables.
+/// Visual variables of a Bootstrap badge.
 ///
-/// Mirrors the `badge-variables` group from Bootstrap's SCSS source
-/// (`$badge-*`).
+/// Every field is nullable: null falls back to the matching `default…` constant.
+/// [merge] layers overrides on top of [defaults] or, in dark mode, [darkDefaults].
 @immutable
 class BsBadgeStyle {
   const BsBadgeStyle({
@@ -20,28 +20,23 @@ class BsBadgeStyle {
     this.borderRadius,
   });
 
-  /// `--bs-badge-color`. Bootstrap's own `$badge-color` Sass default is a
-  /// static `$white`, but real contextual badges in its docs are built with
-  /// the `.text-bg-{variant}` helper, which computes actual
-  /// `color-contrast()` per background instead — so [BsBadge] leaves this
-  /// null by default and derives it from the background, the same way.
+  /// Text color. Null derives it from the background, choosing the color with the better contrast,
+  /// as Bootstrap's contextual badges do.
   final Color? color;
 
-  /// The badge's background (set per-variant; Bootstrap has no single
-  /// `$badge-bg` default).
+  /// Background color, set per variant; there is no single default.
   final Color? background;
 
-  /// `$badge-font-size` (`.75em`, relative to the parent text).
+  /// Font size.
   final double? fontSize;
 
-  /// `$badge-font-weight` (`$font-weight-bold`).
+  /// Font weight.
   final FontWeight? fontWeight;
 
-  /// `$badge-padding-y`/`$badge-padding-x` (`.35em`/`.65em`, relative to
-  /// [fontSize]).
+  /// Padding, relative to [fontSize].
   final EdgeInsetsGeometry? padding;
 
-  /// `$badge-border-radius` (`var(--bs-border-radius)`).
+  /// Corner radius.
   final double? borderRadius;
 
   BsBadgeStyle merge(BsBadgeStyle? other) {
@@ -56,21 +51,20 @@ class BsBadgeStyle {
     );
   }
 
-  /// `$badge-color` — Bootstrap's static fallback, not used by [BsBadge]'s
-  /// own defaults (see [color]'s doc comment). Kept for reference/manual use.
+  /// Static fallback text color (white). [BsBadge] derives its color from the background instead;
+  /// see [color].
   static const Color defaultColor = BsColors.white;
 
-  /// `$badge-font-weight`.
+  /// Default font weight.
   static const FontWeight defaultFontWeight = BsTypography.fontWeightBold;
 
-  /// `$badge-font-size` (assuming a `16px` root font size: `.75em == 12`).
+  /// Default font size.
   static const double defaultFontSize = 12;
 
-  /// `$badge-padding-y`/`$badge-padding-x`, resolved against
-  /// [defaultFontSize] (`.35em == 4.2`, `.65em == 7.8`).
+  /// Default padding, resolved against [defaultFontSize].
   static const EdgeInsets defaultPadding = EdgeInsets.symmetric(horizontal: 7.8, vertical: 4.2);
 
-  /// `$badge-border-radius`.
+  /// Default border radius.
   static const double defaultBorderRadius = BsBorders.radius;
 
   static const BsBadgeStyle defaults = BsBadgeStyle(

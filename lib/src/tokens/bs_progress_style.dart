@@ -7,10 +7,10 @@ import 'bs_body.dart';
 import 'bs_borders.dart';
 import 'bs_shadows.dart';
 
-/// A Bootstrap `.progress`'s visual variables.
+/// Visual variables of a Bootstrap progress.
 ///
-/// Mirrors the `progress-variables` group from Bootstrap's SCSS source
-/// (`$progress-*`).
+/// Every field is nullable: null falls back to the matching `default…` constant.
+/// [merge] layers overrides on top of [defaults] or, in dark mode, [darkDefaults].
 @immutable
 class BsProgressStyle {
   const BsProgressStyle({
@@ -25,33 +25,31 @@ class BsProgressStyle {
     this.barTransitionDuration,
   });
 
-  /// `$progress-height` (`1rem`).
+  /// Height.
   final double? height;
 
-  /// `$progress-font-size` (`$font-size-base * .75`).
+  /// Font size.
   final double? fontSize;
 
-  /// `$progress-bg` (`var(--bs-secondary-bg)`).
+  /// Background color.
   final Color? background;
 
-  /// `$progress-border-radius` (`var(--bs-border-radius)`).
+  /// Corner radius.
   final double? borderRadius;
 
-  /// `$progress-box-shadow` (`var(--bs-box-shadow-inset)`). Null by default:
-  /// Bootstrap only emits it when `$enable-shadows` is on, which it isn't out
-  /// of the box. Pass [defaultBoxShadow] to opt in.
+  /// Inset shadow of the track. Null by default (no shadow); pass [defaultBoxShadow] to opt in.
   final List<BoxShadow>? boxShadow;
 
-  /// `$progress-bar-color` (`$white`).
+  /// Bar color.
   final Color? barColor;
 
-  /// `$progress-bar-bg` (`$primary`).
+  /// Bar background.
   final Color? barBackground;
 
-  /// `$progress-bar-animation-timing` (`1s linear infinite`).
+  /// Bar animation duration.
   final Duration? barAnimationDuration;
 
-  /// `$progress-bar-transition` (`width .6s ease`).
+  /// Bar transition duration.
   final Duration? barTransitionDuration;
 
   BsProgressStyle merge(BsProgressStyle? other) {
@@ -73,18 +71,16 @@ class BsProgressStyle {
   static const double defaultFontSize = 12;
   static const Color defaultBackground = BsColors.gray200;
 
-  /// [defaultBackground] resolved against `--bs-secondary-bg` in
-  /// `[data-bs-theme="dark"]`.
+  /// Default background in dark mode.
   static const Color defaultDarkBackground = BsBody.darkSecondaryBackground;
 
   static const double defaultBorderRadius = BsBorders.radius;
   static const List<BoxShadow> defaultBoxShadow = BsShadows.shadowInset;
 
-  /// `$progress-bar-color: $white` — a literal with no `-dark` override,
-  /// unchanged in both themes.
+  /// Default bar text color: white in both themes.
   static const Color defaultBarColor = BsColors.white;
 
-  /// `$progress-bar-bg: $primary` — also unchanged in both themes.
+  /// Default bar color: the primary color, the same in both themes.
   static Color get defaultBarBackground => BsVariant.primary.color;
 
   static const Duration defaultBarAnimationDuration = Duration(seconds: 1);
@@ -101,10 +97,8 @@ class BsProgressStyle {
     barTransitionDuration: defaultBarTransitionDuration,
   );
 
-  /// [defaults], with [background] swapped for its
-  /// `[data-bs-theme="dark"]` counterpart. Pick this as the base to
-  /// [merge] a caller's [BsProgressStyle] override against when
-  /// `BsTheme.of(context) == Brightness.dark`.
+  /// Dark-mode counterpart of [defaults]: [background] is swapped. The rest is identical.
+  /// Use it as the base to [merge] a caller's override when the ambient brightness is dark.
   static BsProgressStyle get darkDefaults => BsProgressStyle(
     height: defaultHeight,
     fontSize: defaultFontSize,

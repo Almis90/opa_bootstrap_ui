@@ -5,10 +5,10 @@ import '../bs_colors.dart';
 import 'bs_body.dart';
 import 'bs_borders.dart';
 
-/// A Bootstrap `.tooltip`'s visual variables.
+/// Visual variables of a Bootstrap tooltip.
 ///
-/// Mirrors the `tooltip-variables` group from Bootstrap's SCSS source
-/// (`$tooltip-*`).
+/// Every field is nullable: null falls back to the matching `default…` constant.
+/// [merge] layers overrides on top of [defaults] or, in dark mode, [darkDefaults].
 @immutable
 class BsTooltipStyle {
   const BsTooltipStyle({
@@ -23,31 +23,31 @@ class BsTooltipStyle {
     this.arrowHeight,
   });
 
-  /// `$tooltip-font-size` (`$font-size-sm`).
+  /// Font size.
   final double? fontSize;
 
-  /// `$tooltip-max-width` (`200px`).
+  /// Maximum width.
   final double? maxWidth;
 
-  /// `$tooltip-color` (`var(--bs-body-bg)`).
+  /// Text color.
   final Color? color;
 
-  /// `$tooltip-bg` (`var(--bs-emphasis-color)`).
+  /// Background color.
   final Color? background;
 
-  /// `$tooltip-border-radius` (`var(--bs-border-radius)`).
+  /// Corner radius.
   final double? borderRadius;
 
-  /// `$tooltip-opacity` (`.9`).
+  /// Opacity.
   final double? opacity;
 
-  /// `$tooltip-padding-y`/`$tooltip-padding-x` (`.25rem`/`.5rem`).
+  /// Padding of the tooltip.
   final EdgeInsetsGeometry? padding;
 
-  /// `$tooltip-arrow-width` (`.8rem`).
+  /// Arrow width.
   final double? arrowWidth;
 
-  /// `$tooltip-arrow-height` (`.4rem`).
+  /// Arrow height.
   final double? arrowHeight;
 
   BsTooltipStyle merge(BsTooltipStyle? other) {
@@ -68,19 +68,16 @@ class BsTooltipStyle {
   static const double defaultFontSize = 14;
   static const double defaultMaxWidth = 200;
 
-  /// `$tooltip-color: var(--bs-body-bg)`.
+  /// Default color.
   static const Color defaultColor = BsColors.white;
 
-  /// `$tooltip-color` resolved against `--bs-body-bg` in
-  /// `[data-bs-theme="dark"]`.
+  /// Default text color in dark mode.
   static const Color defaultDarkColor = BsBody.darkBackground;
 
-  /// `$tooltip-bg: var(--bs-emphasis-color)`.
+  /// Default background.
   static const Color defaultBackground = BsColors.black;
 
-  /// `$tooltip-bg` resolved against `--bs-emphasis-color` in
-  /// `[data-bs-theme="dark"]` — note this *inverts* the tooltip to a
-  /// light-on-dark-page chip, since `$body-emphasis-color-dark` is `$white`.
+  /// Default background in dark mode: the tooltip inverts to a light chip on the dark page.
   static const Color defaultDarkBackground = BsBody.darkEmphasisColor;
 
   static const double defaultBorderRadius = BsBorders.radius;
@@ -101,11 +98,9 @@ class BsTooltipStyle {
     arrowHeight: defaultArrowHeight,
   );
 
-  /// [defaults], with [color]/[background] swapped for their
-  /// `[data-bs-theme="dark"]` counterparts. Pick this as the base to
-  /// [merge] a caller's [BsTooltipStyle] override against when
-  /// `BsTheme.of(context) == Brightness.dark` — every other field is
-  /// brightness-independent, so it's identical to [defaults].
+  /// Dark-mode counterpart of [defaults]: [color] and [background] are swapped, the rest is
+  /// identical. Use it as the base to [merge] a caller's override when the ambient brightness is
+  /// dark.
   static const BsTooltipStyle darkDefaults = BsTooltipStyle(
     fontSize: defaultFontSize,
     maxWidth: defaultMaxWidth,

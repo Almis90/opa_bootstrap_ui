@@ -4,35 +4,32 @@ import '../bs_color_utils.dart';
 import '../bs_colors.dart';
 import '../bs_theme.dart';
 
-/// Bootstrap's anchor/link tokens.
+/// Bootstrap's link tokens: the link color, its hover color and the shared
+/// shade percentage, with dark-mode counterparts.
 ///
-/// Mirrors the `Links` group from Bootstrap's SCSS source (`$link-*`), plus
-/// the `-dark` counterparts from `_variables-dark.scss`. Use
-/// [colorOf]/[hoverColorOf] to resolve against the ambient [BsTheme]
-/// instead of reading [color]/[darkColor] etc. directly.
+/// Use [colorOf] and [hoverColorOf] to resolve against the ambient [BsTheme]
+/// instead of reading [color] or [darkColor] directly.
 abstract final class BsLink {
-  /// `$link-color` (`$primary`, i.e. [BsColors.blue]).
+  /// Text color.
   static const Color color = BsColors.blue;
 
-  /// `$link-color-dark` (`tint-color($primary, 40%)`).
+  /// Link color in dark mode: a lighter tint of the primary color.
   static Color get darkColor => BsColorUtils.tint(BsColors.blue, 0.4);
 
-  /// `$link-decoration` (`underline`).
+  /// Decoration.
   static const TextDecoration decoration = TextDecoration.underline;
 
-  /// `$link-shade-percentage` (`20%`), used to compute [hoverColor]/
-  /// [darkHoverColor].
+  /// How much darker the hover color is than [color], as a percentage; also used to compute
+  /// [hoverColor] and [darkHoverColor].
   static const double shadePercentage = 0.20;
 
-  /// `$link-hover-color` (`shift-color($link-color, $link-shade-percentage)`).
+  /// Link color under the pointer: [color] darkened by [shadePercentage].
   static Color get hoverColor => BsColorUtils.shade(color, shadePercentage);
 
-  /// `$link-hover-color-dark`
-  /// (`shift-color($link-color-dark, -$link-shade-percentage)` — a
-  /// *negative* shift, i.e. a tint rather than a shade).
+  /// Link color under the pointer in dark mode: [darkColor] lightened by [shadePercentage].
   static Color get darkHoverColor => BsColorUtils.tint(darkColor, shadePercentage);
 
-  /// `$link-hover-decoration` (`null`, i.e. same as [decoration]).
+  /// Hover decoration.
   static const TextDecoration? hoverDecoration = null;
 
   static Color colorOf(BuildContext context) =>

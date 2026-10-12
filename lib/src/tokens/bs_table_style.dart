@@ -5,10 +5,10 @@ import '../bs_colors.dart';
 import 'bs_body.dart';
 import 'bs_borders.dart';
 
-/// A Bootstrap `.table`'s visual variables.
+/// Visual variables of a Bootstrap table.
 ///
-/// Mirrors the `table-variables` group from Bootstrap's SCSS source
-/// (`$table-*`).
+/// Every field is nullable: null falls back to the matching `default…` constant.
+/// [merge] layers overrides on top of [defaults] or, in dark mode, [darkDefaults].
 @immutable
 class BsTableStyle {
   const BsTableStyle({
@@ -28,47 +28,46 @@ class BsTableStyle {
     this.captionColor,
   });
 
-  /// `$table-cell-padding-y`/`$table-cell-padding-x` (`.5rem`).
+  /// Padding of a cell.
   final EdgeInsetsGeometry? cellPadding;
 
-  /// `$table-cell-padding-y-sm`/`$table-cell-padding-x-sm` (`.25rem`).
+  /// Padding of a cell in a compact table.
   final EdgeInsetsGeometry? cellPaddingSm;
 
-  /// `$table-color` (`var(--bs-emphasis-color)`).
+  /// Text color.
   final Color? color;
 
-  /// `$table-bg` (`var(--bs-body-bg)`).
+  /// Background color.
   final Color? background;
 
-  /// `$table-accent-bg` (`transparent`).
+  /// Accent background.
   final Color? accentBackground;
 
-  /// `$table-striped-color` (`$table-color`).
+  /// Striped color.
   final Color? stripedColor;
 
-  /// `$table-striped-bg-factor` (`.05`), the opacity used to tint
-  /// [stripedColor]'s row background over [background].
+  /// Opacity with which [stripedColor] tints a striped row's background over [background].
   final double? stripedBackgroundOpacity;
 
-  /// `$table-active-color` (`$table-color`).
+  /// Active color.
   final Color? activeColor;
 
-  /// `$table-active-bg-factor` (`.1`).
+  /// Active background opacity.
   final double? activeBackgroundOpacity;
 
-  /// `$table-hover-color` (`$table-color`).
+  /// Hover color.
   final Color? hoverColor;
 
-  /// `$table-hover-bg-factor` (`.075`).
+  /// Hover background opacity.
   final double? hoverBackgroundOpacity;
 
-  /// `$table-border-width` (`var(--bs-border-width)`).
+  /// Border width.
   final double? borderWidth;
 
-  /// `$table-border-color` (`var(--bs-border-color)`).
+  /// Border color.
   final Color? borderColor;
 
-  /// `$table-caption-color` (`var(--bs-secondary-color)`).
+  /// Caption color.
   final Color? captionColor;
 
   BsTableStyle merge(BsTableStyle? other) {
@@ -94,18 +93,16 @@ class BsTableStyle {
   static const EdgeInsets defaultCellPadding = EdgeInsets.all(8);
   static const EdgeInsets defaultCellPaddingSm = EdgeInsets.all(4);
 
-  /// `$table-color` (`var(--bs-emphasis-color)`).
+  /// Default color.
   static const Color defaultColor = BsColors.black;
 
-  /// [defaultColor] resolved against `--bs-emphasis-color` in
-  /// `[data-bs-theme="dark"]`.
+  /// Default color in dark mode.
   static const Color defaultDarkColor = BsBody.darkEmphasisColor;
 
-  /// `$table-bg` (`var(--bs-body-bg)`).
+  /// Default background.
   static const Color defaultBackground = BsColors.white;
 
-  /// [defaultBackground] resolved against `--bs-body-bg` in
-  /// `[data-bs-theme="dark"]`.
+  /// Default background in dark mode.
   static const Color defaultDarkBackground = BsBody.darkBackground;
 
   static const Color defaultAccentBackground = Color(0x00000000);
@@ -114,18 +111,16 @@ class BsTableStyle {
   static const double defaultHoverBackgroundOpacity = 0.075;
   static const double defaultBorderWidth = BsBorders.width;
 
-  /// `$table-border-color` (`var(--bs-border-color)`).
+  /// Default border color.
   static const Color defaultBorderColor = BsBorders.color;
 
-  /// [defaultBorderColor] resolved against `--bs-border-color` in
-  /// `[data-bs-theme="dark"]`.
+  /// Default border color in dark mode.
   static const Color defaultDarkBorderColor = BsBorders.darkColor;
 
-  /// `$table-caption-color` (`var(--bs-secondary-color)`).
+  /// Default caption color.
   static const Color defaultCaptionColor = BsColors.gray600;
 
-  /// [defaultCaptionColor] resolved against `--bs-secondary-color` in
-  /// `[data-bs-theme="dark"]`.
+  /// Default caption color in dark mode.
   static const Color defaultDarkCaptionColor = BsBody.darkSecondaryColor;
 
   static const BsTableStyle defaults = BsTableStyle(
@@ -145,10 +140,8 @@ class BsTableStyle {
     captionColor: defaultCaptionColor,
   );
 
-  /// [defaults], with every brightness-sensitive field swapped for its
-  /// `[data-bs-theme="dark"]` counterpart. Pick this as the base to
-  /// [merge] a caller's [BsTableStyle] override against when
-  /// `BsTheme.of(context) == Brightness.dark`.
+  /// Dark-mode counterpart of [defaults]: every brightness-sensitive field is swapped. Use it as
+  /// the base to [merge] a caller's override when the ambient brightness is dark.
   static const BsTableStyle darkDefaults = BsTableStyle(
     cellPadding: defaultCellPadding,
     cellPaddingSm: defaultCellPaddingSm,

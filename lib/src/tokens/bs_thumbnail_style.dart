@@ -6,32 +6,30 @@ import 'bs_body.dart';
 import 'bs_borders.dart';
 import 'bs_shadows.dart';
 
-/// A Bootstrap `.img-thumbnail`'s visual variables.
+/// Visual variables of a Bootstrap thumbnail.
 ///
-/// Mirrors the `thumbnail-variables` group from Bootstrap's SCSS source
-/// (`$thumbnail-*`).
+/// Every field is nullable: null falls back to the matching `default…` constant.
+/// [merge] layers overrides on top of [defaults] or, in dark mode, [darkDefaults].
 @immutable
 class BsThumbnailStyle {
   const BsThumbnailStyle({this.padding, this.background, this.borderWidth, this.borderColor, this.borderRadius, this.boxShadow});
 
-  /// `$thumbnail-padding` (`.25rem`).
+  /// Padding.
   final double? padding;
 
-  /// `$thumbnail-bg` (`var(--bs-body-bg)`).
+  /// Background color.
   final Color? background;
 
-  /// `$thumbnail-border-width` (`var(--bs-border-width)`).
+  /// Border width.
   final double? borderWidth;
 
-  /// `$thumbnail-border-color` (`var(--bs-border-color)`).
+  /// Border color.
   final Color? borderColor;
 
-  /// `$thumbnail-border-radius` (`var(--bs-border-radius)`).
+  /// Corner radius.
   final double? borderRadius;
 
-  /// `$thumbnail-box-shadow` (`var(--bs-box-shadow-sm)`). Null by default:
-  /// Bootstrap only emits it when `$enable-shadows` is on, which it isn't out
-  /// of the box. Pass [defaultBoxShadow] to opt in.
+  /// Drop shadow of the thumbnail. Null by default (no shadow); pass [defaultBoxShadow] to opt in.
   final List<BoxShadow>? boxShadow;
 
   BsThumbnailStyle merge(BsThumbnailStyle? other) {
@@ -53,12 +51,10 @@ class BsThumbnailStyle {
   static const double defaultBorderRadius = BsBorders.radius;
   static const List<BoxShadow> defaultBoxShadow = BsShadows.shadowSm;
 
-  /// [defaultBackground] resolved against `--bs-body-bg` in
-  /// `[data-bs-theme="dark"]`.
+  /// Default background in dark mode.
   static const Color defaultDarkBackground = BsBody.darkBackground;
 
-  /// [defaultBorderColor] resolved against `--bs-border-color` in
-  /// `[data-bs-theme="dark"]`.
+  /// Default border color in dark mode.
   static const Color defaultDarkBorderColor = BsBorders.darkColor;
 
   static const BsThumbnailStyle defaults = BsThumbnailStyle(
@@ -69,10 +65,9 @@ class BsThumbnailStyle {
     borderRadius: defaultBorderRadius,
   );
 
-  /// [defaults], with [background]/[borderColor] swapped for their
-  /// `[data-bs-theme="dark"]` counterparts. Pick this as the base to
-  /// [merge] a caller's [BsThumbnailStyle] override against when
-  /// `BsTheme.of(context) == Brightness.dark`.
+  /// Dark-mode counterpart of [defaults]: [background] and [borderColor] are swapped, the rest is
+  /// identical. Use it as the base to [merge] a caller's override when the ambient brightness is
+  /// dark.
   static const BsThumbnailStyle darkDefaults = BsThumbnailStyle(
     padding: defaultPadding,
     background: defaultDarkBackground,

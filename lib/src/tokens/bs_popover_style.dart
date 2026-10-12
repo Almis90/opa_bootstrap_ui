@@ -6,10 +6,10 @@ import 'bs_body.dart';
 import 'bs_borders.dart';
 import 'bs_shadows.dart';
 
-/// A Bootstrap `.popover`'s visual variables.
+/// Visual variables of a Bootstrap popover.
 ///
-/// Mirrors the `popover-variables` group from Bootstrap's SCSS source
-/// (`$popover-*`).
+/// Every field is nullable: null falls back to the matching `default…` constant.
+/// [merge] layers overrides on top of [defaults] or, in dark mode, [darkDefaults].
 @immutable
 class BsPopoverStyle {
   const BsPopoverStyle({
@@ -30,51 +30,49 @@ class BsPopoverStyle {
     this.arrowHeight,
   });
 
-  /// `$popover-font-size` (`$font-size-sm`).
+  /// Font size.
   final double? fontSize;
 
-  /// `$popover-bg` (`var(--bs-body-bg)`).
+  /// Background color.
   final Color? background;
 
-  /// `$popover-max-width` (`276px`).
+  /// Maximum width.
   final double? maxWidth;
 
-  /// `$popover-border-width` (`var(--bs-border-width)`).
+  /// Border width.
   final double? borderWidth;
 
-  /// `$popover-border-color` (`var(--bs-border-color-translucent)`).
+  /// Border color.
   final Color? borderColor;
 
-  /// `$popover-border-radius` (`var(--bs-border-radius-lg)`).
+  /// Corner radius.
   final double? borderRadius;
 
-  /// `$popover-box-shadow` (`var(--bs-box-shadow)`). Null by default:
-  /// Bootstrap only emits it when `$enable-shadows` is on, which it isn't out
-  /// of the box. Pass [defaultBoxShadow] to opt in.
+  /// Drop shadow of the popover. Null by default (no shadow); pass [defaultBoxShadow] to opt in.
   final List<BoxShadow>? boxShadow;
 
-  /// `$popover-header-font-size` (`$font-size-base`).
+  /// Header font size.
   final double? headerFontSize;
 
-  /// `$popover-header-bg` (`var(--bs-secondary-bg)`).
+  /// Header background.
   final Color? headerBackground;
 
-  /// `$popover-header-color` (`$headings-color`, i.e. `inherit`).
+  /// Header color.
   final Color? headerColor;
 
-  /// `$popover-header-padding-y`/`$popover-header-padding-x` (`.5rem`/`1rem`).
+  /// Padding of the header.
   final EdgeInsetsGeometry? headerPadding;
 
-  /// `$popover-body-color` (`var(--bs-body-color)`).
+  /// Body color.
   final Color? bodyColor;
 
-  /// `$popover-body-padding-y`/`$popover-body-padding-x` (`1rem`).
+  /// Padding of the body.
   final EdgeInsetsGeometry? bodyPadding;
 
-  /// `$popover-arrow-width` (`1rem`).
+  /// Arrow width.
   final double? arrowWidth;
 
-  /// `$popover-arrow-height` (`.5rem`).
+  /// Arrow height.
   final double? arrowHeight;
 
   BsPopoverStyle merge(BsPopoverStyle? other) {
@@ -100,41 +98,37 @@ class BsPopoverStyle {
 
   static const double defaultFontSize = 14;
 
-  /// `$popover-bg: var(--bs-body-bg)`.
+  /// Default background.
   static const Color defaultBackground = BsColors.white;
 
-  /// `$popover-bg` resolved against `--bs-body-bg` in
-  /// `[data-bs-theme="dark"]`.
+  /// Default background in dark mode.
   static const Color defaultDarkBackground = BsBody.darkBackground;
 
   static const double defaultMaxWidth = 276;
   static const double defaultBorderWidth = BsBorders.width;
 
-  /// `$popover-border-color: var(--bs-border-color-translucent)`.
+  /// Default border color.
   static const Color defaultBorderColor = BsBorders.colorTranslucent;
 
-  /// `$popover-border-color` resolved against
-  /// `--bs-border-color-translucent` in `[data-bs-theme="dark"]`.
+  /// Default border color in dark mode: translucent white.
   static const Color defaultDarkBorderColor = BsBorders.darkColorTranslucent;
 
   static const double defaultBorderRadius = BsBorders.radiusLg;
   static const List<BoxShadow> defaultBoxShadow = BsShadows.shadow;
   static const double defaultHeaderFontSize = 16;
 
-  /// `$popover-header-bg: var(--bs-secondary-bg)`.
+  /// Default header background.
   static const Color defaultHeaderBackground = BsColors.gray200;
 
-  /// `$popover-header-bg` resolved against `--bs-secondary-bg` in
-  /// `[data-bs-theme="dark"]`.
+  /// Default header background in dark mode.
   static const Color defaultDarkHeaderBackground = BsBody.darkSecondaryBackground;
 
   static const EdgeInsets defaultHeaderPadding = EdgeInsets.symmetric(horizontal: 16, vertical: 8);
 
-  /// `$popover-body-color: var(--bs-body-color)`.
+  /// Default body color.
   static const Color defaultBodyColor = BsColors.gray900;
 
-  /// `$popover-body-color` resolved against `--bs-body-color` in
-  /// `[data-bs-theme="dark"]`.
+  /// Default body text color in dark mode.
   static const Color defaultDarkBodyColor = BsBody.darkColor;
 
   static const EdgeInsets defaultBodyPadding = EdgeInsets.all(16);
@@ -157,13 +151,9 @@ class BsPopoverStyle {
     arrowHeight: defaultArrowHeight,
   );
 
-  /// [defaults], with [background]/[borderColor]/[headerBackground]/
-  /// [bodyColor] swapped for their `[data-bs-theme="dark"]` counterparts.
-  /// Pick this as the base to [merge] a caller's [BsPopoverStyle] override
-  /// against when `BsTheme.of(context) == Brightness.dark` — every other
-  /// field (including [boxShadow], which has no `-dark` override in
-  /// Bootstrap's SCSS) is brightness-independent, so it's identical to
-  /// [defaults].
+  /// Dark-mode counterpart of [defaults]: [background], [borderColor], [headerBackground] and
+  /// [bodyColor] are swapped, the rest is identical. Use it as the base to [merge] a caller's
+  /// override when the ambient brightness is dark.
   static const BsPopoverStyle darkDefaults = BsPopoverStyle(
     fontSize: defaultFontSize,
     background: defaultDarkBackground,

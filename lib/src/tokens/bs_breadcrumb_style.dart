@@ -3,10 +3,10 @@ import 'package:flutter/painting.dart';
 
 import 'bs_body.dart';
 
-/// A Bootstrap `.breadcrumb`'s visual variables.
+/// Visual variables of a Bootstrap breadcrumb.
 ///
-/// Mirrors the `breadcrumb-variables` group from Bootstrap's SCSS source
-/// (`$breadcrumb-*`).
+/// Every field is nullable: null falls back to the matching `default…` constant.
+/// [merge] layers overrides on top of [defaults] or, in dark mode, [darkDefaults].
 @immutable
 class BsBreadcrumbStyle {
   const BsBreadcrumbStyle({
@@ -20,28 +20,28 @@ class BsBreadcrumbStyle {
     this.borderRadius,
   });
 
-  /// `$breadcrumb-padding-y`/`$breadcrumb-padding-x` (`0`).
+  /// Padding of the breadcrumb.
   final EdgeInsetsGeometry? padding;
 
-  /// `$breadcrumb-item-padding-x` (`.5rem`), the gap before each divider.
+  /// Gap before each divider.
   final double? itemSpacing;
 
-  /// `$breadcrumb-margin-bottom` (`1rem`).
+  /// Margin bottom.
   final double? marginBottom;
 
-  /// `$breadcrumb-bg` (`null`, transparent).
+  /// Background color.
   final Color? background;
 
-  /// `$breadcrumb-divider-color` (`var(--bs-secondary-color)`).
+  /// Divider color.
   final Color? dividerColor;
 
-  /// `$breadcrumb-active-color` (`var(--bs-secondary-color)`).
+  /// Active color.
   final Color? activeColor;
 
-  /// `$breadcrumb-divider` (`"/"`).
+  /// Divider.
   final String? divider;
 
-  /// `$breadcrumb-border-radius` (`null`).
+  /// Corner radius.
   final double? borderRadius;
 
   BsBreadcrumbStyle merge(BsBreadcrumbStyle? other) {
@@ -63,14 +63,12 @@ class BsBreadcrumbStyle {
   static const double defaultMarginBottom = 16;
   static const Color defaultDividerColor = BsBody.secondaryColor;
 
-  /// [defaultDividerColor] resolved against `--bs-secondary-color` in
-  /// `[data-bs-theme="dark"]`.
+  /// Default divider color in dark mode.
   static const Color defaultDarkDividerColor = BsBody.darkSecondaryColor;
 
   static const Color defaultActiveColor = BsBody.secondaryColor;
 
-  /// [defaultActiveColor] resolved against `--bs-secondary-color` in
-  /// `[data-bs-theme="dark"]`.
+  /// Default active color in dark mode.
   static const Color defaultDarkActiveColor = BsBody.darkSecondaryColor;
 
   static const String defaultDivider = '/';
@@ -84,10 +82,9 @@ class BsBreadcrumbStyle {
     divider: defaultDivider,
   );
 
-  /// [defaults], with [dividerColor]/[activeColor] swapped for their
-  /// `[data-bs-theme="dark"]` counterparts. Pick this as the base to
-  /// [merge] a caller's [BsBreadcrumbStyle] override against when
-  /// `BsTheme.of(context) == Brightness.dark`.
+  /// Dark-mode counterpart of [defaults]: [dividerColor] and [activeColor] are swapped, the rest is
+  /// identical. Use it as the base to [merge] a caller's override when the ambient brightness is
+  /// dark.
   static const BsBreadcrumbStyle darkDefaults = BsBreadcrumbStyle(
     padding: defaultPadding,
     itemSpacing: defaultItemSpacing,

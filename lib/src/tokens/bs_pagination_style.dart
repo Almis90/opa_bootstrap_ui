@@ -7,10 +7,10 @@ import 'bs_body.dart';
 import 'bs_borders.dart';
 import 'bs_focus_ring.dart';
 
-/// A Bootstrap `.pagination`'s visual variables.
+/// Visual variables of a Bootstrap pagination.
 ///
-/// Mirrors the `pagination-variables` group from Bootstrap's SCSS source
-/// (`$pagination-*`).
+/// Every field is nullable: null falls back to the matching `default…` constant.
+/// [merge] layers overrides on top of [defaults] or, in dark mode, [darkDefaults].
 @immutable
 class BsPaginationStyle {
   const BsPaginationStyle({
@@ -37,68 +37,67 @@ class BsPaginationStyle {
     this.transitionDuration,
   });
 
-  /// `$pagination-padding-y`/`$pagination-padding-x` (`.375rem`/`.75rem`).
+  /// Padding of a page link.
   final EdgeInsetsGeometry? padding;
 
-  /// `$pagination-font-size` (`$font-size-base`).
+  /// Font size.
   final double? fontSize;
 
-  /// `$pagination-color` (`var(--bs-link-color)`).
+  /// Text color.
   final Color? color;
 
-  /// `$pagination-bg` (`var(--bs-body-bg)`).
+  /// Background color.
   final Color? background;
 
-  /// `$pagination-border-radius` (`var(--bs-border-radius)`).
+  /// Corner radius.
   final double? borderRadius;
 
-  /// `$pagination-border-width` (`var(--bs-border-width)`).
+  /// Border width.
   final double? borderWidth;
 
-  /// `$pagination-border-color` (`var(--bs-border-color)`).
+  /// Border color.
   final Color? borderColor;
 
-  /// `$pagination-focus-color` (`var(--bs-link-hover-color)`).
+  /// Focus color.
   final Color? focusColor;
 
-  /// `$pagination-focus-bg` (`var(--bs-secondary-bg)`).
+  /// Focus background.
   final Color? focusBackground;
 
-  /// `$pagination-focus-box-shadow` (`$focus-ring-box-shadow`)'s color.
+  /// Color of the focus ring.
   final Color? focusRingColor;
 
-  /// The width of [focusRingColor]'s ring, per `$focus-ring-width`
-  /// (`.25rem`, i.e. `4` at the default `16px` root font size).
+  /// Width of the focus ring drawn in [focusRingColor].
   final double? focusRingWidth;
 
-  /// `$pagination-hover-color` (`var(--bs-link-hover-color)`).
+  /// Hover color.
   final Color? hoverColor;
 
-  /// `$pagination-hover-bg` (`var(--bs-tertiary-bg)`).
+  /// Hover background.
   final Color? hoverBackground;
 
-  /// `$pagination-hover-border-color` (`var(--bs-border-color)`).
+  /// Hover border color.
   final Color? hoverBorderColor;
 
-  /// `$pagination-active-color` (`$component-active-color`).
+  /// Active color.
   final Color? activeColor;
 
-  /// `$pagination-active-bg` (`$component-active-bg`).
+  /// Active background.
   final Color? activeBackground;
 
-  /// `$pagination-active-border-color` (`$component-active-bg`).
+  /// Active border color.
   final Color? activeBorderColor;
 
-  /// `$pagination-disabled-color` (`var(--bs-secondary-color)`).
+  /// Disabled color.
   final Color? disabledColor;
 
-  /// `$pagination-disabled-bg` (`var(--bs-secondary-bg)`).
+  /// Disabled background.
   final Color? disabledBackground;
 
-  /// `$pagination-disabled-border-color` (`var(--bs-border-color)`).
+  /// Disabled border color.
   final Color? disabledBorderColor;
 
-  /// `$pagination-transition` (color/bg/border/shadow, `.15s ease-in-out`).
+  /// Transition duration.
   final Duration? transitionDuration;
 
   BsPaginationStyle merge(BsPaginationStyle? other) {
@@ -133,47 +132,41 @@ class BsPaginationStyle {
   static Color get defaultColor => BsVariant.primary.color;
   static const Color defaultBackground = BsColors.white;
 
-  /// [defaultBackground] resolved against `--bs-body-bg` in
-  /// `[data-bs-theme="dark"]`.
+  /// Default background in dark mode.
   static const Color defaultDarkBackground = BsBody.darkBackground;
 
   static const double defaultBorderRadius = BsBorders.radius;
   static const double defaultBorderWidth = BsBorders.width;
   static const Color defaultBorderColor = BsBorders.color;
 
-  /// [defaultBorderColor] resolved against `--bs-border-color` in
-  /// `[data-bs-theme="dark"]`.
+  /// Default border color in dark mode.
   static const Color defaultDarkBorderColor = BsBorders.darkColor;
 
   static const Color defaultFocusBackground = BsColors.gray200;
 
-  /// [defaultFocusBackground] resolved against `--bs-secondary-bg` in
-  /// `[data-bs-theme="dark"]`.
+  /// Default focus background in dark mode.
   static const Color defaultDarkFocusBackground = BsBody.darkSecondaryBackground;
 
   static const Color defaultHoverBackground = BsColors.gray100;
 
-  /// [defaultHoverBackground] resolved against `--bs-tertiary-bg` in
-  /// `[data-bs-theme="dark"]`.
+  /// Default hover background in dark mode.
   static Color get defaultDarkHoverBackground => BsBody.darkTertiaryBackground;
 
   static const Color defaultActiveColor = BsColors.white;
   static Color get defaultActiveBackground => BsVariant.primary.color;
   static const Color defaultDisabledColor = BsColors.gray600;
 
-  /// [defaultDisabledColor] resolved against `--bs-secondary-color` in
-  /// `[data-bs-theme="dark"]`.
+  /// Default disabled color in dark mode.
   static const Color defaultDarkDisabledColor = BsBody.darkSecondaryColor;
 
   static const Color defaultDisabledBackground = BsColors.gray200;
 
-  /// [defaultDisabledBackground] resolved against `--bs-secondary-bg` in
-  /// `[data-bs-theme="dark"]`.
+  /// Default disabled background in dark mode.
   static const Color defaultDarkDisabledBackground = BsBody.darkSecondaryBackground;
 
   static const Duration defaultTransitionDuration = Duration(milliseconds: 150);
 
-  /// `$pagination-focus-box-shadow` (`$focus-ring-box-shadow`).
+  /// Default focus ring width.
   static const double defaultFocusRingWidth = BsFocusRing.width;
   static Color get defaultFocusRingColor => BsFocusRing.color();
 
@@ -201,13 +194,10 @@ class BsPaginationStyle {
     transitionDuration: defaultTransitionDuration,
   );
 
-  /// [defaults], with every brightness-sensitive field swapped for its
-  /// `[data-bs-theme="dark"]` counterpart. [color]/[focusColor]/
-  /// [hoverColor]/[focusRingColor]/[activeColor]/[activeBackground] are
-  /// unchanged (they're literal `$primary`/`$white` values that don't
-  /// re-theme). Pick this as the base to [merge] a caller's
-  /// [BsPaginationStyle] override against when
-  /// `BsTheme.of(context) == Brightness.dark`.
+  /// Dark-mode counterpart of [defaults]: every brightness-sensitive field is swapped.
+  /// [color], [focusColor], [hoverColor], [focusRingColor], [activeColor] and [activeBackground]
+  /// are the same in both themes. Use it as the base to [merge] a caller's override when the
+  /// ambient brightness is dark.
   static BsPaginationStyle get darkDefaults => BsPaginationStyle(
     padding: defaultPadding,
     fontSize: defaultFontSize,

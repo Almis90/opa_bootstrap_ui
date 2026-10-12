@@ -6,10 +6,10 @@ import 'bs_body.dart';
 import 'bs_borders.dart';
 import 'bs_shadows.dart';
 
-/// A Bootstrap `.modal`'s visual variables.
+/// Visual variables of a Bootstrap modal.
 ///
-/// Mirrors the `modal-variables` group from Bootstrap's SCSS source
-/// (`$modal-*`).
+/// Every field is nullable: null falls back to the matching `default…` constant.
+/// [merge] layers overrides on top of [defaults] or, in dark mode, [darkDefaults].
 @immutable
 class BsModalStyle {
   const BsModalStyle({
@@ -37,72 +37,71 @@ class BsModalStyle {
     this.transitionDuration,
   });
 
-  /// `$modal-inner-padding` (`$spacer`).
+  /// Inner padding.
   final double? innerPadding;
 
-  /// `$modal-footer-margin-between` (`.5rem`).
+  /// Footer margin between.
   final double? footerMarginBetween;
 
-  /// `$modal-dialog-margin` (`.5rem`).
+  /// Dialog margin.
   final double? dialogMargin;
 
-  /// `$modal-title-line-height` (`$line-height-base`).
+  /// Title line height.
   final double? titleLineHeight;
 
-  /// `$modal-content-color` (`var(--bs-body-color)`).
+  /// Content color.
   final Color? contentColor;
 
-  /// `$modal-content-bg` (`var(--bs-body-bg)`).
+  /// Content background.
   final Color? contentBackground;
 
-  /// `$modal-content-border-color` (`var(--bs-border-color-translucent)`).
+  /// Content border color.
   final Color? contentBorderColor;
 
-  /// `$modal-content-border-width` (`var(--bs-border-width)`).
+  /// Content border width.
   final double? contentBorderWidth;
 
-  /// `$modal-content-border-radius` (`var(--bs-border-radius-lg)`).
+  /// Content border radius.
   final double? contentBorderRadius;
 
-  /// `$modal-content-box-shadow-sm-up` (`var(--bs-box-shadow)`). Null by
-  /// default: Bootstrap only emits it when `$enable-shadows` is on, which it
-  /// isn't out of the box. Pass [defaultContentBoxShadow] to opt in.
+  /// Drop shadow of the dialog. Null by default (no shadow); pass [defaultContentBoxShadow] to opt
+  /// in.
   final List<BoxShadow>? contentBoxShadow;
 
-  /// `$modal-backdrop-bg` (`$black`).
+  /// Backdrop color.
   final Color? backdropColor;
 
-  /// `$modal-backdrop-opacity` (`.5`).
+  /// Backdrop opacity.
   final double? backdropOpacity;
 
-  /// `$modal-header-border-color` (`var(--bs-border-color)`).
+  /// Header border color.
   final Color? headerBorderColor;
 
-  /// `$modal-header-border-width` (`$modal-content-border-width`).
+  /// Header border width.
   final double? headerBorderWidth;
 
-  /// `$modal-footer-bg` (`null`, inherits [contentBackground]).
+  /// Footer background.
   final Color? footerBackground;
 
-  /// `$modal-footer-border-color` (`$modal-header-border-color`).
+  /// Footer border color.
   final Color? footerBorderColor;
 
-  /// `$modal-footer-border-width` (`$modal-header-border-width`).
+  /// Footer border width.
   final double? footerBorderWidth;
 
-  /// `$modal-sm` (`300px`).
+  /// Small size.
   final double? smallSize;
 
-  /// `$modal-md` (`500px`).
+  /// Medium size.
   final double? mediumSize;
 
-  /// `$modal-lg` (`800px`).
+  /// Large size.
   final double? largeSize;
 
-  /// `$modal-xl` (`1140px`).
+  /// Extra large size.
   final double? extraLargeSize;
 
-  /// `$modal-transition` (`transform .3s ease-out`).
+  /// Transition duration.
   final Duration? transitionDuration;
 
   BsModalStyle merge(BsModalStyle? other) {
@@ -139,35 +138,30 @@ class BsModalStyle {
   static const double defaultTitleLineHeight = 1.5;
   static const Color defaultContentColor = BsColors.gray900;
 
-  /// [defaultContentColor] resolved against `--bs-body-color` in
-  /// `[data-bs-theme="dark"]`.
+  /// Default content color in dark mode.
   static const Color defaultDarkContentColor = BsBody.darkColor;
 
   static const Color defaultContentBackground = BsColors.white;
 
-  /// [defaultContentBackground] resolved against `--bs-body-bg` in
-  /// `[data-bs-theme="dark"]`.
+  /// Default content background in dark mode.
   static const Color defaultDarkContentBackground = BsBody.darkBackground;
 
   static const Color defaultContentBorderColor = BsBorders.colorTranslucent;
 
-  /// [defaultContentBorderColor] resolved against
-  /// `--bs-border-color-translucent` in `[data-bs-theme="dark"]`.
+  /// Default content border color in dark mode.
   static const Color defaultDarkContentBorderColor = BsBorders.darkColorTranslucent;
 
   static const double defaultContentBorderWidth = BsBorders.width;
   static const double defaultContentBorderRadius = BsBorders.radiusLg;
   static const List<BoxShadow> defaultContentBoxShadow = BsShadows.shadow;
 
-  /// `$modal-backdrop-bg: $black` — a literal with no `-dark` override,
-  /// unchanged in both themes (a backdrop is always a dark scrim).
+  /// Default backdrop color: black in both themes, since a backdrop is always a dark scrim.
   static const Color defaultBackdropColor = BsColors.black;
   static const double defaultBackdropOpacity = 0.5;
 
   static const Color defaultHeaderBorderColor = BsBorders.color;
 
-  /// [defaultHeaderBorderColor] resolved against `--bs-border-color` in
-  /// `[data-bs-theme="dark"]`.
+  /// Default header border color in dark mode.
   static const Color defaultDarkHeaderBorderColor = BsBorders.darkColor;
   static const double defaultSmallSize = 300;
   static const double defaultMediumSize = 500;
@@ -198,13 +192,9 @@ class BsModalStyle {
     transitionDuration: defaultTransitionDuration,
   );
 
-  /// [defaults], with [contentColor]/[contentBackground]/
-  /// [contentBorderColor]/[headerBorderColor]/[footerBorderColor] swapped
-  /// for their `[data-bs-theme="dark"]` counterparts. [backdropColor]/
-  /// [backdropOpacity] are unchanged (no `-dark` override exists — a
-  /// backdrop stays the same dark scrim regardless of page theme). Pick
-  /// this as the base to [merge] a caller's [BsModalStyle] override
-  /// against when `BsTheme.of(context) == Brightness.dark`.
+  /// Dark-mode counterpart of [defaults]: the content, header and footer colors are swapped, the
+  /// rest is identical; the backdrop stays the same dark scrim. Use it as the base to [merge] a
+  /// caller's override when the ambient brightness is dark.
   static const BsModalStyle darkDefaults = BsModalStyle(
     innerPadding: defaultInnerPadding,
     footerMarginBetween: defaultFooterMarginBetween,

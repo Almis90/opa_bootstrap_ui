@@ -7,10 +7,10 @@ import 'bs_body.dart';
 import 'bs_borders.dart';
 import 'bs_shadows.dart';
 
-/// A Bootstrap `.dropdown-menu`'s visual variables.
+/// Visual variables of a Bootstrap dropdown.
 ///
-/// Mirrors the `dropdown-variables` and `dropdown-dark-variables` groups
-/// from Bootstrap's SCSS source (`$dropdown-*`).
+/// Every field is nullable: null falls back to the matching `default…` constant.
+/// [merge] layers overrides on top of [defaults] or, in dark mode, [darkDefaults].
 @immutable
 class BsDropdownStyle {
   const BsDropdownStyle({
@@ -39,81 +39,73 @@ class BsDropdownStyle {
     this.headerPadding,
   });
 
-  /// `$dropdown-min-width` (`10rem`).
+  /// Minimum width.
   final double? minWidth;
 
-  /// `$dropdown-padding-y`/`$dropdown-padding-x` (`.5rem`/`0`).
+  /// Padding of the menu.
   final EdgeInsetsGeometry? padding;
 
-  /// `$dropdown-spacer` (`.125rem`), the gap between the toggle and the menu.
+  /// Gap between the toggle and the menu.
   final double? spacer;
 
-  /// `$dropdown-font-size` (`$font-size-base`).
+  /// Font size.
   final double? fontSize;
 
-  /// `$dropdown-color` (`var(--bs-body-color)`).
+  /// Text color.
   final Color? color;
 
-  /// `$dropdown-bg` (`var(--bs-body-bg)`).
+  /// Background color.
   final Color? background;
 
-  /// `$dropdown-border-color` (`var(--bs-border-color-translucent)`).
+  /// Border color.
   final Color? borderColor;
 
-  /// `$dropdown-border-radius` (`var(--bs-border-radius)`).
+  /// Corner radius.
   final double? borderRadius;
 
-  /// `$dropdown-border-width` (`var(--bs-border-width)`).
+  /// Border width.
   final double? borderWidth;
 
-  /// `$dropdown-divider-bg` (`$dropdown-border-color`).
+  /// Divider color.
   final Color? dividerColor;
 
-  /// `$dropdown-divider-margin-y` (`$spacer * .5`).
+  /// Divider margin y.
   final double? dividerMarginY;
 
-  /// `$dropdown-box-shadow` (`var(--bs-box-shadow)`). Null by default:
-  /// Bootstrap only emits it when `$enable-shadows` is on, which it isn't out
-  /// of the box (hence the explicit `.shadow` on its own example menus). Pass
-  /// [defaultBoxShadow] to opt in.
+  /// Drop shadow of the menu. Null by default (no shadow); pass [defaultBoxShadow] to opt in.
   final List<BoxShadow>? boxShadow;
 
-  /// `$dropdown-link-color` (`var(--bs-body-color)`).
+  /// Link color.
   final Color? linkColor;
 
-  /// `$dropdown-link-hover-color` (`$dropdown-link-color` in the light
-  /// palette, but `$white` in [dark] — unlike most other hover colors,
-  /// this genuinely differs between the two, hence its own field).
+  /// Link hover color.
   final Color? linkHoverColor;
 
-  /// `$dropdown-link-hover-bg` (`var(--bs-tertiary-bg)`).
+  /// Link hover background.
   final Color? linkHoverBackground;
 
-  /// `$dropdown-link-active-color` (`$component-active-color`).
+  /// Link active color.
   final Color? linkActiveColor;
 
-  /// `$dropdown-link-active-bg` (`$component-active-bg`).
+  /// Link active background.
   final Color? linkActiveBackground;
 
-  /// `$dropdown-link-disabled-color` (`var(--bs-tertiary-color)`).
+  /// Link disabled color.
   final Color? linkDisabledColor;
 
-  /// `$dropdown-item-padding-y`/`$dropdown-item-padding-x` (`.25rem`/`1rem`).
+  /// Padding of an item.
   final EdgeInsetsGeometry? itemPadding;
 
-  /// The corner radius of an item's hover/active background (0 by default: a
-  /// Bootstrap `.dropdown-item` is square, but the docs site's navbar menus
-  /// round theirs to `.25rem`).
+  /// Corner radius of an item's hover and active background. Square by default.
   final double? itemBorderRadius;
 
-  /// The gap between consecutive entries (0 by default; the docs site's
-  /// navbar menus add `li + li { margin-top: .125rem }`).
+  /// Gap between consecutive entries; none by default.
   final double? itemSpacing;
 
-  /// `$dropdown-header-color` (`$gray-600`).
+  /// Header color.
   final Color? headerColor;
 
-  /// `$dropdown-header-padding-y`/`$dropdown-header-padding-x`.
+  /// Padding of a header.
   final EdgeInsetsGeometry? headerPadding;
 
   BsDropdownStyle merge(BsDropdownStyle? other) {
@@ -193,16 +185,10 @@ class BsDropdownStyle {
     headerPadding: defaultHeaderPadding,
   );
 
-  /// [defaults], with every field that reads a `var(--bs-*)` custom
-  /// property (which the `[data-bs-theme="dark"]` cascade swaps
-  /// automatically, even though most have no explicit entry in
-  /// `_variables-dark.scss`) resolved to its dark value. **Not** the same
-  /// as [dark] — that's Bootstrap's separately-authored, manually-opted-in
-  /// `.dropdown-menu-dark` palette (deliberately different literals like
-  /// `$gray-800` rather than the ambient `$body-bg-dark: $gray-900`), for
-  /// a dropdown you want to force dark regardless of page theme. Pick
-  /// *this* getter as the base to [merge] a caller's [BsDropdownStyle]
-  /// against when `BsTheme.of(context) == Brightness.dark`.
+  /// Dark-mode counterpart of [defaults], for a dropdown that follows the ambient theme.
+  /// Not the same as [dark], which is a separate palette for a menu that should be dark
+  /// regardless of the page's theme. Use this as the base to [merge] a caller's override
+  /// when the ambient brightness is dark.
   static BsDropdownStyle get darkDefaults => BsDropdownStyle(
     minWidth: defaultMinWidth,
     padding: defaultPadding,
@@ -226,7 +212,7 @@ class BsDropdownStyle {
     headerPadding: defaultHeaderPadding,
   );
 
-  /// `dropdown-dark-variables`: the palette for `.dropdown-menu-dark`.
+  /// Palette of a menu that is dark regardless of the page's theme.
   static BsDropdownStyle get dark => BsDropdownStyle(
     color: BsColors.gray300,
     background: BsColors.gray800,

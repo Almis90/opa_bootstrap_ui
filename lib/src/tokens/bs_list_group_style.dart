@@ -6,10 +6,10 @@ import '../bs_variant.dart';
 import 'bs_body.dart';
 import 'bs_borders.dart';
 
-/// A Bootstrap `.list-group`'s visual variables.
+/// Visual variables of a Bootstrap list group.
 ///
-/// Mirrors the `list-group-variables` group from Bootstrap's SCSS source
-/// (`$list-group-*`).
+/// Every field is nullable: null falls back to the matching `default…` constant.
+/// [merge] layers overrides on top of [defaults] or, in dark mode, [darkDefaults].
 @immutable
 class BsListGroupStyle {
   const BsListGroupStyle({
@@ -31,52 +31,52 @@ class BsListGroupStyle {
     this.actionActiveBackground,
   });
 
-  /// `$list-group-color` (`var(--bs-body-color)`).
+  /// Text color.
   final Color? color;
 
-  /// `$list-group-bg` (`var(--bs-body-bg)`).
+  /// Background color.
   final Color? background;
 
-  /// `$list-group-border-color` (`var(--bs-border-color)`).
+  /// Border color.
   final Color? borderColor;
 
-  /// `$list-group-border-width` (`var(--bs-border-width)`).
+  /// Border width.
   final double? borderWidth;
 
-  /// `$list-group-border-radius` (`var(--bs-border-radius)`).
+  /// Corner radius.
   final double? borderRadius;
 
-  /// `$list-group-item-padding-y`/`$list-group-item-padding-x`.
+  /// Padding of an item.
   final EdgeInsetsGeometry? itemPadding;
 
-  /// `$list-group-hover-bg` (`var(--bs-tertiary-bg)`).
+  /// Hover background.
   final Color? hoverBackground;
 
-  /// `$list-group-active-color` (`$component-active-color`).
+  /// Active color.
   final Color? activeColor;
 
-  /// `$list-group-active-bg` (`$component-active-bg`).
+  /// Active background.
   final Color? activeBackground;
 
-  /// `$list-group-active-border-color` (`$list-group-active-bg`).
+  /// Active border color.
   final Color? activeBorderColor;
 
-  /// `$list-group-disabled-color` (`var(--bs-secondary-color)`).
+  /// Disabled color.
   final Color? disabledColor;
 
-  /// `$list-group-disabled-bg` (`$list-group-bg`).
+  /// Disabled background.
   final Color? disabledBackground;
 
-  /// `$list-group-action-color` (`var(--bs-secondary-color)`).
+  /// Action color.
   final Color? actionColor;
 
-  /// `$list-group-action-hover-color` (`var(--bs-emphasis-color)`).
+  /// Action hover color.
   final Color? actionHoverColor;
 
-  /// `$list-group-action-active-color` (`var(--bs-body-color)`).
+  /// Action active color.
   final Color? actionActiveColor;
 
-  /// `$list-group-action-active-bg` (`var(--bs-secondary-bg)`).
+  /// Action active background.
   final Color? actionActiveBackground;
 
   BsListGroupStyle merge(BsListGroupStyle? other) {
@@ -103,52 +103,44 @@ class BsListGroupStyle {
 
   static const Color defaultBackground = BsColors.white;
 
-  /// [defaultBackground] resolved against `--bs-body-bg` in
-  /// `[data-bs-theme="dark"]`.
+  /// Default background in dark mode.
   static const Color defaultDarkBackground = BsBody.darkBackground;
 
   static const Color defaultBorderColor = BsBorders.color;
 
-  /// [defaultBorderColor] resolved against `--bs-border-color` in
-  /// `[data-bs-theme="dark"]`.
+  /// Default border color in dark mode.
   static const Color defaultDarkBorderColor = BsBorders.darkColor;
 
   static const double defaultBorderWidth = BsBorders.width;
   static const double defaultBorderRadius = BsBorders.radius;
   static const EdgeInsets defaultItemPadding = EdgeInsets.symmetric(horizontal: 16, vertical: 8);
 
-  /// `$list-group-hover-bg` (`var(--bs-tertiary-bg)`).
+  /// Default hover background.
   static const Color defaultHoverBackground = BsColors.gray100;
 
-  /// [defaultHoverBackground] resolved against `--bs-tertiary-bg` in
-  /// `[data-bs-theme="dark"]`.
+  /// Default hover background in dark mode.
   static Color get defaultDarkHoverBackground => BsBody.darkTertiaryBackground;
 
-  /// `$list-group-active-color` (`$component-active-color`, i.e. `$white`
-  /// — a literal with no `-dark` override, unchanged in both themes).
+  /// Default active color.
   static const Color defaultActiveColor = BsColors.white;
 
-  /// `$list-group-active-bg` (`$component-active-bg`, i.e. `$primary` —
-  /// also unchanged in both themes, since `$primary` itself isn't
-  /// re-themed).
+  /// Default background of the active item: the primary color, the same in both themes.
   static Color get defaultActiveBackground => BsVariant.primary.color;
 
   static Color get defaultDisabledBackground => defaultBackground;
   static Color get defaultDarkDisabledBackground => defaultDarkBackground;
   static const Color defaultActionColor = BsColors.gray600;
 
-  /// `$list-group-action-hover-color` (`var(--bs-emphasis-color)`).
+  /// Default action hover color.
   static const Color defaultActionHoverColor = BsColors.black;
 
-  /// [defaultActionHoverColor] resolved against `--bs-emphasis-color` in
-  /// `[data-bs-theme="dark"]`.
+  /// Default action hover color in dark mode.
   static const Color defaultDarkActionHoverColor = BsBody.darkEmphasisColor;
 
-  /// `$list-group-action-active-bg` (`var(--bs-secondary-bg)`).
+  /// Default action active background.
   static const Color defaultActionActiveBackground = BsColors.gray200;
 
-  /// [defaultActionActiveBackground] resolved against `--bs-secondary-bg`
-  /// in `[data-bs-theme="dark"]`.
+  /// Default action active background in dark mode.
   static const Color defaultDarkActionActiveBackground = BsBody.darkSecondaryBackground;
 
   static BsListGroupStyle get defaults => BsListGroupStyle(
@@ -167,11 +159,10 @@ class BsListGroupStyle {
     actionActiveBackground: defaultActionActiveBackground,
   );
 
-  /// [defaults], with [background]/[borderColor]/[hoverBackground]/
-  /// [disabledBackground]/[actionHoverColor]/[actionActiveBackground]
-  /// swapped for their `[data-bs-theme="dark"]` counterparts. Pick this as
-  /// the base to [merge] a caller's [BsListGroupStyle] override against
-  /// when `BsTheme.of(context) == Brightness.dark`.
+  /// Dark-mode counterpart of [defaults]: [background], [borderColor], [hoverBackground],
+  /// [disabledBackground], [actionHoverColor] and [actionActiveBackground] are swapped. The rest is
+  /// identical.
+  /// Use it as the base to [merge] a caller's override when the ambient brightness is dark.
   static BsListGroupStyle get darkDefaults => BsListGroupStyle(
     background: defaultDarkBackground,
     borderColor: defaultDarkBorderColor,

@@ -1,36 +1,33 @@
-/// Bootstrap's global z-index stacking order.
-///
-/// Mirrors the `zindex-stack` group from Bootstrap's SCSS source
-/// (`$zindex-*`). Avoid customizing these values; they're designed to all
-/// work together, the same way Bootstrap warns against changing them.
+/// Bootstrap's global stacking order. Avoid customizing these values: they are
+/// designed to work together.
 abstract final class BsZIndex {
-  /// `$zindex-dropdown`.
+  /// Dropdown menus.
   static const int dropdown = 1000;
 
-  /// `$zindex-sticky`.
+  /// Sticky elements.
   static const int sticky = 1020;
 
-  /// `$zindex-fixed`.
+  /// Fixed elements.
   static const int fixed = 1030;
 
-  /// `$zindex-offcanvas-backdrop`.
+  /// The offcanvas backdrop.
   static const int offcanvasBackdrop = 1040;
 
-  /// `$zindex-offcanvas`.
+  /// Offcanvas panels.
   static const int offcanvas = 1045;
 
-  /// `$zindex-modal-backdrop`.
+  /// The modal backdrop.
   static const int modalBackdrop = 1050;
 
-  /// `$zindex-modal`.
+  /// Modal dialogs.
   static const int modal = 1055;
 
-  /// `$zindex-popover`.
+  /// Popovers.
   static const int popover = 1070;
 
-  /// `$zindex-tooltip`.
+  /// Tooltips.
   static const int tooltip = 1080;
 
-  /// `$zindex-toast`.
+  /// Toasts.
   static const int toast = 1090;
 }
