@@ -312,6 +312,12 @@ class _BsNavLinkWidgetState extends State<_BsNavLinkWidget> {
     Border? border;
     FontWeight? fontWeight;
 
+    /// `.nav-tabs .nav-link`: its bottom border sits over the nav's own line
+    /// (`margin-bottom: -1px`), in the active tab's background (so the line is
+    /// open beneath it, the tab running into its content) or, hovered, in the
+    /// line's own color (the hover border is `$gray-200 $gray-200 $border-color`).
+    Color? tabBottomRow;
+
     final restColor = style.linkColor ?? BsNavStyle.defaultLinkColor;
     final hoverColor = style.linkHoverColor ?? restColor;
     final textColor = item.textColor?.of(context);
@@ -339,6 +345,7 @@ class _BsNavLinkWidgetState extends State<_BsNavLinkWidget> {
             border = Border.all(
               color: style.tabsLinkActiveBorderColor ?? borderColor,
             );
+            tabBottomRow = background;
           } else {
             color = _hovered ? hoverColor : restColor;
             if (_hovered) {
@@ -347,6 +354,7 @@ class _BsNavLinkWidgetState extends State<_BsNavLinkWidget> {
                     style.tabsLinkHoverBorderColor ??
                     BsNavStyle.defaultTabsLinkHoverBorderColor,
               );
+              tabBottomRow = borderColor;
             }
           }
         case BsNavVariant.pills:
@@ -392,10 +400,11 @@ class _BsNavLinkWidgetState extends State<_BsNavLinkWidget> {
       decoration: BoxDecoration(
         color: background,
         border: border,
-        borderRadius:
-            widget.variant == BsNavVariant.pills ||
-                widget.variant == BsNavVariant.tabs
+        borderRadius: widget.variant == BsNavVariant.pills
             ? borderRadius
+            // `.nav-tabs .nav-link`: only the top corners are rounded.
+            : widget.variant == BsNavVariant.tabs
+            ? BorderRadius.vertical(top: Radius.circular(radius))
             : null,
         boxShadow: [
           if (focused)
@@ -442,7 +451,21 @@ class _BsNavLinkWidgetState extends State<_BsNavLinkWidget> {
         builder: (context, focused) => GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: enabled ? item.onTap : null,
-          child: content(focused),
+          child: tabBottomRow == null
+              ? content(focused)
+              : Stack(
+                  children: [
+                    content(focused),
+                    // (between the side borders, which run on down to the line)
+                    Positioned(
+                      left: 1,
+                      right: 1,
+                      bottom: 0,
+                      height: 1,
+                      child: ColoredBox(color: tabBottomRow),
+                    ),
+                  ],
+                ),
         ),
       ),
     );
