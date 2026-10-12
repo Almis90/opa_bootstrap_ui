@@ -130,7 +130,7 @@ class NavbarSearchForm extends StatelessWidget {
   }
 }
 
-/// `<nav class="navbar navbar-expand-* bg-dark" data-bs-theme="dark"><div
+/// `<nav class="navbar navbar-expand-* navbar-dark bg-dark"><div
 /// class="container-fluid">…`: the dark bar all three examples use.
 class NavbarExampleBar extends StatelessWidget {
   const NavbarExampleBar({
@@ -148,18 +148,18 @@ class NavbarExampleBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BsTheme(
-      brightness: Brightness.dark,
-      child: BsBox(
-        bg: BsBg.dark,
-        child: BsContainer.fluid(
-          child: BsNavbar(
-            colorScheme: BsNavbarColorScheme.dark,
-            expandBreakpoint: expandBreakpoint,
-            brand: Text(brand),
-            items: items,
-            trailing: trailing,
-          ),
+    // (`navbar-dark`, as Bootstrap v5.3.8's own examples have it: the bar's
+    // colours are dark, but the page's theme is not, so the search input and the
+    // dropdown menus inside stay light)
+    return BsBox(
+      bg: BsBg.dark,
+      child: BsContainer.fluid(
+        child: BsNavbar(
+          colorScheme: BsNavbarColorScheme.dark,
+          expandBreakpoint: expandBreakpoint,
+          brand: Text(brand),
+          items: items,
+          trailing: trailing,
         ),
       ),
     );
@@ -190,6 +190,7 @@ BsNavbarItem navbarDropdownItem(
   // The markup puts the label on a line of its own, so a space (3.92px)
   // separates it from the caret.
   bool spaceBeforeCaret = false,
+  BsNavbarColorScheme colorScheme = BsNavbarColorScheme.dark,
 }) {
   return BsNavbarItem(
     onTap: () {},
@@ -214,7 +215,7 @@ BsNavbarItem navbarDropdownItem(
             child: DefaultTextStyle.merge(
               style: TextStyle(
                 color: isOpen
-                    ? (BsTheme.of(context) == Brightness.dark
+                    ? (colorScheme == BsNavbarColorScheme.dark
                           ? BsNavbarStyle.darkActiveColor
                           : BsNavbarStyle.lightActiveColor)
                     : null,

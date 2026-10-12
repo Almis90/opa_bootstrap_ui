@@ -41,15 +41,13 @@ class NavbarsExamplePage extends StatelessWidget {
       items: items,
       trailing: [if (search) NavbarSearchInput(expandBreakpoint: expand)],
     );
+    // (`navbar-dark`: dark bar colours only, so the input and the menus stay light)
     return _gap(
-      BsTheme(
-        brightness: Brightness.dark,
-        child: BsBox(
-          bg: BsBg.dark,
-          child: container == null
-              ? BsContainer.fluid(child: bar)
-              : container(bar),
-        ),
+      BsBox(
+        bg: BsBg.dark,
+        child: container == null
+            ? BsContainer.fluid(child: bar)
+            : container(bar),
       ),
     );
   }
@@ -144,7 +142,11 @@ class NavbarsExamplePage extends StatelessWidget {
               BsNavbarItem(child: Text(firstLabel), active: true, onTap: () {}),
               BsNavbarItem(child: const Text('Link'), onTap: () {}),
               const BsNavbarItem(child: Text('Disabled'), disabled: true),
-              navbarDropdownItem('Dropdown', expandBreakpoint: expand),
+              navbarDropdownItem(
+                'Dropdown',
+                expandBreakpoint: expand,
+                colorScheme: BsNavbarColorScheme.light,
+              ),
             ],
             trailing: [
               if (search) const NavbarSearchInput(expandBreakpoint: expand),
@@ -174,7 +176,11 @@ class NavbarsExamplePage extends StatelessWidget {
               ),
               BsNavbarItem(child: const Text('Link'), onTap: () {}),
               const BsNavbarItem(child: Text('Disabled'), disabled: true),
-              navbarDropdownItem('Dropdown', expandBreakpoint: expand),
+              navbarDropdownItem(
+                'Dropdown',
+                expandBreakpoint: expand,
+                colorScheme: BsNavbarColorScheme.light,
+              ),
             ],
             collapseBuilder: (context, expanded, links) {
               final brand = BsFlexItem(

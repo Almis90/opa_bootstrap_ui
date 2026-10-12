@@ -945,6 +945,9 @@ List<Widget> cheatsheetNavbar(BuildContext context, CsEnv env) {
           divider: true,
           spaceBeforeCaret: true,
           menu: s.sublist(at + 3, at + 6),
+          colorScheme: dark
+              ? BsNavbarColorScheme.dark
+              : BsNavbarColorScheme.light,
         ),
         BsNavbarItem(child: Text(s[at + 6]), disabled: true),
       ],
@@ -956,13 +959,11 @@ List<Widget> cheatsheetNavbar(BuildContext context, CsEnv env) {
         ),
       ],
     );
+    // (`navbar-dark bg-primary`, as in v5.3.8: dark bar colours, light menu and input)
     return dark
-        ? BsTheme(
-            brightness: Brightness.dark,
-            child: BsBox(
-              bg: BsBg.primary,
-              child: BsContainer.fluid(child: navbar),
-            ),
+        ? BsBox(
+            bg: BsBg.primary,
+            child: BsContainer.fluid(child: navbar),
           )
         : BsBox(
             bg: BsBg.bodyTertiary,

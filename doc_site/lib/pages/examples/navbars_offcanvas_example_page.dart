@@ -46,35 +46,52 @@ class NavbarsOffcanvasExamplePage extends StatelessWidget {
     List<Widget> links, {
     required bool dark,
   }) {
+    // (`text-bg-dark` on the panel, as in v5.3.8, darkens the panel and its
+    // close button but not the page's theme: the dropdown and the input in it
+    // keep the theme the page has)
+    final ambient = BsTheme.of(context);
+    Widget body = Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        BsBox(
+          pe: BsSpacing.s3,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: links,
+          ),
+        ),
+        BsBox(mt: BsSpacing.s3, child: _form(fill: true)),
+      ],
+    );
+    if (dark) body = BsTheme(brightness: ambient, child: body);
     final panel = BsOffcanvas(
       placement: BsOffcanvasPlacement.end,
+      style: dark
+          ? const BsOffcanvasStyle(
+              borderColor: BsOffcanvasStyle.defaultBorderColor,
+            )
+          : null,
       header: BsOffcanvasHeader(
         child: const Text('Offcanvas'),
         onClose: () => Navigator.of(context).pop(),
       ),
-      body: BsOffcanvasBody(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            BsBox(
-              pe: BsSpacing.s3,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: links,
-              ),
-            ),
-            BsBox(mt: BsSpacing.s3, child: _form(fill: true)),
-          ],
-        ),
-      ),
+      body: BsOffcanvasBody(child: body),
     );
     return dark ? BsTheme(brightness: Brightness.dark, child: panel) : panel;
   }
 
-  static List<BsNavbarItem> _items(BsBreakpoint? expand) => [
+  static List<BsNavbarItem> _items(
+    BsBreakpoint? expand, {
+    required bool dark,
+  }) => [
     BsNavbarItem(child: const Text('Home'), active: true, onTap: () {}),
     BsNavbarItem(child: const Text('Link'), onTap: () {}),
-    navbarDropdownItem('Dropdown', expandBreakpoint: expand, divider: true),
+    navbarDropdownItem(
+      'Dropdown',
+      expandBreakpoint: expand,
+      divider: true,
+      colorScheme: dark ? BsNavbarColorScheme.dark : BsNavbarColorScheme.light,
+    ),
   ];
 
   static Widget _bar({
@@ -88,7 +105,7 @@ class NavbarsOffcanvasExamplePage extends StatelessWidget {
       expandBreakpoint: expand,
       brand: Text(brand),
       endItems: true,
-      items: _items(expand),
+      items: _items(expand, dark: dark),
       trailing: [if (expand != null) _form()],
       offcanvasBuilder: (context, links) =>
           _offcanvas(context, links, dark: dark),
@@ -96,12 +113,9 @@ class NavbarsOffcanvasExamplePage extends StatelessWidget {
     return Padding(
       // (the last bar's 20px margin collapses into the container's 3rem)
       padding: EdgeInsets.only(bottom: last ? 0 : 20),
-      child: BsTheme(
-        brightness: dark ? Brightness.dark : Brightness.light,
-        child: BsBox(
-          bg: dark ? BsBg.dark : BsBg.bodyTertiary,
-          child: BsContainer.fluid(child: bar),
-        ),
+      child: BsBox(
+        bg: dark ? BsBg.dark : BsBg.bodyTertiary,
+        child: BsContainer.fluid(child: bar),
       ),
     );
   }

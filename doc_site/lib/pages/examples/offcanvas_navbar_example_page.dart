@@ -348,37 +348,35 @@ class _FixedNavbarState extends State<_FixedNavbar> {
   Widget build(BuildContext context) {
     final expanded = MediaQuery.sizeOf(context).width >= _expand.minWidth;
     final items = _items();
-    return BsTheme(
-      brightness: Brightness.dark,
-      child: Stack(
-        children: [
-          // The panel first, so the bar stays over it.
-          if (!expanded)
-            Positioned(
-              top: 56,
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: IgnorePointer(
-                ignoring: !_open,
-                child: ClipRect(
-                  child: AnimatedSlide(
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.easeInOut,
-                    offset: _open ? Offset.zero : const Offset(1, 0),
-                    child: ColoredBox(
-                      color: OffcanvasNavbarExamplePage._gray900,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: SingleChildScrollView(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              for (final item in items) _PanelLink(item: item),
-                              const SizedBox(height: 8), // ul.mb-2
-                              const NavbarSearchForm(fill: true),
-                            ],
-                          ),
+    // (`navbar-dark`, as in v5.3.8: the bar is dark, the input and menu keep the page's theme)
+    return Stack(
+      children: [
+        // The panel first, so the bar stays over it.
+        if (!expanded)
+          Positioned(
+            top: 56,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: IgnorePointer(
+              ignoring: !_open,
+              child: ClipRect(
+                child: AnimatedSlide(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                  offset: _open ? Offset.zero : const Offset(1, 0),
+                  child: ColoredBox(
+                    color: OffcanvasNavbarExamplePage._gray900,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            for (final item in items) _PanelLink(item: item),
+                            const SizedBox(height: 8), // ul.mb-2
+                            const NavbarSearchForm(fill: true),
+                          ],
                         ),
                       ),
                     ),
@@ -386,29 +384,27 @@ class _FixedNavbarState extends State<_FixedNavbar> {
                 ),
               ),
             ),
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: BsBox(
-              bg: BsBg.dark,
-              child: BsContainer.fluid(
-                child: BsNavbar(
-                  colorScheme: BsNavbarColorScheme.dark,
-                  expandBreakpoint: _expand,
-                  brand: const Text('Offcanvas navbar'),
-                  items: items,
-                  trailing: const [
-                    NavbarSearchInput(expandBreakpoint: _expand),
-                  ],
-                  bareToggler: true,
-                  onToggle: () => setState(() => _open = !_open),
-                ),
+          ),
+        Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          child: BsBox(
+            bg: BsBg.dark,
+            child: BsContainer.fluid(
+              child: BsNavbar(
+                colorScheme: BsNavbarColorScheme.dark,
+                expandBreakpoint: _expand,
+                brand: const Text('Offcanvas navbar'),
+                items: items,
+                trailing: const [NavbarSearchInput(expandBreakpoint: _expand)],
+                bareToggler: true,
+                onToggle: () => setState(() => _open = !_open),
               ),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
