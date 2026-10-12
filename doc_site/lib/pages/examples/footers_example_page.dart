@@ -26,8 +26,8 @@ class FootersExamplePage extends StatelessWidget {
         const ExampleDivider(),
         BsContainer(child: _fourth(context)),
         const ExampleDivider(),
+        // (no divider after the last: the page ends with its footer)
         BsContainer(child: _fifth(context)),
-        const ExampleDivider(),
       ],
     );
   }
