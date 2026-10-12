@@ -14,21 +14,20 @@ import 'bs_decorated_box.dart';
 
 /// Which Bootstrap nav style a [BsNav] renders.
 enum BsNavVariant {
-  /// `.nav`: plain links, no active-state styling of its own.
+  /// Plain links, with no active-state styling of their own.
   plain,
 
-  /// `.nav-tabs`: bordered, with the active item raised like a folder tab.
+  /// Bordered, with the active item raised like a folder tab.
   tabs,
 
-  /// `.nav-pills`: the active item gets a filled pill background.
+  /// The active item gets a filled pill background.
   pills,
 
-  /// `.nav-underline`: the active (and hovered) item gets a colored
-  /// bottom border instead of a background.
+  /// The active (and hovered) item gets a colored bottom border instead of a background.
   underline,
 }
 
-/// A single `.nav-link` within a [BsNav].
+/// A single link within a [BsNav].
 class BsNavItem {
   const BsNavItem({
     required this.child,
@@ -47,14 +46,14 @@ class BsNavItem {
   /// Highlights this item as the current selection, per [BsNavVariant].
   final bool active;
 
-  /// `.disabled`: dims the item and ignores taps.
+  /// Dims the item and ignores taps.
   final bool disabled;
 
   /// `text-white`, `link-body-emphasis`…: the link's color in place of the
   /// nav's, unchanged under the pointer. An [active] item keeps its own.
   final BsTextColor? textColor;
 
-  /// `py-*`: vertical padding in place of the nav link's `.5rem`.
+  /// Vertical padding in place of the link's default.
   final BsSpacing? py;
 
   /// `rounded-*` (`rounded-0`): a corner radius in place of the variant's.
@@ -65,15 +64,12 @@ class BsNavItem {
   final bool borderBottom;
 }
 
-/// A Bootstrap nav (`.nav`): a row (or, per [vertical], column) of
-/// [BsNavItem]s, styled per [variant].
+/// A Bootstrap nav: a row (or, per [vertical], column) of [BsNavItem]s, styled per [variant].
 ///
-/// Items change their active and hover states immediately, as in
-/// [BsListGroup] and [BsButtonGroup]; there is no sliding indicator like
-/// Material's `TabBar` has.
+/// Items change their active and hover states immediately, as in [BsListGroup] and
+/// [BsButtonGroup]; there is no sliding indicator.
 ///
-/// Pair with [BsTabView] to switch content when [BsNavItem.onTap] changes
-/// which item is active.
+/// Pair with [BsTabView] to switch content when [BsNavItem.onTap] changes which item is active.
 class BsNav extends StatelessWidget {
   const BsNav({
     super.key,
@@ -91,22 +87,19 @@ class BsNav extends StatelessWidget {
 
   final BsNavVariant variant;
 
-  /// `.flex-column`: stacks items top to bottom instead of side by side.
+  /// Stacks items top to bottom instead of side by side.
   final bool vertical;
 
-  /// `.nav-fill`/`.nav-justified`: stretches every item to equal width
-  /// (only meaningful when not [vertical]).
+  /// Stretches every item to equal width (only meaningful when not [vertical]).
   final bool fill;
 
-  /// `flex-nowrap`: a horizontal nav keeps all its links on one line (however
-  /// narrow its space) instead of wrapping onto more, as in a scrolling
-  /// `.nav-scroller`.
+  /// Keeps all the links of a horizontal nav on one line, however narrow its space, instead of
+  /// wrapping onto more, as in a scrolling nav.
   final bool nowrap;
 
-  /// `justify-content-*` on the `.nav` (a flex container): where each line of
-  /// a horizontal nav sits when it has more room than its links need, and how
-  /// each wrapped line is placed. Needs a bounded width to have any effect —
-  /// give the nav a full-width parent, as `.col-12` does.
+  /// Where each line of a horizontal nav sits when it has more room than its links need, and how
+  /// each wrapped line is placed. Needs a bounded width to have any effect: give the nav a
+  /// full-width parent.
   final BsResponsive<BsJustify>? justifyContent;
 
   /// Style overrides layered on top of [BsNavStyle.defaults].
@@ -123,7 +116,7 @@ class BsNav extends StatelessWidget {
 
     if (variant != BsNavVariant.tabs) return links;
 
-    // `.nav-tabs`: the line the active tab opens onto.
+    // // The line the active tab opens onto.
     return BsDecoratedBox(
       decoration: BoxDecoration(
         border: Border(
@@ -140,8 +133,8 @@ class BsNav extends StatelessWidget {
   Widget _buildLinks(BuildContext context, BsNavStyle style) {
     final isUnderline = variant == BsNavVariant.underline;
 
-    // `.nav-underline` puts a flex `gap` between its items, on top of the
-    // links' own padding; the other variants rely on padding alone.
+    // // The underline variant puts a gap between its items, on top of the links' own padding;
+    // // the other variants rely on padding alone.
     final gap = isUnderline
         ? style.underlineGap ?? BsNavStyle.defaultUnderlineGap
         : 0.0;
@@ -174,8 +167,7 @@ class BsNav extends StatelessWidget {
       );
     }
 
-    // `.nav-fill`/`.nav-justified`: the items share out all the space, so the
-    // row takes it all.
+    // // Fill: the items share out all the space, so the row takes it all.
     if (fill) {
       return Row(
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -209,9 +201,8 @@ class BsNav extends StatelessWidget {
       );
     }
 
-    // `.nav` is `display: flex; flex-wrap: wrap`: links that do not fit on a
-    // line continue on the next, and the nav is only as wide as its links, so
-    // that a sibling in a shared row keeps its own space.
+    // // Links that do not fit on a line continue on the next, and the nav is only as wide as its
+    // // links, so that a sibling in a shared row keeps its own space.
     return Wrap(
       alignment: _wrapAlignment(justify()),
       crossAxisAlignment: WrapCrossAlignment.end,
@@ -272,10 +263,8 @@ class _LinkLook {
   final Border? border;
   final FontWeight? fontWeight;
 
-  /// `.nav-tabs .nav-link`: its bottom border sits over the nav's own line
-  /// (`margin-bottom: -1px`). It takes the active tab's background, so the
-  /// line is open beneath the tab, or, when hovered, the line's own color
-  /// (the hover border is `$gray-200 $gray-200 $border-color`).
+  /// A tab's bottom border sits over the nav's own line. It takes the active tab's background,
+  /// so the line is open beneath the tab, or, when hovered, the line's own color.
   final Color? tabBottomRule;
 }
 
@@ -416,7 +405,7 @@ class _BsNavLinkWidgetState extends State<_BsNavLinkWidget> {
         border: border,
         borderRadius: switch (variant) {
           BsNavVariant.pills => BorderRadius.circular(radius),
-          // `.nav-tabs .nav-link`: only the top corners are rounded.
+          // // Tabs: only the top corners are rounded.
           BsNavVariant.tabs => BorderRadius.vertical(
             top: Radius.circular(radius),
           ),
@@ -436,11 +425,11 @@ class _BsNavLinkWidgetState extends State<_BsNavLinkWidget> {
       ),
       child: Padding(
         padding: _padding(switch (variant) {
-          // `.nav-underline .nav-link { padding-right/left: 0; border-bottom:
-          // .125rem solid transparent }`: the border adds to the link's height.
+          // // Underline: no horizontal padding, and a transparent bottom border that adds to the
+          // // link's height.
           BsNavVariant.underline => _underlinePadding(style),
-          // `.nav-tabs .nav-link { border: 1px solid transparent }`: always
-          // present (the active tab only colors it) and part of the size.
+          // // Tabs: a transparent border that is always present (the active tab only colors it) and
+          // // part of the size.
           BsNavVariant.tabs =>
             (style.linkPadding ?? BsNavStyle.defaultLinkPadding).add(
               const EdgeInsets.all(1),
@@ -462,7 +451,7 @@ class _BsNavLinkWidgetState extends State<_BsNavLinkWidget> {
       onExit: enabled ? (_) => setState(() => _hovered = false) : null,
       child: BsFocusableBuilder(
         enabled: enabled,
-        // `.nav-link:focus-visible`
+        // // A focus ring only for keyboard focus.
         focusVisibleOnly: true,
         builder: (context, focused) => GestureDetector(
           behavior: HitTestBehavior.opaque,
@@ -490,12 +479,9 @@ class _BsNavLinkWidgetState extends State<_BsNavLinkWidget> {
   }
 }
 
-/// Programmatic control of a [BsTabView] — mirrors Bootstrap's own
-/// `bootstrap.Tab` JS plugin's `show()` method. Pair with a [BsNav] by
-/// driving each [BsNavItem.active]/[BsNavItem.onTap] from [index]/[show]
-/// yourself — [BsNav] and [BsTabView] stay as decoupled as Bootstrap's own
-/// `.nav` markup and `.tab-content` are, so a controller only wires into
-/// whichever pane view you actually use.
+/// Programmatic control of a [BsTabView]. Pair it with a [BsNav] by driving each
+/// [BsNavItem.active] and [BsNavItem.onTap] from [index] and [show] yourself: [BsNav] and
+/// [BsTabView] stay decoupled, so a controller only wires into whichever pane view you use.
 class BsTabController extends ChangeNotifier {
   BsTabController({int initialIndex = 0}) : _index = initialIndex;
 
@@ -513,15 +499,13 @@ class BsTabController extends ChangeNotifier {
   }
 }
 
-/// A crossfading content swapper (`.tab-content`/`.tab-pane.fade`),
-/// typically paired with a [BsNav] whose active item picks [activeIndex].
+/// A crossfading content swapper, typically paired with a [BsNav] whose active item picks
+/// [activeIndex].
 ///
-/// Controllable either way Bootstrap's own `data-bs-toggle="tab"` can be:
-/// pass [activeIndex] and flip it from the parent (e.g. a [BsNavItem]'s
-/// `onTap` calling `setState`), or pass a [controller] and call
-/// [BsTabController.show] from anywhere with access to it. [activeIndex] is
-/// ignored when [controller] is given — omit it and set [activeIndex] on
-/// the internally-owned controller instead.
+/// Pass [activeIndex] and flip it from the parent (for example from a [BsNavItem]'s `onTap`
+/// calling `setState`), or pass a [controller] and call [BsTabController.show] from anywhere
+/// with access to it. [activeIndex] is ignored when [controller] is given; omit it and set
+/// [activeIndex] on the internally-owned controller instead.
 class BsTabView extends StatefulWidget {
   const BsTabView({
     super.key,
@@ -543,7 +527,7 @@ class BsTabView extends StatefulWidget {
   /// One entry per nav item, in the same order.
   final List<Widget> children;
 
-  /// `$transition-fade` override.
+  /// Duration of each fade.
   final Duration? duration;
 
   /// Drives which pane is active instead of [activeIndex]. Defaults to an
@@ -578,10 +562,9 @@ class _BsTabViewState extends State<BsTabView>
   int? _pendingFrom;
   int? _pendingTo;
 
-  /// The pane on screen. It trails the controller's index while the old pane
-  /// fades out (`.tab-pane.fade`: the active pane loses `.show` and fades over
-  /// `$transition-fade`; only when that ends is it replaced, and the new one
-  /// then fades in — one after the other, never both at once).
+  /// The pane on screen. It trails the controller's index while the old pane fades out; only
+  /// when that ends is it replaced and the new one faded in, one after the other, never both at
+  /// once.
   late int _displayed;
 
   /// The opacity of the pane on screen.

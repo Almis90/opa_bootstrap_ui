@@ -5,8 +5,8 @@ import 'bs_theme.dart';
 import 'bs_variant.dart';
 import 'tokens/bs_table_style.dart';
 
-/// A single `<tr>`'s cells, plus the row-level modifiers Bootstrap applies
-/// via `.table-{variant}`/`.table-active`.
+/// A single row's cells, plus the row-level modifiers: a [variant] tint and the active
+/// highlight.
 class BsTableRow {
   const BsTableRow({
     required this.cells,
@@ -18,22 +18,20 @@ class BsTableRow {
   /// One widget per column, typically [Text].
   final List<Widget> cells;
 
-  /// `.table-{variant}`: tints this row with [BsVariant.bgSubtle].
+  /// Tints this row with [BsVariant.bgSubtle].
   final BsVariant? variant;
 
-  /// `.table-active`: darkens this row via
-  /// [BsTableStyle.activeBackgroundOpacity].
+  /// Darkens this row via [BsTableStyle.activeBackgroundOpacity].
   final bool active;
 
-  /// This row opens a `<tbody class="table-group-divider">`: a 2px rule above it.
+  /// Opens a new row group: a 2 logical pixel rule is drawn above this row.
   final bool groupStart;
 }
 
-/// A Bootstrap table (`.table`).
+/// A Bootstrap table.
 ///
-/// Renders with Flutter's [Table], so columns auto-size to their widest
-/// cell by default — pass [columnWidths] for Bootstrap's `.table>:not(caption)>*>*`
-/// per-column control (e.g. `{0: FixedColumnWidth(120)}`).
+/// Renders with Flutter's [Table], so columns auto-size to their widest cell by default; pass
+/// [columnWidths] for per-column control (for example `{0: FixedColumnWidth(120)}`).
 class BsTable extends StatefulWidget {
   const BsTable({
     super.key,
@@ -50,41 +48,35 @@ class BsTable extends StatefulWidget {
     this.style,
   });
 
-  /// `<thead>` header cells. Omit for a table with no header row.
+  /// Header cells. Omit for a table with no header row.
   final List<Widget>? columns;
 
-  /// `<tbody>` rows.
+  /// Body rows.
   final List<BsTableRow> rows;
 
-  /// `.table-striped`: tints every other row via
-  /// [BsTableStyle.stripedBackgroundOpacity].
+  /// Tints every other row via [BsTableStyle.stripedBackgroundOpacity].
   final bool striped;
 
-  /// `.table-bordered`: adds borders on all sides of every cell, not just
-  /// horizontal rules between rows.
+  /// Adds borders on all sides of every cell, not just horizontal rules between rows.
   final bool bordered;
 
-  /// `.table-borderless`: removes all borders, including the horizontal
-  /// rules between rows.
+  /// Removes all borders, including the horizontal rules between rows.
   final bool borderless;
 
-  /// `.table-hover`: tints whichever row the pointer is over via
-  /// [BsTableStyle.hoverBackgroundOpacity].
+  /// Tints whichever row the pointer is over via [BsTableStyle.hoverBackgroundOpacity].
   final bool hover;
 
-  /// `.table-sm`: halves cell padding to [BsTableStyle.cellPaddingSm].
+  /// Halves the cell padding to [BsTableStyle.cellPaddingSm].
   final bool small;
 
-  /// `.table-dark`: inverts to a dark background with light text.
+  /// Inverts to a dark background with light text.
   final bool dark;
 
-  /// Per-column sizing, keyed by column index. Defaults to
-  /// [IntrinsicColumnWidth] for every column, like an unstyled HTML table.
+  /// Per-column sizing, keyed by column index. Defaults to [IntrinsicColumnWidth] for every
+  /// column.
   final Map<int, TableColumnWidth>? columnWidths;
 
-  /// `<caption>`: an optional summary rendered below the table (Bootstrap's
-  /// default `caption-side: bottom`), tinted with
-  /// [BsTableStyle.captionColor].
+  /// An optional summary rendered below the table, tinted with [BsTableStyle.captionColor].
   final Widget? caption;
 
   /// Style overrides layered on top of [BsTableStyle.defaults].
@@ -144,7 +136,7 @@ class _BsTableState extends State<BsTable> {
     // takes room: Flutter's [Table] only paints its rules, so make it.
     final rule = widget.borderless ? 0.0 : borderWidth;
     final cellPadding = padding.add(EdgeInsets.only(bottom: rule));
-    // `.table-bordered`: the table's own top rule takes room too.
+    // // Bordered: the table's own top rule takes room too.
     final firstRowPadding = widget.bordered
         ? cellPadding.add(EdgeInsets.only(top: borderWidth))
         : cellPadding;
@@ -193,9 +185,7 @@ class _BsTableState extends State<BsTable> {
 
     if (widget.caption == null) return table;
 
-    // `<caption>`: rendered below the table (Bootstrap's default
-    // `caption-side: bottom`), padded by `$table-cell-padding-y` and tinted
-    // with `$table-caption-color`.
+    // // Caption: rendered below the table, padded like a cell and tinted with the caption color.
     final captionPaddingY = padding.vertical / 2;
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -227,9 +217,8 @@ class _BsTableState extends State<BsTable> {
     BorderSide? rowRule,
   }) {
     var rowColor = background;
-    // A variant row's own text color: Bootstrap's `.table-{variant}` sets
-    // `color` to the contrast of its background (`$table-variants`: the
-    // tints are light, `dark` and `light` are the theme colors themselves).
+    // // A variant row's own text color: the contrast of its background (the tints are light;
+    // // the dark and light variants are the theme colors themselves).
     Color? rowText;
     final variant = row.variant;
     if (variant == BsVariant.dark) {
@@ -273,10 +262,10 @@ class _BsTableState extends State<BsTable> {
       rowColor,
     );
 
-    // `.table-group-divider`: a 2px `currentcolor` rule above a row group, 1px
-    // more than the ordinary rule it replaces.
+    // // Group divider: a 2 logical pixel rule in the text color above a row group, 1px more than
+    // // the ordinary rule it replaces.
     final groupStart = !widget.bordered && !widget.borderless && row.groupStart;
-    // `border-color: mix(text, background, 20%)` under a variant row.
+    // // Under a variant row the rule is the text color mixed 20% into the row's background.
     final bottom = rowRule == null
         ? null
         : rowText == null
@@ -339,10 +328,9 @@ class _BsTableState extends State<BsTable> {
       Color.alphaBlend(tint.withValues(alpha: opacity), base);
 }
 
-/// A row's background, with an optional rule along its top and bottom edges,
-/// painted the way a browser paints table cells: every edge snapped to a whole
-/// device pixel, so a 1px rule is one crisp row (CSS layout is fractional, and
-/// Flutter would blur the rule over two rows).
+/// A row's background, with an optional rule along its top and bottom edges, painted the way
+/// a browser paints table cells: every edge snapped to a whole device pixel, so that a 1px rule
+/// is one crisp row (layout is fractional, and Flutter would blur the rule over two rows).
 class _SnappedRowDecoration extends Decoration {
   const _SnappedRowDecoration({required this.color, this.top, this.bottom});
 

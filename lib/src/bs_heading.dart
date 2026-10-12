@@ -15,13 +15,12 @@ import 'tokens/bs_typography.dart';
 /// [BsHeading] renders at.
 enum BsHeadingLevel { h1, h2, h3, h4, h5, h6 }
 
-/// A Bootstrap heading (`h1`-`h6`), sized per [level] from [BsTypography]'s
-/// `$h#-font-size` scale — fluid below the `xl` breakpoint, as Bootstrap's
-/// responsive font sizes make `h1`-`h4` — with a bottom margin matching
-/// [BsTypography.headingsMarginBottom].
+/// A Bootstrap heading (levels 1 to 6), sized per [level] from [BsTypography]'s heading scale
+/// (fluid below the `xl` breakpoint for levels 1 to 4, as Bootstrap's responsive font sizes
+/// make them), with a bottom margin matching [BsTypography.headingsMarginBottom].
 ///
-/// [fw] and [lh] are the `fw-*`/`lh-*` utilities for the heading's own element
-/// (a [BsBox] around a heading can't override its weight or line-height).
+/// [fw] and [lh] set the heading's own weight and line height (a [BsBox] around a heading
+/// cannot override them).
 class BsHeading extends StatelessWidget {
   const BsHeading(
     this.level, {
@@ -42,11 +41,10 @@ class BsHeading extends StatelessWidget {
   /// `lh-*`.
   final BsLh? lh;
 
-  /// `mb-*`: the bottom margin, in place of the headings' `.5rem` (`h6 mb-0`).
+  /// The bottom margin, in place of the heading's default.
   final BsSpacing? mb;
 
-  /// `fs-*`: a size in place of the level's (`<h1 class="fs-2">` is still an
-  /// `h1`: medium weight, `1.2` line-height).
+  /// A size in place of the level's. The heading keeps its level's weight and line height.
   final BsFs? fs;
 
   static double _fontSizeFor(BsHeadingLevel level, double viewportWidth) =>
@@ -85,8 +83,8 @@ class BsHeading extends StatelessWidget {
   }
 }
 
-/// `.display-1`-`.display-6`: which [BsTypography] display size a
-/// [BsDisplayHeading] renders at.
+/// Which [BsTypography] display size a [BsDisplayHeading] renders at, from the largest (1)
+/// to the smallest (6).
 enum BsDisplayLevel {
   d1(5, 1.625, 0.045),
   d2(4.5, 1.575, 0.039),
@@ -101,19 +99,16 @@ enum BsDisplayLevel {
   final double _baseRem;
   final double _vw;
 
-  /// The font size at a viewport [width]: `calc(<base>rem + <n>vw)` below the
-  /// `xl` breakpoint (Bootstrap's responsive font sizes), `$display-font-sizes`
-  /// from there up.
+  /// The font size at a viewport [width]: scaled with the width below the `xl` breakpoint
+  /// (Bootstrap's responsive font sizes), fixed from there up.
   double sizeFor(double width) => width >= BsBreakpoint.xl.minWidth
       ? _rem * 16
       : _baseRem * 16 + width * _vw;
 }
 
-/// A Bootstrap display heading (`.display-1`-`.display-6`): larger, lighter
-/// weight than [BsHeading], for hero-style text.
+/// A Bootstrap display heading: larger and lighter than [BsHeading], for hero-style text.
 ///
-/// [fw] and [lh] are the `fw-*`/`lh-*` utilities for the heading's own element
-/// (`<h1 class="display-5 fw-bold lh-1">`).
+/// [fw] and [lh] set the heading's own weight and line height.
 class BsDisplayHeading extends StatelessWidget {
   const BsDisplayHeading(
     this.level, {
@@ -152,7 +147,7 @@ class BsDisplayHeading extends StatelessWidget {
   }
 }
 
-/// `.lead`: a larger, lighter-weight lead-in paragraph.
+/// A larger, lighter lead-in paragraph.
 class BsLead extends StatelessWidget {
   const BsLead({super.key, required this.child});
 
@@ -170,11 +165,11 @@ class BsLead extends StatelessWidget {
   }
 }
 
-/// `small`/`.small`: text at `.875em` — 87.5% of the surrounding size.
+/// Small text: 87.5% of the surrounding size.
 ///
-/// As an inline element it doesn't shrink the lines it sits on: they stay as
-/// tall as the surrounding block's (24px in a 16px/1.5 block, not 21px). As a
-/// [block] (`small.d-block`, or a flex item) its lines are its own, 21px.
+/// As inline text it does not shrink the lines it sits on: they stay as tall as the
+/// surrounding block's (24px in a 16px block with a 1.5 line height, not 21px). As a [block]
+/// (or a flex item) its lines are its own, 21px.
 class BsSmall extends StatelessWidget {
   const BsSmall({super.key, required this.child, this.block = false});
 
@@ -200,15 +195,12 @@ class BsSmall extends StatelessWidget {
   }
 }
 
-/// `mark`/`.mark`: a highlighted inline text span.
+/// A highlighted inline text span.
 ///
-/// Bootstrap's `$mark-bg` isn't in [BsTypography] (it has no dedicated
-/// SCSS variable group), so this mirrors the actual default — a light tint
-/// of [BsColors.yellow], the same `tint-color()` formula [BsVariant.bgSubtle]
-/// uses — directly. `$mark-color` inherits the ambient text color in both
-/// themes (already brightness-aware via [BsApp]'s `DefaultTextStyle`), so
-/// only the background needs to swap for `$mark-bg-dark`
-/// (`shade-color($yellow, 60%)`).
+/// Bootstrap defines no dedicated token for the highlight, so this uses its actual default:
+/// a light tint of [BsColors.yellow], computed the way [BsVariant.bgSubtle] is. The text color
+/// inherits the ambient one in both themes (already brightness-aware via [BsApp]'s default
+/// text style), so only the background is swapped in dark mode, to a dark shade of yellow.
 class BsMark extends StatelessWidget {
   const BsMark({super.key, required this.child});
 
@@ -221,8 +213,8 @@ class BsMark extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = BsTheme.of(context) == Brightness.dark;
     return Container(
-      // `mark { padding: .1875em }`: an inline box's vertical padding paints
-      // but takes no room, so only the sides are padded here.
+      // // An inline box's vertical padding paints but takes no room, so only the sides are
+      // // padded here.
       padding: const EdgeInsets.symmetric(horizontal: BsTypography.markPadding),
       color: isDark ? _darkBackground : _background,
       child: child,
@@ -230,8 +222,8 @@ class BsMark extends StatelessWidget {
   }
 }
 
-/// `blockquote`/`.blockquote`: a larger-font quotation, with an optional
-/// [footer] (typically a [BsBlockquoteFooter]) attributing its source.
+/// A larger-font quotation, with an optional [footer] (typically a [BsBlockquoteFooter])
+/// attributing its source.
 class BsBlockquote extends StatelessWidget {
   const BsBlockquote({super.key, required this.child, this.footer});
 
@@ -242,8 +234,8 @@ class BsBlockquote extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Reboot: `blockquote { margin: 0 0 1rem }`; `.blockquote { font-size:
-    // 1.25rem }` is on the blockquote itself, so its footer's `.875em` is of that.
+    // // The bottom margin is 16 logical pixels, and the larger font size is on the blockquote
+    // // itself, so its footer's smaller size is relative to that.
     return Padding(
       padding: const EdgeInsets.only(bottom: BsTypography.blockquoteMarginY),
       child: DefaultTextStyle.merge(
@@ -258,9 +250,7 @@ class BsBlockquote extends StatelessWidget {
   }
 }
 
-/// `.blockquote-footer`: a small, muted attribution line for a
-/// [BsBlockquote], prefixed with an em dash like Bootstrap's
-/// `::before { content: "\2014\00A0"; }`.
+/// A small, muted attribution line for a [BsBlockquote], prefixed with an em dash.
 class BsBlockquoteFooter extends StatelessWidget {
   const BsBlockquoteFooter({
     super.key,
@@ -271,13 +261,11 @@ class BsBlockquoteFooter extends StatelessWidget {
 
   final Widget child;
 
-  /// A text color in place of `$blockquote-footer-color` (`text-white`,
-  /// `text-body-secondary` on the `figcaption`).
+  /// A text color in place of the footer's default.
   final Color? color;
 
-  /// A `<figcaption class="blockquote-footer">` after a `<blockquote>`, rather
-  /// than inside it: its `margin-top: -1rem` pulls it up over the blockquote's
-  /// `1rem` bottom margin, and it is placed by the surrounding `text-*`.
+  /// Places the footer after the blockquote rather than inside it: it is pulled up over the
+  /// blockquote's bottom margin, and placed by the surrounding text alignment.
   final bool standalone;
 
   /// `::before { content: "— " }`, flowing into the text when it is a [Text]
@@ -303,7 +291,7 @@ class BsBlockquoteFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // `.blockquote-footer { font-size: .875em }`
+    // // The footer is 87.5% of the surrounding size.
     final base = DefaultTextStyle.of(context).style.fontSize ?? BsTypography.fontSizeBase;
     Widget footer = DefaultTextStyle.merge(
       style: TextStyle(

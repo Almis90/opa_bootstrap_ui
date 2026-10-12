@@ -11,13 +11,11 @@ import 'tokens/bs_navbar_style.dart';
 import 'tokens/bs_transitions.dart';
 import 'bs_decorated_box.dart';
 
-/// `.navbar-light`/`.navbar-dark`: which color scheme a [BsNavbar] uses for
-/// its text (its background is set separately via [BsNavbar.background],
-/// the same way Bootstrap pairs `.navbar-light`/`.navbar-dark` with a
-/// separate `.bg-*` utility class).
+/// Which color scheme a [BsNavbar] uses for its text: [light] for a light background, [dark]
+/// for a dark one. The background itself is set separately via [BsNavbar.background].
 enum BsNavbarColorScheme { light, dark }
 
-/// A single `.nav-link` within a [BsNavbar].
+/// A single link within a [BsNavbar].
 class BsNavbarItem {
   const BsNavbarItem({
     required this.child,
@@ -30,29 +28,23 @@ class BsNavbarItem {
   final Widget child;
   final VoidCallback? onTap;
 
-  /// `.active`: highlights this item as the current page.
+  /// Highlights this item as the current page.
   final bool active;
 
-  /// Whether the item adds the `.nav-link`'s own padding around [child]. A
-  /// [child] that is a whole `.nav-item` of its own (a `.dropdown` anchoring its
-  /// menu to the item's box) passes false and pads itself.
+  /// Whether the item adds the link's own padding around [child]. A [child] that is a whole
+  /// item of its own (a dropdown anchoring its menu to the item's box) passes false and pads
+  /// itself.
   final bool padded;
 
-  /// `.disabled`: dims the item and ignores taps.
+  /// Dims the item and ignores taps.
   final bool disabled;
 }
 
-/// A Bootstrap navbar (`.navbar`): a header bar with a [brand], a row of
-/// [items], and optional [trailing] widgets (e.g. a search box or button).
+/// A Bootstrap navbar: a header bar with a [brand], a row of [items], and optional
+/// [trailing] widgets (for example a search box or button).
 ///
-/// Below [expandBreakpoint], [items]/[trailing] drop into a
-/// [BsCollapse] toggled by a hamburger button — the same `.navbar-toggler`
-/// + `.navbar-collapse` behavior Bootstrap's JS drives, reusing the
-/// [BsCollapse] this package already built rather than reaching for
-/// Material's `Drawer`/`NavigationRail` responsive pattern, which solves a
-/// similar problem a different way (a side panel, not an inline reveal).
-/// Pass null (Bootstrap's bare `.navbar`, with no `.navbar-expand-*` class)
-/// to always collapse behind the toggler regardless of width.
+/// Below [expandBreakpoint], [items] and [trailing] drop into a [BsCollapse] toggled by a
+/// hamburger button. Pass null to always collapse behind the toggler regardless of width.
 class BsNavbar extends StatefulWidget {
   const BsNavbar({
     super.key,
@@ -79,13 +71,13 @@ class BsNavbar extends StatefulWidget {
     this.onHidden,
   });
 
-  /// `.navbar-brand`: typically the site/app name or logo.
+  /// Typically the site or app name, or its logo.
   final Widget? brand;
 
   /// Called when [brand] is tapped. Leave null for a non-interactive brand.
   final VoidCallback? onBrandTap;
 
-  /// `.navbar-nav`'s `.nav-item`s.
+  /// The navigation links.
   final List<BsNavbarItem> items;
 
   /// Extra content shown after [items] (e.g. a search form or button),
@@ -95,35 +87,29 @@ class BsNavbar extends StatefulWidget {
 
   final BsNavbarColorScheme colorScheme;
 
-  /// The bar's background. Bootstrap leaves this to a separate `.bg-*`
-  /// utility, so there's no default here either — null stays transparent.
+  /// The bar's background. There is no default: null stays transparent.
   final Color? background;
 
-  /// `.navbar-expand-{breakpoint}`: the viewport width at and above which
-  /// [items]/[trailing] show inline instead of behind the toggler. Null
-  /// means "never expand".
+  /// The viewport width at and above which [items] and [trailing] show inline instead of behind
+  /// the toggler. Null means never expand.
   final BsBreakpoint? expandBreakpoint;
 
-  /// `justify-content-md-center` on the `.navbar-collapse`: when expanded the
-  /// [items] sit in the middle of the bar rather than after the brand.
+  /// When expanded, the [items] sit in the middle of the bar rather than after the brand.
   final bool centerItems;
 
-  /// `flex-grow-1 justify-content-between` on the `.navbar-nav`: expanded, the
-  /// [items] spread across the whole bar.
+  /// When expanded, the [items] spread across the whole bar.
   final bool spreadItems;
 
   /// `d-md-none` on the brand: it only shows while collapsed.
   final bool hideBrandWhenExpanded;
 
-  /// `justify-content-end flex-grow-1 pe-3` on the `.navbar-nav` of an
-  /// offcanvas navbar: expanded, the [items] sit at the end of the bar, a
-  /// `1rem` before the [trailing] widgets.
+  /// When expanded, the [items] sit at the end of the bar, 16 logical pixels before the
+  /// [trailing] widgets. For an offcanvas navbar.
   final bool endItems;
 
-  /// An offcanvas navbar (`data-bs-toggle="offcanvas"` on the toggler, the
-  /// links and form inside an `.offcanvas`): below [expandBreakpoint] the
-  /// toggler opens what this builds — typically a [BsOffcanvas] — given the
-  /// rendered nav links, instead of revealing a [BsCollapse].
+  /// For an offcanvas navbar: below [expandBreakpoint] the toggler opens what this builds,
+  /// typically a [BsOffcanvas], given the rendered nav links, instead of revealing a
+  /// [BsCollapse].
   final Widget Function(BuildContext context, List<Widget> links)?
   offcanvasBuilder;
 
@@ -136,10 +122,9 @@ class BsNavbar extends StatefulWidget {
   /// border.
   final bool bareToggler;
 
-  /// The `.navbar-collapse`'s whole content, for navbars that lay it out in
-  /// their own way (a three-column "centered nav"): replaces the default
-  /// arrangement of [items] and [trailing]. Told whether the navbar is
-  /// expanded, and given the rendered nav links of [items] to place.
+  /// The whole content of the collapsible area, for navbars that lay it out in their own way
+  /// (a three-column centered nav): replaces the default arrangement of [items] and [trailing].
+  /// Told whether the navbar is expanded, and given the rendered nav links of [items] to place.
   final Widget Function(
     BuildContext context,
     bool expanded,
@@ -211,8 +196,7 @@ class _BsNavbarState extends State<BsNavbar> {
         padding: style.padding ?? BsNavbarStyle.defaultPadding,
         child: Builder(
           builder: (context) {
-            // `.navbar-expand-*` is a media query: it is the viewport's width
-            // that counts, not the room the navbar happens to have.
+            // // The breakpoint is the viewport's width, not the room the navbar happens to have.
             final expanded =
                 widget.expandBreakpoint != null &&
                 MediaQuery.sizeOf(context).width >=
@@ -287,8 +271,7 @@ class _BsNavbarState extends State<BsNavbar> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 BsFlex(
-                  // `.navbar { flex-wrap: wrap }`: a toggler with no room left
-                  // drops to the next line.
+                  // // A toggler with no room left drops to the next line.
                   wrap: true,
                   alignItems: BsAlign.center,
                   justifyContent: BsJustify.between,
@@ -323,7 +306,7 @@ class _BsNavbarState extends State<BsNavbar> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            // `.navbar-nav.mb-2` (the nav's own bottom margin).
+                            // // The nav's own bottom margin.
                             ...rawLinks,
                             ...widget.trailing,
                           ],
@@ -386,7 +369,7 @@ class _BsNavbarBrandState extends State<_BsNavbarBrand> {
               fontSize:
                   style.brandFontSize ?? BsNavbarStyle.defaultBrandFontSize,
             ),
-            // `.navbar-brand { white-space: nowrap }`
+            // // The brand never wraps.
             softWrap: false,
             child: widget.child,
           ),
@@ -406,8 +389,7 @@ class _BsNavbarLink extends StatefulWidget {
   final BsNavbarItem item;
   final BsNavbarStyle style;
 
-  /// Expanded, a link is padded by `.5rem` on each side; collapsed, by none
-  /// (`--bs-nav-link-padding-x: 0`).
+  /// Expanded, a link is padded by 8 logical pixels on each side; collapsed, by none.
   final bool expanded;
 
   @override
@@ -525,7 +507,7 @@ class _BsNavbarTogglerState extends State<_BsNavbarToggler> {
                   : (style.togglerPadding ??
                         BsNavbarStyle.defaultTogglerPadding),
               child: CustomPaint(
-                // `.navbar-toggler-icon`: `1.5em` square.
+                // // The icon is 1.5 times the font size, square.
                 size: Size.square(
                   1.5 *
                       (style.togglerFontSize ??

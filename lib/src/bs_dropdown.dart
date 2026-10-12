@@ -11,16 +11,16 @@ import 'bs_decorated_box.dart';
 
 /// Which side of the toggle a [BsDropdown]'s menu opens on.
 enum BsDropdownDirection {
-  /// `.dropdown` (default): opens below the toggle.
+  /// Opens below the toggle (the default).
   down,
 
-  /// `.dropup`: opens above the toggle.
+  /// Opens above the toggle.
   up,
 
-  /// `.dropstart`: opens to the toggle's left.
+  /// Opens at the toggle's start side (its left, in a left-to-right layout).
   start,
 
-  /// `.dropend`: opens to the toggle's right.
+  /// Opens at the toggle's end side (its right, in a left-to-right layout).
   end,
 }
 
@@ -106,7 +106,7 @@ class BsDropdownController extends ChangeNotifier {
   }
 }
 
-/// `.dropdown-item`: a single actionable row.
+/// A single actionable row.
 class BsDropdownItem extends BsDropdownEntry {
   const BsDropdownItem({
     required this.child,
@@ -121,32 +121,29 @@ class BsDropdownItem extends BsDropdownEntry {
   /// [disabled].
   final VoidCallback? onTap;
 
-  /// `.active`: highlights this item as the current selection.
+  /// Highlights this item as the current selection.
   final bool active;
 
-  /// `.disabled`: dims the item and ignores taps.
+  /// Dims the item and ignores taps.
   final bool disabled;
 }
 
-/// `.dropdown-divider`: a thin horizontal rule separating item groups.
+/// A thin horizontal rule separating groups of items.
 class BsDropdownDivider extends BsDropdownEntry {
   const BsDropdownDivider();
 }
 
-/// `.dropdown-header`: a non-interactive label introducing a group of items.
+/// A non-interactive label introducing a group of items.
 class BsDropdownHeader extends BsDropdownEntry {
   const BsDropdownHeader({required this.child});
 
   final Widget child;
 }
 
-/// A Bootstrap dropdown (`.dropdown`): a menu of [items] revealed next to a
-/// custom toggle, positioned and closed the way Material's `MenuAnchor`
-/// anchors and dismisses its overlay.
+/// A Bootstrap dropdown: a menu of [items] revealed next to a custom toggle.
 ///
-/// [toggleBuilder] mirrors `MenuAnchor.builder`: it's handed a `toggle`
-/// callback to wire up to the toggle widget's own tap handler, since
-/// [BsDropdown] can't safely intercept gestures on a child it didn't build.
+/// [toggleBuilder] is handed a `toggle` callback to wire up to the toggle widget's own tap
+/// handler, since [BsDropdown] cannot safely intercept gestures on a child it did not build.
 class BsDropdown extends StatefulWidget {
   const BsDropdown({
     super.key,
@@ -177,29 +174,24 @@ class BsDropdown extends StatefulWidget {
   /// Which side of the toggle the menu opens on.
   final BsDropdownDirection direction;
 
-  /// `.dropdown-menu-end`: aligns the menu's trailing edge with the
-  /// toggle's instead of its leading edge. Only affects [direction]s
-  /// [BsDropdownDirection.down]/[BsDropdownDirection.up].
+  /// Aligns the menu's trailing edge with the toggle's instead of its leading edge. Only
+  /// affects [direction]s [BsDropdownDirection.down] and [BsDropdownDirection.up].
   final bool alignEnd;
 
-  /// Popper's `flip` and `preventOverflow` modifiers, which Bootstrap's
-  /// dropdowns run by default: when the menu wouldn't fit inside the screen
-  /// where [direction] and [alignEnd] put it, it opens on the opposite
-  /// alignment or side instead (a `.dropdown` near the bottom edge becomes a
-  /// `.dropup`, a left-aligned menu at the right edge becomes right-aligned),
-  /// and as a last resort slides along the toggle to stay on screen. Pass
-  /// false to always open exactly where asked.
+  /// Keeps the menu on screen, as Bootstrap's dropdowns do by default: when the menu would not
+  /// fit where [direction] and [alignEnd] put it, it opens on the opposite alignment or side
+  /// instead (a menu near the bottom edge opens upward, a left-aligned menu at the right edge
+  /// becomes right-aligned), and as a last resort slides along the toggle to stay on screen.
+  /// Pass false to always open exactly where asked.
   final bool flip;
 
-  /// `position: static` (Bootstrap's `.position-static`, and what
-  /// `.navbar-nav .dropdown-menu` is in a collapsed navbar): the menu is not
-  /// popped over the page but laid out in the flow right below the toggle, as
-  /// wide as the toggle's container, and pushes what follows down. Ignores
-  /// [direction], [alignEnd] and [flip].
+  /// Lays the menu out in the flow right below the toggle instead of popping it over the page,
+  /// as wide as the toggle's container, pushing what follows down. This is how a menu in a
+  /// collapsed navbar behaves. Ignores [direction], [alignEnd] and [flip].
   final bool positionStatic;
 
   /// Style overrides layered on top of [BsDropdownStyle.defaults]. Pass
-  /// [BsDropdownStyle.dark] for `.dropdown-menu-dark`.
+  /// [BsDropdownStyle.dark] for a menu that is dark regardless of the page's theme.
   final BsDropdownStyle? style;
 
   /// Called whenever the menu opens or closes.
@@ -366,8 +358,7 @@ class _BsDropdownState extends State<BsDropdown>
     );
   }
 
-  /// [BsDropdown.positionStatic]: the toggle, then (while open) the menu in the
-  /// flow below it, `.125rem` down (`--bs-dropdown-spacer`).
+  /// The toggle, then (while open) the menu in the flow below it, 2 logical pixels down.
   Widget _buildStatic(BsDropdownStyle style) {
     return TapRegion(
       groupId: this,
@@ -490,10 +481,8 @@ class _BsDropdownMenu extends StatelessWidget {
         minWidth: style.minWidth ?? BsDropdownStyle.defaultMinWidth,
       ),
       child: BsDecoratedBox(
-        // (no colour here: `.dropdown-menu` has `background-clip: padding-box`,
-        // so the translucent border is painted over what is *behind* the
-        // menu, not over the menu's own background; the background is the
-        // inner box below)
+        // // No color here: the translucent border is painted over what is behind the menu, not over
+        // // the menu's own background, which is the inner box below.
         decoration: BoxDecoration(
           border: Border.all(
             color: style.borderColor ?? BsDropdownStyle.defaultBorderColor,
@@ -502,10 +491,9 @@ class _BsDropdownMenu extends StatelessWidget {
           borderRadius: borderRadius,
           boxShadow: style.boxShadow,
         ),
-        // The border takes room (box-sizing: border-box): the menu's content
-        // sits inside it, so a hovered item's background stops at the border
-        // instead of painting over it, and the menu is as tall and wide as
-        // the CSS one. The clip follows the inside of the rounded border.
+        // // The border takes room: the menu's content sits inside it, so a hovered item's background
+        // // stops at the border instead of painting over it. The clip follows the inside of the
+        // // rounded border.
         child: Padding(
           padding: EdgeInsets.all(
             style.borderWidth ?? BsDropdownStyle.defaultBorderWidth,
@@ -684,17 +672,14 @@ class _BsDropdownHeaderWidget extends StatelessWidget {
   }
 }
 
-/// A small downward-pointing triangle, replicating the caret Bootstrap's
-/// CSS automatically appends after `.dropdown-toggle` content
-/// (`.dropdown-toggle::after`). Add it manually inside a
-/// [BsDropdown.toggleBuilder]'s returned widget, [marginStart] after the
-/// content.
+/// A small downward-pointing triangle: the caret that follows a dropdown toggle's content.
+/// Add it manually inside the widget returned by [BsDropdown.toggleBuilder], [marginStart]
+/// after the content.
 ///
-/// Without a [size] it is the stylesheet's own caret: `.3em` of [fontSize]
-/// (16 by default) wide on each side, `.3em` tall. Browsers snap border widths
-/// down to whole device pixels, so that is 8x4 at 1x and 9x4.5 at 2x rather
-/// than 9.6x4.8, and so it is here. Pass [size] for a caret of an explicit
-/// width instead (its height is then 70% of it).
+/// Without a [size] it is 0.3 times the [fontSize] (16 by default) wide on each side and tall.
+/// Border widths snap down to whole device pixels, so that is 8x4 at 1x and 9x4.5 at 2x rather
+/// than 9.6x4.8, and so it is here. Pass [size] for a caret of an explicit width instead
+/// (its height is then 70% of it).
 class BsDropdownCaret extends StatelessWidget {
   const BsDropdownCaret({
     super.key,
@@ -704,18 +689,18 @@ class BsDropdownCaret extends StatelessWidget {
     this.up = false,
   });
 
-  /// `.dropdown-toggle::after`'s `margin-left` (`.255em` of 16px).
+  /// Space between the toggle's content and the caret.
   static const double marginStart = 4.08;
 
   final Color? color;
 
-  /// An explicit width, bypassing the `.3em` border-snapping behaviour.
+  /// An explicit width, bypassing the snapping to whole device pixels.
   final double? size;
 
-  /// The toggle's font size, which `.3em` is relative to.
+  /// The toggle's font size, which the caret's size is relative to.
   final double fontSize;
 
-  /// `.dropup`'s caret: pointing up.
+  /// Points the caret up, for a menu that opens above the toggle.
   final bool up;
 
   /// The height of the stylesheet's caret (its border width) at the ambient
