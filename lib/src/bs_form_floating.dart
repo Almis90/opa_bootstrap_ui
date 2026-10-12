@@ -81,7 +81,8 @@ class _BsFormFloatingState extends State<BsFormFloating> {
 
   bool get _floated => _focusNode.hasFocus || _controller.text.isNotEmpty;
 
-  static const _duration = Duration(milliseconds: 150);
+  /// `$form-floating-transition`: `.1s ease-in-out`.
+  static const _duration = Duration(milliseconds: 100);
 
   @override
   void initState() {
@@ -114,7 +115,9 @@ class _BsFormFloatingState extends State<BsFormFloating> {
     final borderWidth =
         style.inputBorderWidth ?? BsFormStyle.defaultInputBorderWidth;
     // `.form-floating > label { color: rgba(var(--bs-body-color-rgb), .65) }`
-    final labelColor = isDark ? const Color(0xA6DEE2E6) : const Color(0xA6212529);
+    final labelColor = isDark
+        ? const Color(0xA6DEE2E6)
+        : const Color(0xA6212529);
     final floatedOpacity =
         style.floatingLabelOpacity ?? BsFormStyle.defaultFloatingLabelOpacity;
     final inputPaddingTop =
@@ -125,6 +128,8 @@ class _BsFormFloatingState extends State<BsFormFloating> {
         BsFormStyle.defaultFloatingInputPaddingBottom;
     final lineHeight =
         style.floatingLineHeight ?? BsFormStyle.defaultFloatingLineHeight;
+    // (the label inherits the body's `line-height: 1.5`)
+    const labelLineHeight = 1.5;
     final disabledLabelColor =
         style.floatingLabelDisabledColor ??
         BsFormStyle.defaultFloatingLabelDisabledColor;
@@ -161,36 +166,53 @@ class _BsFormFloatingState extends State<BsFormFloating> {
               ),
             ),
           ),
+          // `.form-floating > label`: at rest it sits where the input's text
+          // would (`padding: 1rem .75rem` in the 1px border); floated it is
+          // not moved by layout but by a transform, `scale(.85) translateY(-.5rem)
+          // translateX(.15rem)` from its top-start corner, which transitions in
+          // `.1s ease-in-out` (a color change is not part of the transition).
           IgnorePointer(
-            child: AnimatedAlign(
+            child: TweenAnimationBuilder<double>(
+              tween: Tween<double>(end: _floated ? 1.0 : 0.0),
               duration: duration,
-              curve: Curves.easeOut,
-              alignment: _floated
-                  ? AlignmentDirectional.topStart
-                  : AlignmentDirectional.centerStart,
-              child: Padding(
-                // The label's own box has the control's `1px` border too.
-                padding: EdgeInsets.only(
-                  left: horizontalPadding + borderWidth,
-                  right: horizontalPadding + borderWidth,
-                  top: _floated ? height * 0.22 : 0,
-                ),
-                child: AnimatedDefaultTextStyle(
-                  duration: duration,
-                  curve: Curves.easeOut,
-                  // (this replaces the ambient style, so it starts from it: the
-                  // line height and how it is split above/below the text)
-                  style: DefaultTextStyle.of(context).style.merge(
-                    TextStyle(
-                      fontSize: _floated ? fontSize * 0.85 : fontSize,
+              curve: Curves.easeInOut,
+              builder: (context, t, child) {
+                final rtl = Directionality.of(context) == TextDirection.rtl;
+                return Transform(
+                  alignment: AlignmentDirectional.topStart,
+                  transform: Matrix4.identity()
+                    ..scaleByDouble(1 - 0.15 * t, 1 - 0.15 * t, 1, 1)
+                    ..translateByDouble(
+                      (rtl ? -1 : 1) * 0.15 * 16 * t,
+                      -0.5 * 16 * t,
+                      0,
+                      1,
+                    ),
+                  child: child,
+                );
+              },
+              child: Align(
+                alignment: AlignmentDirectional.topStart,
+                child: Padding(
+                  // The label's own box has the control's `1px` border too, and
+                  // its line is centred in the control's height.
+                  padding: EdgeInsetsDirectional.only(
+                    start: horizontalPadding + borderWidth,
+                    end: horizontalPadding + borderWidth,
+                    top: (height - fontSize * labelLineHeight) / 2,
+                  ),
+                  child: DefaultTextStyle.merge(
+                    style: TextStyle(
+                      fontSize: fontSize,
+                      height: labelLineHeight,
                       color: !widget.enabled
                           ? disabledLabelColor
                           : _floated
                           ? labelColor.withValues(alpha: floatedOpacity)
                           : labelColor,
                     ),
+                    child: widget.label,
                   ),
-                  child: widget.label,
                 ),
               ),
             ),
