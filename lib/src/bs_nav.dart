@@ -68,11 +68,9 @@ class BsNavItem {
 /// A Bootstrap nav (`.nav`): a row (or, per [vertical], column) of
 /// [BsNavItem]s, styled per [variant].
 ///
-/// Unlike Material's `TabBar`, which animates a sliding indicator between
-/// tabs, each item's active/hover state here switches immediately — the
-/// same immediate-state approach [BsListGroup] and [BsButtonGroup] already
-/// use for their own active items, kept for consistency rather than
-/// introducing a one-off animated indicator.
+/// Items change their active and hover states immediately, as in
+/// [BsListGroup] and [BsButtonGroup]; there is no sliding indicator like
+/// Material's `TabBar` has.
 ///
 /// Pair with [BsTabView] to switch content when [BsNavItem.onTap] changes
 /// which item is active.
@@ -121,105 +119,11 @@ class BsNav extends StatelessWidget {
     final isDark = BsTheme.of(context) == Brightness.dark;
     final style = (isDark ? BsNavStyle.darkDefaults : BsNavStyle.defaults)
         .merge(this.style);
-    final isTabs = variant == BsNavVariant.tabs;
-    final isUnderline = variant == BsNavVariant.underline;
+    final links = _buildLinks(context, style);
 
-    // `.nav-underline` applies a flex `gap` between items, on top of each
-    // link's own padding — the other variants rely on padding alone.
-    final gap = style.underlineGap ?? BsNavStyle.defaultUnderlineGap;
-    final gapWidget = vertical ? SizedBox(height: gap) : SizedBox(width: gap);
+    if (variant != BsNavVariant.tabs) return links;
 
-    final children = <Widget>[
-      for (var i = 0; i < items.length; i++) ...[
-        if (isUnderline && i > 0) gapWidget,
-        _BsNavLinkWidget(
-          item: items[i],
-          variant: variant,
-          style: style,
-          expand: fill && !vertical,
-        ),
-      ],
-    ];
-
-    // IntrinsicWidth bounds the column's width (to its widest item) so
-    // crossAxisAlignment.stretch can stretch every item to match — a bare
-    // Column would otherwise inherit the unbounded width of an enclosing
-    // Row and crash.
-    //
-    // The horizontal Row only takes MainAxisSize.max when fill stretches
-    // its items to share the available width (`.nav-fill`/`.nav-justified`,
-    // which needs that space to divide up); otherwise a real `.nav` sizes
-    // to its content like any other unstretched flex item, so the Row
-    // matches that with MainAxisSize.min — without it, a bare BsNav placed
-    // next to a sibling (e.g. in a Wrap or a Row) would always claim the
-    // rest of that shared row's width for itself instead of just its own
-    // links, pushing the sibling onto its own line/row.
-    //
-    // `.nav` is `display: flex; flex-wrap: wrap`, so a horizontal nav too wide
-    // for its space wraps onto further lines (left-aligned) instead of
-    // overflowing; only `.nav-fill`/`.nav-justified`, whose items share the
-    // space out, stay a single Row.
-    final Widget nav = vertical
-        ? IntrinsicWidth(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: children,
-            ),
-          )
-        : fill
-        ? Row(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: children,
-          )
-        : nowrap
-        ? Row(
-            mainAxisSize: justifyContent == null
-                ? MainAxisSize.min
-                : MainAxisSize.max,
-            mainAxisAlignment: _mainAxisAlignment(
-              justifyContent?.resolve(
-                BsBreakpoint.forWidth(MediaQuery.sizeOf(context).width),
-              ),
-            ),
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              for (var i = 0; i < items.length; i++)
-                Padding(
-                  // (`.nav-underline`'s flex `gap`)
-                  padding: EdgeInsetsDirectional.only(
-                    end: isUnderline && i < items.length - 1 ? gap : 0,
-                  ),
-                  child: _BsNavLinkWidget(
-                    item: items[i],
-                    variant: variant,
-                    style: style,
-                    expand: false,
-                  ),
-                ),
-            ],
-          )
-        : Wrap(
-            alignment: _wrapAlignment(
-              justifyContent?.resolve(
-                BsBreakpoint.forWidth(MediaQuery.sizeOf(context).width),
-              ),
-            ),
-            crossAxisAlignment: WrapCrossAlignment.end,
-            spacing: isUnderline ? gap : 0,
-            children: [
-              for (final item in items)
-                _BsNavLinkWidget(
-                  item: item,
-                  variant: variant,
-                  style: style,
-                  expand: false,
-                ),
-            ],
-          );
-
-    if (!isTabs) return nav;
-
+    // `.nav-tabs`: the line the active tab opens onto.
     return BsDecoratedBox(
       decoration: BoxDecoration(
         border: Border(
@@ -229,7 +133,90 @@ class BsNav extends StatelessWidget {
           ),
         ),
       ),
-      child: nav,
+      child: links,
+    );
+  }
+
+  Widget _buildLinks(BuildContext context, BsNavStyle style) {
+    final isUnderline = variant == BsNavVariant.underline;
+
+    // `.nav-underline` puts a flex `gap` between its items, on top of the
+    // links' own padding; the other variants rely on padding alone.
+    final gap = isUnderline
+        ? style.underlineGap ?? BsNavStyle.defaultUnderlineGap
+        : 0.0;
+
+    Widget link(BsNavItem item, {bool expand = false}) => _BsNavLinkWidget(
+      item: item,
+      variant: variant,
+      style: style,
+      expand: expand,
+    );
+
+    BsJustify? justify() => justifyContent?.resolve(
+      BsBreakpoint.forWidth(MediaQuery.sizeOf(context).width),
+    );
+
+    if (vertical) {
+      // IntrinsicWidth bounds the column to its widest item so that
+      // `stretch` can widen every item to match; a bare Column would take the
+      // unbounded width of an enclosing Row.
+      return IntrinsicWidth(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            for (var i = 0; i < items.length; i++) ...[
+              if (i > 0 && gap > 0) SizedBox(height: gap),
+              link(items[i]),
+            ],
+          ],
+        ),
+      );
+    }
+
+    // `.nav-fill`/`.nav-justified`: the items share out all the space, so the
+    // row takes it all.
+    if (fill) {
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          for (var i = 0; i < items.length; i++) ...[
+            if (i > 0 && gap > 0) SizedBox(width: gap),
+            link(items[i], expand: true),
+          ],
+        ],
+      );
+    }
+
+    // `flex-nowrap`: a single line, as wide as its links unless a
+    // `justify-content-*` gives it the room to place them in.
+    if (nowrap) {
+      return Row(
+        mainAxisSize: justifyContent == null
+            ? MainAxisSize.min
+            : MainAxisSize.max,
+        mainAxisAlignment: _mainAxisAlignment(justify()),
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          for (var i = 0; i < items.length; i++)
+            Padding(
+              padding: EdgeInsetsDirectional.only(
+                end: i < items.length - 1 ? gap : 0,
+              ),
+              child: link(items[i]),
+            ),
+        ],
+      );
+    }
+
+    // `.nav` is `display: flex; flex-wrap: wrap`: links that do not fit on a
+    // line continue on the next, and the nav is only as wide as its links, so
+    // that a sibling in a shared row keeps its own space.
+    return Wrap(
+      alignment: _wrapAlignment(justify()),
+      crossAxisAlignment: WrapCrossAlignment.end,
+      spacing: gap,
+      children: [for (final item in items) link(item)],
     );
   }
 }
@@ -269,6 +256,29 @@ class _BsNavLinkWidget extends StatefulWidget {
   State<_BsNavLinkWidget> createState() => _BsNavLinkWidgetState();
 }
 
+/// The color, background, border and weight of a nav link in its current
+/// state.
+class _LinkLook {
+  const _LinkLook({
+    required this.color,
+    this.background = const Color(0x00000000),
+    this.border,
+    this.fontWeight,
+    this.tabBottomRule,
+  });
+
+  final Color color;
+  final Color background;
+  final Border? border;
+  final FontWeight? fontWeight;
+
+  /// `.nav-tabs .nav-link`: its bottom border sits over the nav's own line
+  /// (`margin-bottom: -1px`). It takes the active tab's background, so the
+  /// line is open beneath the tab, or, when hovered, the line's own color
+  /// (the hover border is `$gray-200 $gray-200 $border-color`).
+  final Color? tabBottomRule;
+}
+
 class _BsNavLinkWidgetState extends State<_BsNavLinkWidget> {
   bool _hovered = false;
 
@@ -295,117 +305,123 @@ class _BsNavLinkWidgetState extends State<_BsNavLinkWidget> {
         : EdgeInsets.only(top: 8, bottom: 8 + border);
   }
 
+  _LinkLook _look(BuildContext context) {
+    final item = widget.item;
+    final style = widget.style;
+    if (item.disabled) {
+      return _LinkLook(
+        color: style.linkDisabledColor ?? BsNavStyle.defaultLinkDisabledColor,
+      );
+    }
+
+    final restColor = style.linkColor ?? BsNavStyle.defaultLinkColor;
+    final hoverColor = style.linkHoverColor ?? restColor;
+    final stateColor = _hovered ? hoverColor : restColor;
+    final linkColor = item.textColor?.of(context) ?? stateColor;
+
+    switch (widget.variant) {
+      case BsNavVariant.plain:
+        return _LinkLook(color: linkColor);
+
+      case BsNavVariant.tabs:
+        final lineColor =
+            style.tabsBorderColor ?? BsNavStyle.defaultTabsBorderColor;
+        if (item.active) {
+          final background =
+              style.tabsLinkActiveBackground ??
+              BsNavStyle.defaultTabsLinkActiveBackground;
+          return _LinkLook(
+            color:
+                style.tabsLinkActiveColor ??
+                BsNavStyle.defaultTabsLinkActiveColor,
+            background: background,
+            // A border of one color on all sides: [Border] cannot paint sides
+            // of different colors together with a border radius.
+            border: Border.all(
+              color: style.tabsLinkActiveBorderColor ?? lineColor,
+            ),
+            tabBottomRule: background,
+          );
+        }
+        if (!_hovered) return _LinkLook(color: stateColor);
+        return _LinkLook(
+          color: stateColor,
+          border: Border.all(
+            color:
+                style.tabsLinkHoverBorderColor ??
+                BsNavStyle.defaultTabsLinkHoverBorderColor,
+          ),
+          tabBottomRule: lineColor,
+        );
+
+      case BsNavVariant.pills:
+        if (!item.active) return _LinkLook(color: linkColor);
+        return _LinkLook(
+          color:
+              style.pillsLinkActiveColor ??
+              BsNavStyle.defaultPillsLinkActiveColor,
+          background:
+              style.pillsLinkActiveBackground ??
+              BsNavStyle.defaultPillsLinkActiveBackground,
+        );
+
+      case BsNavVariant.underline:
+        final width =
+            style.underlineBorderWidth ??
+            BsNavStyle.defaultUnderlineBorderWidth;
+        if (item.active) {
+          final color =
+              style.underlineLinkActiveColor ??
+              BsNavStyle.defaultUnderlineLinkActiveColor;
+          return _LinkLook(
+            color: color,
+            fontWeight: FontWeight.bold,
+            border: Border(
+              bottom: BorderSide(color: color, width: width),
+            ),
+          );
+        }
+        return _LinkLook(
+          color: linkColor,
+          border: Border(
+            bottom: BorderSide(
+              color: _hovered ? hoverColor : const Color(0x00000000),
+              width: width,
+            ),
+          ),
+        );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final item = widget.item;
     final style = widget.style;
+    final variant = widget.variant;
     final enabled = item.onTap != null && !item.disabled;
+    final look = _look(context);
+    final border = item.borderBottom
+        ? Border(bottom: BorderSide(color: BsBorders.colorOf(context)))
+        : look.border;
+
     final radius =
         item.rounded?.radius ??
-        (widget.variant == BsNavVariant.pills
+        (variant == BsNavVariant.pills
             ? style.pillsBorderRadius ?? BsNavStyle.defaultPillsBorderRadius
             : style.tabsBorderRadius ?? BsNavStyle.defaultTabsBorderRadius);
-    final borderRadius = BorderRadius.circular(radius);
-
-    Color? color;
-    Color background = const Color(0x00000000);
-    Border? border;
-    FontWeight? fontWeight;
-
-    /// `.nav-tabs .nav-link`: its bottom border sits over the nav's own line
-    /// (`margin-bottom: -1px`), in the active tab's background (so the line is
-    /// open beneath it, the tab running into its content) or, hovered, in the
-    /// line's own color (the hover border is `$gray-200 $gray-200 $border-color`).
-    Color? tabBottomRow;
-
-    final restColor = style.linkColor ?? BsNavStyle.defaultLinkColor;
-    final hoverColor = style.linkHoverColor ?? restColor;
-    final textColor = item.textColor?.of(context);
-
-    if (item.disabled) {
-      color = style.linkDisabledColor ?? BsNavStyle.defaultLinkDisabledColor;
-    } else {
-      switch (widget.variant) {
-        case BsNavVariant.plain:
-          color = textColor ?? (_hovered ? hoverColor : restColor);
-        case BsNavVariant.tabs:
-          final borderColor =
-              style.tabsBorderColor ?? BsNavStyle.defaultTabsBorderColor;
-          if (item.active) {
-            color =
-                style.tabsLinkActiveColor ??
-                BsNavStyle.defaultTabsLinkActiveColor;
-            background =
-                style.tabsLinkActiveBackground ??
-                BsNavStyle.defaultTabsLinkActiveBackground;
-            // A uniform-color border, not a bottom edge matching
-            // [background] to blend into the container's shared border
-            // line below it — Border.paint refuses non-uniform side
-            // colors together with a borderRadius.
-            border = Border.all(
-              color: style.tabsLinkActiveBorderColor ?? borderColor,
-            );
-            tabBottomRow = background;
-          } else {
-            color = _hovered ? hoverColor : restColor;
-            if (_hovered) {
-              border = Border.all(
-                color:
-                    style.tabsLinkHoverBorderColor ??
-                    BsNavStyle.defaultTabsLinkHoverBorderColor,
-              );
-              tabBottomRow = borderColor;
-            }
-          }
-        case BsNavVariant.pills:
-          if (item.active) {
-            color =
-                style.pillsLinkActiveColor ??
-                BsNavStyle.defaultPillsLinkActiveColor;
-            background =
-                style.pillsLinkActiveBackground ??
-                BsNavStyle.defaultPillsLinkActiveBackground;
-          } else {
-            color = textColor ?? (_hovered ? hoverColor : restColor);
-          }
-        case BsNavVariant.underline:
-          final underlineWidth =
-              style.underlineBorderWidth ??
-              BsNavStyle.defaultUnderlineBorderWidth;
-          if (item.active) {
-            color =
-                style.underlineLinkActiveColor ??
-                BsNavStyle.defaultUnderlineLinkActiveColor;
-            fontWeight = FontWeight.bold;
-            border = Border(
-              bottom: BorderSide(color: color, width: underlineWidth),
-            );
-          } else {
-            color = textColor ?? (_hovered ? hoverColor : restColor);
-            border = Border(
-              bottom: BorderSide(
-                color: _hovered ? hoverColor : const Color(0x00000000),
-                width: underlineWidth,
-              ),
-            );
-          }
-      }
-    }
-
-    if (item.borderBottom) {
-      border = Border(bottom: BorderSide(color: BsBorders.colorOf(context)));
-    }
 
     Widget content(bool focused) => BsDecoratedBox(
       decoration: BoxDecoration(
-        color: background,
+        color: look.background,
         border: border,
-        borderRadius: widget.variant == BsNavVariant.pills
-            ? borderRadius
-            // `.nav-tabs .nav-link`: only the top corners are rounded.
-            : widget.variant == BsNavVariant.tabs
-            ? BorderRadius.vertical(top: Radius.circular(radius))
-            : null,
+        borderRadius: switch (variant) {
+          BsNavVariant.pills => BorderRadius.circular(radius),
+          // `.nav-tabs .nav-link`: only the top corners are rounded.
+          BsNavVariant.tabs => BorderRadius.vertical(
+            top: Radius.circular(radius),
+          ),
+          _ => null,
+        },
         boxShadow: [
           if (focused)
             BoxShadow(
@@ -419,27 +435,27 @@ class _BsNavLinkWidgetState extends State<_BsNavLinkWidget> {
         ],
       ),
       child: Padding(
-        padding: _padding(
+        padding: _padding(switch (variant) {
           // `.nav-underline .nav-link { padding-right/left: 0; border-bottom:
           // .125rem solid transparent }`: the border adds to the link's height.
-          widget.variant == BsNavVariant.underline
-              ? _underlinePadding(style)
-              // `.nav-tabs .nav-link { border: 1px solid transparent }`: always
-              // there (the active tab only colors it), and part of its size.
-              : widget.variant == BsNavVariant.tabs
-              ? (style.linkPadding ?? BsNavStyle.defaultLinkPadding).add(
-                  const EdgeInsets.all(1),
-                )
-              : style.linkPadding ?? BsNavStyle.defaultLinkPadding,
-        ),
+          BsNavVariant.underline => _underlinePadding(style),
+          // `.nav-tabs .nav-link { border: 1px solid transparent }`: always
+          // present (the active tab only colors it) and part of the size.
+          BsNavVariant.tabs =>
+            (style.linkPadding ?? BsNavStyle.defaultLinkPadding).add(
+              const EdgeInsets.all(1),
+            ),
+          _ => style.linkPadding ?? BsNavStyle.defaultLinkPadding,
+        }),
         child: DefaultTextStyle.merge(
-          style: TextStyle(color: color, fontWeight: fontWeight),
+          style: TextStyle(color: look.color, fontWeight: look.fontWeight),
           textAlign: widget.expand ? TextAlign.center : null,
           child: item.child,
         ),
       ),
     );
 
+    final tabBottomRule = look.tabBottomRule;
     final link = MouseRegion(
       cursor: enabled ? SystemMouseCursors.click : SystemMouseCursors.basic,
       onEnter: enabled ? (_) => setState(() => _hovered = true) : null,
@@ -451,18 +467,18 @@ class _BsNavLinkWidgetState extends State<_BsNavLinkWidget> {
         builder: (context, focused) => GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: enabled ? item.onTap : null,
-          child: tabBottomRow == null
+          child: tabBottomRule == null
               ? content(focused)
               : Stack(
                   children: [
                     content(focused),
-                    // (between the side borders, which run on down to the line)
+                    // Between the side borders, which run on down to the line.
                     Positioned(
                       left: 1,
                       right: 1,
                       bottom: 0,
                       height: 1,
-                      child: ColoredBox(color: tabBottomRow),
+                      child: ColoredBox(color: tabBottomRule),
                     ),
                   ],
                 ),
@@ -555,7 +571,8 @@ class BsTabView extends StatefulWidget {
   State<BsTabView> createState() => _BsTabViewState();
 }
 
-class _BsTabViewState extends State<BsTabView> with SingleTickerProviderStateMixin {
+class _BsTabViewState extends State<BsTabView>
+    with SingleTickerProviderStateMixin {
   BsTabController? _ownedController;
   late int _lastIndex;
   int? _pendingFrom;
@@ -568,11 +585,16 @@ class _BsTabViewState extends State<BsTabView> with SingleTickerProviderStateMix
   late int _displayed;
 
   /// The opacity of the pane on screen.
-  late final AnimationController _fade = AnimationController(vsync: this, value: 1)
-    ..addStatusListener(_handleFadeStatus);
+  late final AnimationController _fade = AnimationController(
+    vsync: this,
+    value: 1,
+  )..addStatusListener(_handleFadeStatus);
 
   BsTabController get _controller =>
-      widget.controller ?? (_ownedController ??= BsTabController(initialIndex: widget.activeIndex ?? 0));
+      widget.controller ??
+      (_ownedController ??= BsTabController(
+        initialIndex: widget.activeIndex ?? 0,
+      ));
 
   @override
   void initState() {
@@ -587,7 +609,9 @@ class _BsTabViewState extends State<BsTabView> with SingleTickerProviderStateMix
     super.didUpdateWidget(oldWidget);
     // activeIndex only drives the internally-owned controller — an
     // explicit controller is always the source of truth once given.
-    if (widget.controller == null && widget.activeIndex != null && widget.activeIndex != _controller.index) {
+    if (widget.controller == null &&
+        widget.activeIndex != null &&
+        widget.activeIndex != _controller.index) {
       _controller.show(widget.activeIndex!);
     }
   }
@@ -602,7 +626,10 @@ class _BsTabViewState extends State<BsTabView> with SingleTickerProviderStateMix
       widget.onHide?.call(oldIndex);
       widget.onShow?.call(newIndex);
 
-      final duration = BsTransitions.resolve(context, widget.duration ?? BsTransitions.fade);
+      final duration = BsTransitions.resolve(
+        context,
+        widget.duration ?? BsTransitions.fade,
+      );
       _fade.duration = duration;
       // Fade the pane on screen out (or, if it is the one wanted again, back in).
       if (_displayed == newIndex) {
@@ -620,7 +647,9 @@ class _BsTabViewState extends State<BsTabView> with SingleTickerProviderStateMix
         if (_pendingFrom != oldIndex || _pendingTo != newIndex) return;
         widget.onHidden?.call(oldIndex);
         Future.delayed(duration, () {
-          if (!mounted || _pendingFrom != oldIndex || _pendingTo != newIndex) return;
+          if (!mounted || _pendingFrom != oldIndex || _pendingTo != newIndex) {
+            return;
+          }
           _pendingFrom = null;
           _pendingTo = null;
           widget.onShown?.call(newIndex);
@@ -632,7 +661,8 @@ class _BsTabViewState extends State<BsTabView> with SingleTickerProviderStateMix
 
   void _handleFadeStatus(AnimationStatus status) {
     // Faded out: put the wanted pane in its place and fade it in.
-    if (status == AnimationStatus.dismissed && _displayed != _controller.index) {
+    if (status == AnimationStatus.dismissed &&
+        _displayed != _controller.index) {
       setState(() => _displayed = _controller.index);
       _fade.forward();
     }
@@ -650,7 +680,10 @@ class _BsTabViewState extends State<BsTabView> with SingleTickerProviderStateMix
   Widget build(BuildContext context) {
     return FadeTransition(
       opacity: _fade,
-      child: KeyedSubtree(key: ValueKey(_displayed), child: widget.children[_displayed]),
+      child: KeyedSubtree(
+        key: ValueKey(_displayed),
+        child: widget.children[_displayed],
+      ),
     );
   }
 }
