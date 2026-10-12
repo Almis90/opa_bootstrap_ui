@@ -203,6 +203,7 @@ BsNavbarItem navbarDropdownItem(
           direction: up ? BsDropdownDirection.up : BsDropdownDirection.down,
           toggleBuilder: (context, toggle, isOpen) => NavbarDropdownToggle(
             onToggle: toggle,
+            isOpen: isOpen,
             // The whole `.nav-item`, link padding included, so the menu opens
             // from its edge.
             padding: EdgeInsets.symmetric(
@@ -278,17 +279,20 @@ class NavbarSearchInput extends StatelessWidget {
 /// A navbar's `<a class="nav-link dropdown-toggle" href="#" role="button">`: it
 /// takes the keyboard focus (Tab), shows `.nav-link:focus-visible`'s ring only
 /// when focused that way, and Enter or Space open the menu like a click (Escape
-/// closes it, see [BsDropdown]). A click focuses it too, as it does a link, but
-/// without a ring until the next key press.
+/// closes it, see [BsDropdown]). Opening the menu with a click also rings it,
+/// as in Safari: Bootstrap's dropdown plugin calls `focus()` on the toggle from
+/// script when it shows the menu, and that counts as keyboard focus there.
 class NavbarDropdownToggle extends StatefulWidget {
   const NavbarDropdownToggle({
     super.key,
     required this.onToggle,
+    required this.isOpen,
     required this.padding,
     required this.child,
   });
 
   final VoidCallback onToggle;
+  final bool isOpen;
   final EdgeInsets padding;
   final Widget child;
 
@@ -298,6 +302,20 @@ class NavbarDropdownToggle extends StatefulWidget {
 
 class _NavbarDropdownToggleState extends State<NavbarDropdownToggle> {
   final _focusNode = FocusNode(debugLabel: 'NavbarDropdownToggle');
+
+  /// Set when a click opened the menu (Bootstrap's `focus()` on show), until
+  /// the toggle loses focus.
+  bool _scriptFocused = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _focusNode.addListener(() {
+      if (!_focusNode.hasFocus && _scriptFocused) {
+        setState(() => _scriptFocused = false);
+      }
+    });
+  }
 
   @override
   void dispose() {
@@ -332,11 +350,14 @@ class _NavbarDropdownToggleState extends State<NavbarDropdownToggle> {
           builder: (context, focused) => GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTapDown: (_) => _focusNode.requestFocus(),
-            onTap: widget.onToggle,
+            onTap: () {
+              if (!widget.isOpen) setState(() => _scriptFocused = true);
+              widget.onToggle();
+            },
             child: BsDecoratedBox(
               decoration: BoxDecoration(
                 boxShadow: [
-                  if (focused)
+                  if (focused || (_scriptFocused && _focusNode.hasFocus))
                     BoxShadow(
                       color: BsFocusRing.color(),
                       spreadRadius: BsFocusRing.width,

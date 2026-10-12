@@ -13,6 +13,7 @@ void main() {
         direction: BsDropdownDirection.up,
         toggleBuilder: (context, toggle, isOpen) => NavbarDropdownToggle(
           onToggle: toggle,
+          isOpen: isOpen,
           padding: const EdgeInsets.all(8),
           child: const Text('Dropup'),
         ),
@@ -60,19 +61,19 @@ void main() {
   );
 
   testWidgets(
-    'a click focuses the toggle without a ring until a key is pressed',
+    'a click that opens the menu rings the toggle (the plugin focuses it from script)',
     (tester) async {
       await tester.pumpWidget(page());
       await tester.tap(find.text('Dropup'));
       await tester.pumpAndSettle();
       expect(find.text('Action'), findsOneWidget);
-      expect(ring(tester), isFalse);
+      expect(ring(tester), isTrue);
 
-      // Escape closes the menu, and (as in a browser) shows the ring.
-      await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+      // Clicking elsewhere takes the focus, and the ring, away.
+      await tester.tapAt(const Offset(300, 100));
       await tester.pumpAndSettle();
       expect(find.text('Action'), findsNothing);
-      expect(ring(tester), isTrue);
+      expect(ring(tester), isFalse);
     },
   );
 }
