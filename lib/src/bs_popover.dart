@@ -109,7 +109,7 @@ class BsPopover extends StatefulWidget {
     required this.triggerBuilder,
     this.title,
     required this.content,
-    this.placement = BsPopoverPlacement.top,
+    this.placement,
     this.flip = true,
     this.style,
     this.onOpenChanged,
@@ -132,7 +132,12 @@ class BsPopover extends StatefulWidget {
   /// `.popover-body`.
   final Widget content;
 
-  final BsPopoverPlacement placement;
+  /// Which side of the trigger the bubble opens on. Null (the default) is the
+  /// trigger's right, as `Popover.Default.placement: 'right'` is (unlike a
+  /// tooltip's `top`): [BsPopoverPlacement.end] in a left-to-right page, and
+  /// [BsPopoverPlacement.start] in a right-to-left one, where that is the same
+  /// physical side.
+  final BsPopoverPlacement? placement;
 
   /// Popper's `flip` and `preventOverflow` modifiers, which Bootstrap's
   /// popovers run by default: when the bubble wouldn't fit on screen on the
@@ -251,7 +256,12 @@ class _BsPopoverState extends State<BsPopover>
 
   /// [BsPopover.placement], unless overridden by [BsPopoverController.setPlacement].
   BsPopoverPlacement get _effectivePlacement =>
-      _controller.placement ?? widget.placement;
+      _controller.placement ??
+      widget.placement ??
+      // `placement: 'right'`: the physical right, so the start side in RTL.
+      (Directionality.of(context) == TextDirection.rtl
+          ? BsPopoverPlacement.start
+          : BsPopoverPlacement.end);
 
   @override
   Widget build(BuildContext context) {

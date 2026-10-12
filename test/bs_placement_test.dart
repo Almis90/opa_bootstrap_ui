@@ -108,6 +108,7 @@ void main() {
           Align(
             alignment: Alignment.topCenter,
             child: BsPopover(
+              placement: BsPopoverPlacement.top,
               controller: controller,
               content: const Text('Body'),
               triggerBuilder: (context, toggle, isOpen) =>
@@ -135,6 +136,7 @@ void main() {
             Align(
               alignment: Alignment.topCenter,
               child: BsPopover(
+                placement: BsPopoverPlacement.top,
                 flip: false,
                 controller: controller,
                 content: const Text('Body'),
@@ -161,6 +163,7 @@ void main() {
           Align(
             alignment: Alignment.centerLeft,
             child: BsPopover(
+              placement: BsPopoverPlacement.top,
               controller: controller,
               content: const SizedBox(width: 200, child: Text('Body')),
               triggerBuilder: (context, toggle, isOpen) =>
@@ -188,6 +191,7 @@ void main() {
             Align(
               alignment: Alignment.bottomRight,
               child: BsPopover(
+                placement: BsPopoverPlacement.top,
                 controller: controller,
                 content: BsButton(
                   onPressed: () => pressed++,

@@ -268,4 +268,31 @@ void main() {
       expect(events, ['show', 'shown']);
     },
   );
+
+  for (final textDirection in [TextDirection.ltr, TextDirection.rtl]) {
+    testWidgets("BsPopover opens on the trigger's right by default, as Bootstrap's does ($textDirection)", (tester) async {
+      final controller = BsPopoverController();
+      addTearDown(controller.dispose);
+      await tester.pumpWidget(
+        BsApp(
+          home: Directionality(
+            textDirection: textDirection,
+            child: Center(
+              child: BsPopover(
+                controller: controller,
+                content: const Text('Popover content'),
+                triggerBuilder: (context, toggle, isOpen) => const SizedBox(key: Key('trigger'), width: 80, height: 30),
+              ),
+            ),
+          ),
+        ),
+      );
+      controller.show();
+      await tester.pumpAndSettle();
+      final trigger = tester.getRect(find.byKey(const Key('trigger')));
+      final content = tester.getRect(find.text('Popover content'));
+      // The physical right in both: the start side of a right-to-left page.
+      expect(content.left, greaterThanOrEqualTo(trigger.right));
+    });
+  }
 }
