@@ -4,15 +4,13 @@ import 'bs_color_utils.dart';
 import 'bs_size.dart';
 import 'bs_variant.dart';
 
-/// A Bootstrap button's visual "variables", mirroring the CSS custom
-/// properties Bootstrap sets on `.btn` (`--bs-btn-bg`, `--bs-btn-hover-bg`,
-/// `--bs-btn-padding-x`, etc). Every field is nullable so a [BsButtonStyle]
-/// can represent a partial override, the same way a custom `.btn-*` class
-/// in Bootstrap only reassigns the variables it cares about and inherits
-/// the rest from `.btn`/`.btn-primary`/etc.
+/// Visual variables of a Bootstrap button: colors, padding, typography, border, shadows and
+/// transitions.
 ///
-/// See Bootstrap's `button-variant()`, `button-outline-variant()` and
-/// `button-size()` Sass mixins, which this class's factories replicate.
+/// Every field is nullable so that a [BsButtonStyle] can represent a partial override: an
+/// override only reassigns the fields it cares about and inherits the rest from the variant.
+/// The factories ([BsButtonStyle.solid], [BsButtonStyle.outline], [BsButtonStyle.link],
+/// [BsButtonStyle.size]) build the styles of Bootstrap's button variants and sizes.
 @immutable
 class BsButtonStyle {
   const BsButtonStyle({
@@ -52,59 +50,49 @@ class BsButtonStyle {
   final Color? activeBorderColor;
   // scss-docs-end btn-variables
 
-  /// The button's padding, per `--bs-btn-padding-x`/`--bs-btn-padding-y`.
+  /// The button's padding.
   final EdgeInsetsGeometry? padding;
 
-  /// Typographic properties, per `--bs-btn-font-family`,
-  /// `--bs-btn-font-size`, `--bs-btn-font-weight` and `--bs-btn-line-height`.
-  /// Deliberately excludes [Color] — the button's text color is always
-  /// state-dependent (see [color]/[hoverColor]/[activeColor]), so any color
-  /// set here is overridden when the button is painted.
+  /// Typographic properties: font family, size, weight and line height.
+  /// Deliberately excludes the color: the button's text color is always state-dependent
+  /// (see [color], [hoverColor] and [activeColor]), so any color set here is overridden when
+  /// the button is painted.
   final TextStyle? textStyle;
 
-  /// The button's corner rounding, per `--bs-btn-border-radius`. Usually
-  /// uniform ([BorderRadius.circular]), but [BsButtonGroup] overrides this
-  /// per-corner to square off the sides shared with a neighboring button.
+  /// The button's corner rounding. Usually uniform ([BorderRadius.circular]), but
+  /// [BsButtonGroup] overrides it per corner to square off the sides shared with a
+  /// neighboring button.
   final BorderRadiusGeometry? borderRadius;
 
   final double? borderWidth;
 
-  /// Opacity applied to the whole button when disabled, per
-  /// `$btn-disabled-opacity`.
+  /// Opacity applied to the whole button when disabled.
   final double? disabledOpacity;
 
-  /// The button's resting shadow, per `$btn-box-shadow`. Null by default:
-  /// Bootstrap only emits it when `$enable-shadows` is on, which it isn't out
-  /// of the box. Pass [defaultBoxShadow] to opt in.
+  /// The button's resting shadow. Null by default (no shadow); pass [defaultBoxShadow] to opt in.
   ///
-  /// Note a transparent button (`.btn-outline-*`) shows a drop shadow through
-  /// its fill, so opting in tints it gray.
+  /// A transparent (outline) button shows a drop shadow through its fill, so opting in
+  /// tints it gray.
   final List<BoxShadow>? boxShadow;
 
-  /// Replaces [boxShadow] while the button is pressed, per
-  /// `$btn-active-box-shadow`. Null by default for the same reason as
-  /// [boxShadow]; pass [defaultActiveShadow] to opt in.
+  /// Replaces [boxShadow] while the button is pressed. Null by default for the same
+  /// reason as [boxShadow]; pass [defaultActiveShadow] to opt in.
   final List<BoxShadow>? activeShadow;
 
-  /// The color of the ring shown around a focused button, per
-  /// `--bs-btn-focus-shadow-rgb`. Defaults to a mix of [color] and
-  /// [borderColor] when unset.
+  /// The color of the ring shown around a focused button. Defaults to a mix of [color]
+  /// and [borderColor] when unset.
   final Color? focusRingColor;
 
-  /// The width of the focus ring, per `$btn-focus-width` (`.25rem`, i.e.
-  /// `4` at the default `16px` root font size).
+  /// The width of the focus ring.
   final double? focusRingWidth;
 
-  /// The duration of color/shadow transitions, per `$btn-transition`.
+  /// The duration of color and shadow transitions.
   final Duration? transitionDuration;
 
-  /// The curve of color/shadow transitions, approximating the `ease-in-out`
-  /// CSS timing function in `$btn-transition`.
+  /// The curve of color and shadow transitions.
   final Curve? transitionCurve;
 
-  /// Layers [other]'s non-null fields over this style's, the same way a
-  /// custom `.btn-*` class reassigns only the CSS variables it needs and
-  /// leaves the rest inherited.
+  /// Layers [other]'s non-null fields over this style's, leaving the rest inherited.
   BsButtonStyle merge(BsButtonStyle? other) {
     if (other == null) return this;
     return BsButtonStyle(
@@ -131,9 +119,8 @@ class BsButtonStyle {
     );
   }
 
-  /// `$btn-box-shadow: inset 0 1px 0 rgba($white, .15), 0 1px 1px
-  /// rgba($black, .075)` — what [boxShadow] would be with `$enable-shadows`
-  /// on, using [BoxShadow.blurStyle] `inner` to replicate `inset`.
+  /// The shadow of a raised button, using [BoxShadow.blurStyle] `inner` for its inset
+  /// highlight. Not applied unless [boxShadow] is set to it.
   static const List<BoxShadow> defaultBoxShadow = [
     BoxShadow(
       color: Color(0x26FFFFFF),
@@ -143,8 +130,7 @@ class BsButtonStyle {
     BoxShadow(color: Color(0x13000000), offset: Offset(0, 1), blurRadius: 1),
   ];
 
-  /// `$btn-active-box-shadow: inset 0 3px 5px rgba($black, .125)` — what
-  /// [activeShadow] would be with `$enable-shadows` on.
+  /// The inset shadow of a pressed button. Not applied unless [activeShadow] is set to it.
   static const List<BoxShadow> defaultActiveShadow = [
     BoxShadow(
       color: Color(0x20000000),
@@ -154,32 +140,30 @@ class BsButtonStyle {
     ),
   ];
 
-  /// The default `.btn` typography, per `$btn-font-weight`/`$btn-line-height`.
+  /// The default button typography.
   static const TextStyle defaultTextStyle = TextStyle(
     fontWeight: FontWeight.normal,
     height: 1.5,
     leadingDistribution: TextLeadingDistribution.even,
   );
 
-  /// `$btn-border-width` / `$border-width` (assuming the default `16px` root
-  /// font size).
+  /// Default border width.
   static const double defaultBorderWidth = 1;
 
-  /// `$btn-disabled-opacity`.
+  /// Default opacity of a disabled button.
   static const double defaultDisabledOpacity = 0.65;
 
-  /// `$btn-focus-width` / `$focus-ring-width` (`.25rem`).
+  /// Default width of the focus ring.
   static const double defaultFocusRingWidth = 4;
 
-  /// `$btn-transition`'s duration (`.15s`).
+  /// Default duration of color and shadow transitions.
   static const Duration defaultTransitionDuration = Duration(milliseconds: 150);
 
-  /// `$btn-transition`'s timing function approximated as a Flutter [Curve].
+  /// Default curve of color and shadow transitions.
   static const Curve defaultTransitionCurve = Curves.easeInOut;
 
-  // scss-docs-start btn-hover-active-amounts — the shade/tint weights used
-  // to compute hover/active colors in [solid], matching Bootstrap's
-  // `$btn-hover-*-amount`/`$btn-active-*-amount` variables exactly.
+  // The shade and tint weights used to compute hover and active colors in
+  // [BsButtonStyle.solid].
   static const double hoverBgShadeAmount = 0.15;
   static const double hoverBgTintAmount = 0.15;
   static const double hoverBorderShadeAmount = 0.20;
@@ -190,39 +174,33 @@ class BsButtonStyle {
   static const double activeBorderTintAmount = 0.10;
   // scss-docs-end btn-hover-active-amounts
 
-  /// `$font-size-sm`/`$font-size-base`/`$font-size-lg`, at the default
-  /// `16px` root font size.
+  /// Font sizes of the small, regular and large button, in logical pixels.
   static const double fontSizeSm = 14;
   static const double fontSizeBase = 16;
   static const double fontSizeLg = 20;
 
-  /// `$btn-padding-x-sm`/`$btn-padding-x`/`$btn-padding-x-lg`, at the
-  /// default `16px` root font size.
+  /// Horizontal padding of the small, regular and large button.
   static const double paddingXSm = 8;
   static const double paddingXBase = 12;
   static const double paddingXLg = 16;
 
-  /// `$btn-padding-y-sm`/`$btn-padding-y`/`$btn-padding-y-lg`, at the
-  /// default `16px` root font size.
+  /// Vertical padding of the small, regular and large button.
   static const double paddingYSm = 4;
   static const double paddingYBase = 6;
   static const double paddingYLg = 8;
 
-  /// `$border-radius-sm`/`$border-radius`/`$border-radius-lg`, at the
-  /// default `16px` root font size.
+  /// Corner radius of the small, regular and large button.
   static const double borderRadiusSm = 4;
   static const double borderRadiusBase = 6;
   static const double borderRadiusLg = 8;
 
-  /// Replicates Bootstrap's `button-variant($background, $border)` mixin:
-  /// a solid, filled button in [background], with hover/active shades
-  /// computed from [BsColorUtils.shade]/[BsColorUtils.tint] depending on
-  /// whether [background] needs light or dark text.
+  /// A solid, filled button in [background], with hover and active shades computed from
+  /// [BsColorUtils.shade] or [BsColorUtils.tint] depending on whether [background] needs light
+  /// or dark text.
   ///
-  /// Bootstrap's `$theme-colors` loop explicitly forces the *opposite* of
-  /// the automatic light/dark choice for the `light` and `dark` variants
-  /// (so `light` still visibly darkens on hover, and `dark` still visibly
-  /// lightens); pass [forceTint] to replicate that override.
+  /// The light and dark variants force the opposite of that automatic choice, so that the
+  /// light button still visibly darkens on hover and the dark one still visibly lightens;
+  /// pass [forceTint] to reproduce that.
   factory BsButtonStyle.solid(
     Color background, {
     Color? borderColor,
@@ -275,9 +253,8 @@ class BsButtonStyle {
     );
   }
 
-  /// Replicates Bootstrap's `button-outline-variant($color)` mixin: a
-  /// transparent button with a colored border/text that fills solid with
-  /// [color] on hover/active.
+  /// A transparent button with a colored border and text that fills solid with [color] on
+  /// hover and while pressed.
   factory BsButtonStyle.outline(Color color) {
     return BsButtonStyle(
       color: color,
@@ -299,9 +276,8 @@ class BsButtonStyle {
     );
   }
 
-  /// `.btn-link`: a link-colored, underlined button with no background or
-  /// border, whose text takes `--bs-link-hover-color` on hover and while
-  /// pressed.
+  /// A link-colored, underlined button with no background or border, whose text takes the link
+  /// hover color on hover and while pressed.
   factory BsButtonStyle.link({
     required Color color,
     required Color hoverColor,
@@ -327,9 +303,8 @@ class BsButtonStyle {
     );
   }
 
-  /// Replicates Bootstrap's `button-size()` mixin, using the
-  /// `$btn-padding-*`/`$btn-font-size-*`/`$btn-border-radius-*` values
-  /// (assuming the default `1rem == 16px` root font size).
+  /// Padding, font size and corner radius of a button of [size] (assuming a 16 logical pixel
+  /// base font size).
   factory BsButtonStyle.size(BsSize size) {
     switch (size) {
       case BsSize.sm:
@@ -362,9 +337,8 @@ class BsButtonStyle {
     }
   }
 
-  /// The default `.btn-{variant}`/`.btn-outline-{variant}` style for
-  /// [variant] at [size], replicating Bootstrap's `$theme-colors` Sass loop
-  /// (`scss/_buttons.scss`), including its explicit light/dark overrides.
+  /// The default style of a button of [variant] at [size], solid or outline, including the
+  /// light and dark variants' hover overrides.
   factory BsButtonStyle.forVariant(
     BsVariant variant, {
     bool outline = false,

@@ -16,9 +16,9 @@ import 'bs_css_line_height.dart';
 import 'bs_dashed_border.dart';
 import 'bs_decorated_box.dart';
 
-/// `fs-1`…`fs-6`: Bootstrap's responsive font sizes. Below the `xl` breakpoint
-/// the larger ones scale with the viewport (`calc(1.375rem + 1.5vw)` for
-/// `fs-1`…), from `xl` up they are fixed; [sizeFor] resolves either.
+/// Bootstrap's six responsive font sizes, from the largest (1) to the smallest (6). Below the
+/// `xl` breakpoint the larger ones scale with the viewport; from `xl` up they are fixed.
+/// [sizeFor] resolves either.
 enum BsFs implements BsResponsive<BsFs> {
   fs1(2.5, 1.375, 0.015),
   fs2(2, 1.325, 0.009),
@@ -33,7 +33,7 @@ enum BsFs implements BsResponsive<BsFs> {
   final double? _baseRem;
   final double? _vw;
 
-  /// The CSS class suffix used by Bootstrap, e.g. `4` in `fs-4`.
+  /// Bootstrap's name for this value, as used in its utility names.
   String get className => name.substring(2);
 
   /// The font size in logical pixels at a viewport [width] (`16px` root size).
@@ -53,7 +53,7 @@ enum BsTextColor {
   /// `text-primary`.
   primary,
 
-  /// `text-secondary`: `--bs-secondary`, `#6c757d` in both themes.
+  /// The secondary color, `#6c757d` in both themes.
   secondary,
   success,
   info,
@@ -80,8 +80,7 @@ enum BsTextColor {
   /// `text-body-emphasis` (also what `link-body-emphasis` uses).
   bodyEmphasis;
 
-  /// The CSS class suffix used by Bootstrap, e.g. `body-secondary` in
-  /// `text-body-secondary`.
+  /// Bootstrap's name for this value, as used in its utility names.
   String get className => switch (this) {
     bodySecondary => 'body-secondary',
     bodyTertiary => 'body-tertiary',
@@ -131,8 +130,7 @@ enum BsBg {
   bodyTertiary,
   transparent;
 
-  /// The CSS class suffix used by Bootstrap, e.g. `body-tertiary` in
-  /// `bg-body-tertiary`.
+  /// Bootstrap's name for this value, as used in its utility names.
   String get className => switch (this) {
     bodySecondary => 'body-secondary',
     bodyTertiary => 'body-tertiary',
@@ -164,25 +162,25 @@ enum BsRounded {
   /// `rounded-0`.
   r0(0),
 
-  /// `rounded-1` (`$border-radius-sm`, `.25rem`).
+  /// Small corner radius (4).
   r1(4),
 
-  /// `rounded-2` (`$border-radius`, `.375rem`).
+  /// Default corner radius (6).
   r2(6),
 
-  /// `rounded-3` (`$border-radius-lg`, `.5rem`).
+  /// Large corner radius (8).
   r3(8),
 
-  /// `rounded-4` (`$border-radius-xl`, `1rem`).
+  /// Extra large corner radius (16).
   r4(16),
 
-  /// `rounded-5` (`$border-radius-xxl`, `2rem`).
+  /// Double extra large corner radius (32).
   r5(32),
 
   /// `rounded-circle`: fully rounded (a circle on a square box).
   circle(9999),
 
-  /// `rounded-pill` (`$border-radius-pill`, `50rem`).
+  /// Fully rounded ends.
   pill(800);
 
   const BsRounded(this.radius);
@@ -190,7 +188,7 @@ enum BsRounded {
   /// The corner radius in logical pixels.
   final double radius;
 
-  /// The CSS class suffix used by Bootstrap, e.g. `3` in `rounded-3`.
+  /// Bootstrap's name for this value, as used in its utility names.
   String get className =>
       this == circle || this == pill ? name : name.substring(1);
 }
@@ -201,7 +199,7 @@ enum BsTextAlign implements BsResponsive<BsTextAlign> {
   center,
   end;
 
-  /// The CSS class suffix used by Bootstrap, e.g. `end` in `text-end`.
+  /// Bootstrap's name for this value, as used in its utility names.
   String get className => name;
 
   @override
@@ -237,7 +235,7 @@ enum BsOpacity {
 
   final double value;
 
-  /// The CSS class suffix, e.g. `50` in `opacity-50`.
+  /// Bootstrap's name for this value, as used in its utility names.
   String get className => name.substring(1);
 }
 
@@ -268,7 +266,7 @@ enum BsFw {
 
   final FontWeight weight;
 
-  /// The CSS class suffix used by Bootstrap, e.g. `bold` in `fw-bold`.
+  /// Bootstrap's name for this value, as used in its utility names.
   String get className => name;
 }
 
@@ -277,13 +275,13 @@ enum BsLh {
   /// `lh-1`.
   lh1(1),
 
-  /// `lh-sm` (`$line-height-sm`).
+  /// Small line height (1.25).
   sm(1.25),
 
-  /// `lh-base` (`$line-height-base`).
+  /// Base line height (1.5).
   base(1.5),
 
-  /// `lh-lg` (`$line-height-lg`).
+  /// Large line height (2).
   lg(2);
 
   const BsLh(this.height);
@@ -291,7 +289,7 @@ enum BsLh {
   /// The unitless line-height multiplier.
   final double height;
 
-  /// The CSS class suffix used by Bootstrap, e.g. `1` in `lh-1`.
+  /// Bootstrap's name for this value, as used in its utility names.
   String get className => switch (this) {
     lh1 => '1',
     _ => name,
@@ -304,20 +302,20 @@ enum BsShadow {
   /// `shadow-none`.
   none(<BoxShadow>[]),
 
-  /// `shadow-sm` (`$box-shadow-sm`).
+  /// Small shadow.
   sm(BsShadows.shadowSm),
 
-  /// `shadow` (`$box-shadow`).
+  /// Default shadow.
   normal(BsShadows.shadow),
 
-  /// `shadow-lg` (`$box-shadow-lg`).
+  /// Large shadow.
   lg(BsShadows.shadowLg);
 
   const BsShadow(this.shadows);
 
   final List<BoxShadow> shadows;
 
-  /// The CSS class Bootstrap uses, e.g. `shadow-lg`.
+  /// Bootstrap's name for this value, as used in its utility names.
   String get className => switch (this) {
     none => 'shadow-none',
     sm => 'shadow-sm',
@@ -331,23 +329,21 @@ enum BsShadow {
 /// all four sides can be dashed.)
 enum BsBorderStyle { solid, dashed }
 
-/// A block element with Bootstrap's utility classes on it — the `<div
-/// class="py-3 mb-4 border-bottom text-bg-dark">` of a Bootstrap page.
+/// A block container with Bootstrap's utilities applied to it: spacing, borders, background,
+/// text color, font size, alignment and width.
 ///
-/// Prop names are the classes' own: spacing is `m`/`p` with `x`/`y`/`t`/`e`/
-/// `b`/`s` (`mx`, `pb`, `ms`…, the `e`nd and `s`tart being logical), borders
-/// `border`/`borderTop`/`borderEnd`/`borderBottom`/`borderStart`, then [bg],
-/// [textBg], [textColor], [fs], [textAlign] and [w]. Spacing, [fs], [textAlign]
-/// and [w] take a [BsResponsive] — a plain value, or a [BsResponsiveValue]
-/// for `mb-3 mb-md-0` — resolved against the viewport's breakpoint.
+/// Prop names follow Bootstrap's: spacing is `m` or `p` with `x`, `y`, `t`, `e`, `b` or `s`
+/// (`mx`, `pb`, `ms`…, where `e`nd and `s`tart are logical), borders are `border`, `borderTop`,
+/// `borderEnd`, `borderBottom` and `borderStart`, followed by [bg], [textBg], [textColor],
+/// [fs], [textAlign] and [w]. Spacing, [fs], [textAlign] and [w] take a [BsResponsive]: a plain
+/// value, or a [BsResponsiveValue] that changes with the viewport's breakpoint.
 ///
-/// Where spacing props overlap the most specific wins, as in the CSS: `pt`
-/// over `py` over `p` (and `ps`/`pe` over `px` over `p`), likewise for margins.
-/// A margin of [BsSpacing.auto] on the inline axis centres (`mx-auto`) or
-/// aligns the box to one side (`ms-auto`, `me-auto`) within its parent.
+/// Where spacing props overlap, the most specific wins: `pt` over `py` over `p` (and `ps` or
+/// `pe` over `px` over `p`), likewise for margins. A margin of [BsSpacing.auto] on the inline
+/// axis centers the box, or aligns it to one side with `ms` or `me`, within its parent.
 ///
-/// Margins and padding sum rather than collapse. For the margins of a child of
-/// a [BsFlex], use [BsFlexItem] instead.
+/// Margins and padding sum rather than collapse. For the margins of a child of a [BsFlex],
+/// use [BsFlexItem] instead.
 class BsBox extends StatelessWidget {
   const BsBox({
     super.key,
@@ -463,9 +459,8 @@ class BsBox extends StatelessWidget {
   /// `shadow`, `shadow-sm`, `shadow-lg`.
   final BsShadow? shadow;
 
-  /// `d-inline-block`: as wide as its content rather than its parent, placed
-  /// by the inherited `text-*` alignment as inline content is (an `<img
-  /// class="border">` in a `text-center` block).
+  /// Sizes the box to its content rather than its parent, and places it by the inherited text
+  /// alignment as inline content is (for example a bordered image in a centered block).
   final bool inlineBlock;
 
   /// `opacity-*`: fades the whole box, content included.
@@ -684,12 +679,12 @@ class BsBox extends StatelessWidget {
   }
 }
 
-/// Places inline [child] content at the start, centre or end of a block that
-/// has a width to place it in, and is as wide as the content otherwise.
+/// Places inline [child] content at the start, center or end of a block that has a width to
+/// place it in, and is as wide as the content otherwise.
 ///
-/// A plain [Align] always fills the width it is allowed, which would make a
-/// `text-end` box a flex item as wide as its whole line (instead of shrinking to
-/// its content, as CSS flex items do) and so defeat `justify-content-center`.
+/// A plain [Align] always fills the width it is allowed, which would make an end-aligned box
+/// a flex item as wide as its whole line, instead of shrinking to its content, and so defeat
+/// center justification.
 class _TextAligned extends SingleChildRenderObjectWidget {
   const _TextAligned({required this.alignment, required super.child});
 

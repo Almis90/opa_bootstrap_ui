@@ -17,8 +17,7 @@ enum BsJustify implements BsResponsive<BsJustify> {
   around,
   evenly;
 
-  /// The CSS class suffix used by Bootstrap, e.g. `between` in
-  /// `justify-content-between`.
+  /// Bootstrap's name for this value, as used in its utility names.
   String get className => name;
 
   @override
@@ -33,8 +32,7 @@ enum BsAlign implements BsResponsive<BsAlign> {
   center,
   stretch;
 
-  /// The CSS class suffix used by Bootstrap, e.g. `center` in
-  /// `align-items-center`.
+  /// Bootstrap's name for this value, as used in its utility names.
   String get className => name;
 
   @override
@@ -54,8 +52,7 @@ enum BsFlexDirection implements BsResponsive<BsFlexDirection> {
   column,
   columnReverse;
 
-  /// The CSS class suffix used by Bootstrap, e.g. `row-reverse` in
-  /// `flex-row-reverse`.
+  /// Bootstrap's name for this value, as used in its utility names.
   String get className => switch (this) {
     rowReverse => 'row-reverse',
     columnReverse => 'column-reverse',
@@ -68,12 +65,10 @@ enum BsFlexDirection implements BsResponsive<BsFlexDirection> {
   BsFlexDirection resolve(BsBreakpoint breakpoint) => this;
 }
 
-/// `.col-*`: a [BsFlexItem]'s width as a share of a 12-column row —
-/// `BsCol(12)` is `col-12` (a full line), `BsCol(3)` is `col-3` (25%), and
-/// [auto] is `col-auto` (the item's natural width).
+/// A [BsFlexItem]'s width as a share of a 12-column row: `BsCol(12)` is a full line,
+/// `BsCol(3)` a quarter of it, and [auto] the item's natural width.
 ///
-/// Used on its own (outside a `.row`), as Bootstrap's header examples do: it
-/// sets the item's width and doesn't let it shrink.
+/// Used on its own (outside a [BsRow]), it sets the item's width and does not let it shrink.
 class BsCol implements BsResponsive<BsCol> {
   const BsCol(int columns)
     : columns = columns,
@@ -87,7 +82,7 @@ class BsCol implements BsResponsive<BsCol> {
   /// `col-auto`.
   static const BsCol auto = BsCol._auto();
 
-  /// `col`: equal-width columns that share the line (`flex: 1 0 0%`).
+  /// Equal-width columns that share the line.
   static const BsCol equal = BsCol._fill();
 
   /// Whether this is [equal].
@@ -117,18 +112,15 @@ enum BsWidth implements BsResponsive<BsWidth> {
   BsWidth resolve(BsBreakpoint breakpoint) => this;
 }
 
-/// `d-flex`: a row of items laid out with CSS flexbox's rules — each item keeps
-/// its natural width (or its [BsCol]/[BsWidth]), lines wrap if [wrap] is set,
-/// and free space goes to auto margins, then to [justifyContent].
+/// A row of items laid out with flexbox's rules: each item keeps its natural width (or its
+/// [BsCol] or [BsWidth]), lines wrap if [wrap] is set, and free space goes to auto margins,
+/// then to [justifyContent].
 ///
-/// Children may be wrapped in a [BsFlexItem] for the item-level utilities
-/// (`me-auto`, `col-12`, `mb-3`…); anything else is an item with none.
-/// Responsive props (anything taking a [BsResponsive]) are resolved against the
-/// *viewport's* breakpoint, as Bootstrap's media queries are.
+/// Children may be wrapped in a [BsFlexItem] for item-level utilities (margins, column width);
+/// anything else is an item with none. Responsive props (anything taking a [BsResponsive]) are
+/// resolved against the viewport's breakpoint, as Bootstrap's media queries are.
 ///
 /// ```dart
-/// // <div class="d-flex flex-wrap align-items-center justify-content-center
-/// //             justify-content-lg-start">
 /// BsFlex(
 ///   wrap: true,
 ///   alignItems: BsAlign.center,
@@ -152,9 +144,8 @@ class BsFlex extends StatelessWidget {
        _rowCols = null,
        _row = false;
 
-  /// A `.row`'s flex: items are `width: 100%` (unless a `col-*` says
-  /// otherwise), padded by half the horizontal gutter on each side, and
-  /// separated vertically by the vertical gutter.
+  /// The flex of a row: items are full width (unless a [BsCol] says otherwise), padded by half
+  /// the horizontal gutter on each side, and separated vertically by the vertical gutter.
   const BsFlex._row({
     required this.children,
     required double gutterX,
@@ -191,7 +182,7 @@ class BsFlex extends StatelessWidget {
   /// `justify-content-*`. Defaults to `start`.
   final BsResponsive<BsJustify>? justifyContent;
 
-  /// `align-items-*`. Defaults to `stretch`, as in CSS.
+  /// How items sit on the cross axis. Defaults to stretch.
   final BsResponsive<BsAlign>? alignItems;
 
   /// `gap-*`: the space between items, and between wrapped lines.
@@ -222,12 +213,11 @@ class BsFlex extends StatelessWidget {
   }
 }
 
-/// The item-level utilities of a [BsFlex] child: its margins (`m-*`, `me-*`,
-/// `mb-*`…, including `auto`), width (`col-*`, `w-*`), and grow/shrink/align
-/// behaviour.
+/// The item-level utilities of a [BsFlex] child: its margins (including auto), its width
+/// ([BsCol] or [BsWidth]) and its grow, shrink and align behavior.
 ///
-/// Where margin props overlap the most specific wins, as in Bootstrap's CSS:
-/// `mt` over `my` over `m`, and `ms`/`me` over `mx` over `m`.
+/// Where margin props overlap, the most specific wins: `mt` over `my` over `m`, and
+/// `ms` or `me` over `mx` over `m`.
 class BsFlexItem extends ParentDataWidget<_BsFlexParentData> {
   const BsFlexItem({
     super.key,
@@ -291,15 +281,15 @@ class BsFlexItem extends ParentDataWidget<_BsFlexParentData> {
   /// `align-self-*`.
   final BsResponsive<BsAlign>? alignSelf;
 
-  /// A `max-width` in logical pixels (an inline style or custom CSS: Bootstrap
-  /// has no utility for it, only the `mw-100` of 100%).
+  /// A maximum width in logical pixels. Bootstrap has no utility for it other than a
+  /// full-width cap.
   final double? maxWidth;
 
   /// `flex-grow-1`: take a share of the line's free space.
   final bool flexGrow;
 
-  /// `flex-shrink-0` (false) / `flex-shrink-1` (true). Null is CSS's default:
-  /// shrinks, unless a [col] was given.
+  /// Whether the item shrinks when the line is too long. Null shrinks, unless a [col] was
+  /// given.
   final bool? flexShrink;
 
   @override
@@ -640,7 +630,7 @@ class _RenderBsFlex extends RenderBox
       final col = d.col?.resolve(_breakpoint);
       final w = d.w?.resolve(_breakpoint);
       if (col != null && col.fill) {
-        // `.col`: `flex: 1 0 0%`.
+        // // Equal-width column: grows from a zero basis and does not shrink.
         item.fraction = 0;
         item.shrink = false;
         item.growEqual = true;
@@ -648,11 +638,11 @@ class _RenderBsFlex extends RenderBox
         item.fraction = col.columns! / 12;
         item.shrink = d.flexShrink ?? false;
       } else if (_row && _rowCols != null && col == null && w == null) {
-        // `.row-cols-*`: each child is 1/n of the line.
+        // // Each child is 1/n of the line.
         item.fraction = 1 / _rowCols!;
         item.shrink = d.flexShrink ?? false;
       } else if (_row && col == null && w == null) {
-        // `.row > *`: width 100% and no shrinking, unless a col-* says otherwise.
+        // // Full width and no shrinking, unless a column width says otherwise.
         item.fraction = 1;
         item.shrink = d.flexShrink ?? false;
       } else {
@@ -663,7 +653,7 @@ class _RenderBsFlex extends RenderBox
       item.maxWidth = d.maxWidth ?? double.infinity;
       item.alignSelf = d.alignSelf?.resolve(_breakpoint);
       item.mt += _gutterY;
-      // `.row > *` pads by half the gutter; p-* utilities override that.
+      // // A row pads its items by half the gutter; padding props override that.
       final padStart = pick([d.ps, d.px, d.p])?.size ?? _gutterX / 2;
       final padEnd = pick([d.pe, d.px, d.p])?.size ?? _gutterX / 2;
       final rtl = _textDirection == TextDirection.rtl;
@@ -785,13 +775,11 @@ class _RenderBsFlex extends RenderBox
           _gap * (n - 1);
 
       if (bounded && used() > maxW + 0.01) {
-        // flex-shrink: take the overflow from the shrinkable items, in
-        // proportion to their widths — but never below an item's content
-        // (`min-width: auto`: its min-content width), freezing the items that
-        // hit that and sharing what is left among the rest.
-        // (Only for content that can wrap, whose min-content is less than its
-        // width: a fixed-size box has no content to protect, and a `text-nowrap`
-        // item says so with `flexShrink: false`.)
+        // // Shrinking: take the overflow from the shrinkable items in proportion to their widths,
+        // // but never below an item's content (its minimum content width), freezing the items that
+        // // hit that and sharing what is left among the rest.
+        // // Only content that can wrap has a minimum content width below its width: a fixed-size box
+        // // has no content to protect, and a no-wrap item opts out with `flexShrink: false`.
         final floors = <_Item, double>{
           for (final item in line.items)
             if (item.shrink)
@@ -919,18 +907,16 @@ class _RenderBsFlex extends RenderBox
       line.crossOffset = y;
       y += line.crossSize + (i == lines.length - 1 ? 0 : _gap);
     }
-    // A `d-flex` in normal flow fills its container, but as a flex item itself
-    // (`<a class="d-flex">` inside a `d-flex` header) its width is the
-    // content's — so a BsFlex nested in another (through any transparent
-    // wrappers such as a link) shrink-wraps.
+    // // A flex container in normal flow fills its parent, but as a flex item itself (for example
+    // // a link inside a header row) its width is its content's, so a [BsFlex] nested in another
+    // // through any transparent wrappers shrink-wraps.
     final width = bounded && !_inline && !_isFlexItem()
         ? maxW
         : math.min(contentWidth, maxW);
     final size = constraints.constrain(Size(width, y));
-    // `align-content: normal` (stretch): a container given more height than its
-    // lines need — e.g. a flex item stretched by its own parent — shares the
-    // extra among them, which for the usual single line makes the line as tall
-    // as the container, so `align-items: center` centres in it.
+    // // Stretch: a container given more height than its lines need (for example a flex item
+    // // stretched by its own parent) shares the extra among them. For the usual single line
+    // // that makes the line as tall as the container, so centered items center within it.
     final extra = size.height - y;
     if (extra > 0.01) {
       final share = extra / lines.length;
@@ -975,10 +961,9 @@ class _RenderBsFlex extends RenderBox
     return size;
   }
 
-  /// Masonry's layout (`data-masonry='{"percentPosition": true}'` on a `.row`):
-  /// the first item's width is the column width, the row holds as many such
-  /// columns as fit, and each item goes — in order — into the column (or
-  /// run of columns) whose bottom is highest.
+  /// Masonry layout: the first item's width is the column width, the row holds as many such
+  /// columns as fit, and each item goes, in order, into the column (or run of columns) whose
+  /// bottom is highest.
   Size _computeMasonry(BoxConstraints constraints, {required bool dry}) {
     final bounded = constraints.hasBoundedWidth;
     final maxW = bounded ? constraints.maxWidth : 0.0;
@@ -1084,8 +1069,7 @@ class _RenderBsFlex extends RenderBox
     if (!dry) {
       for (final item in items) {
         final align = item.alignSelf ?? _align;
-        // (An item wider than the container still centres: its overflow is
-        // shared by both sides, as in CSS's default `unsafe` alignment.)
+        // // An item wider than the container still centers: its overflow is shared by both sides.
         final free = size.width - item.outerWidth;
         var x = item.ms;
         if (item.autoStart && item.autoEnd) {
@@ -1181,19 +1165,17 @@ class _RenderBsFlex extends RenderBox
       defaultHitTestChildren(result, position: position);
 }
 
-/// `.row` (with its `g-*`/`gx-*`/`gy-*` gutters) — a wrapping [BsFlex] whose
-/// items are `col-*` wide ([BsFlexItem.col]), padded by half the horizontal
-/// gutter on each side, and spaced by the vertical one. The row itself is
-/// pulled out by half the gutter on both sides (`margin-inline: -½gutter`), so
-/// the first and last columns' content lines up with the row's parent.
+/// A row of columns with gutters: a wrapping [BsFlex] whose items are [BsFlexItem.col]
+/// wide, padded by half the horizontal gutter on each side and spaced by the vertical one.
+/// The row itself is pulled out by half the gutter on both sides, so that the first and last
+/// columns' content lines up with the row's parent.
 ///
-/// An item with no `col` is `width: 100%`, as in `.row > *`. The row's own
-/// element can carry utilities too ([p], [border], [rounded], [shadow]…).
+/// An item with no `col` is full width. The row itself can carry utilities too ([p],
+/// [border], [rounded], [shadow]…).
 ///
 /// ```dart
-/// // <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
 /// BsRow(
-///   direction: BsFlexDirection.rowReverse (from lg),
+///   direction: BsResponsiveValue(lg: BsFlexDirection.rowReverse),
 ///   alignItems: BsAlign.center,
 ///   g: BsSpacing.s5,
 ///   py: BsSpacing.s5,
@@ -1236,8 +1218,7 @@ class BsRow extends StatelessWidget {
   /// of in lines.
   final bool masonry;
 
-  /// `g-*`: both gutters. The default is `$grid-gutter-width` (`g-4`, 1.5rem)
-  /// horizontally and none vertically.
+  /// Both gutters. The default is the grid gutter width horizontally and none vertically.
   final BsResponsive<BsSpacing>? g;
 
   /// `gx-*` (wins over [g]).
@@ -1266,8 +1247,7 @@ class BsRow extends StatelessWidget {
   /// `border`.
   final bool border;
 
-  /// `border-top` (`<footer class="row … border-top">`: the line spans the row
-  /// and its negative margins).
+  /// A top border; the line spans the row and its negative margins.
   final bool borderTop;
 
   /// `rounded-*`.
@@ -1313,7 +1293,8 @@ class BsRow extends StatelessWidget {
   }
 }
 
-/// `margin: calc(-1 * var(--bs-gutter-y)) calc(-.5 * var(--bs-gutter-x)) 0`.
+/// Negative margins that pull a row out by half the horizontal gutter on both sides, and by
+/// the vertical gutter at the top.
 class _RowMargin extends SingleChildRenderObjectWidget {
   const _RowMargin({
     required this.gutterX,
