@@ -63,9 +63,9 @@ class BsFocusableBuilder extends StatefulWidget {
   /// Forwarded to the underlying [Focus] widget.
   final bool autofocus;
 
-  /// When false, focus changes are ignored and [builder] is always called
-  /// with `focused: false` — matching how a disabled `Bs*` item already
-  /// ignored focus before this was extracted.
+  /// When false the control can't take focus at all (a click or Tab goes past
+  /// it, as for a `disabled` element) and [builder] is always called with
+  /// `focused: false`.
   final bool enabled;
 
   /// `:focus-visible` rather than `:focus`: while the user is pointing, a
@@ -113,7 +113,10 @@ class _BsFocusableBuilderState extends State<BsFocusableBuilder> {
   Widget build(BuildContext context) {
     return Focus(
       focusNode: widget.focusNode,
-      autofocus: widget.autofocus,
+      autofocus: widget.autofocus && widget.enabled,
+      // A `disabled` control can neither be clicked into nor tabbed to.
+      canRequestFocus: widget.enabled,
+      skipTraversal: !widget.enabled,
       onFocusChange: widget.enabled ? _setFocused : null,
       child: widget.builder(
         context,

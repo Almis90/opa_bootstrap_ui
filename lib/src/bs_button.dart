@@ -166,6 +166,7 @@ class _BsButtonState extends State<BsButton> {
       child: BsFocusableBuilder(
         focusNode: widget.focusNode,
         autofocus: widget.autofocus,
+        enabled: enabled,
         // `.btn:focus-visible`
         focusVisibleOnly: true,
         builder: (context, focused) {

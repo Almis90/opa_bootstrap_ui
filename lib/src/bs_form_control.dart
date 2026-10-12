@@ -244,10 +244,12 @@ class _BsFormControlState extends State<BsFormControl>
     final validated = widget.valid != null;
     final effectivePadding = !validated
         ? padding
-        : padding.resolve(Directionality.of(context)).copyWith(
-            // `padding-right: calc(1.5em + .75rem)` for the feedback icon
-            right: fontSize * 1.5 + 12,
-          );
+        : padding
+              .resolve(Directionality.of(context))
+              .copyWith(
+                // `padding-right: calc(1.5em + .75rem)` for the feedback icon
+                right: fontSize * 1.5 + 12,
+              );
     final box = BsDecoratedContainer(
       decoration: BoxDecoration(
         color: widget.enabled
@@ -293,43 +295,47 @@ class _BsFormControlState extends State<BsFormControl>
                     BsFormStyle.defaultInputPlaceholderColor,
               ),
             ),
-          EditableText(
-            controller: _controller,
-            focusNode: _focusNode,
-            autofocus: widget.autofocus,
-            obscureText: widget.obscureText,
-            readOnly: widget.readOnly || !widget.enabled,
-            maxLines: widget.maxLines,
-            keyboardType:
-                widget.keyboardType ??
-                (widget.maxLines == 1
-                    ? TextInputType.text
-                    : TextInputType.multiline),
-            style: TextStyle(
-              fontSize: fontSize,
-              fontWeight:
-                  style.inputFontWeight ?? BsFormStyle.defaultInputFontWeight,
-              color: style.inputColor ?? BsFormStyle.defaultInputColor,
-              height:
-                  style.inputLineHeight ?? BsFormStyle.defaultInputLineHeight,
-              leadingDistribution: TextLeadingDistribution.even,
+          // (a `disabled` input can't be clicked into or tabbed to)
+          ExcludeFocus(
+            excluding: !widget.enabled,
+            child: EditableText(
+              controller: _controller,
+              focusNode: _focusNode,
+              autofocus: widget.autofocus,
+              obscureText: widget.obscureText,
+              readOnly: widget.readOnly || !widget.enabled,
+              maxLines: widget.maxLines,
+              keyboardType:
+                  widget.keyboardType ??
+                  (widget.maxLines == 1
+                      ? TextInputType.text
+                      : TextInputType.multiline),
+              style: TextStyle(
+                fontSize: fontSize,
+                fontWeight:
+                    style.inputFontWeight ?? BsFormStyle.defaultInputFontWeight,
+                color: style.inputColor ?? BsFormStyle.defaultInputColor,
+                height:
+                    style.inputLineHeight ?? BsFormStyle.defaultInputLineHeight,
+                leadingDistribution: TextLeadingDistribution.even,
+              ),
+              cursorColor: style.inputColor ?? BsFormStyle.defaultInputColor,
+              // Browsers draw a 1px caret the height of the font's ascent +
+              // descent (~1.17em for Roboto), not Flutter's 2px full-line-height
+              // one — which, in a 1.5 line box, is also visibly taller.
+              cursorWidth: 1,
+              cursorHeight: fontSize * 1.17,
+              backgroundCursorColor: BsColors.gray400,
+              selectionColor:
+                  (style.inputFocusBorderColor ??
+                          BsFormStyle.defaultInputFocusBorderColor)
+                      .withValues(alpha: 0.4),
+              onChanged: (value) {
+                widget.onChanged?.call(value);
+                setState(() {});
+              },
+              onSubmitted: widget.onSubmitted,
             ),
-            cursorColor: style.inputColor ?? BsFormStyle.defaultInputColor,
-            // Browsers draw a 1px caret the height of the font's ascent +
-            // descent (~1.17em for Roboto), not Flutter's 2px full-line-height
-            // one — which, in a 1.5 line box, is also visibly taller.
-            cursorWidth: 1,
-            cursorHeight: fontSize * 1.17,
-            backgroundCursorColor: BsColors.gray400,
-            selectionColor:
-                (style.inputFocusBorderColor ??
-                        BsFormStyle.defaultInputFocusBorderColor)
-                    .withValues(alpha: 0.4),
-            onChanged: (value) {
-              widget.onChanged?.call(value);
-              setState(() {});
-            },
-            onSubmitted: widget.onSubmitted,
           ),
         ],
       ),
