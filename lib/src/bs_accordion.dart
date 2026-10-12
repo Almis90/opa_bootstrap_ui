@@ -24,11 +24,10 @@ class BsAccordionController extends ChangeNotifier {
   final Set<int> _expanded;
   Set<int> _detached;
 
-  /// Which indices are "detached" — mirroring Bootstrap's `.accordion-collapse`
-  /// omitting `data-bs-parent`: a detached item toggles independently and
-  /// never collapses, or is collapsed by, any other item. [BsAccordion] keeps
-  /// this in sync with [BsAccordionItem.detached] on every build; set it
-  /// yourself only if you're driving the controller without a [BsAccordion].
+  /// Which indices are detached: a detached item toggles independently and never collapses, or
+  /// is collapsed by, any other item. [BsAccordion] keeps this in sync with
+  /// [BsAccordionItem.detached] on every build; set it yourself only if you are driving the
+  /// controller without a [BsAccordion].
   Set<int> get detachedIndices => Set.unmodifiable(_detached);
   set detachedIndices(Set<int> value) {
     _detached = {...value};
@@ -63,10 +62,9 @@ class BsAccordionController extends ChangeNotifier {
 
   bool isExpanded(int index) => _expanded.contains(index);
 
-  /// Expands [index]. If [index] is detached (see [detachedIndices]), every
-  /// other item is left untouched. Otherwise, every other *non-detached*
-  /// item collapses first (Bootstrap's `data-bs-parent` grouping) while any
-  /// detached items stay exactly as they were.
+  /// Expands [index]. If [index] is detached (see [detachedIndices]), every other item is left
+  /// untouched. Otherwise, every other non-detached item collapses first while any detached
+  /// items stay exactly as they were.
   void expand(int index) {
     if (_detached.contains(index)) {
       if (_expanded.contains(index)) return;
@@ -106,32 +104,21 @@ class BsAccordionItem {
   /// The content revealed when this item is expanded.
   final Widget body;
 
-  /// Mirrors omitting `data-bs-parent` on this item's `.accordion-collapse`
-  /// in Bootstrap: when true, this item expands/collapses independently and
-  /// never affects, or is affected by, the other items in the same
-  /// [BsAccordion] — even if those items are grouped with each other. A
-  /// "detached" item is simply one that opted out of the accordion's
-  /// single-open grouping; set it on every item to reproduce Bootstrap's
-  /// "always open" example, or on just one to make that item independent
-  /// while the rest still behave as a single-open group.
+  /// Opts this item out of the accordion's single-open grouping: it expands and collapses
+  /// independently and never affects, or is affected by, the other items in the same
+  /// [BsAccordion], even if those are grouped with each other. Set it on every item to let all
+  /// stay open, or on just one to make that item independent while the rest still behave as a
+  /// single-open group.
   final bool detached;
 }
 
-/// A Bootstrap accordion (`.accordion`): a vertical stack of collapsible
-/// [BsAccordionItem]s.
+/// A Bootstrap accordion: a vertical stack of collapsible [BsAccordionItem]s, with an animated
+/// chevron and an animated height reveal for each body.
 ///
-/// Mirrors `scss/_accordion.scss`'s borders/radius/colors, and — inspired by
-/// Material's `ExpansionPanelList`/`ExpansionTile` — an animated chevron and
-/// an animated height reveal for the body instead of Bootstrap's CSS
-/// `collapse` transition.
-///
-/// By default all items are grouped into a single-open set (Bootstrap's
-/// `data-bs-parent` behavior); set [BsAccordionItem.detached] on any item
-/// to exclude it from that grouping — it then expands/collapses on its own,
-/// regardless of what the other items do. Pass [allDetached] as a shorthand
-/// for detaching every item at once, reproducing Bootstrap's "always open"
-/// example. [flush] renders the edge-to-edge `.accordion-flush` variant (no
-/// outer border or rounded corners).
+/// By default all items are grouped into a single-open set; set [BsAccordionItem.detached] on
+/// any item to exclude it from that grouping, so that it expands and collapses on its own.
+/// Pass [allDetached] as a shorthand for detaching every item at once. [flush] renders the
+/// edge-to-edge variant, with no outer border or rounded corners.
 class BsAccordion extends StatefulWidget {
   const BsAccordion({
     super.key,
@@ -164,25 +151,21 @@ class BsAccordion extends StatefulWidget {
   /// [controller] is set.
   final Set<int> initiallyExpanded;
 
-  /// Shorthand for marking every item [BsAccordionItem.detached], so all of
-  /// them expand/collapse independently — Bootstrap's "always open" example
-  /// — without having to set `detached: true` on each one individually. Set
-  /// [BsAccordionItem.detached] on specific items instead if only *some*
-  /// should be independent.
+  /// Shorthand for marking every item [BsAccordionItem.detached], so that all of them expand
+  /// and collapse independently, without setting `detached: true` on each one. Set
+  /// [BsAccordionItem.detached] on specific items instead if only some should be independent.
   final bool allDetached;
 
-  /// Whether to render the borderless, edge-to-edge `.accordion-flush`
-  /// variant.
+  /// Whether to render the borderless, edge-to-edge variant.
   final bool flush;
 
   /// Style overrides layered on top of [BsAccordionStyle.defaults].
   final BsAccordionStyle? style;
 
-  /// Overrides the chevron entirely, replacing Bootstrap's
-  /// `$accordion-btn-icon`/`$accordion-btn-active-icon`. Called with the
-  /// resolved icon color and whether the item is expanded; the returned
-  /// widget is rotated automatically per [BsAccordionStyle.iconRotationTurns]
-  /// unless you opt out by building your own [AnimatedRotation].
+  /// Overrides the chevron entirely. Called with the resolved icon color and whether the item
+  /// is expanded; the returned widget is rotated automatically per
+  /// [BsAccordionStyle.iconRotationTurns] unless you opt out by building your own
+  /// [AnimatedRotation].
   final Widget Function(BuildContext context, Color color, bool isExpanded)? iconBuilder;
 
   /// Called immediately when an item starts expanding or collapsing —
@@ -247,13 +230,10 @@ class _BsAccordionState extends State<BsAccordion> {
     super.dispose();
   }
 
-  // Fires onExpansionChanged/onExpansionEnd for whatever changed, regardless
-  // of whether the change came from a tap or programmatically via the
-  // controller — mirroring Bootstrap's events, which fire the same way for
-  // both a user click and a scripted `.collapse('show')` call. Diffing sets
-  // (rather than hooking the tap handler directly) also means a grouped
-  // expand that both opens one item and closes another correctly reports
-  // both, in one pass.
+  // // Fires onExpansionChanged and onExpansionEnd for whatever changed, whether the change came
+  // // from a tap or programmatically via the controller. Diffing the sets (rather than hooking
+  // // the tap handler) also means that a grouped expand that opens one item and closes another
+  // // reports both, in one pass.
   void _handleControllerChanged() {
     final current = _controller.expanded;
     final becameExpanded = current.difference(_lastExpanded);
@@ -372,11 +352,10 @@ class _BsAccordionItemViewState extends State<_BsAccordionItemView> {
             bottom: widget.isLast ? Radius.circular(outerRadius) : Radius.zero,
           );
 
-    // The button's own fill uses a slightly smaller radius than the item's
-    // outer border, per $accordion-inner-border-radius, so it nests inside
-    // the border curve instead of sharing it exactly. Bootstrap only rounds
-    // the last item's button when collapsed — once expanded, the body below
-    // it carries the bottom radius instead (handled by the outer ClipRRect).
+    // // The button's own fill uses a slightly smaller radius than the item's outer border, so that
+    // // it nests inside the border curve instead of sharing it exactly. Only the last item's
+    // // button is rounded when collapsed: once expanded, the body below it carries the bottom
+    // // radius instead (handled by the outer ClipRRect).
     final buttonRadius = widget.flush
         ? BorderRadius.zero
         : BorderRadius.vertical(
@@ -408,7 +387,7 @@ class _BsAccordionItemViewState extends State<_BsAccordionItemView> {
       borderRadius: borderRadius,
       child: BsDecoratedBox(
         decoration: BoxDecoration(border: border, borderRadius: borderRadius),
-        // (the borders take room, as CSS borders do)
+        // // The borders take room.
         child: Padding(
           padding: border.dimensions,
           child: Column(
@@ -440,15 +419,15 @@ class _BsAccordionItemViewState extends State<_BsAccordionItemView> {
                       children: [
                         Expanded(
                           child: DefaultTextStyle.merge(
-                            // (`.accordion-header` is a heading — `line-height: 1.2` — but the button
-                            // inside keeps the regular weight)
+                            // // The header is a heading, with its line height, but the button inside keeps the regular
+                            // // weight.
                             style: TextStyle(color: buttonColor, height: 1.2),
                             child: widget.item.header,
                           ),
                         ),
                         const SizedBox(width: 12),
                         AnimatedRotation(
-                          // `$accordion-icon-transition`: `transform .2s ease-in-out`
+                          // // The chevron turns over 0.2 seconds, easing in and out.
                           curve: Curves.easeInOut,
                           turns: widget.isExpanded
                               ? (style.iconRotationTurns ?? BsAccordionStyle.defaultIconRotationTurns)
@@ -469,8 +448,7 @@ class _BsAccordionItemViewState extends State<_BsAccordionItemView> {
                 ),
               ),
             ),
-            // `.accordion-collapse.collapse`: Bootstrap's own collapse, so it
-            // opens and closes the way every `.collapse` does.
+            // // The body is a [BsCollapse], so it opens and closes the way every collapse does.
             BsCollapse(
               isExpanded: widget.isExpanded,
               duration: transitionDuration,
@@ -511,9 +489,8 @@ class _BsChevronPainter extends CustomPainter {
 
   final Color color;
 
-  /// `$accordion-button-icon`: `<path d='m2 5 6 6 6-6'/>` in a 16-unit viewBox,
-  /// stroked with the SVG default 1 unit width (1.25px at the 20px size),
-  /// round caps and joins.
+  /// The chevron: a polyline in a 16-unit square, stroked 1 unit wide (1.25 logical pixels at
+  /// the 20 pixel size) with round caps and joins.
   @override
   void paint(Canvas canvas, Size size) {
     final unit = size.width / 16;

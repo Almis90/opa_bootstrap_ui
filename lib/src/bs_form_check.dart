@@ -9,8 +9,7 @@ import 'tokens/bs_form_style.dart';
 import 'tokens/bs_transitions.dart';
 import 'bs_decorated_box.dart';
 
-/// `.form-check-input[type=checkbox]`/`[type=radio]`/`.form-switch`: how a
-/// [BsFormCheck] renders and toggles.
+/// How a [BsFormCheck] renders and toggles: as a checkbox, a radio or a switch.
 enum BsFormCheckType {
   /// A square box with a checkmark when [BsFormCheck.value] is true.
   checkbox,
@@ -18,12 +17,12 @@ enum BsFormCheckType {
   /// A circular dot, filled when [BsFormCheck.value] is true.
   radio,
 
-  /// `.form-switch`: a pill-shaped track with a sliding thumb.
+  /// A pill-shaped track with a sliding thumb.
   switchToggle,
 }
 
-/// A Bootstrap checkbox, radio, or switch (`.form-check`), with an optional
-/// [label] alongside it. Both the control and [label] toggle [value] on tap.
+/// A Bootstrap checkbox, radio or switch, with an optional [label] alongside it. Both the
+/// control and [label] toggle [value] on tap.
 class BsFormCheck extends StatelessWidget {
   const BsFormCheck({
     super.key,
@@ -39,8 +38,8 @@ class BsFormCheck extends StatelessWidget {
 
   final bool value;
 
-  /// `.is-valid`/`.is-invalid` (or the `was-validated` states of a form): the
-  /// control's border and the [label] take the success or danger color.
+  /// The validation state: the control's border and the [label] take the success color when true
+  /// and the danger color when false.
   final bool? valid;
 
   /// Disables the control (rendered at [BsFormStyle.checkInputDisabledOpacity])
@@ -72,8 +71,7 @@ class BsFormCheck extends StatelessWidget {
       child: _SpaceToggles(
         enabled: enabled,
         onToggle: onTap,
-        // `.form-check-input:focus` (not `:focus-visible`: a clicked checkbox
-        // keeps its ring)
+        // // Focus, not keyboard focus only: a clicked checkbox keeps its ring.
         child: BsFocusableBuilder(
           enabled: enabled,
           builder: (context, focused) {
@@ -183,13 +181,13 @@ class _BsFormCheckGlyph extends StatelessWidget {
   /// A validation color for the border (and the checked fill).
   final Color? accent;
 
-  /// The box's side: `1em` of the control's font size (16px by default).
+  /// The box's side. Defaults to the control's font size (16 logical pixels).
   final double? size;
 
-  /// `border-style: dashed`.
+  /// Draws the border dashed.
   final bool dashed;
 
-  /// A background in place of `$form-check-input-bg`.
+  /// A background in place of the default.
   final Color? background;
 
   @override
@@ -207,8 +205,8 @@ class _BsFormCheckGlyph extends StatelessWidget {
         accent ??
         style.checkInputCheckedBackground ??
         BsFormStyle.defaults.checkInputCheckedBackground!;
-    // `:checked` keeps the border, in the checked background's color; the glyph
-    // is drawn inside it (`background-size: contain` of the padding box).
+    // // A checked box keeps its border, in the checked background's color; the glyph is drawn
+    // // inside it.
     final borderSide = value
         ? BorderSide(color: checkedBackground, width: border.width)
         : accent != null
@@ -240,12 +238,11 @@ class _BsFormCheckGlyph extends StatelessWidget {
       child: !value
           ? null
           : type == BsFormCheckType.radio
-          // (a plain DecoratedBox: the original's `<circle r='2'>` is a smooth
-          // image, centred exactly; a snapped box would round its half-pixel
-          // edges and push the dot off centre)
+          // // A plain DecoratedBox: a smooth dot is centered exactly, while a snapped box would round
+          // // its half-pixel edges and push the dot off center.
           ? Center(
               child: SizedBox(
-                // `<circle r='2'>` in an 8-unit viewBox.
+                // // The dot's diameter is half of the box inside its border.
                 width: (size - 2 * border.width) / 2,
                 height: (size - 2 * border.width) / 2,
                 child: DecoratedBox(
@@ -269,8 +266,8 @@ class _BsFormCheckGlyph extends StatelessWidget {
   }
 }
 
-/// `box-shadow: 0 0 0 .25rem rgba(<color>, .25)` of `:focus`: the primary's, or
-/// the validation color's under `.is-valid`/`.is-invalid`.
+/// The focus ring: a translucent ring in the primary color, or in the validation color of an
+/// invalid or valid control.
 List<BoxShadow> _focusRing(BsFormStyle style, Color? accent) => accent != null
     ? [BoxShadow(color: accent.withValues(alpha: 0.25), spreadRadius: 4)]
     : (style.inputFocusBoxShadow ?? BsFormStyle.defaultInputFocusBoxShadow);
@@ -303,12 +300,10 @@ class _BsCheckmarkPainter extends CustomPainter {
       oldDelegate.color != color;
 }
 
-/// A bare `.form-check-input` (checkbox or radio): the control without a label
-/// or its own `.form-check` wrapper, for building rows like
-/// `<label class="list-group-item d-flex gap-2"><input class="form-check-input
-/// flex-shrink-0"> …`. Its side is `1em` of [fontSize] (`style="font-size:
-/// 1.375em"` scales it). It reports taps through [onChanged], and is disabled
-/// (half transparent) when that is null.
+/// A bare checkbox or radio: the control without a label or its own wrapper, for building
+/// rows that lay out the control themselves, for example inside a list group item. Its side
+/// is the [fontSize] (scale it to resize the control). It reports taps through [onChanged],
+/// and is disabled (half transparent) when that is null.
 class BsFormCheckInput extends StatelessWidget {
   const BsFormCheckInput({
     super.key,
@@ -325,7 +320,7 @@ class BsFormCheckInput extends StatelessWidget {
   final bool value;
   final ValueChanged<bool>? onChanged;
 
-  /// The font size the control's `1em` is measured against.
+  /// The font size that the control's side is measured against.
   final double fontSize;
 
   /// `border-style: dashed`.
@@ -361,7 +356,7 @@ class BsFormCheckInput extends StatelessWidget {
                       onChanged!(!value);
                     }
                   : null,
-              // A fixed `1em` box that a flex line's `align-items: stretch` can't grow.
+              // // A fixed-size box that a stretching flex line cannot grow.
               child: Align(
                 alignment: AlignmentDirectional.topStart,
                 widthFactor: 1,

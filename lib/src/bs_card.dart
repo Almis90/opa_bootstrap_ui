@@ -15,21 +15,20 @@ import 'bs_decorated_box.dart';
 
 /// Where a [BsCardImg] sits relative to a card's other content.
 enum BsCardImgPosition {
-  /// `.card-img` — rounds all four corners, meant to be a card's only child.
+  /// Rounds all four corners; meant to be a card's only child.
   full,
 
-  /// `.card-img-top` — rounds only the top corners.
+  /// Rounds only the top corners.
   top,
 
-  /// `.card-img-bottom` — rounds only the bottom corners.
+  /// Rounds only the bottom corners.
   bottom,
 }
 
-/// A Bootstrap card (`.card`): a flexible content container.
+/// A Bootstrap card: a flexible content container.
 ///
-/// Compose it from [BsCardHeader], [BsCardImg], [BsCardBody],
-/// [BsCardFooter], etc. — Bootstrap's card has no fixed structure, so this
-/// widget is just the bordered/rounded shell.
+/// Compose it from [BsCardHeader], [BsCardImg], [BsCardBody], [BsCardFooter] and so on:
+/// a card has no fixed structure, so this widget is just the bordered, rounded shell.
 class BsCard extends StatelessWidget {
   const BsCard({
     super.key,
@@ -200,7 +199,7 @@ class _BsCardScope extends InheritedWidget {
       groupEndJoin != oldWidget.groupEndJoin;
 }
 
-/// `.card-header`: an optional top cap, e.g. for a title or nav.
+/// An optional top cap, for example for a title or a nav.
 class BsCardHeader extends StatelessWidget {
   const BsCardHeader({super.key, required this.child, this.py, this.textBg});
 
@@ -266,7 +265,7 @@ class BsCardHeader extends StatelessWidget {
   }
 }
 
-/// `.card-footer`: an optional bottom cap.
+/// An optional bottom cap.
 class BsCardFooter extends StatelessWidget {
   const BsCardFooter({super.key, required this.child});
 
@@ -308,7 +307,7 @@ class BsCardFooter extends StatelessWidget {
   }
 }
 
-/// `.card-body`: the card's main content block.
+/// The card's main content block.
 class BsCardBody extends StatelessWidget {
   const BsCardBody({super.key, required this.children});
 
@@ -329,7 +328,7 @@ class BsCardBody extends StatelessWidget {
   }
 }
 
-/// `.card-title`.
+/// A card's title.
 class BsCardTitle extends StatelessWidget {
   const BsCardTitle({super.key, required this.child});
 
@@ -351,7 +350,7 @@ class BsCardTitle extends StatelessWidget {
   }
 }
 
-/// `.card-subtitle`.
+/// A card's subtitle.
 class BsCardSubtitle extends StatelessWidget {
   const BsCardSubtitle({super.key, required this.child});
 
@@ -372,7 +371,7 @@ class BsCardSubtitle extends StatelessWidget {
   }
 }
 
-/// `.card-text`.
+/// A paragraph of a card's text.
 class BsCardText extends StatelessWidget {
   const BsCardText({super.key, required this.child});
 
@@ -382,8 +381,7 @@ class BsCardText extends StatelessWidget {
   Widget build(BuildContext context) => child;
 }
 
-/// `.card-link`: an inline link within a card, spaced from a preceding
-/// sibling like Bootstrap's `.card-link + .card-link`.
+/// An inline link within a card, spaced from a preceding link.
 class BsCardLink extends StatefulWidget {
   const BsCardLink({super.key, required this.child, required this.onTap});
 
@@ -419,8 +417,7 @@ class _BsCardLinkState extends State<BsCardLink> {
   }
 }
 
-/// `.card-img`/`.card-img-top`/`.card-img-bottom`: a full-bleed image with
-/// corners rounded to match the card, per [position].
+/// A full-bleed image with corners rounded to match the card, per [position].
 class BsCardImg extends StatelessWidget {
   const BsCardImg({
     super.key,
@@ -463,9 +460,8 @@ class BsCardImg extends StatelessWidget {
   }
 }
 
-/// `.card-img-overlay`: positions content over a [BsCardImg], e.g. for a
-/// text caption on top of a background image. Stack this with a
-/// [BsCardImg] inside a [Stack].
+/// Positions content over a [BsCardImg], for example a text caption on top of a background
+/// image. Stack it with a [BsCardImg] inside a [Stack].
 class BsCardImgOverlay extends StatelessWidget {
   const BsCardImgOverlay({super.key, required this.child});
 
@@ -491,13 +487,11 @@ class BsCardImgOverlay extends StatelessWidget {
   }
 }
 
-/// `.card-group`: lays a row of [BsCard]s out as a single visual block —
-/// equal widths, a shared border at each seam, and only the group's
-/// outermost corners left rounded.
+/// Lays a row of [BsCard]s out as a single visual block: equal widths, a shared border at
+/// each seam, and only the group's outermost corners left rounded.
 ///
-/// Below the `sm` breakpoint, Bootstrap stacks `.card-group` into separate
-/// full-width cards (each keeping its own rounded corners) spaced by
-/// `$card-group-margin`; this mirrors that with a [LayoutBuilder].
+/// Below the `sm` breakpoint the cards stack into separate full-width cards, each keeping its
+/// own rounded corners, spaced by [margin].
 class BsCardGroup extends StatelessWidget {
   const BsCardGroup({super.key, required this.children, this.margin});
 
@@ -505,7 +499,7 @@ class BsCardGroup extends StatelessWidget {
   /// only corner rounding and the shared border are adjusted by the group.
   final List<BsCard> children;
 
-  /// `$card-group-margin`, the gap between cards when stacked below `sm`.
+  /// The gap between cards when they are stacked below the `sm` breakpoint.
   final double? margin;
 
   @override
