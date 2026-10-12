@@ -240,16 +240,21 @@ class _BsFormCheckGlyph extends StatelessWidget {
       child: !value
           ? null
           : type == BsFormCheckType.radio
+          // (a plain DecoratedBox: the original's `<circle r='2'>` is a smooth
+          // image, centred exactly; a snapped box would round its half-pixel
+          // edges and push the dot off centre)
           ? Center(
-              child: BsDecoratedContainer(
+              child: SizedBox(
                 // `<circle r='2'>` in an 8-unit viewBox.
                 width: (size - 2 * border.width) / 2,
                 height: (size - 2 * border.width) / 2,
-                decoration: BoxDecoration(
-                  color:
-                      style.checkInputCheckedColor ??
-                      BsFormStyle.defaultCheckInputCheckedColor,
-                  shape: BoxShape.circle,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color:
+                        style.checkInputCheckedColor ??
+                        BsFormStyle.defaultCheckInputCheckedColor,
+                    shape: BoxShape.circle,
+                  ),
                 ),
               ),
             )
