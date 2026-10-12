@@ -112,17 +112,14 @@ class _Menu extends StatelessWidget {
                   borderRadius: shape,
                   boxShadow: shadow.shadows,
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.all(1),
-                  child: BsDecoratedContainer(
-                    decoration: BoxDecoration(
-                      color: style.background,
-                      borderRadius: BorderRadius.circular(
-                        radius > 1 ? radius - 1 : 0,
-                      ),
+                child: BsDecoratedContainer(
+                  decoration: BoxDecoration(
+                    color: style.background,
+                    borderRadius: BorderRadius.circular(
+                      radius > 1 ? radius - 1 : 0,
                     ),
-                    child: text,
                   ),
+                  child: text,
                 ),
               )
             : BsDecoratedContainer(
