@@ -94,8 +94,8 @@ class BsFormSelect<T> extends StatelessWidget {
     }
     final displayed = selectedLabel ?? placeholder ?? const SizedBox.shrink();
 
-    // // The list of options is at least as wide as the control, however short its options are:
-    // // the menu takes the control's width as its minimum.
+    // The list of options is at least as wide as the control, however short its options are:
+    // the menu takes the control's width as its minimum.
     return LayoutBuilder(
       builder: (context, constraints) => BsDropdown(
         style: constraints.hasBoundedWidth
@@ -156,7 +156,7 @@ class BsFormSelect<T> extends StatelessWidget {
                     BsValidationIcon(valid: valid!, fontSize: fontSize),
                   ],
                   const SizedBox(width: 8),
-                  // // The indicator: a 16x12 chevron drawn with a 2 logical pixel round stroke.
+                  // The indicator: a 16x12 chevron drawn with a 2 logical pixel round stroke.
                   CustomPaint(
                     size:
                         style.selectBackgroundSize ??

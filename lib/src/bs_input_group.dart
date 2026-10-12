@@ -46,8 +46,8 @@ class BsInputGroup extends StatelessWidget {
         style.inputBorderRadiusLg ?? BsFormStyle.defaultInputBorderRadiusLg,
     };
 
-    // // A Container, not a DecoratedBox: the border must add to the group's size instead of
-    // // painting over its children.
+    // A Container, not a DecoratedBox: the border must add to the group's size instead of
+    // painting over its children.
     return BsDecoratedContainer(
       decoration: BoxDecoration(
         border: Border.all(

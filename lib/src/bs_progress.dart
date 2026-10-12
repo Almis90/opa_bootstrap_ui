@@ -99,7 +99,7 @@ class BsProgress extends StatelessWidget {
       for (final bar in bars)
         ((bar.value - bar.min) / (bar.max - bar.min)).clamp(0.0, 1.0),
     ];
-    // // Each segment's width eases toward its new value rather than jumping.
+    // Each segment's width eases toward its new value rather than jumping.
     final transitionDuration = BsTransitions.resolve(
       context,
       style.barTransitionDuration ??
@@ -230,8 +230,8 @@ class _BsProgressBarState extends State<BsProgressBar>
         widget.variant?.color ??
         style.barBackground ??
         BsProgressStyle.defaultBarBackground;
-    // // Light variants (warning, info, light) take dark text; on the others the bar's white is
-    // // what is left.
+    // Light variants (warning, info, light) take dark text; on the others the bar's white is
+    // what is left.
     final color = widget.variant != null
         ? BsColorUtils.contrast(background)
         : style.barColor ?? BsProgressStyle.defaultBarColor;

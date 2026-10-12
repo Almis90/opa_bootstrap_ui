@@ -64,8 +64,8 @@ class BsBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final style = BsBadgeStyle.defaults.merge(this.style);
-    // // The font size and padding are relative to the text the badge sits in (a badge in a
-    // // heading is 75% of the heading), unless the style sets its own.
+    // The font size and padding are relative to the text the badge sits in (a badge in a
+    // heading is 75% of the heading), unless the style sets its own.
     final parentSize = DefaultTextStyle.of(context).style.fontSize ?? 16;
     final fontSize = this.style?.fontSize ?? parentSize * 0.75;
     final dark = BsTheme.of(context) == Brightness.dark;
@@ -119,7 +119,7 @@ class BsBadge extends StatelessWidget {
           height: 1,
         ),
         textAlign: TextAlign.center,
-        // // A badge never wraps.
+        // A badge never wraps.
         softWrap: false,
         child: child,
       ),

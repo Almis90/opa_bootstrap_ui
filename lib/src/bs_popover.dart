@@ -250,7 +250,7 @@ class _BsPopoverState extends State<BsPopover>
   BsPopoverPlacement get _effectivePlacement =>
       _controller.placement ??
       widget.placement ??
-      // // The default placement is the physical right, so the start side in a right-to-left layout.
+      // The default placement is the physical right, so the start side in a right-to-left layout.
       (Directionality.of(context) == TextDirection.rtl
           ? BsPopoverPlacement.start
           : BsPopoverPlacement.end);

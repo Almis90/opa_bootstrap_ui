@@ -113,7 +113,7 @@ class _BsFormFloatingState extends State<BsFormFloating> {
     final fontSize = style.inputFontSize ?? BsFormStyle.defaultInputFontSize;
     final borderWidth =
         style.inputBorderWidth ?? BsFormStyle.defaultInputBorderWidth;
-    // // The label is the body text color at 65% opacity.
+    // The label is the body text color at 65% opacity.
     final labelColor = isDark
         ? const Color(0xA6DEE2E6)
         : const Color(0xA6212529);
@@ -127,7 +127,7 @@ class _BsFormFloatingState extends State<BsFormFloating> {
         BsFormStyle.defaultFloatingInputPaddingBottom;
     final lineHeight =
         style.floatingLineHeight ?? BsFormStyle.defaultFloatingLineHeight;
-    // // The label inherits the body's line height of 1.5.
+    // The label inherits the body's line height of 1.5.
     const labelLineHeight = 1.5;
     final disabledLabelColor =
         style.floatingLabelDisabledColor ??
@@ -165,10 +165,10 @@ class _BsFormFloatingState extends State<BsFormFloating> {
               ),
             ),
           ),
-          // // At rest the label sits where the input's text would. Floated, it is not moved by layout
-          // // but by a transform (scaled down and nudged up and in from its top-start corner), which
-          // // animates over 100 milliseconds, easing in and out; a color change is not part of the
-          // // animation.
+          // At rest the label sits where the input's text would. Floated, it is not moved by layout
+          // but by a transform (scaled down and nudged up and in from its top-start corner), which
+          // animates over 100 milliseconds, easing in and out; a color change is not part of the
+          // animation.
           IgnorePointer(
             child: TweenAnimationBuilder<double>(
               tween: Tween<double>(end: _floated ? 1.0 : 0.0),

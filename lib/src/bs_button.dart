@@ -159,7 +159,7 @@ class _BsButtonState extends State<BsButton> {
         focusNode: widget.focusNode,
         autofocus: widget.autofocus,
         enabled: enabled,
-        // // A focus ring only for keyboard focus.
+        // A focus ring only for keyboard focus.
         focusVisibleOnly: true,
         builder: (context, focused) {
           final boxShadow = <BoxShadow>[

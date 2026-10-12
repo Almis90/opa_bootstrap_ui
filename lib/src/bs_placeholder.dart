@@ -168,8 +168,8 @@ class _BsPlaceholderState extends State<BsPlaceholder>
       );
     }
 
-    // // Only the glow variant dips down to the minimum opacity (via its animation). The static and
-    // // wave variants rest at the maximum opacity.
+    // Only the glow variant dips down to the minimum opacity (via its animation). The static and
+    // wave variants rest at the maximum opacity.
     return widget.animation == BsPlaceholderAnimation.wave
         ? _gated(
             RepaintBoundary(

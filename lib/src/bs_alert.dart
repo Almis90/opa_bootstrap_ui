@@ -119,7 +119,7 @@ class _BsAlertState extends State<BsAlert> {
     final style = BsAlertStyle.defaults.merge(widget.style);
     final isDark = BsTheme.of(context) == Brightness.dark;
 
-    // // Alerts get dark mode entirely through [BsVariant]'s own dark getters.
+    // Alerts get dark mode entirely through [BsVariant]'s own dark getters.
     final color = style.color ?? (isDark ? widget.variant.darkTextEmphasis : widget.variant.textEmphasis);
     final background = style.background ?? (isDark ? widget.variant.darkBgSubtle : widget.variant.bgSubtle);
     final borderColor = style.borderColor ?? (isDark ? widget.variant.darkBorderSubtle : widget.variant.borderSubtle);
@@ -127,8 +127,8 @@ class _BsAlertState extends State<BsAlert> {
     final borderRadius = style.borderRadius ?? BsAlertStyle.defaultBorderRadius;
     final padding = style.padding ?? BsAlertStyle.defaultPadding;
     final resolvedPadding = padding.resolve(TextDirection.ltr);
-    // // The link color (defaults to the alert's text color) and weight, handed down to any
-    // // [BsAlertLink] nested in the child.
+    // The link color (defaults to the alert's text color) and weight, handed down to any
+    // [BsAlertLink] nested in the child.
     final linkColor = style.linkColor ?? color;
     final linkFontWeight = style.linkFontWeight ?? BsAlertStyle.defaultLinkFontWeight;
 
@@ -147,10 +147,10 @@ class _BsAlertState extends State<BsAlert> {
                   border: Border.all(color: borderColor, width: borderWidth),
                   borderRadius: BorderRadius.circular(borderRadius),
                 ),
-                // // The close button is a Stack sibling, not nested inside the padded content, so its own
-                // // padding does not shrink the content area. It is centered vertically against the alert's
-                // // rendered height, which is simpler and more robust than replicating a padding formula that
-                // // assumes exact text-line metrics Flutter does not guarantee.
+                // The close button is a Stack sibling, not nested inside the padded content, so its own
+                // padding does not shrink the content area. It is centered vertically against the alert's
+                // rendered height, which is simpler and more robust than replicating a padding formula that
+                // assumes exact text-line metrics Flutter does not guarantee.
                 child: Stack(
                   children: [
                     Padding(

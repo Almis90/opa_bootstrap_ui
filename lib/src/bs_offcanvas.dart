@@ -89,8 +89,8 @@ Future<T?> showBsOffcanvas<T>({
     },
     transitionBuilder: (context, animation, secondaryAnimation, child) {
       final curved = CurvedAnimation(parent: animation, curve: Curves.easeOut);
-      // // Start and end are logical placements: which physical edge they slide in from flips with
-      // // the text direction.
+      // Start and end are logical placements: which physical edge they slide in from flips with
+      // the text direction.
       final isRtl = Directionality.of(context) == TextDirection.rtl;
       final beginOffset = switch (placement) {
         BsOffcanvasPlacement.start => Offset(isRtl ? 1 : -1, 0),

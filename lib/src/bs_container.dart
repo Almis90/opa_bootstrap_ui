@@ -85,9 +85,9 @@ class BsContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        // // The viewport's breakpoint, as Bootstrap's containers use: not the width this container
-        // // happens to be given, which is narrower wherever the page pads or indents it and would
-        // // pick a smaller breakpoint's maximum width.
+        // The viewport's breakpoint, as Bootstrap's containers use: not the width this container
+        // happens to be given, which is narrower wherever the page pads or indents it and would
+        // pick a smaller breakpoint's maximum width.
         final breakpoint = BsBreakpoint.forWidth(MediaQuery.sizeOf(context).width);
         final constrained =
             !fluid &&

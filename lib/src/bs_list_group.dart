@@ -306,8 +306,8 @@ class _BsListGroupItemWidgetState extends State<_BsListGroupItemWidget> {
         onTapUp: enabled ? (_) => _setPressed(false) : null,
         onTapCancel: enabled ? () => _setPressed(false) : null,
         onTap: enabled ? item.onTap : null,
-        // // A container, not a bare DecoratedBox: the border adds to the item's size instead of being
-        // // painted over its padding.
+        // A container, not a bare DecoratedBox: the border adds to the item's size instead of being
+        // painted over its padding.
         child: BsDecoratedContainer(
           decoration: BoxDecoration(
             color: background,

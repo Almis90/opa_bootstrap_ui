@@ -86,7 +86,7 @@ class _BsSpinnerBorderState extends State<BsSpinnerBorder>
     // a whole page.)
     final spinner = RepaintBoundary(
       child: Transform.translate(
-        // // Nudges the spinner down from the baseline it would otherwise sit on next to inline text.
+        // Nudges the spinner down from the baseline it would otherwise sit on next to inline text.
         offset: Offset(0, -verticalAlign),
         child: RotationTransition(
           turns: _controller,
@@ -131,7 +131,7 @@ class _BsSpinnerBorderPainter extends CustomPainter {
       ..color = color
       ..style = PaintingStyle.stroke
       ..strokeWidth = strokeWidth;
-    // // A 3/4 ring (270°), leaving a 90° gap, as in Bootstrap's spinner.
+    // A 3/4 ring (270°), leaving a 90° gap, as in Bootstrap's spinner.
     canvas.drawArc(rect, 0, 1.5 * math.pi, false, paint);
   }
 
@@ -218,7 +218,7 @@ class _BsSpinnerGrowState extends State<BsSpinnerGrow>
     // spinner.)
     final spinner = RepaintBoundary(
       child: Transform.translate(
-        // // Nudges the spinner down from the baseline it would otherwise sit on next to inline text.
+        // Nudges the spinner down from the baseline it would otherwise sit on next to inline text.
         offset: Offset(0, -verticalAlign),
         child: ScaleTransition(
           scale: _growth,

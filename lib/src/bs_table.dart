@@ -136,7 +136,7 @@ class _BsTableState extends State<BsTable> {
     // takes room: Flutter's [Table] only paints its rules, so make it.
     final rule = widget.borderless ? 0.0 : borderWidth;
     final cellPadding = padding.add(EdgeInsets.only(bottom: rule));
-    // // Bordered: the table's own top rule takes room too.
+    // Bordered: the table's own top rule takes room too.
     final firstRowPadding = widget.bordered
         ? cellPadding.add(EdgeInsets.only(top: borderWidth))
         : cellPadding;
@@ -185,7 +185,7 @@ class _BsTableState extends State<BsTable> {
 
     if (widget.caption == null) return table;
 
-    // // Caption: rendered below the table, padded like a cell and tinted with the caption color.
+    // Caption: rendered below the table, padded like a cell and tinted with the caption color.
     final captionPaddingY = padding.vertical / 2;
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -217,8 +217,8 @@ class _BsTableState extends State<BsTable> {
     BorderSide? rowRule,
   }) {
     var rowColor = background;
-    // // A variant row's own text color: the contrast of its background (the tints are light;
-    // // the dark and light variants are the theme colors themselves).
+    // A variant row's own text color: the contrast of its background (the tints are light;
+    // the dark and light variants are the theme colors themselves).
     Color? rowText;
     final variant = row.variant;
     if (variant == BsVariant.dark) {
@@ -262,10 +262,10 @@ class _BsTableState extends State<BsTable> {
       rowColor,
     );
 
-    // // Group divider: a 2 logical pixel rule in the text color above a row group, 1px more than
-    // // the ordinary rule it replaces.
+    // Group divider: a 2 logical pixel rule in the text color above a row group, 1px more than
+    // the ordinary rule it replaces.
     final groupStart = !widget.bordered && !widget.borderless && row.groupStart;
-    // // Under a variant row the rule is the text color mixed 20% into the row's background.
+    // Under a variant row the rule is the text color mixed 20% into the row's background.
     final bottom = rowRule == null
         ? null
         : rowText == null

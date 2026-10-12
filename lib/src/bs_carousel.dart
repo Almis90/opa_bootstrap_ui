@@ -549,7 +549,7 @@ class _BsCarouselIndicators extends StatelessWidget {
       children: [
         for (var i = 0; i < count; i++)
           Padding(
-            // // The spacing on each side of an indicator.
+            // The spacing on each side of an indicator.
             padding: EdgeInsets.symmetric(horizontal: spacer),
             child: _BsCarouselIndicatorDot(active: i == activeIndex, style: style, onTap: () => onTap(i)),
           ),

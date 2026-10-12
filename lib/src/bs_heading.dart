@@ -213,8 +213,8 @@ class BsMark extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = BsTheme.of(context) == Brightness.dark;
     return Container(
-      // // An inline box's vertical padding paints but takes no room, so only the sides are
-      // // padded here.
+      // An inline box's vertical padding paints but takes no room, so only the sides are
+      // padded here.
       padding: const EdgeInsets.symmetric(horizontal: BsTypography.markPadding),
       color: isDark ? _darkBackground : _background,
       child: child,
@@ -234,8 +234,8 @@ class BsBlockquote extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // // The bottom margin is 16 logical pixels, and the larger font size is on the blockquote
-    // // itself, so its footer's smaller size is relative to that.
+    // The bottom margin is 16 logical pixels, and the larger font size is on the blockquote
+    // itself, so its footer's smaller size is relative to that.
     return Padding(
       padding: const EdgeInsets.only(bottom: BsTypography.blockquoteMarginY),
       child: DefaultTextStyle.merge(
@@ -291,7 +291,7 @@ class BsBlockquoteFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // // The footer is 87.5% of the surrounding size.
+    // The footer is 87.5% of the surrounding size.
     final base = DefaultTextStyle.of(context).style.fontSize ?? BsTypography.fontSizeBase;
     Widget footer = DefaultTextStyle.merge(
       style: TextStyle(

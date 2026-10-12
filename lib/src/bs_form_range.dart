@@ -43,9 +43,9 @@ class _BsFormRangeState extends State<BsFormRange> {
   bool _dragging = false;
 
   void _updateFromLocalX(double dx, double width, double thumbSize) {
-    // // A native range input mirrors itself in a right-to-left layout (the minimum on the right,
-    // // and dragging from the right increases the value), so the pixel math is measured from the
-    // // reading-end edge instead of always the left.
+    // A native range input mirrors itself in a right-to-left layout (the minimum on the right,
+    // and dragging from the right increases the value), so the pixel math is measured from the
+    // reading-end edge instead of always the left.
     final isRtl = Directionality.of(context) == TextDirection.rtl;
     final effectiveDx = isRtl ? width - dx : dx;
     final usable = width - thumbSize;
@@ -137,10 +137,10 @@ class _BsFormRangeState extends State<BsFormRange> {
         : (style.rangeThumbBackground ??
               BsFormStyle.defaults.rangeThumbBackground!);
 
-    // // A focused range (not only a keyboard-focused one: a clicked range keeps it) gives the
-    // // thumb a 1px halo of the page's background and the focus ring. Flutter paints a list of
-    // // shadows from first to last, so the halo goes last to be on top of the ring's translucent
-    // // fill.
+    // A focused range (not only a keyboard-focused one: a clicked range keeps it) gives the
+    // thumb a 1px halo of the page's background and the focus ring. Flutter paints a list of
+    // shadows from first to last, so the halo goes last to be on top of the ring's translucent
+    // fill.
     final focusRing = [
       ...(style.inputFocusBoxShadow ?? BsFormStyle.defaultInputFocusBoxShadow),
       BoxShadow(color: BsBody.backgroundOf(context), spreadRadius: 1),
@@ -185,7 +185,7 @@ class _BsFormRangeState extends State<BsFormRange> {
                     ? (_) => setState(() => _dragging = false)
                     : null,
                 child: SizedBox(
-                  // // The control is 24 logical pixels tall, with the thumb centered in it.
+                  // The control is 24 logical pixels tall, with the thumb centered in it.
                   height: thumbSize < 24 ? 24 : thumbSize,
                   width: double.infinity,
                   child: Stack(

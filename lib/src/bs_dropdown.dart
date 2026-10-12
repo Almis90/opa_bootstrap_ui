@@ -481,8 +481,8 @@ class _BsDropdownMenu extends StatelessWidget {
         minWidth: style.minWidth ?? BsDropdownStyle.defaultMinWidth,
       ),
       child: BsDecoratedBox(
-        // // No color here: the translucent border is painted over what is behind the menu, not over
-        // // the menu's own background, which is the inner box below.
+        // No color here: the translucent border is painted over what is behind the menu, not over
+        // the menu's own background, which is the inner box below.
         decoration: BoxDecoration(
           border: Border.all(
             color: style.borderColor ?? BsDropdownStyle.defaultBorderColor,
@@ -491,9 +491,9 @@ class _BsDropdownMenu extends StatelessWidget {
           borderRadius: borderRadius,
           boxShadow: style.boxShadow,
         ),
-        // // The border takes room: the menu's content sits inside it, so a hovered item's background
-        // // stops at the border instead of painting over it. The clip follows the inside of the
-        // // rounded border.
+        // The border takes room: the menu's content sits inside it, so a hovered item's background
+        // stops at the border instead of painting over it. The clip follows the inside of the
+        // rounded border.
         child: Padding(
           padding: EdgeInsets.all(
             style.borderWidth ?? BsDropdownStyle.defaultBorderWidth,

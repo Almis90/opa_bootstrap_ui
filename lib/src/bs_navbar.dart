@@ -196,7 +196,7 @@ class _BsNavbarState extends State<BsNavbar> {
         padding: style.padding ?? BsNavbarStyle.defaultPadding,
         child: Builder(
           builder: (context) {
-            // // The breakpoint is the viewport's width, not the room the navbar happens to have.
+            // The breakpoint is the viewport's width, not the room the navbar happens to have.
             final expanded =
                 widget.expandBreakpoint != null &&
                 MediaQuery.sizeOf(context).width >=
@@ -271,7 +271,7 @@ class _BsNavbarState extends State<BsNavbar> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 BsFlex(
-                  // // A toggler with no room left drops to the next line.
+                  // A toggler with no room left drops to the next line.
                   wrap: true,
                   alignItems: BsAlign.center,
                   justifyContent: BsJustify.between,
@@ -306,7 +306,7 @@ class _BsNavbarState extends State<BsNavbar> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            // // The nav's own bottom margin.
+                            // The nav's own bottom margin.
                             ...rawLinks,
                             ...widget.trailing,
                           ],
@@ -369,7 +369,7 @@ class _BsNavbarBrandState extends State<_BsNavbarBrand> {
               fontSize:
                   style.brandFontSize ?? BsNavbarStyle.defaultBrandFontSize,
             ),
-            // // The brand never wraps.
+            // The brand never wraps.
             softWrap: false,
             child: widget.child,
           ),
@@ -507,7 +507,7 @@ class _BsNavbarTogglerState extends State<_BsNavbarToggler> {
                   : (style.togglerPadding ??
                         BsNavbarStyle.defaultTogglerPadding),
               child: CustomPaint(
-                // // The icon is 1.5 times the font size, square.
+                // The icon is 1.5 times the font size, square.
                 size: Size.square(
                   1.5 *
                       (style.togglerFontSize ??

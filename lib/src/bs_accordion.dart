@@ -230,10 +230,10 @@ class _BsAccordionState extends State<BsAccordion> {
     super.dispose();
   }
 
-  // // Fires onExpansionChanged and onExpansionEnd for whatever changed, whether the change came
-  // // from a tap or programmatically via the controller. Diffing the sets (rather than hooking
-  // // the tap handler) also means that a grouped expand that opens one item and closes another
-  // // reports both, in one pass.
+  // Fires onExpansionChanged and onExpansionEnd for whatever changed, whether the change came
+  // from a tap or programmatically via the controller. Diffing the sets (rather than hooking
+  // the tap handler) also means that a grouped expand that opens one item and closes another
+  // reports both, in one pass.
   void _handleControllerChanged() {
     final current = _controller.expanded;
     final becameExpanded = current.difference(_lastExpanded);
@@ -352,10 +352,10 @@ class _BsAccordionItemViewState extends State<_BsAccordionItemView> {
             bottom: widget.isLast ? Radius.circular(outerRadius) : Radius.zero,
           );
 
-    // // The button's own fill uses a slightly smaller radius than the item's outer border, so that
-    // // it nests inside the border curve instead of sharing it exactly. Only the last item's
-    // // button is rounded when collapsed: once expanded, the body below it carries the bottom
-    // // radius instead (handled by the outer ClipRRect).
+    // The button's own fill uses a slightly smaller radius than the item's outer border, so that
+    // it nests inside the border curve instead of sharing it exactly. Only the last item's
+    // button is rounded when collapsed: once expanded, the body below it carries the bottom
+    // radius instead (handled by the outer ClipRRect).
     final buttonRadius = widget.flush
         ? BorderRadius.zero
         : BorderRadius.vertical(
@@ -387,7 +387,7 @@ class _BsAccordionItemViewState extends State<_BsAccordionItemView> {
       borderRadius: borderRadius,
       child: BsDecoratedBox(
         decoration: BoxDecoration(border: border, borderRadius: borderRadius),
-        // // The borders take room.
+        // The borders take room.
         child: Padding(
           padding: border.dimensions,
           child: Column(
@@ -419,15 +419,15 @@ class _BsAccordionItemViewState extends State<_BsAccordionItemView> {
                       children: [
                         Expanded(
                           child: DefaultTextStyle.merge(
-                            // // The header is a heading, with its line height, but the button inside keeps the regular
-                            // // weight.
+                            // The header is a heading, with its line height, but the button inside keeps the regular
+                            // weight.
                             style: TextStyle(color: buttonColor, height: 1.2),
                             child: widget.item.header,
                           ),
                         ),
                         const SizedBox(width: 12),
                         AnimatedRotation(
-                          // // The chevron turns over 0.2 seconds, easing in and out.
+                          // The chevron turns over 0.2 seconds, easing in and out.
                           curve: Curves.easeInOut,
                           turns: widget.isExpanded
                               ? (style.iconRotationTurns ?? BsAccordionStyle.defaultIconRotationTurns)
@@ -448,7 +448,7 @@ class _BsAccordionItemViewState extends State<_BsAccordionItemView> {
                 ),
               ),
             ),
-            // // The body is a [BsCollapse], so it opens and closes the way every collapse does.
+            // The body is a [BsCollapse], so it opens and closes the way every collapse does.
             BsCollapse(
               isExpanded: widget.isExpanded,
               duration: transitionDuration,

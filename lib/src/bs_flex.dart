@@ -630,7 +630,7 @@ class _RenderBsFlex extends RenderBox
       final col = d.col?.resolve(_breakpoint);
       final w = d.w?.resolve(_breakpoint);
       if (col != null && col.fill) {
-        // // Equal-width column: grows from a zero basis and does not shrink.
+        // Equal-width column: grows from a zero basis and does not shrink.
         item.fraction = 0;
         item.shrink = false;
         item.growEqual = true;
@@ -638,11 +638,11 @@ class _RenderBsFlex extends RenderBox
         item.fraction = col.columns! / 12;
         item.shrink = d.flexShrink ?? false;
       } else if (_row && _rowCols != null && col == null && w == null) {
-        // // Each child is 1/n of the line.
+        // Each child is 1/n of the line.
         item.fraction = 1 / _rowCols!;
         item.shrink = d.flexShrink ?? false;
       } else if (_row && col == null && w == null) {
-        // // Full width and no shrinking, unless a column width says otherwise.
+        // Full width and no shrinking, unless a column width says otherwise.
         item.fraction = 1;
         item.shrink = d.flexShrink ?? false;
       } else {
@@ -653,7 +653,7 @@ class _RenderBsFlex extends RenderBox
       item.maxWidth = d.maxWidth ?? double.infinity;
       item.alignSelf = d.alignSelf?.resolve(_breakpoint);
       item.mt += _gutterY;
-      // // A row pads its items by half the gutter; padding props override that.
+      // A row pads its items by half the gutter; padding props override that.
       final padStart = pick([d.ps, d.px, d.p])?.size ?? _gutterX / 2;
       final padEnd = pick([d.pe, d.px, d.p])?.size ?? _gutterX / 2;
       final rtl = _textDirection == TextDirection.rtl;
@@ -775,11 +775,11 @@ class _RenderBsFlex extends RenderBox
           _gap * (n - 1);
 
       if (bounded && used() > maxW + 0.01) {
-        // // Shrinking: take the overflow from the shrinkable items in proportion to their widths,
-        // // but never below an item's content (its minimum content width), freezing the items that
-        // // hit that and sharing what is left among the rest.
-        // // Only content that can wrap has a minimum content width below its width: a fixed-size box
-        // // has no content to protect, and a no-wrap item opts out with `flexShrink: false`.
+        // Shrinking: take the overflow from the shrinkable items in proportion to their widths,
+        // but never below an item's content (its minimum content width), freezing the items that
+        // hit that and sharing what is left among the rest.
+        // Only content that can wrap has a minimum content width below its width: a fixed-size box
+        // has no content to protect, and a no-wrap item opts out with `flexShrink: false`.
         final floors = <_Item, double>{
           for (final item in line.items)
             if (item.shrink)
@@ -907,16 +907,16 @@ class _RenderBsFlex extends RenderBox
       line.crossOffset = y;
       y += line.crossSize + (i == lines.length - 1 ? 0 : _gap);
     }
-    // // A flex container in normal flow fills its parent, but as a flex item itself (for example
-    // // a link inside a header row) its width is its content's, so a [BsFlex] nested in another
-    // // through any transparent wrappers shrink-wraps.
+    // A flex container in normal flow fills its parent, but as a flex item itself (for example
+    // a link inside a header row) its width is its content's, so a [BsFlex] nested in another
+    // through any transparent wrappers shrink-wraps.
     final width = bounded && !_inline && !_isFlexItem()
         ? maxW
         : math.min(contentWidth, maxW);
     final size = constraints.constrain(Size(width, y));
-    // // Stretch: a container given more height than its lines need (for example a flex item
-    // // stretched by its own parent) shares the extra among them. For the usual single line
-    // // that makes the line as tall as the container, so centered items center within it.
+    // Stretch: a container given more height than its lines need (for example a flex item
+    // stretched by its own parent) shares the extra among them. For the usual single line
+    // that makes the line as tall as the container, so centered items center within it.
     final extra = size.height - y;
     if (extra > 0.01) {
       final share = extra / lines.length;
@@ -1069,7 +1069,7 @@ class _RenderBsFlex extends RenderBox
     if (!dry) {
       for (final item in items) {
         final align = item.alignSelf ?? _align;
-        // // An item wider than the container still centers: its overflow is shared by both sides.
+        // An item wider than the container still centers: its overflow is shared by both sides.
         final free = size.width - item.outerWidth;
         var x = item.ms;
         if (item.autoStart && item.autoEnd) {

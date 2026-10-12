@@ -107,11 +107,11 @@ class BsApp extends StatelessWidget {
       ],
       fontSize: BsTypography.fontSizeBase,
       fontWeight: BsTypography.fontWeightBase,
-      // // The base line height, inherited by every widget that does not set its own.
+      // The base line height, inherited by every widget that does not set its own.
       height: BsTypography.lineHeightBase,
-      // // Half-leading goes above and below the glyphs equally, as on the web; Flutter's default
-      // // splits it in proportion to ascent and descent, which sits text about a pixel high in a
-      // // 1.5 line box.
+      // Half-leading goes above and below the glyphs equally, as on the web; Flutter's default
+      // splits it in proportion to ascent and descent, which sits text about a pixel high in a
+      // 1.5 line box.
       leadingDistribution: TextLeadingDistribution.even,
     );
   }

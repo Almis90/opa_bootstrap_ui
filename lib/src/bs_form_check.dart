@@ -71,7 +71,7 @@ class BsFormCheck extends StatelessWidget {
       child: _SpaceToggles(
         enabled: enabled,
         onToggle: onTap,
-        // // Focus, not keyboard focus only: a clicked checkbox keeps its ring.
+        // Focus, not keyboard focus only: a clicked checkbox keeps its ring.
         child: BsFocusableBuilder(
           enabled: enabled,
           builder: (context, focused) {
@@ -205,8 +205,8 @@ class _BsFormCheckGlyph extends StatelessWidget {
         accent ??
         style.checkInputCheckedBackground ??
         BsFormStyle.defaults.checkInputCheckedBackground!;
-    // // A checked box keeps its border, in the checked background's color; the glyph is drawn
-    // // inside it.
+    // A checked box keeps its border, in the checked background's color; the glyph is drawn
+    // inside it.
     final borderSide = value
         ? BorderSide(color: checkedBackground, width: border.width)
         : accent != null
@@ -238,11 +238,11 @@ class _BsFormCheckGlyph extends StatelessWidget {
       child: !value
           ? null
           : type == BsFormCheckType.radio
-          // // A plain DecoratedBox: a smooth dot is centered exactly, while a snapped box would round
-          // // its half-pixel edges and push the dot off center.
+          // A plain DecoratedBox: a smooth dot is centered exactly, while a snapped box would round
+          // its half-pixel edges and push the dot off center.
           ? Center(
               child: SizedBox(
-                // // The dot's diameter is half of the box inside its border.
+                // The dot's diameter is half of the box inside its border.
                 width: (size - 2 * border.width) / 2,
                 height: (size - 2 * border.width) / 2,
                 child: DecoratedBox(
@@ -356,7 +356,7 @@ class BsFormCheckInput extends StatelessWidget {
                       onChanged!(!value);
                     }
                   : null,
-              // // A fixed-size box that a stretching flex line cannot grow.
+              // A fixed-size box that a stretching flex line cannot grow.
               child: Align(
                 alignment: AlignmentDirectional.topStart,
                 widthFactor: 1,

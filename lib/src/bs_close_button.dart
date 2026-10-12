@@ -31,12 +31,12 @@ class _BsCloseButtonState extends State<BsCloseButton> {
     final style = (isDark ? BsCloseButtonStyle.darkDefaults : BsCloseButtonStyle.defaults).merge(widget.style);
     final enabled = widget.onPressed != null;
 
-    // // The button is a fixed square that never stretches. A plain SizedBox cannot guarantee
-    // // that on its own: a parent that hands down tight constraints (for example a Container with
-    // // an infinite width wrapping this directly, with no Center, Align or Row of its own) still
-    // // clamps the SizedBox's requested size to the tight value. UnconstrainedBox breaks out of
-    // // that by giving its child loose constraints regardless of what the parent forces, so the
-    // // button always renders at its natural size.
+    // The button is a fixed square that never stretches. A plain SizedBox cannot guarantee
+    // that on its own: a parent that hands down tight constraints (for example a Container with
+    // an infinite width wrapping this directly, with no Center, Align or Row of its own) still
+    // clamps the SizedBox's requested size to the tight value. UnconstrainedBox breaks out of
+    // that by giving its child loose constraints regardless of what the parent forces, so the
+    // button always renders at its natural size.
     final glyphSize = style.size ?? BsCloseButtonStyle.defaultSize;
     final padding = style.padding ?? BsCloseButtonStyle.defaultPadding;
     final resolvedPadding = padding.resolve(Directionality.of(context));
@@ -103,8 +103,8 @@ class _BsCloseGlyphPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    // // Two strokes 2 units wide with round ends, from (1, 1) to (15, 15) of a 16-unit square,
-    // // so that the glyph fills the square.
+    // Two strokes 2 units wide with round ends, from (1, 1) to (15, 15) of a 16-unit square,
+    // so that the glyph fills the square.
     final unit = size.width / 16;
     final paint = Paint()
       ..color = color

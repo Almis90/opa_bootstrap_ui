@@ -108,13 +108,13 @@ class _BsFormControlState extends State<BsFormControl>
   FocusNode get _focusNode =>
       widget.focusNode ?? (_ownedFocusNode ??= FocusNode());
 
-  // // Switching browser tabs (or windows) blurs the page's text input, and Flutter web's engine
-  // // answers by closing the text-input connection, which unfocuses this field before the
-  // // window's `AppLifecycleState.inactive` arrives, so the framework's own restore of focus on
-  // // resume (it only remembers a node that is still focused when the app goes inactive) has
-  // // nothing to restore. A native text input keeps focus across a tab switch, so this does the
-  // // same: a focus loss immediately followed by the app going inactive is the window losing
-  // // focus, not the user moving on, and gets undone on resume.
+  // Switching browser tabs (or windows) blurs the page's text input, and Flutter web's engine
+  // answers by closing the text-input connection, which unfocuses this field before the
+  // window's `AppLifecycleState.inactive` arrives, so the framework's own restore of focus on
+  // resume (it only remembers a node that is still focused when the app goes inactive) has
+  // nothing to restore. A native text input keeps focus across a tab switch, so this does the
+  // same: a focus loss immediately followed by the app going inactive is the window losing
+  // focus, not the user moving on, and gets undone on resume.
   bool _hadFocus = false;
   bool _justLostFocus = false;
   Timer? _justLostFocusTimer;
@@ -232,16 +232,16 @@ class _BsFormControlState extends State<BsFormControl>
       null => style.inputBorderColor ?? BsFormStyle.defaultInputBorderColor,
     };
 
-    // // A Container (not a bare DecoratedBox and Padding): a border drawn by DecoratedBox sits
-    // // over its child's box instead of adding to it, which would leave the control 2px short of
-    // // its intended height (line height, padding and border).
+    // A Container (not a bare DecoratedBox and Padding): a border drawn by DecoratedBox sits
+    // over its child's box instead of adding to it, which would leave the control 2px short of
+    // its intended height (line height, padding and border).
     final validated = widget.valid != null;
     final effectivePadding = !validated
         ? padding
         : padding
               .resolve(Directionality.of(context))
               .copyWith(
-                // // Room for the feedback icon: 1.5 times the font size plus 12.
+                // Room for the feedback icon: 1.5 times the font size plus 12.
                 right: fontSize * 1.5 + 12,
               );
     final box = BsDecoratedContainer(
@@ -314,9 +314,9 @@ class _BsFormControlState extends State<BsFormControl>
                 leadingDistribution: TextLeadingDistribution.even,
               ),
               cursorColor: style.inputColor ?? BsFormStyle.defaultInputColor,
-              // // Browsers draw a 1px caret the height of the font's ascent and descent (about 1.17 times
-              // // the font size for Roboto), not Flutter's 2px full-line-height one, which, in a 1.5 line
-              // // box, is also visibly taller.
+              // Browsers draw a 1px caret the height of the font's ascent and descent (about 1.17 times
+              // the font size for Roboto), not Flutter's 2px full-line-height one, which, in a 1.5 line
+              // box, is also visibly taller.
               cursorWidth: 1,
               cursorHeight: fontSize * 1.17,
               backgroundCursorColor: BsColors.gray400,
@@ -335,7 +335,7 @@ class _BsFormControlState extends State<BsFormControl>
       ),
     );
     if (!validated) return box;
-    // // The feedback icon, centered, a little in from the end of the padding box.
+    // The feedback icon, centered, a little in from the end of the padding box.
     return Stack(
       children: [
         box,

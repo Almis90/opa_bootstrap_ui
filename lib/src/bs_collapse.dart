@@ -205,8 +205,8 @@ class _BsCollapseState extends State<BsCollapse> with SingleTickerProviderStateM
       );
     }
 
-    // // While it opens or closes the content stays at its full size and is revealed, or covered,
-    // // from the start edge, rather than being swapped for nothing the moment a close begins.
+    // While it opens or closes the content stays at its full size and is revealed, or covered,
+    // from the start edge, rather than being swapped for nothing the moment a close begins.
     return ClipRect(
       child: Align(
         // AlignmentDirectional, so the horizontal collapse grows from the

@@ -116,7 +116,7 @@ class BsNav extends StatelessWidget {
 
     if (variant != BsNavVariant.tabs) return links;
 
-    // // The line the active tab opens onto.
+    // The line the active tab opens onto.
     return BsDecoratedBox(
       decoration: BoxDecoration(
         border: Border(
@@ -133,8 +133,8 @@ class BsNav extends StatelessWidget {
   Widget _buildLinks(BuildContext context, BsNavStyle style) {
     final isUnderline = variant == BsNavVariant.underline;
 
-    // // The underline variant puts a gap between its items, on top of the links' own padding;
-    // // the other variants rely on padding alone.
+    // The underline variant puts a gap between its items, on top of the links' own padding;
+    // the other variants rely on padding alone.
     final gap = isUnderline
         ? style.underlineGap ?? BsNavStyle.defaultUnderlineGap
         : 0.0;
@@ -167,7 +167,7 @@ class BsNav extends StatelessWidget {
       );
     }
 
-    // // Fill: the items share out all the space, so the row takes it all.
+    // Fill: the items share out all the space, so the row takes it all.
     if (fill) {
       return Row(
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -201,8 +201,8 @@ class BsNav extends StatelessWidget {
       );
     }
 
-    // // Links that do not fit on a line continue on the next, and the nav is only as wide as its
-    // // links, so that a sibling in a shared row keeps its own space.
+    // Links that do not fit on a line continue on the next, and the nav is only as wide as its
+    // links, so that a sibling in a shared row keeps its own space.
     return Wrap(
       alignment: _wrapAlignment(justify()),
       crossAxisAlignment: WrapCrossAlignment.end,
@@ -405,7 +405,7 @@ class _BsNavLinkWidgetState extends State<_BsNavLinkWidget> {
         border: border,
         borderRadius: switch (variant) {
           BsNavVariant.pills => BorderRadius.circular(radius),
-          // // Tabs: only the top corners are rounded.
+          // Tabs: only the top corners are rounded.
           BsNavVariant.tabs => BorderRadius.vertical(
             top: Radius.circular(radius),
           ),
@@ -425,11 +425,11 @@ class _BsNavLinkWidgetState extends State<_BsNavLinkWidget> {
       ),
       child: Padding(
         padding: _padding(switch (variant) {
-          // // Underline: no horizontal padding, and a transparent bottom border that adds to the
-          // // link's height.
+          // Underline: no horizontal padding, and a transparent bottom border that adds to the
+          // link's height.
           BsNavVariant.underline => _underlinePadding(style),
-          // // Tabs: a transparent border that is always present (the active tab only colors it) and
-          // // part of the size.
+          // Tabs: a transparent border that is always present (the active tab only colors it) and
+          // part of the size.
           BsNavVariant.tabs =>
             (style.linkPadding ?? BsNavStyle.defaultLinkPadding).add(
               const EdgeInsets.all(1),
@@ -451,7 +451,7 @@ class _BsNavLinkWidgetState extends State<_BsNavLinkWidget> {
       onExit: enabled ? (_) => setState(() => _hovered = false) : null,
       child: BsFocusableBuilder(
         enabled: enabled,
-        // // A focus ring only for keyboard focus.
+        // A focus ring only for keyboard focus.
         focusVisibleOnly: true,
         builder: (context, focused) => GestureDetector(
           behavior: HitTestBehavior.opaque,
