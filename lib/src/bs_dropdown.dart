@@ -155,6 +155,7 @@ class BsDropdown extends StatefulWidget {
     this.direction = BsDropdownDirection.down,
     this.alignEnd = false,
     this.flip = true,
+    this.positionStatic = false,
     this.style,
     this.onOpenChanged,
     this.controller,
@@ -189,6 +190,13 @@ class BsDropdown extends StatefulWidget {
   /// and as a last resort slides along the toggle to stay on screen. Pass
   /// false to always open exactly where asked.
   final bool flip;
+
+  /// `position: static` (Bootstrap's `.position-static`, and what
+  /// `.navbar-nav .dropdown-menu` is in a collapsed navbar): the menu is not
+  /// popped over the page but laid out in the flow right below the toggle, as
+  /// wide as the toggle's container, and pushes what follows down. Ignores
+  /// [direction], [alignEnd] and [flip].
+  final bool positionStatic;
 
   /// Style overrides layered on top of [BsDropdownStyle.defaults]. Pass
   /// [BsDropdownStyle.dark] for `.dropdown-menu-dark`.
@@ -323,6 +331,8 @@ class _BsDropdownState extends State<BsDropdown>
   Widget build(BuildContext context) {
     final style = _style;
 
+    if (widget.positionStatic) return _buildStatic(style);
+
     return CompositedTransformTarget(
       key: placementTargetKey,
       link: _link,
@@ -351,6 +361,47 @@ class _BsDropdownState extends State<BsDropdown>
             overlayChildBuilder: (context) => _buildOverlay(style),
             child: widget.toggleBuilder(context, _toggle, _controller.isShown),
           ),
+        ),
+      ),
+    );
+  }
+
+  /// [BsDropdown.positionStatic]: the toggle, then (while open) the menu in the
+  /// flow below it, `.125rem` down (`--bs-dropdown-spacer`).
+  Widget _buildStatic(BsDropdownStyle style) {
+    return TapRegion(
+      groupId: this,
+      onTapOutside: (_) => _controller.hide(),
+      child: Focus(
+        canRequestFocus: false,
+        skipTraversal: true,
+        onKeyEvent: (node, event) {
+          if (event is KeyDownEvent &&
+              event.logicalKey == LogicalKeyboardKey.escape &&
+              _controller.isShown) {
+            _controller.hide();
+            return KeyEventResult.handled;
+          }
+          return KeyEventResult.ignored;
+        },
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            widget.toggleBuilder(context, _toggle, _controller.isShown),
+            if (_controller.isShown)
+              Padding(
+                padding: EdgeInsets.only(
+                  top: style.spacer ?? BsDropdownStyle.defaultSpacer,
+                ),
+                child: _BsDropdownMenu(
+                  items: _effectiveItems,
+                  style: style,
+                  onItemTap: _controller.hide,
+                  fill: true,
+                ),
+              ),
+          ],
         ),
       ),
     );
@@ -409,11 +460,15 @@ class _BsDropdownMenu extends StatelessWidget {
     required this.items,
     required this.style,
     required this.onItemTap,
+    this.fill = false,
   });
 
   final List<BsDropdownEntry> items;
   final BsDropdownStyle style;
   final VoidCallback onItemTap;
+
+  /// A static menu: as wide as it is given, not as wide as its content.
+  final bool fill;
 
   @override
   Widget build(BuildContext context) {
@@ -430,63 +485,60 @@ class _BsDropdownMenu extends StatelessWidget {
     // `topRight`/`bottomRight` follower anchor reads that bogus width to
     // compute its horizontal offset — shift the entire menu off to the
     // left of the toggle instead of hugging its right edge.
-    return IntrinsicWidth(
-      child: ConstrainedBox(
-        constraints: BoxConstraints(
-          minWidth: style.minWidth ?? BsDropdownStyle.defaultMinWidth,
-        ),
-        child: BsDecoratedBox(
-          // (no colour here: `.dropdown-menu` has `background-clip: padding-box`,
-          // so the translucent border is painted over what is *behind* the
-          // menu, not over the menu's own background; the background is the
-          // inner box below)
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: style.borderColor ?? BsDropdownStyle.defaultBorderColor,
-              width: style.borderWidth ?? BsDropdownStyle.defaultBorderWidth,
-            ),
-            borderRadius: borderRadius,
-            boxShadow: style.boxShadow,
+    final box = ConstrainedBox(
+      constraints: BoxConstraints(
+        minWidth: style.minWidth ?? BsDropdownStyle.defaultMinWidth,
+      ),
+      child: BsDecoratedBox(
+        // (no colour here: `.dropdown-menu` has `background-clip: padding-box`,
+        // so the translucent border is painted over what is *behind* the
+        // menu, not over the menu's own background; the background is the
+        // inner box below)
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: style.borderColor ?? BsDropdownStyle.defaultBorderColor,
+            width: style.borderWidth ?? BsDropdownStyle.defaultBorderWidth,
           ),
-          // The border takes room (box-sizing: border-box): the menu's content
-          // sits inside it, so a hovered item's background stops at the border
-          // instead of painting over it, and the menu is as tall and wide as
-          // the CSS one. The clip follows the inside of the rounded border.
-          child: Padding(
-            padding: EdgeInsets.all(
-              style.borderWidth ?? BsDropdownStyle.defaultBorderWidth,
-            ),
-            child: BsClipRRect(
-              borderRadius: BorderRadius.circular(
-                math.max(
-                  0,
-                  (style.borderRadius ?? BsDropdownStyle.defaultBorderRadius) -
-                      (style.borderWidth ?? BsDropdownStyle.defaultBorderWidth),
-                ),
+          borderRadius: borderRadius,
+          boxShadow: style.boxShadow,
+        ),
+        // The border takes room (box-sizing: border-box): the menu's content
+        // sits inside it, so a hovered item's background stops at the border
+        // instead of painting over it, and the menu is as tall and wide as
+        // the CSS one. The clip follows the inside of the rounded border.
+        child: Padding(
+          padding: EdgeInsets.all(
+            style.borderWidth ?? BsDropdownStyle.defaultBorderWidth,
+          ),
+          child: BsClipRRect(
+            borderRadius: BorderRadius.circular(
+              math.max(
+                0,
+                (style.borderRadius ?? BsDropdownStyle.defaultBorderRadius) -
+                    (style.borderWidth ?? BsDropdownStyle.defaultBorderWidth),
               ),
-              child: BsDecoratedBox(
-                decoration: BoxDecoration(
-                  color: style.background ?? BsDropdownStyle.defaultBackground,
-                ),
-                child: Padding(
-                  padding: style.padding ?? BsDropdownStyle.defaultPadding,
-                  child: DefaultTextStyle.merge(
-                    style: TextStyle(
-                      color: style.color ?? BsDropdownStyle.defaultColor,
-                      fontSize:
-                          style.fontSize ?? BsDropdownStyle.defaultFontSize,
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        for (var i = 0; i < items.length; i++) ...[
-                          if (i > 0 && (style.itemSpacing ?? 0) > 0)
-                            SizedBox(height: style.itemSpacing),
-                          _buildEntry(items[i]),
-                        ],
+            ),
+            child: BsDecoratedBox(
+              decoration: BoxDecoration(
+                color: style.background ?? BsDropdownStyle.defaultBackground,
+              ),
+              child: Padding(
+                padding: style.padding ?? BsDropdownStyle.defaultPadding,
+                child: DefaultTextStyle.merge(
+                  style: TextStyle(
+                    color: style.color ?? BsDropdownStyle.defaultColor,
+                    fontSize: style.fontSize ?? BsDropdownStyle.defaultFontSize,
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      for (var i = 0; i < items.length; i++) ...[
+                        if (i > 0 && (style.itemSpacing ?? 0) > 0)
+                          SizedBox(height: style.itemSpacing),
+                        _buildEntry(items[i]),
                       ],
-                    ),
+                    ],
                   ),
                 ),
               ),
@@ -495,6 +547,7 @@ class _BsDropdownMenu extends StatelessWidget {
         ),
       ),
     );
+    return fill ? box : IntrinsicWidth(child: box);
   }
 
   Widget _buildEntry(BsDropdownEntry entry) {

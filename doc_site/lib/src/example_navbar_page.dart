@@ -201,6 +201,8 @@ BsNavbarItem navbarDropdownItem(
             expandBreakpoint != null &&
             MediaQuery.sizeOf(context).width >= expandBreakpoint.minWidth;
         return BsDropdown(
+          // `.navbar-nav .dropdown-menu { position: static }` below the breakpoint
+          positionStatic: !expanded,
           direction: up ? BsDropdownDirection.up : BsDropdownDirection.down,
           toggleBuilder: (context, toggle, isOpen) => NavbarDropdownToggle(
             onToggle: toggle,

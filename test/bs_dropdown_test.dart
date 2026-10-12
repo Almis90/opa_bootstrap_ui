@@ -71,6 +71,46 @@ void main() {
     expect(focusNode.hasFocus, isTrue);
   });
 
+  testWidgets('positionStatic lays the menu out in the flow, pushing what follows down', (tester) async {
+    await tester.pumpWidget(
+      BsApp(
+        home: Align(
+          alignment: Alignment.topLeft,
+          child: SizedBox(
+            width: 300,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                BsDropdown(
+                  positionStatic: true,
+                  items: const [BsDropdownItem(child: Text('Item'))],
+                  toggleBuilder: (context, toggle, isOpen) =>
+                      GestureDetector(onTap: toggle, child: const SizedBox(height: 40, child: Text('Toggle'))),
+                ),
+                const Text('After'),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+    final before = tester.getTopLeft(find.text('After')).dy;
+    await tester.tap(find.text('Toggle'));
+    await tester.pumpAndSettle();
+    expect(find.text('Item'), findsOneWidget);
+    // Pushed down by the menu: 2px spacer + border + 8px padding + a 32px item
+    // + 8px padding + border.
+    expect(tester.getTopLeft(find.text('After')).dy, before + 2 + 1 + 8 + 32 + 8 + 1);
+    // As wide as its container.
+    final menu = tester.getRect(find.ancestor(of: find.text('Item'), matching: find.byType(ConstrainedBox)).first);
+    expect(menu.width, 300);
+
+    await tester.tap(find.text('Item'));
+    await tester.pumpAndSettle();
+    expect(find.text('Item'), findsNothing);
+    expect(tester.getTopLeft(find.text('After')).dy, before);
+  });
+
   testWidgets('Tapping outside the menu closes it', (tester) async {
     await tester.pumpWidget(buildDropdown());
     await tester.tap(find.text('Toggle'));
