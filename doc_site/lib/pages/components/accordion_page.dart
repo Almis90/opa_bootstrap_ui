@@ -239,7 +239,7 @@ BsAccordion(
             DocStyleRow(field: 'iconColor', defaultValue: 'BsColors.gray900; same as color'),
             DocStyleRow(field: 'iconActiveColor', defaultValue: '#052c65; same as buttonActiveColor'),
             DocStyleRow(field: 'iconTransitionDuration', defaultValue: '200ms'),
-            DocStyleRow(field: 'iconRotationTurns', defaultValue: '0.5 (a 180° flip)'),
+            DocStyleRow(field: 'iconRotationTurns', defaultValue: '-0.5 (a 180° flip, counter-clockwise like rotate(-180deg))'),
             DocStyleRow(field: 'focusRingColor', defaultValue: 'BsColors.blue tinted 15% toward white, drawn at 50% opacity as the glow'),
             DocStyleRow(field: 'focusRingWidth', defaultValue: '4'),
           ],

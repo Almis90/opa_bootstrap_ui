@@ -448,6 +448,8 @@ class _BsAccordionItemViewState extends State<_BsAccordionItemView> {
                         ),
                         const SizedBox(width: 12),
                         AnimatedRotation(
+                          // `$accordion-icon-transition`: `transform .2s ease-in-out`
+                          curve: Curves.easeInOut,
                           turns: widget.isExpanded
                               ? (style.iconRotationTurns ?? BsAccordionStyle.defaultIconRotationTurns)
                               : 0,
@@ -509,19 +511,23 @@ class _BsChevronPainter extends CustomPainter {
 
   final Color color;
 
+  /// `$accordion-button-icon`: `<path d='m2 5 6 6 6-6'/>` in a 16-unit viewBox,
+  /// stroked with the SVG default 1 unit width (1.25px at the 20px size),
+  /// round caps and joins.
   @override
   void paint(Canvas canvas, Size size) {
+    final unit = size.width / 16;
     final paint = Paint()
       ..color = color
       ..style = PaintingStyle.stroke
-      ..strokeWidth = size.width * 0.12
+      ..strokeWidth = unit
       ..strokeCap = StrokeCap.round
       ..strokeJoin = StrokeJoin.round;
 
     final path = Path()
-      ..moveTo(size.width * 0.2, size.height * 0.35)
-      ..lineTo(size.width * 0.5, size.height * 0.65)
-      ..lineTo(size.width * 0.8, size.height * 0.35);
+      ..moveTo(2 * unit, 5 * unit)
+      ..lineTo(8 * unit, 11 * unit)
+      ..lineTo(14 * unit, 5 * unit);
 
     canvas.drawPath(path, paint);
   }

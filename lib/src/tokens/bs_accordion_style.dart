@@ -172,7 +172,8 @@ class BsAccordionStyle {
   static Color get defaultDarkIconColor => BsVariant.primary.darkTextEmphasis;
 
   static const Duration defaultIconTransitionDuration = Duration(milliseconds: 200);
-  static const double defaultIconRotationTurns = 0.5;
+  /// `$accordion-icon-transform` (`rotate(-180deg)`): half a turn counter-clockwise.
+  static const double defaultIconRotationTurns = -0.5;
   static Color get defaultButtonActiveBackground => BsColorUtils.tint(BsVariant.primary.color, 0.8);
 
   /// `$accordion-button-active-bg-dark` has no explicit SCSS override, but
