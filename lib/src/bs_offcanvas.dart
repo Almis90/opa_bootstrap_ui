@@ -6,31 +6,27 @@ import 'tokens/bs_offcanvas_style.dart';
 import 'tokens/bs_transitions.dart';
 import 'bs_decorated_box.dart';
 
-/// `.offcanvas-start`/`-end`/`-top`/`-bottom`: which viewport edge a
-/// [BsOffcanvas] slides in from.
+/// Which viewport edge a [BsOffcanvas] slides in from.
 enum BsOffcanvasPlacement { start, end, top, bottom }
 
-/// Opens a Bootstrap offcanvas (`.offcanvas`), the same way [showBsModal]
-/// builds on [showGeneralDialog] — a route with an animated backdrop, but
-/// sliding in from [placement]'s edge and sized to it (a fixed width for
-/// [BsOffcanvasPlacement.start]/[BsOffcanvasPlacement.end], a fraction of
-/// the viewport height for [BsOffcanvasPlacement.top]/
-/// [BsOffcanvasPlacement.bottom]) rather than centered like a modal.
+/// Opens a Bootstrap offcanvas, the way [showBsModal] builds on [showGeneralDialog]: a route
+/// with an animated backdrop, but sliding in from [placement]'s edge and sized to it (a fixed
+/// width for [BsOffcanvasPlacement.start] and [BsOffcanvasPlacement.end], a fraction of the
+/// viewport height for [BsOffcanvasPlacement.top] and [BsOffcanvasPlacement.bottom]) rather
+/// than centered like a modal.
 ///
-/// [builder] typically returns a [BsOffcanvas] with a matching [placement],
-/// so its border lands on the edge it slides in from. Dismiss by popping
-/// the route (e.g. `Navigator.of(context).pop()`) — or drive it through a
-/// [BsOffcanvasController] instead, for [BsOffcanvasController.hide] plus
-/// [onShow]/[onShown]/[onHide]/[onHidden] lifecycle events.
+/// [builder] typically returns a [BsOffcanvas] with a matching [placement], so its border lands
+/// on the edge it slides in from. Dismiss by popping the route (for example
+/// `Navigator.of(context).pop()`), or drive it through a [BsOffcanvasController] instead, for
+/// [BsOffcanvasController.hide] plus the [onShow], [onShown], [onHide] and [onHidden] lifecycle
+/// events.
 ///
-/// [onShow] fires synchronously, right here, before the route is even
-/// pushed. [onShown] fires once the slide-in transition completes,
-/// [onHide] once the route starts sliding back out — for whatever reason
-/// (this covers every dismissal path: [BsOffcanvasController.hide],
-/// `Navigator.pop`, an outside tap on [barrierDismissible], the system back
-/// button) — and [onHidden] once it's fully gone, mirroring Bootstrap's
-/// `show.bs.offcanvas`/`shown.bs.offcanvas`/`hide.bs.offcanvas`/
-/// `hidden.bs.offcanvas`.
+/// [onShow] fires synchronously, right here, before the route is even pushed. [onShown] fires
+/// once the slide-in transition completes, [onHide] once the route starts sliding back out, for
+/// whatever reason (this covers every dismissal path: [BsOffcanvasController.hide],
+/// `Navigator.pop`, an outside tap on [barrierDismissible], the system back button), and
+/// [onHidden] once it is fully gone. They mirror Bootstrap's `show`, `shown`, `hide` and
+/// `hidden` offcanvas events.
 Future<T?> showBsOffcanvas<T>({
   required BuildContext context,
   required WidgetBuilder builder,
@@ -93,9 +89,8 @@ Future<T?> showBsOffcanvas<T>({
     },
     transitionBuilder: (context, animation, secondaryAnimation, child) {
       final curved = CurvedAnimation(parent: animation, curve: Curves.easeOut);
-      // .start/.end mirror Bootstrap's own logical placements — which
-      // physical edge they slide in from flips with Directionality, the
-      // same way .offcanvas-start/.offcanvas-end do in Bootstrap's RTL CSS.
+      // // Start and end are logical placements: which physical edge they slide in from flips with
+      // // the text direction.
       final isRtl = Directionality.of(context) == TextDirection.rtl;
       final beginOffset = switch (placement) {
         BsOffcanvasPlacement.start => Offset(isRtl ? 1 : -1, 0),
@@ -261,8 +256,8 @@ class _BsOffcanvasPositioned extends StatelessWidget {
   }
 }
 
-/// `.offcanvas`: the bordered panel holding [header] and [body], with a
-/// border on the edge it slides in from per [placement].
+/// The bordered panel holding [header] and [body], with a border on the edge it slides in from
+/// per [placement].
 class BsOffcanvas extends StatelessWidget {
   const BsOffcanvas({
     super.key,
@@ -324,8 +319,7 @@ class BsOffcanvas extends StatelessWidget {
   }
 }
 
-/// `.offcanvas-header`: [child] (typically a title) plus an optional close
-/// button.
+/// [child] (typically a title) plus an optional close button.
 class BsOffcanvasHeader extends StatelessWidget {
   const BsOffcanvasHeader({super.key, required this.child, this.onClose, this.style});
 
@@ -359,8 +353,7 @@ class BsOffcanvasHeader extends StatelessWidget {
   }
 }
 
-/// `.offcanvas-body`: the offcanvas's main, internally-scrollable content
-/// area.
+/// The offcanvas's main, internally scrollable content area.
 class BsOffcanvasBody extends StatelessWidget {
   const BsOffcanvasBody({super.key, required this.child, this.style});
 

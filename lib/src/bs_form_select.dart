@@ -8,7 +8,7 @@ import 'tokens/bs_dropdown_style.dart';
 import 'tokens/bs_form_style.dart';
 import 'bs_decorated_box.dart';
 
-/// A single `<option>` in a [BsFormSelect].
+/// A single option in a [BsFormSelect].
 class BsFormSelectItem<T> {
   const BsFormSelectItem({required this.value, required this.label});
 
@@ -18,8 +18,8 @@ class BsFormSelectItem<T> {
   final Widget label;
 }
 
-/// A Bootstrap select (`.form-select`): a [BsFormControl]-styled toggle that
-/// opens a [BsDropdown] menu of [items].
+/// A Bootstrap select: a [BsFormControl]-styled toggle that opens a [BsDropdown] menu of
+/// [items].
 class BsFormSelect<T> extends StatelessWidget {
   const BsFormSelect({
     super.key,
@@ -45,10 +45,10 @@ class BsFormSelect<T> extends StatelessWidget {
   /// Shown when [value] doesn't match any [items] entry.
   final Widget? placeholder;
 
-  /// `.form-select-sm`/`.form-select-lg`.
+  /// The control's size.
   final BsFormControlSize size;
 
-  /// `.is-valid`/`.is-invalid`: tints the border and shows the feedback icon.
+  /// The validation state: tints the border and shows the feedback icon.
   final bool? valid;
 
   /// Style overrides layered on top of [BsFormStyle.defaults].
@@ -94,8 +94,8 @@ class BsFormSelect<T> extends StatelessWidget {
     }
     final displayed = selectedLabel ?? placeholder ?? const SizedBox.shrink();
 
-    // A `<select>`'s list is at least as wide as the control, however short its
-    // options are: the menu takes the control's width as its minimum.
+    // // The list of options is at least as wide as the control, however short its options are:
+    // // the menu takes the control's width as its minimum.
     return LayoutBuilder(
       builder: (context, constraints) => BsDropdown(
         style: constraints.hasBoundedWidth
@@ -156,8 +156,7 @@ class BsFormSelect<T> extends StatelessWidget {
                     BsValidationIcon(valid: valid!, fontSize: fontSize),
                   ],
                   const SizedBox(width: 8),
-                  // `$form-select-indicator`: a 16x12 chevron (`m2 5 6 6 6-6`, a
-                  // 2px round stroke)
+                  // // The indicator: a 16x12 chevron drawn with a 2 logical pixel round stroke.
                   CustomPaint(
                     size:
                         style.selectBackgroundSize ??

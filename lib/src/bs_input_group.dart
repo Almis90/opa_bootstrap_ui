@@ -6,14 +6,12 @@ import 'bs_theme.dart';
 import 'tokens/bs_form_style.dart';
 import 'bs_decorated_box.dart';
 
-/// A Bootstrap input group (`.input-group`): a row of [children] — typically
-/// [BsInputGroupText] addons around one flexible control — sharing a single
-/// border, like Bootstrap merges each child's border into one seamless
-/// outline rather than stacking separate boxes.
+/// A Bootstrap input group: a row of [children], typically [BsInputGroupText] addons around
+/// one flexible control, sharing a single border so that the children read as one seamless
+/// outline rather than separate boxes.
 ///
-/// The flexible control (e.g. a [BsFormControl]) should be wrapped in
-/// [Expanded] and passed `showBorder: false`, since this widget draws the
-/// shared border itself.
+/// The flexible control (for example a [BsFormControl]) should be wrapped in [Expanded] and
+/// passed `showBorder: false`, since this widget draws the shared border itself.
 class BsInputGroup extends StatelessWidget {
   const BsInputGroup({
     super.key,
@@ -25,10 +23,10 @@ class BsInputGroup extends StatelessWidget {
 
   final List<Widget> children;
 
-  /// `.input-group-sm`/`.input-group-lg`.
+  /// The size of the group's controls.
   final BsFormControlSize size;
 
-  /// `.is-valid`/`.is-invalid` (the group's control): tints the shared border.
+  /// The validation state of the group's control: tints the shared border.
   final bool? valid;
 
   /// Style overrides layered on top of [BsFormStyle.defaults].
@@ -48,9 +46,8 @@ class BsInputGroup extends StatelessWidget {
         style.inputBorderRadiusLg ?? BsFormStyle.defaultInputBorderRadiusLg,
     };
 
-    // Container, not DecoratedBox: the border must add to the group's size
-    // (as each `.form-control`/`.input-group-text` border does in Bootstrap)
-    // instead of painting over its children.
+    // // A Container, not a DecoratedBox: the border must add to the group's size instead of
+    // // painting over its children.
     return BsDecoratedContainer(
       decoration: BoxDecoration(
         border: Border.all(
@@ -76,8 +73,7 @@ class BsInputGroup extends StatelessWidget {
   }
 }
 
-/// `.input-group-text`: a static label addon inside a [BsInputGroup] (e.g.
-/// `@`, `$`, `.00`).
+/// A static label addon inside a [BsInputGroup] (for example `@`, `$` or `.00`).
 class BsInputGroupText extends StatelessWidget {
   const BsInputGroupText({super.key, required this.child, this.style});
 

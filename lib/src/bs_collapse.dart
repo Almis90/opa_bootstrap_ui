@@ -4,10 +4,10 @@ import 'tokens/bs_transitions.dart';
 
 /// Which dimension a [BsCollapse] animates.
 enum BsCollapseAxis {
-  /// `.collapse` (default): animates height, growing/shrinking downward.
+  /// Animates height, growing and shrinking downward (the default).
   vertical,
 
-  /// `.collapse-horizontal`: animates width instead.
+  /// Animates width instead.
   horizontal,
 }
 
@@ -40,20 +40,16 @@ class BsCollapseController extends ChangeNotifier {
   }
 }
 
-/// A Bootstrap collapse (`.collapse`): reveals or hides [child] with an
-/// animated height (or, per [axis], width) transition, per
-/// `.collapsing`'s `$transition-collapse`.
+/// A Bootstrap collapse: reveals or hides [child] with an animated height (or, per [axis],
+/// width) transition.
 ///
-/// Controllable either way Bootstrap's own `data-bs-toggle="collapse"`
-/// can be: pass [isExpanded] and flip it from the parent (e.g. a
-/// [BsButton]'s `onPressed` calling `setState`), or pass a [controller] and
-/// call [BsCollapseController.expand]/[BsCollapseController.collapse]/
-/// [BsCollapseController.toggle] from anywhere with access to it. Ignored
-/// when [controller] is given — omit it and set [isExpanded] on the
-/// internally-owned controller instead. Like Bootstrap's block-level
-/// `.collapse`, the vertical axis expects a bounded width from its parent
-/// (e.g. a [Column]); the horizontal axis expects a bounded height instead
-/// (e.g. a fixed-height [Row]).
+/// Pass [isExpanded] and flip it from the parent (for example from a [BsButton]'s `onPressed`
+/// calling `setState`), or pass a [controller] and call [BsCollapseController.expand],
+/// [BsCollapseController.collapse] or [BsCollapseController.toggle] from anywhere with access to
+/// it. [isExpanded] is ignored when [controller] is given; omit it and set [isExpanded] on the
+/// internally-owned controller instead. The vertical axis expects a bounded width from its
+/// parent (for example a [Column]); the horizontal axis expects a bounded height instead (for
+/// example a fixed-height [Row]).
 class BsCollapse extends StatefulWidget {
   const BsCollapse({
     super.key,
@@ -79,10 +75,10 @@ class BsCollapse extends StatefulWidget {
   /// Which dimension animates.
   final BsCollapseAxis axis;
 
-  /// `$transition-collapse` duration override.
+  /// Duration of the transition.
   final Duration? duration;
 
-  /// `$transition-collapse` easing override.
+  /// Easing of the transition.
   final Curve? curve;
 
   /// Drives expand/collapse instead of [isExpanded]. Defaults to an
@@ -114,10 +110,9 @@ class _BsCollapseState extends State<BsCollapse> with SingleTickerProviderStateM
   bool _wasExpanded = false;
   bool? _pendingTransitionTarget;
 
-  /// Progresses 0 -> 1 over each transition, whichever way it goes: CSS
-  /// transitions `height` from where it is to where it is going with the same
-  /// timing function either way (`.collapsing`), so closing is `ease` too, not
-  /// opening's curve run backwards.
+  /// Progresses 0 to 1 over each transition, whichever way it goes: the size moves from where it
+  /// is to where it is going with the same easing either way, so closing uses the same curve as
+  /// opening rather than its reverse.
   late final AnimationController _transition = AnimationController(vsync: this)
     ..addListener(() => setState(() {}))
     ..addStatusListener(_handleTransitionStatus);
@@ -210,10 +205,8 @@ class _BsCollapseState extends State<BsCollapse> with SingleTickerProviderStateM
       );
     }
 
-    // While it opens or closes the content stays at its full size and is
-    // revealed, or covered, from the start edge (what `.collapsing`'s
-    // `overflow: hidden` and animated height do), rather than being swapped for
-    // nothing the moment a close begins.
+    // // While it opens or closes the content stays at its full size and is revealed, or covered,
+    // // from the start edge, rather than being swapped for nothing the moment a close begins.
     return ClipRect(
       child: Align(
         // AlignmentDirectional, so the horizontal collapse grows from the

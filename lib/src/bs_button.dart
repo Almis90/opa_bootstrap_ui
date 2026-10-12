@@ -10,15 +10,11 @@ import 'tokens/bs_link.dart';
 import 'tokens/bs_transitions.dart';
 import 'bs_decorated_box.dart';
 
-/// A Bootstrap-styled button (`.btn`).
+/// A Bootstrap-styled button.
 ///
-/// Supports the solid (`.btn-primary`) and outline (`.btn-outline-primary`)
-/// variants, Bootstrap's three button sizes, and hover/active/focus/disabled
-/// states, via [BsButtonStyle] (which replicates the shade/tint math from
-/// Bootstrap's `button-variant`/`button-outline-variant`/`button-size` Sass
-/// mixins). Pass [style] to override individual style "variables" on top of
-/// the [variant]/[outline]/[size] defaults, the same way a custom `.btn-*`
-/// class in Bootstrap reassigns only the CSS custom properties it needs.
+/// Supports solid and outline variants, Bootstrap's three button sizes, and hover, active,
+/// focus and disabled states, via [BsButtonStyle]. Pass [style] to override individual style
+/// values on top of the [variant], [outline] and [size] defaults.
 class BsButton extends StatefulWidget {
   const BsButton({
     super.key,
@@ -49,30 +45,26 @@ class BsButton extends StatefulWidget {
   /// The Bootstrap contextual color, e.g. [BsVariant.primary].
   final BsVariant variant;
 
-  /// Whether to render the outline style (`.btn-outline-*`) instead of the
-  /// solid style (`.btn-*`).
+  /// Whether to render the outline style instead of the solid style.
   final bool outline;
 
-  /// `.btn-link`: a link-colored, underlined button with no background or
-  /// border ([variant] and [outline] are ignored).
+  /// A link-colored, underlined button with no background or border ([variant] and [outline]
+  /// are ignored).
   final bool link;
 
   /// The button's size.
   final BsSize size;
 
-  /// Style overrides layered on top of the [variant]/[outline]/[size]
-  /// defaults. Only the fields set here are overridden; everything else
-  /// falls back to the default style, mirroring how a custom `.btn-*` class
-  /// in Bootstrap only reassigns the CSS variables it needs.
+  /// Style overrides layered on top of the [variant], [outline] and [size] defaults. Only the
+  /// fields set here are overridden; everything else falls back to the default style.
   final BsButtonStyle? style;
 
-  /// Whether to render the persistent `.active` state (e.g. the current
-  /// item in a `.btn-group`/pagination, a toggled button), which uses the
-  /// same `--bs-btn-active-*` colors/shadow as the transient pressed state.
+  /// Whether to render the persistent active state (for example the current item in a button
+  /// group or pagination, or a toggled button), which uses the same colors and shadow as the
+  /// transient pressed state.
   final bool active;
 
-  /// Whether to prevent the button's text from wrapping onto multiple
-  /// lines, mirroring Bootstrap's `$btn-white-space: nowrap` option.
+  /// Whether to prevent the button's text from wrapping onto multiple lines.
   final bool noWrap;
 
   /// `px-*`: horizontal padding in place of the [size]'s (`btn btn-lg px-4`).
@@ -167,7 +159,7 @@ class _BsButtonState extends State<BsButton> {
         focusNode: widget.focusNode,
         autofocus: widget.autofocus,
         enabled: enabled,
-        // `.btn:focus-visible`
+        // // A focus ring only for keyboard focus.
         focusVisibleOnly: true,
         builder: (context, focused) {
           final boxShadow = <BoxShadow>[

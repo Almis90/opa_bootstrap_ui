@@ -6,9 +6,8 @@ import 'bs_theme.dart';
 import 'tokens/bs_form_style.dart';
 import 'tokens/bs_transitions.dart';
 
-/// A Bootstrap floating label (`.form-floating`): a [label] that sits over
-/// the control until it's focused or has content, then shrinks and floats
-/// to the top-left corner.
+/// A Bootstrap floating label: a [label] that sits over the control until it is focused or has
+/// content, then shrinks and floats to the top-left corner.
 class BsFormFloating extends StatefulWidget {
   const BsFormFloating({
     super.key,
@@ -40,7 +39,7 @@ class BsFormFloating extends StatefulWidget {
 
   final bool obscureText;
 
-  /// `.form-control:disabled`: greys out the background and blocks input.
+  /// Grays out the background and blocks input.
   final bool enabled;
 
   final bool readOnly;
@@ -49,8 +48,8 @@ class BsFormFloating extends StatefulWidget {
 
   final TextInputType? keyboardType;
 
-  /// `.is-valid`/`.is-invalid`: tints the border [BsFormStyle.validColor] or
-  /// [BsFormStyle.invalidColor]. Null renders neither.
+  /// The validation state: tints the border [BsFormStyle.validColor] when true or
+  /// [BsFormStyle.invalidColor] when false. Null renders neither.
   final bool? valid;
 
   /// `rounded-top-*` on the input (`rounded-top-0`).
@@ -81,7 +80,7 @@ class _BsFormFloatingState extends State<BsFormFloating> {
 
   bool get _floated => _focusNode.hasFocus || _controller.text.isNotEmpty;
 
-  /// `$form-floating-transition`: `.1s ease-in-out`.
+  /// Duration of the label's move.
   static const _duration = Duration(milliseconds: 100);
 
   @override
@@ -114,7 +113,7 @@ class _BsFormFloatingState extends State<BsFormFloating> {
     final fontSize = style.inputFontSize ?? BsFormStyle.defaultInputFontSize;
     final borderWidth =
         style.inputBorderWidth ?? BsFormStyle.defaultInputBorderWidth;
-    // `.form-floating > label { color: rgba(var(--bs-body-color-rgb), .65) }`
+    // // The label is the body text color at 65% opacity.
     final labelColor = isDark
         ? const Color(0xA6DEE2E6)
         : const Color(0xA6212529);
@@ -128,7 +127,7 @@ class _BsFormFloatingState extends State<BsFormFloating> {
         BsFormStyle.defaultFloatingInputPaddingBottom;
     final lineHeight =
         style.floatingLineHeight ?? BsFormStyle.defaultFloatingLineHeight;
-    // (the label inherits the body's `line-height: 1.5`)
+    // // The label inherits the body's line height of 1.5.
     const labelLineHeight = 1.5;
     final disabledLabelColor =
         style.floatingLabelDisabledColor ??
@@ -166,11 +165,10 @@ class _BsFormFloatingState extends State<BsFormFloating> {
               ),
             ),
           ),
-          // `.form-floating > label`: at rest it sits where the input's text
-          // would (`padding: 1rem .75rem` in the 1px border); floated it is
-          // not moved by layout but by a transform, `scale(.85) translateY(-.5rem)
-          // translateX(.15rem)` from its top-start corner, which transitions in
-          // `.1s ease-in-out` (a color change is not part of the transition).
+          // // At rest the label sits where the input's text would. Floated, it is not moved by layout
+          // // but by a transform (scaled down and nudged up and in from its top-start corner), which
+          // // animates over 100 milliseconds, easing in and out; a color change is not part of the
+          // // animation.
           IgnorePointer(
             child: TweenAnimationBuilder<double>(
               tween: Tween<double>(end: _floated ? 1.0 : 0.0),

@@ -8,7 +8,7 @@ import 'tokens/bs_pagination_style.dart';
 import 'tokens/bs_transitions.dart';
 import 'bs_decorated_box.dart';
 
-/// A single `.page-item`/`.page-link` within a [BsPagination].
+/// A single page link within a [BsPagination].
 class BsPaginationItem {
   const BsPaginationItem({required this.child, this.onTap, this.active = false, this.disabled = false});
 
@@ -17,25 +17,19 @@ class BsPaginationItem {
 
   final VoidCallback? onTap;
 
-  /// `.active`: highlights this as the current page.
+  /// Highlights this as the current page.
   final bool active;
 
-  /// `.disabled`: dims the item and ignores taps.
+  /// Dims the item and ignores taps.
   final bool disabled;
 }
 
-/// A Bootstrap pagination (`.pagination`): a row of [items] rendered as one
-/// block with a shared border between them and only the row's outer
-/// corners rounded — the same overlap technique [BsButtonGroup] uses to
-/// join adjacent buttons.
+/// A Bootstrap pagination: a row of [items] rendered as one block with a shared border between
+/// them and only the row's outer corners rounded, the same overlap technique [BsButtonGroup]
+/// uses to join adjacent buttons.
 ///
-/// Bootstrap's own SCSS gives `.pagination` an essentially identical
-/// bordered-row structure to `.btn-group`, and neither Material nor
-/// Cupertino has a numbered-page-link widget to borrow from instead, so
-/// this reuses that in-package technique rather than reaching outside it.
-///
-/// Use [BsPagination.numberedItems] to generate a page-number-plus-prev/next
-/// item list for the common case.
+/// Use [BsPagination.numberedItems] to generate a page-number-plus-previous/next item list for
+/// the common case.
 class BsPagination extends StatelessWidget {
   const BsPagination({super.key, required this.items, this.wrap = false, this.style});
 
@@ -49,9 +43,8 @@ class BsPagination extends StatelessWidget {
   /// Style overrides layered on top of [BsPaginationStyle.defaults].
   final BsPaginationStyle? style;
 
-  /// Builds items for [pageCount] numbered pages plus prev/next arrows,
-  /// covering Bootstrap's most common `.pagination` example. [currentPage]
-  /// is 1-based; prev/next are disabled at the first/last page.
+  /// Builds items for [pageCount] numbered pages plus previous and next arrows. [currentPage]
+  /// is 1-based; previous and next are disabled at the first and last page.
   static List<BsPaginationItem> numberedItems({
     required int pageCount,
     required int currentPage,

@@ -10,16 +10,13 @@ import 'bs_decorated_box.dart';
 /// arrow pointing back at the trigger.
 enum BsPopoverPlacement { top, bottom, start, end }
 
-/// Programmatic control of a [BsPopover], independent of its
-/// [BsPopover.triggerBuilder]-driven open/close — mirrors Bootstrap's own
-/// `popover.enable()`/`.disable()`/`.toggleEnabled()`, `.show()`/`.hide()`/
-/// `.toggle()`, and `.setContent()` API, plus a `setPlacement` with no
-/// Bootstrap equivalent (see [BsTooltipController], which this mirrors).
+/// Programmatic control of a [BsPopover], independent of its [BsPopover.triggerBuilder]-driven
+/// open and close: enable and disable it, show, hide and toggle it, and override its content,
+/// placement and so on.
 ///
-/// Only overrides [BsPopover.content] — not [BsPopover.title] — since
-/// unlike `content`, `title` is already nullable on the widget itself, so a
-/// controller override couldn't tell "no override" apart from "override to
-/// no title" the way [setContent]'s null does.
+/// Only overrides [BsPopover.content], not [BsPopover.title]: the title is already nullable on
+/// the widget itself, so a controller override could not tell "no override" apart from
+/// "override to no title" the way [setContent]'s null does.
 class BsPopoverController extends ChangeNotifier {
   BsPopoverController({bool enabled = true}) {
     _enabled = enabled;
@@ -91,18 +88,14 @@ class BsPopoverController extends ChangeNotifier {
   }
 }
 
-/// A Bootstrap popover (`.popover`): a bordered bubble with an optional
-/// [title] and [content], pointed at its trigger by a small arrow.
+/// A Bootstrap popover: a bordered bubble with an optional [title] and [content], pointed at
+/// its trigger by a small arrow.
 ///
-/// Positioned and dismissed the same way [BsDropdown] anchors and closes
-/// its menu — [CompositedTransformTarget]/[CompositedTransformFollower]
-/// plus an [OverlayPortal] — since neither Material nor Cupertino has a
-/// popover-with-arrow primitive to draw from instead, and this package
-/// already solved the anchored-overlay problem once for [BsDropdown].
+/// Positioned and dismissed the way [BsDropdown] anchors and closes its menu, with a
+/// [CompositedTransformTarget], a [CompositedTransformFollower] and an [OverlayPortal].
 ///
-/// [triggerBuilder] mirrors [BsDropdown.toggleBuilder]: call `toggle` from
-/// the widget it returns (e.g. a [BsButton.onPressed]) to open/close the
-/// popover.
+/// [triggerBuilder] is handed a `toggle` callback: call it from the widget it returns (for
+/// example a [BsButton.onPressed]) to open and close the popover.
 class BsPopover extends StatefulWidget {
   const BsPopover({
     super.key,
@@ -125,11 +118,10 @@ class BsPopover extends StatefulWidget {
   final Widget Function(BuildContext context, VoidCallback toggle, bool isOpen)
   triggerBuilder;
 
-  /// `.popover-header`. Omit for a bodyless header, matching Bootstrap's
-  /// own `data-bs-title`-less popovers.
+  /// The popover's header. Omit for a popover with no header.
   final Widget? title;
 
-  /// `.popover-body`.
+  /// The popover's body.
   final Widget content;
 
   /// Which side of the trigger the bubble opens on. Null (the default) is the
@@ -258,7 +250,7 @@ class _BsPopoverState extends State<BsPopover>
   BsPopoverPlacement get _effectivePlacement =>
       _controller.placement ??
       widget.placement ??
-      // `placement: 'right'`: the physical right, so the start side in RTL.
+      // // The default placement is the physical right, so the start side in a right-to-left layout.
       (Directionality.of(context) == TextDirection.rtl
           ? BsPopoverPlacement.start
           : BsPopoverPlacement.end);
