@@ -377,7 +377,9 @@ class FootersExamplePage extends StatelessWidget {
                     child: Text('© $_year Company, Inc. All rights reserved.'),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(bottom: 16),
+                    // (1rem margin, and the `li`'s line box is 29px: the 24px icon
+                    // sits on the baseline with 5px of the line below it)
+                    padding: const EdgeInsets.only(bottom: 16 + 5),
                     child: BsFlex(
                       inline: true,
                       children: [

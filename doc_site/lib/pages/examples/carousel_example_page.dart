@@ -299,15 +299,20 @@ class CarouselExamplePage extends StatelessWidget {
           col: const BsResponsiveValue(xs: BsCol(12), md: BsCol(5)),
           child: Align(
             alignment: Alignment.topCenter,
-            child: AspectRatio(
-              aspectRatio: 1,
-              child: LayoutBuilder(
-                builder: (context, constraints) => PlaceholderImage(
-                  height: constraints.maxHeight,
-                  text: '500x500',
-                  fontSize: md ? 56 : 18,
-                  background: BsBody.secondaryBackgroundOf(context),
-                  color: secondary,
+            // `width="500" height="500"` with `.img-fluid.mx-auto`: 500px, or the
+            // column's width when that is less
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 500),
+              child: AspectRatio(
+                aspectRatio: 1,
+                child: LayoutBuilder(
+                  builder: (context, constraints) => PlaceholderImage(
+                    height: constraints.maxHeight,
+                    text: '500x500',
+                    fontSize: md ? 56 : 18,
+                    background: BsBody.secondaryBackgroundOf(context),
+                    color: secondary,
+                  ),
                 ),
               ),
             ),

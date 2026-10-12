@@ -94,22 +94,45 @@ class _Menu extends StatelessWidget {
     final shape = BorderRadius.circular(radius);
     Widget content = Padding(padding: padding, child: child);
     if (clip) content = ClipRRect(borderRadius: shape, child: content);
+    final text = DefaultTextStyle.merge(
+      style: TextStyle(color: style.color),
+      child: content,
+    );
+    // `.dropdown-menu` has `background-clip: padding-box`: the translucent border
+    // is painted over what is behind the menu, so the background is the box
+    // inside it.
     return BsTheme(
       brightness: dark ? Brightness.dark : Brightness.light,
       child: SizedBox(
         width: width,
-        child: BsDecoratedContainer(
-          decoration: BoxDecoration(
-            color: style.background,
-            border: border ? Border.all(color: style.borderColor!) : null,
-            borderRadius: shape,
-            boxShadow: shadow.shadows,
-          ),
-          child: DefaultTextStyle.merge(
-            style: TextStyle(color: style.color),
-            child: content,
-          ),
-        ),
+        child: border
+            ? BsDecoratedContainer(
+                decoration: BoxDecoration(
+                  border: Border.all(color: style.borderColor!),
+                  borderRadius: shape,
+                  boxShadow: shadow.shadows,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(1),
+                  child: BsDecoratedContainer(
+                    decoration: BoxDecoration(
+                      color: style.background,
+                      borderRadius: BorderRadius.circular(
+                        radius > 1 ? radius - 1 : 0,
+                      ),
+                    ),
+                    child: text,
+                  ),
+                ),
+              )
+            : BsDecoratedContainer(
+                decoration: BoxDecoration(
+                  color: style.background,
+                  borderRadius: shape,
+                  boxShadow: shadow.shadows,
+                ),
+                child: text,
+              ),
       ),
     );
   }

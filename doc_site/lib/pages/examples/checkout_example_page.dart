@@ -579,13 +579,11 @@ class _CheckoutExamplePageState extends State<CheckoutExamplePage> {
           ),
           // <ul class="list-inline"> (the items are inline-blocks, with a
           // space between them and a `.5rem` margin after all but the last)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 16),
-            child: Wrap(
-              alignment: WrapAlignment.center,
-              spacing: 8 + 3.92,
-              children: [item(_t.privacy), item(_t.terms), item(_t.support)],
-            ),
+          // (the `ul`'s own 1rem bottom margin collapses into the footer's 3rem)
+          Wrap(
+            alignment: WrapAlignment.center,
+            spacing: 8 + 3.92,
+            children: [item(_t.privacy), item(_t.terms), item(_t.support)],
           ),
         ],
       ),

@@ -391,9 +391,10 @@ class PricingExamplePage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  for (final item in items)
+                  for (var i = 0; i < items.length; i++)
                     BsBox(
-                      mb: BsSpacing.s1,
+                      // (the last `li`'s margin collapses into the `ul`'s)
+                      mb: i == items.length - 1 ? null : BsSpacing.s1,
                       child: Align(
                         alignment: AlignmentDirectional.centerStart,
                         child: BsAnchor(
@@ -401,7 +402,7 @@ class PricingExamplePage extends StatelessWidget {
                           onTap: () => scrollExampleToTop(context),
                           textDecorationNone: true,
                           linkColor: BsTextColor.secondary,
-                          child: Text(item),
+                          child: Text(items[i]),
                         ),
                       ),
                     ),
