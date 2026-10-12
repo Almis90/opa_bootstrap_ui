@@ -909,7 +909,12 @@ class _CsTabsState extends State<_CsTabs> {
             ],
           ),
         ),
-        pane(_tab),
+        // `.tab-content` of `.tab-pane.fade`s: the old pane fades out, then the
+        // new one fades in.
+        BsTabView(
+          activeIndex: _tab,
+          children: [for (var i = 0; i < 3; i++) pane(i)],
+        ),
       ],
     );
   }
