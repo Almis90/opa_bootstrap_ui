@@ -77,7 +77,9 @@ class BsProgress extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = BsTheme.of(context) == Brightness.dark;
-    final style = (isDark ? BsProgressStyle.darkDefaults : BsProgressStyle.defaults).merge(this.style);
+    final style =
+        (isDark ? BsProgressStyle.darkDefaults : BsProgressStyle.defaults)
+            .merge(this.style);
     final borderRadius =
         style.borderRadius ?? BsProgressStyle.defaultBorderRadius;
     final bars =
@@ -103,7 +105,8 @@ class BsProgress extends StatelessWidget {
     // CSS `transition: width` on `.progress-bar`.
     final transitionDuration = BsTransitions.resolve(
       context,
-      style.barTransitionDuration ?? BsProgressStyle.defaultBarTransitionDuration,
+      style.barTransitionDuration ??
+          BsProgressStyle.defaultBarTransitionDuration,
     );
 
     return BsClipRRect(
@@ -214,7 +217,8 @@ class _BsProgressBarState extends State<BsProgressBar>
       _controller!.duration = duration;
       return;
     }
-    _controller = AnimationController(vsync: this, duration: duration)..repeat();
+    _controller = AnimationController(vsync: this, duration: duration)
+      ..repeat();
   }
 
   @override
@@ -236,6 +240,7 @@ class _BsProgressBarState extends State<BsProgressBar>
         ? BsColorUtils.contrast(background)
         : style.barColor ?? BsProgressStyle.defaultBarColor;
     final striped = widget.striped || widget.animated;
+    final rtl = Directionality.of(context) == TextDirection.rtl;
 
     return BsDecoratedBox(
       decoration: BoxDecoration(color: background),
@@ -244,14 +249,15 @@ class _BsProgressBarState extends State<BsProgressBar>
         children: [
           if (striped)
             _controller == null
-                ? const CustomPaint(
-                    painter: _BsProgressStripePainter(offset: 0),
+                ? CustomPaint(
+                    painter: _BsProgressStripePainter(offset: 0, rtl: rtl),
                   )
                 : AnimatedBuilder(
                     animation: _controller!,
                     builder: (context, _) => CustomPaint(
                       painter: _BsProgressStripePainter(
                         offset: _controller!.value,
+                        rtl: rtl,
                       ),
                     ),
                   ),
@@ -272,33 +278,53 @@ class _BsProgressBarState extends State<BsProgressBar>
   }
 }
 
-/// Draws `.progress-bar-striped`'s 45°, 1rem-tiled `rgba(255,255,255,.15)`
-/// diagonal stripes. [offset] (0-1, looping) shifts the pattern by one tile
-/// for `.progress-bar-animated`.
+/// Draws `.progress-bar-striped`: `linear-gradient(45deg, rgba(255,255,255,.15)
+/// 25%, transparent 25% 50%, rgba(255,255,255,.15) 50% 75%, transparent 75%)`
+/// in a tile as wide and tall as the bar (`background-size: var(--bs-progress-height)`).
+/// That is 45° stripes leaning `\`, half a tile wide on a one-tile pitch, whose
+/// left edge on row `y` is at `x = y` (plus a multiple of the tile).
+///
+/// [offset] (0-1, looping) is `progress-bar-animated`: `progress-bar-stripes`
+/// moves the background from `background-position-x: <tile>` to 0, so the
+/// stripes slide left by one tile (one whole period) per cycle.
 class _BsProgressStripePainter extends CustomPainter {
-  const _BsProgressStripePainter({required this.offset});
+  const _BsProgressStripePainter({required this.offset, this.rtl = false});
 
   /// 0-1, looping.
   final double offset;
 
-  static const double _tile = 16;
+  /// The stripes of a right-to-left page: Bootstrap's RTL stylesheet mirrors
+  /// the gradient (`-45deg`), so they lean `/` — with the left edge of the stripe
+  /// on row `y` at `x = tile / 2 - y` — but they still slide left.
+  final bool rtl;
+
   static const Color _stripeColor = Color(0x26FFFFFF);
 
   @override
   void paint(Canvas canvas, Size size) {
+    final tile = size.height;
+    if (tile <= 0) return;
     final paint = Paint()..color = _stripeColor;
     canvas.save();
     canvas.clipRect(Offset.zero & size);
 
-    final span = size.width + size.height;
-    final shift = offset * _tile * 2;
-    for (var x = -span + shift; x < span; x += _tile * 2) {
-      final path = Path()
-        ..moveTo(x, size.height)
-        ..lineTo(x + size.height, 0)
-        ..lineTo(x + size.height + _tile, 0)
-        ..lineTo(x + _tile, size.height)
-        ..close();
+    final phase = tile * (1 - offset);
+    // Every stripe's top-left corner, from far enough left that the lean has
+    // brought it into view by the bottom row.
+    for (var x = (phase % tile) - 2 * tile; x < size.width; x += tile) {
+      final path = rtl
+          ? (Path()
+              ..moveTo(x + tile / 2, 0)
+              ..lineTo(x + tile, 0)
+              ..lineTo(x + tile - size.height, size.height)
+              ..lineTo(x + tile / 2 - size.height, size.height)
+              ..close())
+          : (Path()
+              ..moveTo(x, 0)
+              ..lineTo(x + tile / 2, 0)
+              ..lineTo(x + tile / 2 + size.height, size.height)
+              ..lineTo(x + size.height, size.height)
+              ..close());
       canvas.drawPath(path, paint);
     }
 
@@ -307,5 +333,5 @@ class _BsProgressStripePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _BsProgressStripePainter oldDelegate) =>
-      oldDelegate.offset != offset;
+      oldDelegate.offset != offset || oldDelegate.rtl != rtl;
 }
