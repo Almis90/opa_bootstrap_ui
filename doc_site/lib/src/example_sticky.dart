@@ -10,11 +10,22 @@ import 'package:flutter/widgets.dart';
 ///
 /// The widget takes the room of its containing block when that is given tight
 /// constraints (a flex item stretched to its row), so there is height to
-/// travel; otherwise it is as tall as [child] and has nowhere to move.
+/// travel; otherwise it is as tall as [child] and has nowhere to move — unless
+/// [within] names the box that is the containing block (a section, an article
+/// laid out as a row), which then bounds how far [child] can be carried.
 class ExampleSticky extends StatefulWidget {
-  const ExampleSticky({super.key, required this.top, required this.child});
+  const ExampleSticky({
+    super.key,
+    required this.top,
+    this.within,
+    required this.child,
+  });
 
   final double top;
+
+  /// The containing block, when it is not this widget's own slot: [child] is
+  /// held until the bottom of this box reaches its own bottom edge.
+  final GlobalKey? within;
   final Widget child;
 
   @override
@@ -31,34 +42,41 @@ class _ExampleStickyState extends State<ExampleSticky> {
   }
 
   @override
-  Widget build(BuildContext context) =>
-      _Sticky(top: widget.top, position: _position, child: widget.child);
+  Widget build(BuildContext context) => _Sticky(
+    top: widget.top,
+    within: widget.within,
+    position: _position,
+    child: widget.child,
+  );
 }
 
 class _Sticky extends SingleChildRenderObjectWidget {
   const _Sticky({
     required this.top,
+    required this.within,
     required this.position,
     required super.child,
   });
 
   final double top;
+  final GlobalKey? within;
   final ScrollPosition? position;
 
   @override
   RenderObject createRenderObject(BuildContext context) =>
-      _RenderSticky(top, position);
+      _RenderSticky(top, within, position);
 
   @override
   void updateRenderObject(BuildContext context, _RenderSticky renderObject) {
     renderObject
       ..top = top
+      ..within = within
       ..position = position;
   }
 }
 
 class _RenderSticky extends RenderShiftedBox {
-  _RenderSticky(this._top, this._position) : super(null) {
+  _RenderSticky(this._top, this.within, this._position) : super(null) {
     _position?.addListener(markNeedsPaint);
   }
 
@@ -69,6 +87,9 @@ class _RenderSticky extends RenderShiftedBox {
     _top = value;
     markNeedsPaint();
   }
+
+  /// The containing block, when it is not this box itself.
+  GlobalKey? within;
 
   ScrollPosition? _position;
   set position(ScrollPosition? value) {
@@ -109,13 +130,23 @@ class _RenderSticky extends RenderShiftedBox {
     size = constraints.constrain(child.size);
   }
 
+  /// Where the containing block ends, measured down from the top of this box.
+  double get _roomBelow {
+    final container = within?.currentContext?.findRenderObject();
+    if (container is RenderBox && container.attached && container.hasSize) {
+      final bottom = container.localToGlobal(Offset(0, container.size.height));
+      return globalToLocal(bottom).dy;
+    }
+    return size.height;
+  }
+
   /// How far down [child] is held from its place in the layout.
   double get _shift {
     final child = this.child;
     final viewport = RenderAbstractViewport.maybeOf(this);
     if (child == null || viewport is! RenderBox) return 0;
     final y = getTransformTo(viewport).getTranslation().y;
-    return (top - y).clamp(0, math.max(0, size.height - child.size.height));
+    return (top - y).clamp(0, math.max(0, _roomBelow - child.size.height));
   }
 
   @override

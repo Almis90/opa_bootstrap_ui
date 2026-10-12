@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 
 import '../../src/bootstrap_icon.dart';
+import '../../src/example_sticky.dart';
 import 'cheatsheet_components.dart';
 import 'cheatsheet_content.dart';
 import 'cheatsheet_env.dart';
@@ -113,6 +114,11 @@ class _CheatsheetExamplePageState extends State<CheatsheetExamplePage> {
 
   GlobalKey _key(String id) => _keys.putIfAbsent(id, GlobalKey.new);
 
+  /// The boxes the sticky parts are held within (their containing blocks):
+  /// the page's grid, and each article's.
+  final _blocks = <String, GlobalKey>{};
+  GlobalKey _block(String id) => _blocks.putIfAbsent(id, GlobalKey.new);
+
   void _goTo(String id) {
     setState(() => _active = id);
     final context = _key(id).currentContext;
@@ -166,19 +172,27 @@ class _CheatsheetExamplePageState extends State<CheatsheetExamplePage> {
       builder: (context, constraints) {
         final fr = (constraints.maxWidth - 32) / 6;
         return Row(
+          key: _block('page'),
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(width: fr * 5 + 16, child: _main(context, xl: true)),
             const SizedBox(width: 16),
             SizedBox(
               width: fr,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 64),
-                child: _Aside(
-                  env: _env,
-                  active: _active,
-                  onSelect: _goTo,
-                  trimBottom: false,
+              // `<aside class="bd-aside sticky-xl-top …">`: `position: sticky;
+              // top: 0`, held for the whole page (under the fixed header, by
+              // its own 4rem of padding).
+              child: ExampleSticky(
+                top: 0,
+                within: _block('page'),
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 64),
+                  child: _Aside(
+                    env: _env,
+                    active: _active,
+                    onSelect: _goTo,
+                    trimBottom: false,
+                  ),
                 ),
               ),
             ),
@@ -214,7 +228,10 @@ class _CheatsheetExamplePageState extends State<CheatsheetExamplePage> {
           key: _key(section.id),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [_sectionHeading(chrome.sections[s], xl), ...articles],
+            children: [
+              _sectionHeading(chrome.sections[s], xl, section.id),
+              ...articles,
+            ],
           ),
         ),
       );
@@ -239,7 +256,7 @@ class _CheatsheetExamplePageState extends State<CheatsheetExamplePage> {
   }
 
   /// `<h2 class="fw-bold pt-3 pt-xl-5 pb-2 pb-xl-3">`
-  Widget _sectionHeading(String text, bool xl) {
+  Widget _sectionHeading(String text, bool xl, String sectionId) {
     final heading = BsHeading(
       BsHeadingLevel.h2,
       fw: BsFw.bold,
@@ -258,9 +275,14 @@ class _CheatsheetExamplePageState extends State<CheatsheetExamplePage> {
         alignment: AlignmentDirectional.centerStart,
         child: FractionallySizedBox(
           widthFactor: 0.2,
-          child: Padding(
-            padding: const EdgeInsets.only(top: 48, bottom: 16),
-            child: heading,
+          // `sticky-xl-top` with `top: 2rem`: it stays while its section does.
+          child: ExampleSticky(
+            top: 32,
+            within: _key(sectionId),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 48, bottom: 16),
+              child: heading,
+            ),
           ),
         ),
       ),
@@ -302,13 +324,20 @@ class _CheatsheetExamplePageState extends State<CheatsheetExamplePage> {
           builder: (context, constraints) {
             final col = (constraints.maxWidth - 16) / 5;
             return Row(
+              key: _block(a.id),
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
                   width: col,
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    child: heading,
+                  // `.bd-heading.sticky-xl-top` with `top: 8rem`: it stays while
+                  // its article does, then the next article's takes its place.
+                  child: ExampleSticky(
+                    top: 128,
+                    within: _block(a.id),
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: heading,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 16),
