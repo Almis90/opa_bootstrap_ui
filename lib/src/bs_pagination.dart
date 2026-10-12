@@ -36,8 +36,8 @@ class BsPagination extends StatelessWidget {
   /// The items to render, in order.
   final List<BsPaginationItem> items;
 
-  /// `flex-wrap`: items that don't fit move on to another line, instead of
-  /// running off the end of the first.
+  /// Whether items that do not fit move on to another line, instead of running off the end of
+  /// the first.
   final bool wrap;
 
   /// Style overrides layered on top of [BsPaginationStyle.defaults].

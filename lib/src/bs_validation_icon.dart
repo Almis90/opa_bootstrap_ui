@@ -33,7 +33,7 @@ class _ValidationIconPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     if (valid) {
-      // viewBox 0 0 8 8, fill #198754
+      // // The check mark is drawn in an 8-unit square.
       canvas.scale(size.width / 8);
       final path = Path()
         ..moveTo(2.3, 6.73)
@@ -48,7 +48,7 @@ class _ValidationIconPainter extends CustomPainter {
       canvas.drawPath(path, Paint()..color = BsVariant.success.color);
       return;
     }
-    // viewBox 0 0 12 12, stroke #dc3545
+    // // The exclamation circle is drawn in a 12-unit square.
     canvas.scale(size.width / 12);
     final color = BsVariant.danger.color;
     final stroke = Paint()

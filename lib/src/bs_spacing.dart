@@ -16,14 +16,13 @@ enum BsSpacing implements BsResponsive<BsSpacing> {
   s4(4, 1.5),
   s5(5, 3),
 
-  /// `auto`: only valid for margins; a flex item's auto margin absorbs the
-  /// free space on its side (`me-auto` pushes what follows to the end).
+  /// Only valid for margins: a flex item's auto margin absorbs the free space on its side (an
+  /// end margin pushes what follows to the end).
   auto(-1, 0);
 
   const BsSpacing(this.step, this.rem);
 
-  /// The Bootstrap step number (0-5), as used in class names like `m-3`;
-  /// -1 for [auto].
+  /// The Bootstrap step number (0 to 5); -1 for [auto].
   final int step;
 
   /// The size as a multiple of the 16 logical pixel base spacing.

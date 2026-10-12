@@ -52,7 +52,7 @@ class BsFormFloating extends StatefulWidget {
   /// [BsFormStyle.invalidColor] when false. Null renders neither.
   final bool? valid;
 
-  /// `rounded-top-*` on the input (`rounded-top-0`).
+  /// The radius of the input's top corners.
   final BsRounded? roundedTop;
 
   /// `rounded-bottom-*` on the input.

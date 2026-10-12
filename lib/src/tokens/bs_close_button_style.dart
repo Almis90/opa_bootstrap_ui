@@ -34,7 +34,7 @@ class BsCloseButtonStyle {
   /// Background behind the glyph; none by default. It fades with the button.
   final Color? background;
 
-  /// The background's corner radius (`rounded-pill`).
+  /// The background's corner radius.
   final BorderRadiusGeometry? borderRadius;
 
   /// Opacity.

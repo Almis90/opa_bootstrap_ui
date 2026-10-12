@@ -60,11 +60,10 @@ class BsApp extends StatelessWidget {
   final String? title;
   final GenerateAppTitle? onGenerateTitle;
 
-  /// Defaults to [BsBody.colorOf] (light or dark depending on [brightness])
-  /// on [BsTypography.fontFamilySansSerif] at
-  /// [BsTypography.fontSizeBase]/[BsTypography.fontWeightBase] with
-  /// [BsTypography.lineHeightBase] (`body`'s `line-height`). Set this to
-  /// opt out of the brightness-aware default.
+  /// Defaults to [BsBody.colorOf] (light or dark depending on [brightness]) on
+  /// [BsTypography.fontFamilySansSerif] at [BsTypography.fontSizeBase] and
+  /// [BsTypography.fontWeightBase] with [BsTypography.lineHeightBase]. Set this to opt out of the
+  /// brightness-aware default.
   final TextStyle? textStyle;
 
   /// Font families tried after [BsTypography.fontFamilySansSerif] for glyphs

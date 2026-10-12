@@ -45,10 +45,10 @@ class BsListGroupItem {
   /// [BsVariant.textEmphasis] recipe [BsAlert] uses.
   final BsVariant? variant;
 
-  /// `py-*`: vertical padding in place of the group's.
+  /// Vertical padding in place of the group's.
   final BsSpacing? py;
 
-  /// `bg-*` on the item (`bg-body-tertiary`), in place of the group's.
+  /// The item's background, in place of the group's.
   final BsBg? bg;
 }
 

@@ -75,8 +75,7 @@ class BsFormControl extends StatefulWidget {
   /// around the whole group instead.
   final bool showBorder;
 
-  /// `rounded-top-*` (`rounded-top-0`): the radius of the top corners in place
-  /// of the control's.
+  /// The radius of the top corners in place of the control's.
   final BsRounded? roundedTop;
 
   /// `rounded-bottom-*`: the radius of the bottom corners in place of the
@@ -289,7 +288,7 @@ class _BsFormControlState extends State<BsFormControl>
                     BsFormStyle.defaultInputPlaceholderColor,
               ),
             ),
-          // (a `disabled` input can't be clicked into or tabbed to)
+          // // A disabled input cannot be clicked into or tabbed to.
           ExcludeFocus(
             excluding: !widget.enabled,
             child: EditableText(

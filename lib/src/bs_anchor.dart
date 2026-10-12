@@ -4,10 +4,9 @@ import 'package:flutter/widgets.dart';
 import 'bs_box.dart';
 import 'tokens/bs_link.dart';
 
-/// The color and decoration of a link: [BsLink]'s color (the dark theme's
-/// tint in dark mode), shifting to its hover color under the pointer, or the
-/// fixed [linkColor] (`link-secondary`, `link-body-emphasis`…); underlined
-/// unless [textDecorationNone].
+/// The color and decoration of a link: [BsLink]'s color (the dark theme's tint in dark mode),
+/// shifting to its hover color under the pointer, or the fixed [linkColor]; underlined unless
+/// [textDecorationNone].
 ({Color color, TextDecoration decoration}) _anchorStyle(
   BuildContext context, {
   required bool hovered,
@@ -46,11 +45,11 @@ class BsAnchor extends StatefulWidget {
 
   final VoidCallback? onTap;
 
-  /// `text-decoration-none`: no underline, even on hover.
+  /// No underline, even on hover.
   final bool textDecorationNone;
 
-  /// `link-body-emphasis`, `link-secondary`…: a fixed link color instead of
-  /// [BsLink.color] (which shifts to [BsLink.hoverColor] on hover).
+  /// A fixed link color instead of [BsLink.color] (which shifts to [BsLink.hoverColor] on
+  /// hover).
   final BsTextColor? linkColor;
 
   @override

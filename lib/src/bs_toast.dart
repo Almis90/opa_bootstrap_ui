@@ -15,17 +15,13 @@ import 'bs_decorated_box.dart';
 /// against the left or right edge) round out the set.
 enum BsToastPosition { topStart, topCenter, topEnd, centerStart, centerEnd, bottomStart, bottomCenter, bottomEnd }
 
-/// Programmatic control of a single toast shown via [showBsToast] —
-/// mirrors Bootstrap's own `bootstrap.Toast` JS plugin: [hide] (its
-/// `show()`/`hide()`, minus `show()` since a [BsToastController] always
-/// starts already shown — there's no separate "create it hidden, then show
-/// it later" step the way a fresh Bootstrap `Toast` instance has). No
-/// `enable`/`disable` either, matching Bootstrap's own Toast plugin.
+/// Programmatic control of a single toast shown via [showBsToast]: [hide] dismisses it. A
+/// [BsToastController] always starts already shown, so there is no separate show step, and no
+/// enable or disable.
 ///
-/// Unlike this package's other controllers, [showBsToast] always hands one
-/// back as its return value (creating one internally if you don't pass
-/// your own) rather than keeping it purely internal — so, deliberately,
-/// nothing here ever calls [dispose] on it. It's yours from the moment
+/// Unlike this package's other controllers, [showBsToast] always hands one back as its return
+/// value (creating one internally if you do not pass your own) rather than keeping it
+/// internal, so nothing here ever calls [dispose] on it: it is yours from the moment
 /// [showBsToast] returns.
 class BsToastController extends ChangeNotifier {
   bool _shown = true;

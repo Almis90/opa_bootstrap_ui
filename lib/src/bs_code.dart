@@ -65,7 +65,7 @@ class BsKbd extends StatelessWidget {
   }
 }
 
-/// `pre`: a block of preformatted, monospaced text.
+/// A block of preformatted, monospaced text.
 class BsPre extends StatelessWidget {
   const BsPre({super.key, required this.child, this.style});
 

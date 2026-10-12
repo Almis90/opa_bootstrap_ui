@@ -48,9 +48,9 @@ enum BsFs implements BsResponsive<BsFs> {
   BsFs resolve(BsBreakpoint breakpoint) => this;
 }
 
-/// `text-*`: Bootstrap's text color utilities.
+/// Bootstrap's text colors: the theme colors plus white, black and the body tones.
 enum BsTextColor {
-  /// `text-primary`.
+  /// The primary color.
   primary,
 
   /// The secondary color, `#6c757d` in both themes.
@@ -62,22 +62,22 @@ enum BsTextColor {
   light,
   dark,
 
-  /// `text-white`.
+  /// White.
   white,
 
-  /// `text-black`.
+  /// Black.
   black,
 
-  /// `text-body`.
+  /// The body text color.
   body,
 
-  /// `text-body-secondary`.
+  /// The secondary body text color: a muted tone.
   bodySecondary,
 
-  /// `text-body-tertiary`.
+  /// The tertiary body text color: more muted still.
   bodyTertiary,
 
-  /// `text-body-emphasis` (also what `link-body-emphasis` uses).
+  /// The emphasized body text color: the strongest contrast. Also used for emphasized links.
   bodyEmphasis;
 
   /// Bootstrap's name for this value, as used in its utility names.
@@ -107,7 +107,7 @@ enum BsTextColor {
   };
 }
 
-/// `bg-*`: Bootstrap's background utilities.
+/// Bootstrap's background colors: the theme colors plus white, black and the body tones.
 enum BsBg {
   primary,
   secondary,
@@ -120,13 +120,13 @@ enum BsBg {
   white,
   black,
 
-  /// `bg-body`.
+  /// The page background.
   body,
 
-  /// `bg-body-secondary`.
+  /// The secondary body background.
   bodySecondary,
 
-  /// `bg-body-tertiary`.
+  /// The tertiary body background: a subtle step from the page.
   bodyTertiary,
   transparent;
 
@@ -156,10 +156,9 @@ enum BsBg {
   };
 }
 
-/// `rounded-0`…`rounded-5`, `rounded-circle`, `rounded-pill`: Bootstrap's
-/// border-radius utilities.
+/// Bootstrap's corner radii, from none to large, plus circle and pill.
 enum BsRounded {
-  /// `rounded-0`.
+  /// No rounding.
   r0(0),
 
   /// Small corner radius (4).
@@ -177,7 +176,7 @@ enum BsRounded {
   /// Double extra large corner radius (32).
   r5(32),
 
-  /// `rounded-circle`: fully rounded (a circle on a square box).
+  /// Fully rounded (a circle on a square box).
   circle(9999),
 
   /// Fully rounded ends.
@@ -193,7 +192,7 @@ enum BsRounded {
       this == circle || this == pill ? name : name.substring(1);
 }
 
-/// `text-start`/`text-center`/`text-end`.
+/// Text alignment: at the start, centered or at the end.
 enum BsTextAlign implements BsResponsive<BsTextAlign> {
   start,
   center,
@@ -206,8 +205,8 @@ enum BsTextAlign implements BsResponsive<BsTextAlign> {
   BsTextAlign resolve(BsBreakpoint breakpoint) => this;
 }
 
-/// `h-25`/`h-50`/`h-75`/`h-100`/`h-auto`: a height as a share of the parent's
-/// (which has to have one — a column stretched by a row does).
+/// A height as a share of the parent's (which has to have one; a column stretched by a row
+/// does).
 enum BsHeight implements BsResponsive<BsHeight> {
   h25(0.25),
   h50(0.5),
@@ -223,7 +222,7 @@ enum BsHeight implements BsResponsive<BsHeight> {
   BsHeight resolve(BsBreakpoint breakpoint) => this;
 }
 
-/// `opacity-0`/`opacity-25`/`opacity-50`/`opacity-75`/`opacity-100`.
+/// Opacity steps from transparent to opaque.
 enum BsOpacity {
   o0(0),
   o25(0.25),
@@ -239,27 +238,27 @@ enum BsOpacity {
   String get className => name.substring(1);
 }
 
-/// `fw-*`: Bootstrap's font-weight utilities.
+/// Bootstrap's font weights.
 enum BsFw {
-  /// `fw-bold` (700).
+  /// Bold (700).
   bold(FontWeight.w700),
 
-  /// `fw-bolder` (800).
+  /// Bolder (800).
   bolder(FontWeight.w800),
 
-  /// `fw-semibold` (600).
+  /// Semibold (600).
   semibold(FontWeight.w600),
 
-  /// `fw-medium` (500).
+  /// Medium (500).
   medium(FontWeight.w500),
 
-  /// `fw-normal` (400).
+  /// Normal (400).
   normal(FontWeight.w400),
 
-  /// `fw-light` (300).
+  /// Light (300).
   light(FontWeight.w300),
 
-  /// `fw-lighter` (200).
+  /// Lighter (200).
   lighter(FontWeight.w200);
 
   const BsFw(this.weight);
@@ -270,9 +269,9 @@ enum BsFw {
   String get className => name;
 }
 
-/// `lh-*`: Bootstrap's line-height utilities.
+/// Bootstrap's line heights.
 enum BsLh {
-  /// `lh-1`.
+  /// Line height of 1 (tight).
   lh1(1),
 
   /// Small line height (1.25).
@@ -296,10 +295,9 @@ enum BsLh {
   };
 }
 
-/// `shadow`, `shadow-sm`, `shadow-lg`, `shadow-none`: Bootstrap's box-shadow
-/// utilities.
+/// Bootstrap's shadow sizes.
 enum BsShadow {
-  /// `shadow-none`.
+  /// No shadow.
   none(<BoxShadow>[]),
 
   /// Small shadow.
@@ -324,9 +322,7 @@ enum BsShadow {
   };
 }
 
-/// `border-solid`/`border-dashed`: the style of a [BsBox]'s border. (Bootstrap
-/// has no `border-dashed`; its Jumbotrons example defines one. Only a border on
-/// all four sides can be dashed.)
+/// The style of a [BsBox]'s border. Only a border on all four sides can be dashed.
 enum BsBorderStyle { solid, dashed }
 
 /// A block container with Bootstrap's utilities applied to it: spacing, borders, background,
@@ -407,70 +403,69 @@ class BsBox extends StatelessWidget {
   /// `border`: a border on all four sides.
   final bool border;
 
-  /// `border-top`.
+  /// A border on the top edge.
   final bool borderTop;
 
-  /// `border-end`.
+  /// A border on the end edge.
   final bool borderEnd;
 
-  /// `border-bottom`.
+  /// A border on the bottom edge.
   final bool borderBottom;
 
-  /// `border-start`.
+  /// A border on the start edge.
   final bool borderStart;
 
-  /// `border-dashed`: the style of [border] (all four sides).
+  /// The style of [border] (all four sides).
   final BsBorderStyle borderStyle;
 
-  /// `bg-*`.
+  /// The background color.
   final BsBg? bg;
 
-  /// `rounded-*`.
+  /// The corner radius.
   final BsRounded? rounded;
 
   /// `text-bg-*`: the variant's background with a contrasting text color.
   final BsVariant? textBg;
 
-  /// `text-*`.
+  /// The text color.
   final BsTextColor? textColor;
 
-  /// `fs-*`.
+  /// The font size.
   final BsResponsive<BsFs>? fs;
 
-  /// `fw-*`.
+  /// The font weight.
   final BsFw? fw;
 
-  /// `lh-*`.
+  /// The line height.
   final BsLh? lh;
 
-  /// `text-start`/`text-center`/`text-end`.
+  /// The text alignment.
   final BsResponsive<BsTextAlign>? textAlign;
 
-  /// `w-25`…`w-100`.
+  /// The width as a share of the parent's.
   final BsResponsive<BsWidth>? w;
 
-  /// `h-25`…`h-100`.
+  /// The height as a share of the parent's.
   final BsResponsive<BsHeight>? h;
 
-  /// `col-*` outside a row: the box's width as a share of 12 columns of its
-  /// parent (`col-lg-6 mx-auto` is half the parent, centred, from `lg`).
+  /// The box's width as a share of 12 columns of its parent, outside a row (`col-lg-6` with
+  /// centering is half the parent, centered, from `lg`).
   final BsResponsive<BsCol>? col;
 
-  /// `shadow`, `shadow-sm`, `shadow-lg`.
+  /// The shadow.
   final BsShadow? shadow;
 
   /// Sizes the box to its content rather than its parent, and places it by the inherited text
   /// alignment as inline content is (for example a bordered image in a centered block).
   final bool inlineBlock;
 
-  /// `opacity-*`: fades the whole box, content included.
+  /// Fades the whole box, content included.
   final BsOpacity? opacity;
 
-  /// `text-nowrap`.
+  /// Prevents the text from wrapping.
   final bool textNoWrap;
 
-  /// `overflow-hidden`: clips the content to the box (inside its border, with
-  /// its rounded corners).
+  /// Clips the content to the box (inside its border, with its rounded corners).
   final bool overflowHidden;
 
   @override

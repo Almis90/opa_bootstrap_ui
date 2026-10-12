@@ -11,8 +11,7 @@ import 'bs_colors.dart';
 import 'bs_theme.dart';
 import 'tokens/bs_typography.dart';
 
-/// `h1`-`h6`: which [BsTypography] heading size/weight/line-height a
-/// [BsHeading] renders at.
+/// Which [BsTypography] heading size, weight and line height a [BsHeading] renders at.
 enum BsHeadingLevel { h1, h2, h3, h4, h5, h6 }
 
 /// A Bootstrap heading (levels 1 to 6), sized per [level] from [BsTypography]'s heading scale
@@ -35,10 +34,10 @@ class BsHeading extends StatelessWidget {
   final BsHeadingLevel level;
   final Widget child;
 
-  /// `fw-*`.
+  /// The heading's font weight.
   final BsFw? fw;
 
-  /// `lh-*`.
+  /// The heading's line height.
   final BsLh? lh;
 
   /// The bottom margin, in place of the heading's default.
@@ -121,10 +120,10 @@ class BsDisplayHeading extends StatelessWidget {
   final BsDisplayLevel level;
   final Widget child;
 
-  /// `fw-*`.
+  /// The heading's font weight.
   final BsFw? fw;
 
-  /// `lh-*`.
+  /// The heading's line height.
   final BsLh? lh;
 
   @override
@@ -175,7 +174,7 @@ class BsSmall extends StatelessWidget {
 
   final Widget child;
 
-  /// `d-block`: a box of its own rather than inline text.
+  /// A box of its own rather than inline text.
   final bool block;
 
   @override

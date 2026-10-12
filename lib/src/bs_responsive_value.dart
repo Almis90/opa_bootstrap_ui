@@ -13,10 +13,9 @@ abstract interface class BsResponsive<T> {
   T? resolve(BsBreakpoint breakpoint);
 }
 
-/// A value that can vary per [BsBreakpoint], cascading mobile-first the
-/// same way Bootstrap's responsive utility classes do: a value set at a
-/// given breakpoint applies at that breakpoint and all wider ones, until
-/// overridden by a value set at a larger breakpoint.
+/// A value that can vary per [BsBreakpoint], cascading mobile-first as Bootstrap's responsive
+/// utilities do: a value set at a given breakpoint applies at that breakpoint and all wider
+/// ones, until overridden by a value set at a larger breakpoint.
 class BsResponsiveValue<T> implements BsResponsive<T> {
   const BsResponsiveValue({this.xs, this.sm, this.md, this.lg, this.xl, this.xxl});
 

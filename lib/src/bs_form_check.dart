@@ -272,8 +272,8 @@ List<BoxShadow> _focusRing(BsFormStyle style, Color? accent) => accent != null
     ? [BoxShadow(color: accent.withValues(alpha: 0.25), spreadRadius: 4)]
     : (style.inputFocusBoxShadow ?? BsFormStyle.defaultInputFocusBoxShadow);
 
-/// The checkbox's tick: `M6 10l3 3l6-6` in a 20-unit viewBox, 3 units thick,
-/// with round caps and joins.
+/// The checkbox's tick: a polyline in a 20-unit square, 3 units thick, with round caps and
+/// joins.
 class _BsCheckmarkPainter extends CustomPainter {
   _BsCheckmarkPainter(this.color);
 
@@ -326,7 +326,7 @@ class BsFormCheckInput extends StatelessWidget {
   /// Draws the border dashed.
   final bool dashed;
 
-  /// `bg-*` on the control, in place of the input background.
+  /// A background in place of the input's.
   final Color? background;
 
   final BsFormStyle? style;

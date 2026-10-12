@@ -1,5 +1,4 @@
-/// Bootstrap component sizing, as used by buttons, form controls, input
-/// groups, etc. (e.g. `btn-sm`, `btn-lg`).
+/// Bootstrap component sizing, as used by buttons, form controls, input groups and so on.
 enum BsSize {
   sm,
   normal,

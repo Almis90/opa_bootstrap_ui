@@ -39,13 +39,11 @@ enum BsAlign implements BsResponsive<BsAlign> {
   BsAlign resolve(BsBreakpoint breakpoint) => this;
 }
 
-/// `flex-row`, `flex-row-reverse`, `flex-column`, `flex-column-reverse`: the
-/// direction a [BsFlex] lays its items out in.
+/// The direction a [BsFlex] lays its items out in.
 ///
-/// A column stacks the items vertically, stretching them to the container's
-/// width unless `alignItems` says otherwise — which is also what Bootstrap's
-/// `d-grid gap-2` (a one-column grid) looks like, so `d-grid d-sm-flex` is a
-/// `flex-column flex-sm-row`.
+/// A column stacks the items vertically, stretching them to the container's width unless
+/// `alignItems` says otherwise. That is also what a one-column grid looks like, so a grid that
+/// becomes a row from some breakpoint is a column that becomes a row there.
 enum BsFlexDirection implements BsResponsive<BsFlexDirection> {
   row,
   rowReverse,
@@ -79,7 +77,7 @@ class BsCol implements BsResponsive<BsCol> {
 
   const BsCol._fill() : columns = null, fill = true;
 
-  /// `col-auto`.
+  /// The item's natural width.
   static const BsCol auto = BsCol._auto();
 
   /// Equal-width columns that share the line.
@@ -95,7 +93,7 @@ class BsCol implements BsResponsive<BsCol> {
   BsCol resolve(BsBreakpoint breakpoint) => this;
 }
 
-/// `w-25`/`w-50`/`w-75`/`w-100`/`w-auto`: a width as a share of the container's.
+/// A width as a share of the container's.
 enum BsWidth implements BsResponsive<BsWidth> {
   w25(0.25),
   w50(0.5),
@@ -118,7 +116,7 @@ enum BsWidth implements BsResponsive<BsWidth> {
 ///
 /// Children may be wrapped in a [BsFlexItem] for item-level utilities (margins, column width);
 /// anything else is an item with none. Responsive props (anything taking a [BsResponsive]) are
-/// resolved against the viewport's breakpoint, as Bootstrap's media queries are.
+/// resolved against the viewport's breakpoint, as Bootstrap's responsive utilities are.
 ///
 /// ```dart
 /// BsFlex(
@@ -172,11 +170,12 @@ class BsFlex extends StatelessWidget {
   final bool _masonry;
   final int? _rowCols;
 
-  /// `flex-wrap` (the default, `flex-nowrap`, shrinks items instead).
+  /// Whether items that do not fit on a line continue on the next. By default they shrink
+  /// instead.
   final bool wrap;
 
-  /// `d-inline-flex`: as wide as its content rather than filling its container
-  /// (which `d-flex` does, unless it is itself a flex item).
+  /// As wide as its content rather than filling its container (which a flex container does,
+  /// unless it is itself a flex item).
   final bool inline;
 
   /// `justify-content-*`. Defaults to `start`.
@@ -185,10 +184,10 @@ class BsFlex extends StatelessWidget {
   /// How items sit on the cross axis. Defaults to stretch.
   final BsResponsive<BsAlign>? alignItems;
 
-  /// `gap-*`: the space between items, and between wrapped lines.
+  /// The space between items, and between wrapped lines.
   final BsResponsive<BsSpacing>? gap;
 
-  /// `flex-row`, `flex-column-reverse`…. Defaults to `row`.
+  /// The direction items are laid out in. Defaults to a row.
   final BsResponsive<BsFlexDirection>? direction;
 
   @override
@@ -245,14 +244,13 @@ class BsFlexItem extends ParentDataWidget<_BsFlexParentData> {
     this.maxWidth,
   });
 
-  /// `col-*`: width as a share of 12 columns; the item doesn't shrink.
+  /// Width as a share of 12 columns; the item does not shrink.
   final BsResponsive<BsCol>? col;
 
-  /// `offset-*`: a start margin of that many columns (`BsCol(1)` is
-  /// `offset-1`, 8.33% of the line).
+  /// A start margin of that many columns (`BsCol(1)` is one column, 8.33% of the line).
   final BsResponsive<BsCol>? offset;
 
-  /// `w-*`: width as a share of the container's; the item may still shrink.
+  /// Width as a share of the container's; the item may still shrink.
   final BsResponsive<BsWidth>? w;
 
   final BsResponsive<BsSpacing>? m;
@@ -260,16 +258,15 @@ class BsFlexItem extends ParentDataWidget<_BsFlexParentData> {
   final BsResponsive<BsSpacing>? my;
   final BsResponsive<BsSpacing>? mt;
 
-  /// `me-*`: margin at the inline end (right in LTR).
+  /// Margin at the inline end (the right, in a left-to-right layout).
   final BsResponsive<BsSpacing>? me;
   final BsResponsive<BsSpacing>? mb;
 
-  /// `ms-*`: margin at the inline start (left in LTR).
+  /// Margin at the inline start (the left, in a left-to-right layout).
   final BsResponsive<BsSpacing>? ms;
 
-  /// The item's own padding (`p-3`, `pt-lg-3`…), laid out inside its box — and,
-  /// in a [BsRow], replacing the gutter's padding on the sides it names, as the
-  /// utilities' `!important` does.
+  /// The item's own padding, laid out inside its box and, in a [BsRow], replacing the gutter's
+  /// padding on the sides it names.
   final BsResponsive<BsSpacing>? p;
   final BsResponsive<BsSpacing>? px;
   final BsResponsive<BsSpacing>? py;
@@ -285,7 +282,7 @@ class BsFlexItem extends ParentDataWidget<_BsFlexParentData> {
   /// full-width cap.
   final double? maxWidth;
 
-  /// `flex-grow-1`: take a share of the line's free space.
+  /// Takes a share of the line's free space.
   final bool flexGrow;
 
   /// Whether the item shrinks when the line is too long. Null shrinks, unless a [col] was
@@ -1021,8 +1018,8 @@ class _RenderBsFlex extends RenderBox
     return constraints.constrain(Size(maxW, colY.reduce(math.max)));
   }
 
-  /// `flex-column` (and a `d-grid`'s single column): items stacked
-  /// vertically, stretched to the container's width unless aligned otherwise.
+  /// A column: items stacked vertically, stretched to the container's width unless aligned
+  /// otherwise.
   Size _computeColumn(BoxConstraints constraints, {required bool dry}) {
     final bounded = constraints.hasBoundedWidth;
     final maxW = constraints.maxWidth;
@@ -1221,10 +1218,10 @@ class BsRow extends StatelessWidget {
   /// Both gutters. The default is the grid gutter width horizontally and none vertically.
   final BsResponsive<BsSpacing>? g;
 
-  /// `gx-*` (wins over [g]).
+  /// The horizontal gutter (wins over [g]).
   final BsResponsive<BsSpacing>? gx;
 
-  /// `gy-*` (wins over [g]).
+  /// The vertical gutter (wins over [g]).
   final BsResponsive<BsSpacing>? gy;
 
   /// `align-items-*`.
@@ -1233,7 +1230,7 @@ class BsRow extends StatelessWidget {
   /// `justify-content-*`.
   final BsResponsive<BsJustify>? justifyContent;
 
-  /// `flex-row-reverse`, `flex-lg-column`….
+  /// The direction of the row's columns, which can change per breakpoint.
   final BsResponsive<BsFlexDirection>? direction;
 
   final BsResponsive<BsSpacing>? p;
@@ -1250,10 +1247,10 @@ class BsRow extends StatelessWidget {
   /// A top border; the line spans the row and its negative margins.
   final bool borderTop;
 
-  /// `rounded-*`.
+  /// The corner radius of the row.
   final BsRounded? rounded;
 
-  /// `shadow-*`.
+  /// The shadow of the row.
   final BsShadow? shadow;
 
   @override

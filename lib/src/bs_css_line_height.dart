@@ -24,7 +24,7 @@ class BsCssLineHeight extends StatelessWidget {
 
   final double fontSize;
 
-  /// The unitless `line-height` multiplier.
+  /// The line height as a multiple of the font size.
   final double lineHeight;
 
   final bool perLine;

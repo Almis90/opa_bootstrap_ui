@@ -49,18 +49,17 @@ class BsNavItem {
   /// Dims the item and ignores taps.
   final bool disabled;
 
-  /// `text-white`, `link-body-emphasis`…: the link's color in place of the
-  /// nav's, unchanged under the pointer. An [active] item keeps its own.
+  /// The link's color in place of the nav's, unchanged under the pointer. An [active] item keeps
+  /// its own.
   final BsTextColor? textColor;
 
   /// Vertical padding in place of the link's default.
   final BsSpacing? py;
 
-  /// `rounded-*` (`rounded-0`): a corner radius in place of the variant's.
+  /// A corner radius in place of the variant's.
   final BsRounded? rounded;
 
-  /// `border-bottom`: a 1px bottom border (inside the item's box, below its
-  /// padding), in the border color.
+  /// A 1px bottom border (inside the item's box, below its padding), in the border color.
   final bool borderBottom;
 }
 
@@ -180,8 +179,8 @@ class BsNav extends StatelessWidget {
       );
     }
 
-    // `flex-nowrap`: a single line, as wide as its links unless a
-    // `justify-content-*` gives it the room to place them in.
+    // // No wrap: a single line, as wide as its links unless a justification gives it the room to
+    // // place them in.
     if (nowrap) {
       return Row(
         mainAxisSize: justifyContent == null

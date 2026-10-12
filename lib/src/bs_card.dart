@@ -59,13 +59,13 @@ class BsCard extends StatelessWidget {
   /// Style overrides layered on top of [BsCardStyle.defaults].
   final BsCardStyle? style;
 
-  /// `rounded-*` on the card (`rounded-3`).
+  /// The card's corner radius.
   final BsRounded? rounded;
 
-  /// `shadow-*` on the card (`shadow-sm`).
+  /// The card's shadow.
   final BsShadow? shadow;
 
-  /// `border-primary` etc.: the border's color.
+  /// The color of the border, from a theme color.
   final BsVariant? borderVariant;
 
   /// Whether this card shares its start edge (left in LTR, right in RTL)
@@ -205,7 +205,7 @@ class BsCardHeader extends StatelessWidget {
 
   final Widget child;
 
-  /// `py-*`: vertical padding in place of the card's cap padding.
+  /// Vertical padding in place of the card's cap padding.
   final BsSpacing? py;
 
   /// `text-bg-*` (and the same variant's border): a contextual header.

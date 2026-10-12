@@ -29,22 +29,22 @@ class BsImage extends StatelessWidget {
   /// What to draw, e.g. `AssetImage('assets/photo.png')`.
   final ImageProvider image;
 
-  /// The `width` attribute; the image's natural width if null.
+  /// The width of the whole box; the image's natural width if null.
   final double? width;
 
   /// Caps the width at the container's, keeping the aspect ratio.
   final bool fluid;
 
-  /// `d-block`: a block of its own, at its start, instead of inline content.
+  /// A block of its own, at its start, instead of inline content.
   final bool block;
 
   /// `border`.
   final bool border;
 
-  /// `rounded-*`: the corners of the border box, which clip the image.
+  /// The corners of the border box, which clip the image.
   final BsRounded? rounded;
 
-  /// `shadow`, `shadow-sm`, `shadow-lg`.
+  /// The shadow.
   final BsShadow? shadow;
 
   /// The `alt` text (an empty one, as in `alt=""`, marks the image decorative).

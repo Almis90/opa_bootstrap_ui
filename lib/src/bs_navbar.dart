@@ -100,7 +100,7 @@ class BsNavbar extends StatefulWidget {
   /// When expanded, the [items] spread across the whole bar.
   final bool spreadItems;
 
-  /// `d-md-none` on the brand: it only shows while collapsed.
+  /// Hides the brand once the navbar expands: it only shows while collapsed.
   final bool hideBrandWhenExpanded;
 
   /// When expanded, the [items] sit at the end of the bar, 16 logical pixels before the
@@ -528,8 +528,8 @@ class _BsNavbarTogglerIconPainter extends CustomPainter {
 
   final Color color;
 
-  /// The icon's own SVG: `M4 7h22M4 15h22M4 23h22` in a 30-unit viewBox,
-  /// stroked 2 units wide with round caps.
+  /// The menu icon: three horizontal bars in a 30-unit square, stroked 2 units wide with round
+  /// caps.
   @override
   void paint(Canvas canvas, Size size) {
     final unit = size.width / 30;
