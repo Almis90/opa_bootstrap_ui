@@ -7,31 +7,23 @@ import 'tokens/bs_placeholder_style.dart';
 import 'tokens/bs_transitions.dart';
 import 'bs_decorated_box.dart';
 
-/// Which Bootstrap `.placeholder` animation, if any, a [BsPlaceholder] runs.
+/// Which animation, if any, a [BsPlaceholder] runs.
 enum BsPlaceholderAnimation {
-  /// Static, at [BsPlaceholderStyle.opacityMax] (Bootstrap's base
-  /// `.placeholder` rule sets `opacity: $placeholder-opacity-max` even
-  /// with no animation class applied).
+  /// Static, at [BsPlaceholderStyle.opacityMax].
   none,
 
-  /// `.placeholder-glow`: opacity breathes between
-  /// [BsPlaceholderStyle.opacityMin] and [BsPlaceholderStyle.opacityMax].
+  /// Opacity breathes between [BsPlaceholderStyle.opacityMin] and
+  /// [BsPlaceholderStyle.opacityMax].
   glow,
 
-  /// `.placeholder-wave`: a light highlight band sweeps across the bar,
-  /// the same shimmer technique common Flutter skeleton-loading
-  /// implementations use (a translating gradient over the base color) —
-  /// there's no Material/Cupertino widget for this to draw from directly.
+  /// A light highlight band sweeps across the bar: a translating gradient over the base color.
   wave,
 }
 
-/// A Bootstrap placeholder (`.placeholder`): a solid bar standing in for
-/// content that hasn't loaded yet.
+/// A Bootstrap placeholder: a solid bar standing in for content that has not loaded yet.
 ///
-/// Has no intrinsic width by default (fills its parent, like a block-level
-/// `.placeholder`) — pass [width] to size it like Bootstrap's `.col-*`/
-/// `.w-*` utilities would, or wrap several in a [Wrap]/[Column] to build up
-/// a paragraph-shaped skeleton.
+/// Fills its parent's width by default; pass [width] to size it, or wrap several in a [Wrap]
+/// or a [Column] to build up a paragraph-shaped skeleton.
 class BsPlaceholder extends StatefulWidget {
   const BsPlaceholder({
     super.key,
@@ -50,8 +42,7 @@ class BsPlaceholder extends StatefulWidget {
 
   final BsPlaceholderAnimation animation;
 
-  /// Defaults to the ambient [DefaultTextStyle] color, matching
-  /// Bootstrap's `background-color: currentColor`.
+  /// Defaults to the ambient [DefaultTextStyle] color.
   final Color? color;
 
   final double borderRadius;
@@ -177,10 +168,8 @@ class _BsPlaceholderState extends State<BsPlaceholder>
       );
     }
 
-    // Bootstrap's base `.placeholder` rule is `opacity: $placeholder-opacity-max`;
-    // `.placeholder-glow` is the only variant that dips down to
-    // `$placeholder-opacity-min` (via its keyframe animation). Both the
-    // static (`none`) and `wave` variants rest at the max opacity.
+    // // Only the glow variant dips down to the minimum opacity (via its animation). The static and
+    // // wave variants rest at the maximum opacity.
     return widget.animation == BsPlaceholderAnimation.wave
         ? _gated(
             RepaintBoundary(
@@ -191,9 +180,9 @@ class _BsPlaceholderState extends State<BsPlaceholder>
   }
 }
 
-/// The translating highlight band behind `.placeholder-wave`. Sized to
-/// fill its [Stack] parent (via [StackFit.expand]), so a fractional
-/// translation of exactly its own width sweeps it fully off to fully on.
+/// The translating highlight band behind the wave animation. Sized to fill its [Stack] parent
+/// (via [StackFit.expand]), so a fractional translation of exactly its own width sweeps it
+/// fully off to fully on.
 class _BsPlaceholderWave extends StatelessWidget {
   const _BsPlaceholderWave({required this.progress});
 

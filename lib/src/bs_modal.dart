@@ -7,28 +7,24 @@ import 'tokens/bs_modal_style.dart';
 import 'tokens/bs_transitions.dart';
 import 'bs_decorated_box.dart';
 
-/// `$modal-sm`/`$modal-md` (implicit default)/`$modal-lg`/`$modal-xl`: how
-/// wide a [BsModalDialog] grows.
+/// How wide a [BsModalDialog] grows.
 enum BsModalSize { small, medium, large, extraLarge }
 
-/// Opens a Bootstrap modal (`.modal`), the same way [showDialog]/
-/// `showCupertinoDialog` build on [showGeneralDialog] — a route with an
-/// animated backdrop and a custom enter/exit transition matching
-/// Bootstrap's `.modal.fade` (a fade plus a slight downward slide).
+/// Opens a Bootstrap modal, the way [showDialog] builds on [showGeneralDialog]: a route with
+/// an animated backdrop and a custom enter and exit transition (a fade plus a slight downward
+/// slide).
 ///
-/// [builder] typically returns a [BsModalDialog] wrapping a [BsModal].
-/// Dismiss by popping the route (e.g. `Navigator.of(context).pop()`), the
-/// same as any other Flutter dialog — or drive it through a
-/// [BsModalController] instead, for [BsModalController.hide] plus
-/// [onShow]/[onShown]/[onHide]/[onHidden] lifecycle events.
+/// [builder] typically returns a [BsModalDialog] wrapping a [BsModal]. Dismiss by popping the
+/// route (for example `Navigator.of(context).pop()`), as with any other Flutter dialog, or drive
+/// it through a [BsModalController] instead, for [BsModalController.hide] plus the [onShow],
+/// [onShown], [onHide] and [onHidden] lifecycle events.
 ///
-/// [onShow] fires synchronously, right here, before the route is even
-/// pushed. [onShown] fires once the fade-in transition completes, [onHide]
-/// once the route starts fading back out — for whatever reason (this
-/// covers every dismissal path: [BsModalController.hide], `Navigator.pop`,
-/// an outside tap on [barrierDismissible], the system back button) — and
-/// [onHidden] once it's fully gone, mirroring Bootstrap's
-/// `show.bs.modal`/`shown.bs.modal`/`hide.bs.modal`/`hidden.bs.modal`.
+/// [onShow] fires synchronously, right here, before the route is even pushed. [onShown] fires
+/// once the fade-in transition completes, [onHide] once the route starts fading back out, for
+/// whatever reason (this covers every dismissal path: [BsModalController.hide],
+/// `Navigator.pop`, an outside tap on [barrierDismissible], the system back button), and
+/// [onHidden] once it is fully gone. They mirror Bootstrap's `show`, `shown`, `hide` and
+/// `hidden` modal events.
 Future<T?> showBsModal<T>({
   required BuildContext context,
   required WidgetBuilder builder,
@@ -202,8 +198,8 @@ class BsModalController extends ChangeNotifier {
   }
 }
 
-/// `.modal-dialog`: sizes, centers, and (optionally) internally scrolls a
-/// [BsModal] within the viewport [showBsModal] opens it over.
+/// Sizes, centers and (optionally) internally scrolls a [BsModal] within the viewport
+/// [showBsModal] opens it over.
 class BsModalDialog extends StatelessWidget {
   const BsModalDialog({
     super.key,
@@ -218,8 +214,7 @@ class BsModalDialog extends StatelessWidget {
 
   final BsModalSize size;
 
-  /// `.modal-dialog-centered`: vertically centers the dialog instead of
-  /// anchoring it near the top of the viewport.
+  /// Vertically centers the dialog instead of anchoring it near the top of the viewport.
   final bool centered;
 
   final BsModalStyle? style;
@@ -249,8 +244,7 @@ class BsModalDialog extends StatelessWidget {
   }
 }
 
-/// `.modal-content`: the bordered, rounded shell holding [header], [body],
-/// and [footer].
+/// The bordered, rounded shell holding [header], [body] and [footer].
 class BsModal extends StatelessWidget {
   const BsModal({super.key, this.header, required this.body, this.footer, this.scrollableBody = false, this.style});
 
@@ -263,9 +257,8 @@ class BsModal extends StatelessWidget {
   /// Typically a [BsModalFooter].
   final Widget? footer;
 
-  /// `.modal-dialog-scrollable`: keeps [header]/[footer] fixed and scrolls
-  /// only [body] when it overflows. Needs a bounded height from an
-  /// ancestor (e.g. [BsModalDialog]).
+  /// Keeps [header] and [footer] fixed and scrolls only [body] when it overflows. Needs a
+  /// bounded height from an ancestor (for example [BsModalDialog]).
   final bool scrollableBody;
 
   final BsModalStyle? style;
@@ -305,8 +298,7 @@ class BsModal extends StatelessWidget {
   }
 }
 
-/// `.modal-header`: [child] (typically a title) plus an optional close
-/// button, above a divider.
+/// [child] (typically a title) plus an optional close button, above a divider.
 class BsModalHeader extends StatelessWidget {
   const BsModalHeader({super.key, required this.child, this.onClose, this.style});
 
@@ -354,7 +346,7 @@ class BsModalHeader extends StatelessWidget {
   }
 }
 
-/// `.modal-body`: the modal's main content area.
+/// The modal's main content area.
 class BsModalBody extends StatelessWidget {
   const BsModalBody({super.key, required this.child, this.style});
 
@@ -369,7 +361,7 @@ class BsModalBody extends StatelessWidget {
   }
 }
 
-/// `.modal-footer`: right-aligned, wrapping action buttons above a divider.
+/// Right-aligned, wrapping action buttons above a divider.
 class BsModalFooter extends StatelessWidget {
   const BsModalFooter({super.key, required this.children, this.style});
 

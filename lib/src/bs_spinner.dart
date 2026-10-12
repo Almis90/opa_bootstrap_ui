@@ -7,15 +7,11 @@ import 'bs_visibility_gate.dart';
 import 'tokens/bs_spinner_style.dart';
 import 'bs_decorated_box.dart';
 
-/// `$spinner-width`/`$spinner-height` vs. their `-sm` counterparts.
+/// The regular and the small spinner.
 enum BsSpinnerSize { normal, small }
 
-/// A Bootstrap border spinner (`.spinner-border`): a partial ring that
-/// spins continuously, the same shape Material's `CircularProgressIndicator`
-/// draws for its indeterminate mode — reimplemented here with a
-/// [CustomPainter] arc under a [RotationTransition] rather than importing
-/// that Material-only widget, since this package has no Material/Cupertino
-/// dependency.
+/// A Bootstrap border spinner: a partial ring that spins continuously, drawn with a
+/// [CustomPainter] arc under a [RotationTransition].
 class BsSpinnerBorder extends StatefulWidget {
   const BsSpinnerBorder({
     super.key,
@@ -25,8 +21,7 @@ class BsSpinnerBorder extends StatefulWidget {
     this.semanticsLabel = 'Loading...',
   });
 
-  /// Defaults to the ambient [DefaultTextStyle] color, matching
-  /// Bootstrap's `border-color: currentColor`.
+  /// Defaults to the ambient [DefaultTextStyle] color.
   final Color? color;
 
   final BsSpinnerSize size;
@@ -35,8 +30,7 @@ class BsSpinnerBorder extends StatefulWidget {
   /// [BsSpinnerStyle.small].
   final BsSpinnerStyle? style;
 
-  /// Announced to screen readers, matching Bootstrap's own recommended
-  /// `.visually-hidden` status text. Pass null to omit it.
+  /// Announced to screen readers. Pass null to omit it.
   final String? semanticsLabel;
 
   @override
@@ -92,8 +86,7 @@ class _BsSpinnerBorderState extends State<BsSpinnerBorder>
     // a whole page.)
     final spinner = RepaintBoundary(
       child: Transform.translate(
-        // `$spinner-vertical-align` (`-.125em`): nudges the spinner down
-        // from the baseline it would otherwise sit on next to inline text.
+        // // Nudges the spinner down from the baseline it would otherwise sit on next to inline text.
         offset: Offset(0, -verticalAlign),
         child: RotationTransition(
           turns: _controller,
@@ -138,8 +131,7 @@ class _BsSpinnerBorderPainter extends CustomPainter {
       ..color = color
       ..style = PaintingStyle.stroke
       ..strokeWidth = strokeWidth;
-    // A 3/4 ring (270°), leaving a 90° gap — the same proportions
-    // Bootstrap's `border-right-color: transparent` trick produces.
+    // // A 3/4 ring (270°), leaving a 90° gap, as in Bootstrap's spinner.
     canvas.drawArc(rect, 0, 1.5 * math.pi, false, paint);
   }
 
@@ -148,11 +140,8 @@ class _BsSpinnerBorderPainter extends CustomPainter {
       oldDelegate.color != color || oldDelegate.strokeWidth != strokeWidth;
 }
 
-/// A Bootstrap grow spinner (`.spinner-grow`): a filled dot that repeatedly
-/// scales and fades in from nothing, then holds at full size before
-/// resetting — matching `@keyframes spinner-grow`'s two keyframes (0% and
-/// 50%, with the animation holding the 50% state through the second half
-/// of each cycle before jumping back to 0%).
+/// A Bootstrap grow spinner: a filled dot that repeatedly scales and fades in from nothing,
+/// then holds at full size through the second half of each cycle before resetting.
 class BsSpinnerGrow extends StatefulWidget {
   const BsSpinnerGrow({
     super.key,
@@ -162,8 +151,7 @@ class BsSpinnerGrow extends StatefulWidget {
     this.semanticsLabel = 'Loading...',
   });
 
-  /// Defaults to the ambient [DefaultTextStyle] color, matching
-  /// Bootstrap's `background-color: currentColor`.
+  /// Defaults to the ambient [DefaultTextStyle] color.
   final Color? color;
 
   final BsSpinnerSize size;

@@ -45,24 +45,18 @@ class BsToastController extends ChangeNotifier {
   }
 }
 
-/// Shows a Bootstrap toast (`.toast`), stacking it with any other toasts
-/// already showing at the same [position] — the same corner-stack
-/// behavior Material's `ScaffoldMessenger`/`SnackBar` doesn't attempt
-/// (Material queues one `SnackBar` at a time instead), so this manages its
-/// own [OverlayEntry] and list of active toasts per position rather than
-/// adapting that queueing model.
+/// Shows a Bootstrap toast, stacking it with any other toasts already showing at the same
+/// [position]. Unlike a snack bar queue, which shows one message at a time, this manages its
+/// own [OverlayEntry] and list of active toasts per position.
 ///
-/// [builder] mirrors [BsDropdown.toggleBuilder]: it's handed a `dismiss`
-/// callback to wire up to the toast's own close button, if any. Each toast
-/// auto-dismisses after [duration] regardless, or can be dismissed early
-/// through the returned [BsToastController] (or one passed via
-/// [controller]).
+/// [builder] is handed a `dismiss` callback to wire up to the toast's own close button, if any.
+/// Each toast auto-dismisses after [duration] regardless, or can be dismissed early through the
+/// returned [BsToastController] (or one passed via [controller]).
 ///
-/// [onShow] fires synchronously, right here. [onShown] fires once the
-/// fade-in finishes, [onHide] as soon as a dismissal is triggered — by the
-/// timer, the close button, or [BsToastController.hide] — and [onHidden]
-/// once the fade-out finishes, mirroring Bootstrap's
-/// `show.bs.toast`/`shown.bs.toast`/`hide.bs.toast`/`hidden.bs.toast`.
+/// [onShow] fires synchronously, right here. [onShown] fires once the fade-in finishes, [onHide]
+/// as soon as a dismissal is triggered (by the timer, the close button or
+/// [BsToastController.hide]) and [onHidden] once the fade-out finishes. They mirror Bootstrap's
+/// `show`, `shown`, `hide` and `hidden` toast events.
 BsToastController showBsToast(
   BuildContext context, {
   required Widget Function(BuildContext context, VoidCallback dismiss) builder,
@@ -318,14 +312,14 @@ class _BsToastItemState extends State<_BsToastItem> with SingleTickerProviderSta
   }
 }
 
-/// `.toast`: the bordered notification card [showBsToast] displays.
+/// The bordered notification card [showBsToast] displays.
 class BsToast extends StatelessWidget {
   const BsToast({super.key, this.header, required this.body, this.style});
 
   /// Typically a [BsToastHeader].
   final Widget? header;
 
-  /// `.toast-body`.
+  /// The toast's body.
   final Widget body;
 
   /// Style overrides layered on top of [BsToastStyle.defaults].
@@ -357,8 +351,7 @@ class BsToast extends StatelessWidget {
             children: [
               ?header,
               Padding(
-                // `.toast-body { padding: var(--bs-toast-padding-x) }`: the
-                // horizontal padding on every side.
+                // // The body is padded by the horizontal padding on every side.
                 padding: EdgeInsets.all(
                   (style.padding ?? BsToastStyle.defaultPadding)
                       .resolve(TextDirection.ltr)
@@ -377,8 +370,7 @@ class BsToast extends StatelessWidget {
   }
 }
 
-/// `.toast-header`: [title] plus optional [meta] (e.g. a timestamp) and a
-/// close button, above a divider.
+/// [title] plus optional [meta] (for example a timestamp) and a close button, above a divider.
 class BsToastHeader extends StatelessWidget {
   const BsToastHeader({super.key, required this.title, this.meta, this.onClose, this.style});
 
@@ -406,7 +398,7 @@ class BsToastHeader extends StatelessWidget {
         ),
       ),
       child: Padding(
-        // `.toast-header { padding: .5rem .75rem }`
+        // // The header's padding.
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         child: DefaultTextStyle.merge(
           style: TextStyle(
@@ -426,7 +418,7 @@ class BsToastHeader extends StatelessWidget {
                 ),
               ),
               if (meta != null)
-                // (`<small>`: `.875em` of the toast's font size)
+                // // The meta text is 87.5% of the toast's font size.
                 DefaultTextStyle.merge(
                   style: TextStyle(
                     fontSize:
@@ -437,8 +429,7 @@ class BsToastHeader extends StatelessWidget {
                   child: meta!,
                 ),
               if (onClose != null) ...[
-                // `.toast-header .btn-close { margin-left: .75rem;
-                // margin-right: -.375rem }`
+                // // Space before the close button, which also reaches 6 logical pixels into the end padding.
                 const SizedBox(width: 12),
                 SizedBox(
                   width: 21 - 6,

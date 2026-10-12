@@ -9,12 +9,11 @@ import 'tokens/bs_progress_style.dart';
 import 'tokens/bs_transitions.dart';
 import 'bs_decorated_box.dart';
 
-/// A Bootstrap progress track (`.progress`): a rounded, height-capped bar
-/// that hosts one or more [BsProgressBar] segments.
+/// A Bootstrap progress track: a rounded, height-capped bar that hosts one or more
+/// [BsProgressBar] segments.
 ///
-/// Use the default constructor for the common single-bar case, or
-/// [BsProgress.stacked] to lay out several [bars] side by side (Bootstrap's
-/// "multiple bars" pattern), each sized by its own value.
+/// Use the default constructor for the common single-bar case, or [BsProgress.stacked] to lay
+/// out several [bars] side by side, each sized by its own value.
 class BsProgress extends StatelessWidget {
   const BsProgress({
     super.key,
@@ -54,11 +53,10 @@ class BsProgress extends StatelessWidget {
   /// The bar's color. Ignored when [bars] is set.
   final BsVariant? variant;
 
-  /// Whether to render `.progress-bar-striped`. Ignored when [bars] is set.
+  /// Whether to render a diagonal stripe pattern. Ignored when [bars] is set.
   final bool striped;
 
-  /// Whether to render `.progress-bar-animated` (implies [striped]).
-  /// Ignored when [bars] is set.
+  /// Whether the stripes scroll (implies [striped]). Ignored when [bars] is set.
   final bool animated;
 
   /// Content centered on the bar, e.g. a `Text('50%')`. Ignored when [bars]
@@ -101,9 +99,7 @@ class BsProgress extends StatelessWidget {
       for (final bar in bars)
         ((bar.value - bar.min) / (bar.max - bar.min)).clamp(0.0, 1.0),
     ];
-    // `$progress-bar-transition` (`width .6s ease`): each segment's width
-    // eases toward its new value rather than jumping, the same as the
-    // CSS `transition: width` on `.progress-bar`.
+    // // Each segment's width eases toward its new value rather than jumping.
     final transitionDuration = BsTransitions.resolve(
       context,
       style.barTransitionDuration ??
@@ -143,8 +139,8 @@ class BsProgress extends StatelessWidget {
   }
 }
 
-/// A single Bootstrap `.progress-bar` segment, filling the width [BsProgress]
-/// allots it based on [value].
+/// A single Bootstrap progress bar segment, filling the width [BsProgress] allots it based on
+/// [value].
 class BsProgressBar extends StatefulWidget {
   const BsProgressBar({
     super.key,
@@ -170,11 +166,10 @@ class BsProgressBar extends StatefulWidget {
   /// The bar's color. Defaults to [BsProgressStyle.defaultBarBackground].
   final BsVariant? variant;
 
-  /// Whether to render the diagonal `.progress-bar-striped` pattern.
+  /// Whether to render a diagonal stripe pattern.
   final bool striped;
 
-  /// Whether the stripes scroll (`.progress-bar-animated`); implies
-  /// [striped].
+  /// Whether the stripes scroll; implies [striped].
   final bool animated;
 
   /// Content centered on the bar, e.g. a `Text('50%')`.
@@ -235,8 +230,8 @@ class _BsProgressBarState extends State<BsProgressBar>
         widget.variant?.color ??
         style.barBackground ??
         BsProgressStyle.defaultBarBackground;
-    // `.text-bg-*`: light variants (warning, info, light) take dark text; on
-    // the others `.progress-bar`'s white is what `.bg-*` leaves.
+    // // Light variants (warning, info, light) take dark text; on the others the bar's white is
+    // // what is left.
     final color = widget.variant != null
         ? BsColorUtils.contrast(background)
         : style.barColor ?? BsProgressStyle.defaultBarColor;
@@ -290,15 +285,12 @@ class _BsProgressBarState extends State<BsProgressBar>
   }
 }
 
-/// Draws `.progress-bar-striped`: `linear-gradient(45deg, rgba(255,255,255,.15)
-/// 25%, transparent 25% 50%, rgba(255,255,255,.15) 50% 75%, transparent 75%)`
-/// in a tile as wide and tall as the bar (`background-size: var(--bs-progress-height)`).
-/// That is 45° stripes leaning `\`, half a tile wide on a one-tile pitch, whose
-/// left edge on row `y` is at `x = y` (plus a multiple of the tile).
+/// Draws the diagonal stripes of a striped bar: 45° stripes leaning `\`, half a tile wide on a
+/// one-tile pitch, in a tile as wide and tall as the bar. The left edge of a stripe on row `y`
+/// is at `x = y` (plus a multiple of the tile).
 ///
-/// [offset] (0-1, looping) is `progress-bar-animated`: `progress-bar-stripes`
-/// moves the background from `background-position-x: <tile>` to 0, so the
-/// stripes slide left by one tile (one whole period) per cycle.
+/// [offset] (0 to 1, looping) animates the bar: the stripes slide left by one tile (one whole
+/// period) per cycle.
 class _BsProgressStripePainter extends CustomPainter {
   const _BsProgressStripePainter({required this.offset, this.rtl = false});
 
