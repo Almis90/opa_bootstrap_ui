@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 import 'bs_clip_rrect.dart';
@@ -331,10 +332,25 @@ class _BsDropdownState extends State<BsDropdown>
       // then the same tap reopens it via the toggle's own handler).
       child: TapRegion(
         groupId: this,
-        child: OverlayPortal(
-          controller: _overlayController,
-          overlayChildBuilder: (context) => _buildOverlay(style),
-          child: widget.toggleBuilder(context, _toggle, _controller.isShown),
+        // Escape closes an open menu from the toggle (or anything focused in it),
+        // as Bootstrap's dropdown plugin does; the focus stays on the toggle.
+        child: Focus(
+          canRequestFocus: false,
+          skipTraversal: true,
+          onKeyEvent: (node, event) {
+            if (event is KeyDownEvent &&
+                event.logicalKey == LogicalKeyboardKey.escape &&
+                _controller.isShown) {
+              _controller.hide();
+              return KeyEventResult.handled;
+            }
+            return KeyEventResult.ignored;
+          },
+          child: OverlayPortal(
+            controller: _overlayController,
+            overlayChildBuilder: (context) => _buildOverlay(style),
+            child: widget.toggleBuilder(context, _toggle, _controller.isShown),
+          ),
         ),
       ),
     );

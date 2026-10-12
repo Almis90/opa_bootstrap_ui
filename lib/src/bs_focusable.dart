@@ -11,13 +11,19 @@ class _FocusModality extends ValueNotifier<bool> {
 
   static final instance = _FocusModality._();
 
-  bool _installed = false;
+  bool _pointerInstalled = false;
 
   void ensureInstalled() {
-    if (_installed) return;
-    _installed = true;
-    GestureBinding.instance.pointerRouter.addGlobalRoute(_onPointer);
-    HardwareKeyboard.instance.addHandler(_onKey);
+    if (!_pointerInstalled) {
+      _pointerInstalled = true;
+      GestureBinding.instance.pointerRouter.addGlobalRoute(_onPointer);
+    }
+    // (removed first so that it is only ever there once, and is there again on
+    // a binding that has dropped its handlers, as a test binding does between
+    // tests)
+    HardwareKeyboard.instance
+      ..removeHandler(_onKey)
+      ..addHandler(_onKey);
   }
 
   void _onPointer(PointerEvent event) {

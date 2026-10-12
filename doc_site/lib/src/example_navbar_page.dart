@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 
@@ -200,44 +201,41 @@ BsNavbarItem navbarDropdownItem(
             MediaQuery.sizeOf(context).width >= expandBreakpoint.minWidth;
         return BsDropdown(
           direction: up ? BsDropdownDirection.up : BsDropdownDirection.down,
-          toggleBuilder: (context, toggle, isOpen) => GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: toggle,
+          toggleBuilder: (context, toggle, isOpen) => NavbarDropdownToggle(
+            onToggle: toggle,
             // The whole `.nav-item`, link padding included, so the menu opens
             // from its edge.
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: expanded ? 8 : 0,
-                vertical: 8,
+            padding: EdgeInsets.symmetric(
+              horizontal: expanded ? 8 : 0,
+              vertical: 8,
+            ),
+            // `.navbar-nav .nav-link.show`: the link of an open menu takes the
+            // active colour.
+            child: DefaultTextStyle.merge(
+              style: TextStyle(
+                color: isOpen
+                    ? (BsTheme.of(context) == Brightness.dark
+                          ? BsNavbarStyle.darkActiveColor
+                          : BsNavbarStyle.lightActiveColor)
+                    : null,
               ),
-              // `.navbar-nav .nav-link.show`: the link of an open menu takes the
-              // active colour.
-              child: DefaultTextStyle.merge(
-                style: TextStyle(
-                  color: isOpen
-                      ? (BsTheme.of(context) == Brightness.dark
-                            ? BsNavbarStyle.darkActiveColor
-                            : BsNavbarStyle.lightActiveColor)
-                      : null,
-                ),
-                child: BsFlex(
-                  inline: true,
-                  alignItems: BsAlign.start,
-                  children: [
-                    Text(label),
-                    // `.dropdown-toggle::after`: .255em from the text, raised
-                    // .255em off the baseline of the 24px line.
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left:
-                            BsDropdownCaret.marginStart +
-                            (spaceBeforeCaret ? 3.92 : 0),
-                        top: 17 - 4.08 - BsDropdownCaret.heightFor(context),
-                      ),
-                      child: BsDropdownCaret(up: up),
+              child: BsFlex(
+                inline: true,
+                alignItems: BsAlign.start,
+                children: [
+                  Text(label),
+                  // `.dropdown-toggle::after`: .255em from the text, raised
+                  // .255em off the baseline of the 24px line.
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left:
+                          BsDropdownCaret.marginStart +
+                          (spaceBeforeCaret ? 3.92 : 0),
+                      top: 17 - 4.08 - BsDropdownCaret.heightFor(context),
                     ),
-                  ],
-                ),
+                    child: BsDropdownCaret(up: up),
+                  ),
+                ],
               ),
             ),
           ),
@@ -274,5 +272,82 @@ class NavbarSearchInput extends StatelessWidget {
             child: input,
           )
         : input;
+  }
+}
+
+/// A navbar's `<a class="nav-link dropdown-toggle" href="#" role="button">`: it
+/// takes the keyboard focus (Tab), shows `.nav-link:focus-visible`'s ring only
+/// when focused that way, and Enter or Space open the menu like a click (Escape
+/// closes it, see [BsDropdown]). A click focuses it too, as it does a link, but
+/// without a ring until the next key press.
+class NavbarDropdownToggle extends StatefulWidget {
+  const NavbarDropdownToggle({
+    super.key,
+    required this.onToggle,
+    required this.padding,
+    required this.child,
+  });
+
+  final VoidCallback onToggle;
+  final EdgeInsets padding;
+  final Widget child;
+
+  @override
+  State<NavbarDropdownToggle> createState() => _NavbarDropdownToggleState();
+}
+
+class _NavbarDropdownToggleState extends State<NavbarDropdownToggle> {
+  final _focusNode = FocusNode(debugLabel: 'NavbarDropdownToggle');
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  KeyEventResult _onKey(FocusNode node, KeyEvent event) {
+    final key = event.logicalKey;
+    if (event is KeyDownEvent &&
+        (key == LogicalKeyboardKey.enter ||
+            key == LogicalKeyboardKey.numpadEnter ||
+            key == LogicalKeyboardKey.space)) {
+      widget.onToggle();
+      return KeyEventResult.handled;
+    }
+    return KeyEventResult.ignored;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: Focus(
+        canRequestFocus: false,
+        skipTraversal: true,
+        onKeyEvent: _onKey,
+        child: BsFocusableBuilder(
+          focusNode: _focusNode,
+          // `.nav-link:focus-visible`
+          focusVisibleOnly: true,
+          builder: (context, focused) => GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTapDown: (_) => _focusNode.requestFocus(),
+            onTap: widget.onToggle,
+            child: BsDecoratedBox(
+              decoration: BoxDecoration(
+                boxShadow: [
+                  if (focused)
+                    BoxShadow(
+                      color: BsFocusRing.color(),
+                      spreadRadius: BsFocusRing.width,
+                    ),
+                ],
+              ),
+              child: Padding(padding: widget.padding, child: widget.child),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

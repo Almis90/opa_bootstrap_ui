@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
@@ -41,6 +42,33 @@ void main() {
     await tester.tap(find.text('Toggle'));
     await tester.pumpAndSettle();
     expect(find.text('Item'), findsNothing);
+  });
+
+  testWidgets('Escape closes the menu while the toggle has focus', (tester) async {
+    final focusNode = FocusNode();
+    addTearDown(focusNode.dispose);
+    await tester.pumpWidget(
+      BsApp(
+        home: Center(
+          child: BsDropdown(
+            items: const [BsDropdownItem(child: Text('Item'))],
+            toggleBuilder: (context, toggle, isOpen) => Focus(
+              focusNode: focusNode,
+              child: GestureDetector(onTap: toggle, child: const Text('Toggle')),
+            ),
+          ),
+        ),
+      ),
+    );
+    focusNode.requestFocus();
+    await tester.tap(find.text('Toggle'));
+    await tester.pumpAndSettle();
+    expect(find.text('Item'), findsOneWidget);
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+    await tester.pumpAndSettle();
+    expect(find.text('Item'), findsNothing);
+    expect(focusNode.hasFocus, isTrue);
   });
 
   testWidgets('Tapping outside the menu closes it', (tester) async {
