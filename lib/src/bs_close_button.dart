@@ -108,11 +108,14 @@ class _BsCloseGlyphPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    // Bootstrap's `.btn-close` glyph: two strokes 2 units wide with round ends,
+    // from (1, 1) to (15, 15) of a 16-unit square, so it fills the square.
+    final unit = size.width / 16;
     final paint = Paint()
       ..color = color
-      ..strokeWidth = size.width * 0.12
+      ..strokeWidth = 2 * unit
       ..strokeCap = StrokeCap.round;
-    final inset = size.width * 0.15;
+    final inset = unit;
     canvas
       ..drawLine(Offset(inset, inset), Offset(size.width - inset, size.height - inset), paint)
       ..drawLine(Offset(size.width - inset, inset), Offset(inset, size.height - inset), paint);
@@ -120,4 +123,32 @@ class _BsCloseGlyphPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _BsCloseGlyphPainter oldDelegate) => oldDelegate.color != color;
+}
+
+/// `.modal-header .btn-close` / `.offcanvas-header .btn-close`: the button's padding is
+/// half of the header's [headerPadding] and its margin the negative of it, so the glyph
+/// sits where the header's padding ends and the button's box reaches out into that
+/// padding without taking room.
+class BsHeaderCloseButton extends StatelessWidget {
+  const BsHeaderCloseButton({super.key, required this.onPressed, this.headerPadding = 16});
+
+  final VoidCallback? onPressed;
+  final double headerPadding;
+
+  @override
+  Widget build(BuildContext context) {
+    final half = headerPadding / 2;
+    const glyph = BsCloseButtonStyle.defaultSize;
+    return SizedBox(
+      width: glyph,
+      height: glyph,
+      child: OverflowBox(
+        minWidth: glyph + 2 * half,
+        maxWidth: glyph + 2 * half,
+        minHeight: glyph + 2 * half,
+        maxHeight: glyph + 2 * half,
+        child: BsCloseButton(onPressed: onPressed, style: BsCloseButtonStyle(padding: EdgeInsets.all(half))),
+      ),
+    );
+  }
 }

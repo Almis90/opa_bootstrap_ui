@@ -344,7 +344,7 @@ class BsOffcanvasHeader extends StatelessWidget {
     return Padding(
       padding: style.padding ?? BsOffcanvasStyle.defaultPadding,
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(
             child: DefaultTextStyle.merge(
@@ -352,7 +352,7 @@ class BsOffcanvasHeader extends StatelessWidget {
               child: child,
             ),
           ),
-          if (onClose != null) ...[const SizedBox(width: 16), BsCloseButton(onPressed: onClose)],
+          if (onClose != null) ...[const SizedBox(width: 16), BsHeaderCloseButton(onPressed: onClose, headerPadding: (style.padding ?? BsOffcanvasStyle.defaultPadding).resolve(Directionality.of(context)).top)],
         ],
       ),
     );

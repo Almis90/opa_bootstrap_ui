@@ -334,7 +334,7 @@ class BsModalHeader extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.all(style.innerPadding ?? BsModalStyle.defaultInnerPadding),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Expanded(
               child: DefaultTextStyle.merge(
@@ -346,7 +346,7 @@ class BsModalHeader extends StatelessWidget {
                 child: child,
               ),
             ),
-            if (onClose != null) ...[const SizedBox(width: 16), BsCloseButton(onPressed: onClose)],
+            if (onClose != null) ...[const SizedBox(width: 16), BsHeaderCloseButton(onPressed: onClose, headerPadding: style.innerPadding ?? BsModalStyle.defaultInnerPadding)],
           ],
         ),
       ),
