@@ -166,10 +166,9 @@ class BsApp extends StatelessWidget {
   }
 }
 
-/// A browser takes focus off a control when something else is pressed; Flutter
-/// leaves it where it is. A pointer pressed outside the focused control's box
-/// unfocuses it (and so its focus ring), and a control that was pressed takes
-/// the focus itself as it handles the tap.
+/// A web browser takes focus off a control when something else is pressed; Flutter leaves it
+/// where it is. A pointer pressed outside the focused control's box unfocuses it (and so its
+/// focus ring), and a control that was pressed takes the focus itself as it handles the tap.
 class _BsBlurOnPointerOutside extends StatelessWidget {
   const _BsBlurOnPointerOutside({required this.child});
 

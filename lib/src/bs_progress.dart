@@ -297,9 +297,8 @@ class _BsProgressStripePainter extends CustomPainter {
   /// 0-1, looping.
   final double offset;
 
-  /// The stripes of a right-to-left page: Bootstrap's RTL stylesheet mirrors
-  /// the gradient (`-45deg`), so they lean `/` — with the left edge of the stripe
-  /// on row `y` at `x = tile / 2 - y` — but they still slide left.
+  /// The stripes of a right-to-left page are mirrored: they lean `/`, with the left edge of the
+  /// stripe on row `y` at `x = tile / 2 - y`, but they still slide left.
   final bool rtl;
 
   static const Color _stripeColor = Color(0x26FFFFFF);

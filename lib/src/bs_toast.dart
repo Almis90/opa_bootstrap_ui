@@ -10,11 +10,9 @@ import 'tokens/bs_toast_style.dart';
 import 'tokens/bs_transitions.dart';
 import 'bs_decorated_box.dart';
 
-/// Which corner (or edge center) a toast stack anchors to. The six
-/// top/bottom placements match Bootstrap's own toast docs; [centerStart]/
-/// [centerEnd] (vertically centered against the left/right edge) have no
-/// Bootstrap equivalent there, but round out the set the same way a
-/// SnackBar/notification rail on the side of the screen would.
+/// Which corner (or edge center) a toast stack anchors to. The six top and bottom placements
+/// match Bootstrap's toast placements; [centerStart] and [centerEnd] (vertically centered
+/// against the left or right edge) round out the set.
 enum BsToastPosition { topStart, topCenter, topEnd, centerStart, centerEnd, bottomStart, bottomCenter, bottomEnd }
 
 /// Programmatic control of a single toast shown via [showBsToast] —

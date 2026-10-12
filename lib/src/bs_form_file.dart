@@ -35,7 +35,7 @@ class BsFormFile extends StatefulWidget {
 
   final BsFormControlSize size;
 
-  /// The button's text (the browser's own, localised: "Choose File").
+  /// The button's text, for example "Choose File".
   final String buttonLabel;
 
   /// What it says while nothing is chosen ("No file chosen").

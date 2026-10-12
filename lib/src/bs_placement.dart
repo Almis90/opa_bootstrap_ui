@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-/// The side of the trigger an overlay sits on, in physical (not
-/// text-direction) terms, as Popper.js names them.
+/// The side of the trigger an overlay sits on, in physical (not text-direction) terms.
 enum BsPlacementSide {
   top,
   bottom,
@@ -18,11 +17,9 @@ enum BsPlacementSide {
   };
 }
 
-/// Where an overlay lines up with its trigger along the axis the
-/// [BsPlacementSide] doesn't cover — Popper's `-start`/`-end` variations, or
-/// no variation at all ([center]). Physical too: `start` is the left (for
-/// top/bottom sides) or top (for left/right) edge, regardless of text
-/// direction.
+/// Where an overlay lines up with its trigger along the axis the [BsPlacementSide] does not
+/// cover: at its start, its end, or centered. Physical too: `start` is the left (for top and
+/// bottom sides) or top (for left and right sides) edge, regardless of text direction.
 enum BsPlacementAlign {
   start,
   center,
@@ -42,8 +39,8 @@ enum BsPlacementAlign {
   };
 }
 
-/// A Popper-style placement (`bottom-start`, `top`, `right-end`…): a [side]
-/// of the trigger plus an [align]ment along the other axis.
+/// A placement of an overlay: a [side] of the trigger plus an [align]ment along the other axis
+/// (`bottom-start`, `top`, `right-end`…).
 @immutable
 class BsPlacement {
   const BsPlacement(this.side, [this.align = BsPlacementAlign.center]);
@@ -51,11 +48,10 @@ class BsPlacement {
   final BsPlacementSide side;
   final BsPlacementAlign align;
 
-  /// Popper's `getOppositePlacement`: the other side, same alignment.
+  /// The other side, with the same alignment.
   BsPlacement get opposite => BsPlacement(side.opposite, align);
 
-  /// Popper's `getOppositeVariationPlacement`: same side, other alignment
-  /// (itself, for a centred placement).
+  /// The same side with the other alignment (itself, for a centered placement).
   BsPlacement get oppositeVariation => BsPlacement(side, align.opposite);
 
   /// The point on the trigger the overlay attaches to.
@@ -103,8 +99,8 @@ class BsPlacement {
   String toString() => align == BsPlacementAlign.center ? side.name : '${side.name}-${align.name}';
 }
 
-/// A [BsPlacement] together with the nudge Popper's `preventOverflow`
-/// applies along the other axis to keep the overlay inside the viewport.
+/// A [BsPlacement] together with the nudge applied along the other axis to keep the overlay
+/// inside the viewport.
 @immutable
 class BsResolvedPlacement {
   const BsResolvedPlacement(this.placement, [this.shift = Offset.zero]);
@@ -127,21 +123,18 @@ class BsResolvedPlacement {
   String toString() => '$placement + $shift';
 }
 
-/// Popper.js's default `flip` + `preventOverflow` modifiers, as Bootstrap's
-/// dropdowns, popovers and tooltips run them.
+/// Chooses where an overlay goes so that it stays on screen, as Bootstrap's dropdowns,
+/// popovers and tooltips do.
 ///
-/// Starting from [preferred], tries the same side with the opposite
-/// alignment (skipped for centred placements, which have none), then the
-/// opposite side with each alignment, and takes the first placement that
-/// leaves the overlay entirely inside [viewport]. If none does it settles for
-/// the first one that at least clears the side it opens towards (and,
-/// failing that, the preferred one) — Popper's fallback checks. The result is
-/// then slid along the alignment axis, if need be, so the overlay doesn't
-/// poke out of the viewport.
+/// Starting from [preferred], tries the same side with the opposite alignment (skipped for
+/// centered placements, which have none), then the opposite side with each alignment, and takes
+/// the first placement that leaves the overlay entirely inside [viewport]. If none does it
+/// settles for the first one that at least clears the side it opens towards (and, failing that,
+/// the preferred one). The result is then slid along the alignment axis, if need be, so that
+/// the overlay does not poke out of the viewport.
 ///
-/// [target] is the trigger's rect and [content] the overlay's size, both in
-/// the viewport's coordinate space. With [flip] false only the shift is
-/// applied.
+/// [target] is the trigger's rect and [content] the overlay's size, both in the viewport's
+/// coordinate space. With [flip] false only the shift is applied.
 BsResolvedPlacement resolvePlacement({
   required BsPlacement preferred,
   required Rect target,
@@ -157,8 +150,8 @@ BsResolvedPlacement resolvePlacement({
     BsPlacementSide.right => r.right - viewport.right,
   };
 
-  // Popper's three checks per placement: the side it opens towards, then the
-  // two sides along the alignment axis (the far one first).
+  // // Three checks per placement: the side it opens towards, then the two sides along the
+  // // alignment axis (the far one first).
   List<bool> checks(BsPlacement p) {
     final r = p.rect(target, content, spacer);
     final (far, near) = p.side.isVertical
@@ -208,10 +201,9 @@ BsResolvedPlacement resolvePlacement({
   return BsResolvedPlacement(chosen, shift);
 }
 
-/// How far to slide a popover/tooltip arrow so it keeps pointing at the
-/// trigger after [shift] moved the bubble — Popper's `arrow` modifier: the
-/// opposite way, but never past [padding] (the bubble's corner radius) from
-/// either end of a bubble [contentExtent] long.
+/// How far to slide a popover or tooltip arrow so that it keeps pointing at the trigger after
+/// [shift] moved the bubble: the opposite way, but never past [padding] (the bubble's corner
+/// radius) from either end of a bubble [contentExtent] long.
 double arrowShift({
   required double shift,
   required double contentExtent,
@@ -223,18 +215,16 @@ double arrowShift({
   return (-shift).clamp(-max, max);
 }
 
-/// Shared open-time bookkeeping for anything that places an overlay next to a
-/// trigger with Popper-style flipping ([BsDropdown], [BsPopover],
-/// [BsTooltip]).
+/// Shared open-time bookkeeping for anything that places an overlay next to a trigger and
+/// flips it to stay on screen ([BsDropdown], [BsPopover], [BsTooltip]).
 ///
-/// The overlay is first laid out invisibly at [preferredPlacement] so its size
-/// is known ([placementPending] says to hide it); the first frame after
-/// [startResolvingPlacement] measures it against the trigger and the screen
-/// and stores the outcome in [resolvedPlacement]. It then re-measures after
-/// every frame while [placementActive], so the overlay follows its trigger
-/// when the page scrolls or resizes, like Popper's update loop. Re-registering
-/// from inside a post-frame callback doesn't schedule a frame of its own, so
-/// an idle open overlay costs nothing.
+/// The overlay is first laid out invisibly at [preferredPlacement] so that its size is known
+/// ([placementPending] says to hide it); the first frame after [startResolvingPlacement]
+/// measures it against the trigger and the screen and stores the outcome in
+/// [resolvedPlacement]. It then re-measures after every frame while [placementActive], so the
+/// overlay follows its trigger when the page scrolls or resizes. Re-registering from inside a
+/// post-frame callback does not schedule a frame of its own, so an idle open overlay costs
+/// nothing.
 ///
 /// Wrap the trigger in a [CompositedTransformTarget] keyed [placementTargetKey]
 /// and the overlay's own root widget in [placementContentKey].
@@ -249,10 +239,10 @@ mixin BsPlacementTracker<T extends StatefulWidget> on State<T> {
   /// The placement asked for, before any flipping.
   BsPlacement get preferredPlacement;
 
-  /// The gap between trigger and overlay (Popper's `offset`).
+  /// The gap between trigger and overlay.
   double get placementSpacer => 0;
 
-  /// Popper's `flip`/`preventOverflow`; false opens exactly at
+  /// Whether to keep the overlay on screen by flipping and shifting it; false opens exactly at
   /// [preferredPlacement].
   bool get flipEnabled => true;
 

@@ -121,11 +121,10 @@ class BsTooltip extends StatefulWidget {
 
   final BsTooltipPlacement placement;
 
-  /// Popper's `flip` and `preventOverflow` modifiers, which Bootstrap's
-  /// tooltips run by default: when the bubble wouldn't fit on screen on the
-  /// side [placement] asks for, it appears on the opposite side instead (its
-  /// arrow flipping with it), and slides along the target to stay in view,
-  /// the arrow keeping its aim. Pass false to always show exactly where asked.
+  /// Keeps the bubble on screen, as Bootstrap's tooltips do by default: when it would not fit on
+  /// the side [placement] asks for, it appears on the opposite side instead (its arrow flipping
+  /// with it), and slides along the target to stay in view, the arrow keeping its aim. Pass
+  /// false to always show exactly where asked.
   final bool flip;
 
   /// Programmatic enable/disable and show/hide. Defaults to an

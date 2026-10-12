@@ -703,8 +703,8 @@ class BsDropdownCaret extends StatelessWidget {
   /// Points the caret up, for a menu that opens above the toggle.
   final bool up;
 
-  /// The height of the stylesheet's caret (its border width) at the ambient
-  /// device pixel ratio, for a toggle of [fontSize].
+  /// The height of the caret (0.3 times the font size, snapped down to whole device pixels) at
+  /// the ambient device pixel ratio, for a toggle of [fontSize].
   static double heightFor(BuildContext context, {double fontSize = 16}) {
     final dpr = MediaQuery.maybeDevicePixelRatioOf(context) ?? 1;
     return (fontSize * 0.3 * dpr).floorToDouble() / dpr;

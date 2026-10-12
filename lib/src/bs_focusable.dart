@@ -2,10 +2,10 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
-/// Whether the last thing the user did was press a key rather than point at
-/// something: what the browsers' `:focus-visible` heuristic comes down to. A
-/// click focuses a button without a focus ring; the next key press (Escape,
-/// Tab, an arrow) shows it, and Tab onto a button shows it at once.
+/// Whether the last thing the user did was press a key rather than point at something: what
+/// a browser's keyboard-focus heuristic comes down to. A click focuses a button without a focus
+/// ring; the next key press (Escape, Tab, an arrow) shows it, and Tab onto a button shows it at
+/// once.
 class _FocusModality extends ValueNotifier<bool> {
   _FocusModality._() : super(true);
 
@@ -47,11 +47,9 @@ class _FocusModality extends ValueNotifier<bool> {
   }
 }
 
-/// Tracks whether [builder]'s subtree has keyboard focus, replacing the
-/// `bool _focused` field + `Focus(onFocusChange: ...)` boilerplate that
-/// every focus-ring-drawing `Bs*` widget ([BsButton], [BsNav],
-/// [BsAccordion], [BsNavbar]'s toggler, [BsPagination], [BsCloseButton])
-/// used to hand-roll individually.
+/// Tracks whether [builder]'s subtree has keyboard focus, replacing the focus-state
+/// boilerplate that every focus-ring-drawing `Bs*` widget ([BsButton], [BsNav], [BsAccordion],
+/// [BsNavbar]'s toggler, [BsPagination], [BsCloseButton]) would otherwise repeat.
 class BsFocusableBuilder extends StatefulWidget {
   const BsFocusableBuilder({
     super.key,

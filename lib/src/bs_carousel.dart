@@ -71,9 +71,8 @@ class BsCarouselController extends ChangeNotifier {
   /// Stops autoplay until [cycle] resumes it.
   void pause() => _setPaused(true);
 
-  /// Resumes autoplay after [pause]. Mirrors Bootstrap's own `cycle()`
-  /// naming (also used to start autoplay in the first place there, though
-  /// [BsCarousel] already starts cycling on its own per [BsCarousel.interval]).
+  /// Resumes autoplay after [pause]. ([BsCarousel] already starts cycling on its own per
+  /// [BsCarousel.interval].)
   void cycle() => _setPaused(false);
 
   void _setIndex(int value) {
@@ -199,11 +198,10 @@ class _BsCarouselState extends State<BsCarousel> {
   /// slide under it (see [_swallowWheel]).
   bool _wheelBlocked = false;
 
-  /// Bootstrap's carousel swipes by touch only: a mouse wheel or a trackpad's
-  /// two-finger scroll does nothing to it. Flutter's [PageView] would take
-  /// them (on the web a two-finger swipe is a stream of horizontal wheel
-  /// events, and one the engine sees consumed is kept from the browser, which
-  /// would otherwise use it to go back). A slide hears the event before the
+  /// A carousel swipes by touch only: a mouse wheel or a trackpad's two-finger scroll does
+  /// nothing to it. Flutter's [PageView] would take them (on the web a two-finger swipe is a
+  /// stream of horizontal wheel events, and one the engine sees consumed is kept from the
+  /// browser, which would otherwise use it to go back). A slide hears the event before the
   /// [Scrollable] around it does, and the physics refuse it while this is set.
   void _swallowWheel(PointerSignalEvent event) {
     if (event is! PointerScrollEvent) return;

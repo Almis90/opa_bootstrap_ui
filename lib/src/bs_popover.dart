@@ -131,11 +131,10 @@ class BsPopover extends StatefulWidget {
   /// physical side.
   final BsPopoverPlacement? placement;
 
-  /// Popper's `flip` and `preventOverflow` modifiers, which Bootstrap's
-  /// popovers run by default: when the bubble wouldn't fit on screen on the
-  /// side [placement] asks for, it opens on the opposite side instead (its
-  /// arrow flipping with it), and slides along the trigger to stay in view,
-  /// the arrow keeping its aim. Pass false to always open exactly where asked.
+  /// Keeps the bubble on screen, as Bootstrap's popovers do by default: when it would not fit on
+  /// the side [placement] asks for, it opens on the opposite side instead (its arrow flipping
+  /// with it), and slides along the trigger to stay in view, the arrow keeping its aim. Pass
+  /// false to always open exactly where asked.
   final bool flip;
 
   /// Style overrides layered on top of [BsPopoverStyle.defaults].

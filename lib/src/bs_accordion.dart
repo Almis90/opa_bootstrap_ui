@@ -8,12 +8,10 @@ import 'tokens/bs_accordion_style.dart';
 import 'tokens/bs_transitions.dart';
 import 'bs_decorated_box.dart';
 
-/// Controls which [BsAccordion] items are expanded, for programmatic
-/// show/hide — the same pattern Flutter itself uses for [TabController],
-/// [ScrollController] and `ExpansionTileController`: pass an instance you
-/// created to [BsAccordion.controller] and call [expand]/[collapse]/
-/// [toggle] from anywhere with access to it. If you don't need programmatic
-/// control, omit it — [BsAccordion] creates and manages its own internally.
+/// Controls which [BsAccordion] items are expanded, for programmatic show and hide: pass an
+/// instance you created to [BsAccordion.controller] and call [expand], [collapse] or [toggle]
+/// from anywhere with access to it. If you do not need programmatic control, omit it:
+/// [BsAccordion] creates and manages its own internally.
 class BsAccordionController extends ChangeNotifier {
   BsAccordionController({Set<int> initiallyExpanded = const <int>{}, Set<int> detachedIndices = const <int>{}})
       : _expanded = {...initiallyExpanded},
