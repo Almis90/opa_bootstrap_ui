@@ -78,8 +78,7 @@ class BsFormControl extends StatefulWidget {
   /// The radius of the top corners in place of the control's.
   final BsRounded? roundedTop;
 
-  /// `rounded-bottom-*`: the radius of the bottom corners in place of the
-  /// control's.
+  /// The radius of the bottom corners in place of the control's.
   final BsRounded? roundedBottom;
 
   /// The four corner radii in place of the control's (and of [roundedTop] and [roundedBottom]):

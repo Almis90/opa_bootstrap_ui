@@ -12,10 +12,8 @@ import 'bs_body.dart';
 class BsFigureStyle {
   const BsFigureStyle({this.captionFontSize, this.captionColor});
 
-  /// Caption font size.
   final double? captionFontSize;
 
-  /// Caption color.
   final Color? captionColor;
 
   BsFigureStyle merge(BsFigureStyle? other) {
@@ -26,13 +24,10 @@ class BsFigureStyle {
     );
   }
 
-  /// Default caption font size.
   static const double defaultCaptionFontSize = 14;
 
-  /// Default caption color.
   static const Color defaultCaptionColor = BsColors.gray600;
 
-  /// Default caption color in dark mode.
   static const Color defaultDarkCaptionColor = BsBody.darkSecondaryColor;
 
   static const BsFigureStyle defaults = BsFigureStyle(

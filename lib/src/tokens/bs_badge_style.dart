@@ -27,16 +27,13 @@ class BsBadgeStyle {
   /// Background color, set per variant; there is no single default.
   final Color? background;
 
-  /// Font size.
   final double? fontSize;
 
-  /// Font weight.
   final FontWeight? fontWeight;
 
   /// Padding, relative to [fontSize].
   final EdgeInsetsGeometry? padding;
 
-  /// Corner radius.
   final double? borderRadius;
 
   BsBadgeStyle merge(BsBadgeStyle? other) {
@@ -55,16 +52,13 @@ class BsBadgeStyle {
   /// see [color].
   static const Color defaultColor = BsColors.white;
 
-  /// Default font weight.
   static const FontWeight defaultFontWeight = BsTypography.fontWeightBold;
 
-  /// Default font size.
   static const double defaultFontSize = 12;
 
   /// Default padding, resolved against [defaultFontSize].
   static const EdgeInsets defaultPadding = EdgeInsets.symmetric(horizontal: 7.8, vertical: 4.2);
 
-  /// Default border radius.
   static const double defaultBorderRadius = BsBorders.radius;
 
   static const BsBadgeStyle defaults = BsBadgeStyle(

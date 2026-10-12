@@ -55,7 +55,7 @@ class BsFormFloating extends StatefulWidget {
   /// The radius of the input's top corners.
   final BsRounded? roundedTop;
 
-  /// `rounded-bottom-*` on the input.
+  /// The radius of the input's bottom corners.
   final BsRounded? roundedBottom;
 
   final ValueChanged<String>? onChanged;

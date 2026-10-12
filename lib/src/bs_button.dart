@@ -67,16 +67,16 @@ class BsButton extends StatefulWidget {
   /// Whether to prevent the button's text from wrapping onto multiple lines.
   final bool noWrap;
 
-  /// `px-*`: horizontal padding in place of the [size]'s (`btn btn-lg px-4`).
+  /// Horizontal padding in place of the [size]'s.
   final BsSpacing? px;
 
-  /// `py-*`: vertical padding in place of the [size]'s.
+  /// Vertical padding in place of the [size]'s.
   final BsSpacing? py;
 
-  /// `fw-*`: the text's weight (`btn fw-bold`).
+  /// The text's weight.
   final BsFw? fw;
 
-  /// `rounded-*` (`btn rounded-pill`): the corners, in place of the [size]'s.
+  /// The corners, in place of the [size]'s.
   final BsRounded? rounded;
 
   final FocusNode? focusNode;

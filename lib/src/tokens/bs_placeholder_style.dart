@@ -8,10 +8,8 @@ import 'package:flutter/foundation.dart';
 class BsPlaceholderStyle {
   const BsPlaceholderStyle({this.opacityMax, this.opacityMin});
 
-  /// Opacity max.
   final double? opacityMax;
 
-  /// Opacity min.
   final double? opacityMin;
 
   BsPlaceholderStyle merge(BsPlaceholderStyle? other) {

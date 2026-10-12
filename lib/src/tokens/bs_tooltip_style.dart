@@ -23,31 +23,22 @@ class BsTooltipStyle {
     this.arrowHeight,
   });
 
-  /// Font size.
   final double? fontSize;
 
-  /// Maximum width.
   final double? maxWidth;
 
-  /// Text color.
   final Color? color;
 
-  /// Background color.
   final Color? background;
 
-  /// Corner radius.
   final double? borderRadius;
 
-  /// Opacity.
   final double? opacity;
 
-  /// Padding of the tooltip.
   final EdgeInsetsGeometry? padding;
 
-  /// Arrow width.
   final double? arrowWidth;
 
-  /// Arrow height.
   final double? arrowHeight;
 
   BsTooltipStyle merge(BsTooltipStyle? other) {
@@ -68,13 +59,10 @@ class BsTooltipStyle {
   static const double defaultFontSize = 14;
   static const double defaultMaxWidth = 200;
 
-  /// Default color.
   static const Color defaultColor = BsColors.white;
 
-  /// Default text color in dark mode.
   static const Color defaultDarkColor = BsBody.darkBackground;
 
-  /// Default background.
   static const Color defaultBackground = BsColors.black;
 
   /// Default background in dark mode: the tooltip inverts to a light chip on the dark page.

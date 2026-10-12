@@ -34,10 +34,8 @@ class BsHeading extends StatelessWidget {
   final BsHeadingLevel level;
   final Widget child;
 
-  /// The heading's font weight.
   final BsFw? fw;
 
-  /// The heading's line height.
   final BsLh? lh;
 
   /// The bottom margin, in place of the heading's default.
@@ -120,10 +118,8 @@ class BsDisplayHeading extends StatelessWidget {
   final BsDisplayLevel level;
   final Widget child;
 
-  /// The heading's font weight.
   final BsFw? fw;
 
-  /// The heading's line height.
   final BsLh? lh;
 
   @override

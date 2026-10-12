@@ -118,8 +118,7 @@ class BsNavbar extends StatefulWidget {
   /// shows it wherever it likes).
   final VoidCallback? onToggle;
 
-  /// `navbar-toggler p-0 border-0`: just the hamburger icon, with no padding or
-  /// border.
+  /// Shows just the hamburger icon, with no padding or border.
   final bool bareToggler;
 
   /// The whole content of the collapsible area, for navbars that lay it out in their own way

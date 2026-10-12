@@ -38,16 +38,15 @@ class BsImage extends StatelessWidget {
   /// A block of its own, at its start, instead of inline content.
   final bool block;
 
-  /// `border`.
+  /// A border on all four sides.
   final bool border;
 
   /// The corners of the border box, which clip the image.
   final BsRounded? rounded;
 
-  /// The shadow.
   final BsShadow? shadow;
 
-  /// The `alt` text (an empty one, as in `alt=""`, marks the image decorative).
+  /// The description for screen readers. An empty one marks the image decorative.
   final String? alt;
 
   @override

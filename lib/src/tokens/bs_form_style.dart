@@ -96,16 +96,12 @@ class BsFormStyle {
     this.invalidColor,
   });
 
-  /// Text margin top.
   final double? textMarginTop;
 
-  /// Text font size.
   final double? textFontSize;
 
-  /// Text color.
   final Color? textColor;
 
-  /// Label margin bottom.
   final double? labelMarginBottom;
 
   /// Padding of a text input.
@@ -117,165 +113,115 @@ class BsFormStyle {
   /// Padding of a large text input.
   final EdgeInsetsGeometry? inputPaddingLg;
 
-  /// Input font size.
   final double? inputFontSize;
 
-  /// Input font size sm.
   final double? inputFontSizeSm;
 
-  /// Input font size lg.
   final double? inputFontSizeLg;
 
-  /// Input font weight.
   final FontWeight? inputFontWeight;
 
-  /// Input line height.
   final double? inputLineHeight;
 
-  /// Input color.
   final Color? inputColor;
 
-  /// Input background.
   final Color? inputBackground;
 
-  /// Input disabled background.
   final Color? inputDisabledBackground;
 
-  /// Input border color.
   final Color? inputBorderColor;
 
-  /// Input border width.
   final double? inputBorderWidth;
 
   /// Inset shadow of a text input. Null by default (no shadow); pass [defaultInputBoxShadow] to opt
   /// in. The focus ring, [inputFocusBoxShadow], is always shown.
   final List<BoxShadow>? inputBoxShadow;
 
-  /// Input border radius.
   final double? inputBorderRadius;
 
-  /// Input border radius sm.
   final double? inputBorderRadiusSm;
 
-  /// Input border radius lg.
   final double? inputBorderRadiusLg;
 
-  /// Input focus border color.
   final Color? inputFocusBorderColor;
 
-  /// Input focus box shadow.
   final List<BoxShadow>? inputFocusBoxShadow;
 
-  /// Input placeholder color.
   final Color? inputPlaceholderColor;
 
-  /// Input height.
   final double? inputHeight;
 
-  /// Input height sm.
   final double? inputHeightSm;
 
-  /// Input height lg.
   final double? inputHeightLg;
 
-  /// Input transition duration.
   final Duration? inputTransitionDuration;
 
-  /// Check input size.
   final double? checkInputSize;
 
-  /// Check padding start.
   final double? checkPaddingStart;
 
-  /// Check margin bottom.
   final double? checkMarginBottom;
 
-  /// Check input border.
   final BorderSide? checkInputBorder;
 
-  /// Check input border radius.
   final double? checkInputBorderRadius;
 
-  /// Check radio border radius.
   final double? checkRadioBorderRadius;
 
-  /// Check input checked color.
   final Color? checkInputCheckedColor;
 
-  /// Check input checked background.
   final Color? checkInputCheckedBackground;
 
-  /// Check input disabled opacity.
   final double? checkInputDisabledOpacity;
 
-  /// Check inline margin end.
   final double? checkInlineMarginEnd;
 
-  /// Switch width.
   final double? switchWidth;
 
   /// Color of the unchecked switch thumb.
   final Color? switchColor;
 
-  /// Switch border radius.
   final double? switchBorderRadius;
 
-  /// Switch transition duration.
   final Duration? switchTransitionDuration;
 
-  /// Padding of an input group addon.
   final EdgeInsetsGeometry? inputGroupAddonPadding;
 
-  /// Input group addon color.
   final Color? inputGroupAddonColor;
 
-  /// Input group addon background.
   final Color? inputGroupAddonBackground;
 
-  /// Select indicator color.
   final Color? selectIndicatorColor;
 
-  /// Select background size.
   final Size? selectBackgroundSize;
 
-  /// Range track height.
   final double? rangeTrackHeight;
 
-  /// Range track background.
   final Color? rangeTrackBackground;
 
-  /// Range track border radius.
   final double? rangeTrackBorderRadius;
 
-  /// Size of the range thumb.
   final double? rangeThumbSize;
 
-  /// Range thumb background.
   final Color? rangeThumbBackground;
 
-  /// Range thumb active background.
   final Color? rangeThumbActiveBackground;
 
-  /// Range thumb disabled background.
   final Color? rangeThumbDisabledBackground;
 
-  /// Range thumb border radius.
   final double? rangeThumbBorderRadius;
 
   /// Shadow of the range thumb. Null by default (no shadow); pass [defaultRangeThumbBoxShadow] to
   /// opt in.
   final List<BoxShadow>? rangeThumbBoxShadow;
 
-  /// File button color.
   final Color? fileButtonColor;
 
-  /// File button background.
   final Color? fileButtonBackground;
 
-  /// File button hover background.
   final Color? fileButtonHoverBackground;
 
-  /// Floating height.
   final double? floatingHeight;
 
   /// Line height of the control wrapped by a floating label, in place of [inputLineHeight].
@@ -290,10 +236,8 @@ class BsFormStyle {
   /// Bottom padding of the wrapped control.
   final double? floatingInputPaddingBottom;
 
-  /// Floating label opacity.
   final double? floatingLabelOpacity;
 
-  /// Floating label disabled color.
   final Color? floatingLabelDisabledColor;
 
   /// Color of the valid state's border and feedback.
@@ -399,10 +343,8 @@ class BsFormStyle {
   static const double defaultTextMarginTop = 4;
   static const double defaultTextFontSize = 14;
 
-  /// Default text color.
   static const Color defaultTextColor = BsColors.gray600;
 
-  /// Default text color in dark mode.
   static const Color defaultDarkTextColor = BsBody.darkSecondaryColor;
 
   static const double defaultLabelMarginBottom = 8;
@@ -426,22 +368,18 @@ class BsFormStyle {
   static const double defaultInputLineHeight = 1.5;
   static const Color defaultInputColor = BsColors.gray900;
 
-  /// Default input color in dark mode.
   static const Color defaultDarkInputColor = BsBody.darkColor;
 
   static const Color defaultInputBackground = BsColors.white;
 
-  /// Default input background in dark mode.
   static const Color defaultDarkInputBackground = BsBody.darkBackground;
 
   static const Color defaultInputDisabledBackground = BsColors.gray200;
 
-  /// Default input disabled background in dark mode.
   static const Color defaultDarkInputDisabledBackground = BsBody.darkSecondaryBackground;
 
   static const Color defaultInputBorderColor = BsBorders.color;
 
-  /// Default input border color in dark mode.
   static const Color defaultDarkInputBorderColor = BsBorders.darkColor;
 
   static const double defaultInputBorderWidth = BsBorders.width;
@@ -451,10 +389,8 @@ class BsFormStyle {
   static const double defaultInputBorderRadiusLg = BsBorders.radiusLg;
   static const Color defaultInputPlaceholderColor = BsBody.secondaryColor;
 
-  /// Default input placeholder color in dark mode.
   static const Color defaultDarkInputPlaceholderColor = BsBody.darkSecondaryColor;
 
-  /// Default input height border.
   static const double defaultInputHeightBorder = defaultInputBorderWidth * 2;
 
   /// Default height of a text input: its line height, vertical padding and border.
@@ -483,7 +419,6 @@ class BsFormStyle {
     width: defaultInputBorderWidth,
   );
 
-  /// Default check input border in dark mode.
   static const BorderSide defaultDarkCheckInputBorder = BorderSide(
     color: defaultDarkInputBorderColor,
     width: defaultInputBorderWidth,
@@ -492,7 +427,6 @@ class BsFormStyle {
   static const double defaultCheckInputBorderRadius = 4;
   static const double defaultCheckRadioBorderRadius = 800;
 
-  /// Default check input checked color.
   static const Color defaultCheckInputCheckedColor = BsColors.white;
 
   static const double defaultCheckInputDisabledOpacity = 0.5;
@@ -503,7 +437,6 @@ class BsFormStyle {
   /// Default color of the unchecked switch thumb.
   static const Color defaultSwitchColor = Color(0x40000000);
 
-  /// Default switch color in dark mode.
   static const Color defaultDarkSwitchColor = Color(0x40FFFFFF);
 
   static const double defaultSwitchBorderRadius = defaultSwitchWidth;
@@ -513,10 +446,8 @@ class BsFormStyle {
 
   static const EdgeInsets defaultInputGroupAddonPadding = defaultInputPadding;
 
-  /// Default input group addon color.
   static const Color defaultInputGroupAddonColor = defaultInputColor;
 
-  /// Default input group addon color in dark mode.
   static const Color defaultDarkInputGroupAddonColor = defaultDarkInputColor;
 
   static const Color defaultInputGroupAddonBackground = BsColors.gray100;
@@ -524,7 +455,6 @@ class BsFormStyle {
   /// Default input group addon background in dark mode.
   static Color get defaultDarkInputGroupAddonBackground => BsBody.darkTertiaryBackground;
 
-  /// Default select indicator color.
   static const Color defaultSelectIndicatorColor = BsColors.gray800;
 
   /// Default color of the select's chevron in dark mode.
@@ -535,29 +465,23 @@ class BsFormStyle {
   static const double defaultRangeTrackHeight = 8;
   static const Color defaultRangeTrackBackground = BsColors.gray200;
 
-  /// Default range track background in dark mode.
   static const Color defaultDarkRangeTrackBackground = BsBody.darkSecondaryBackground;
 
   static const double defaultRangeTrackBorderRadius = 16;
   static const double defaultRangeThumbSize = 16;
 
-  /// Default range thumb disabled background.
   static const Color defaultRangeThumbDisabledBackground = BsColors.gray600;
 
-  /// Default range thumb disabled background in dark mode.
   static const Color defaultDarkRangeThumbDisabledBackground = BsBody.darkSecondaryColor;
 
-  /// Default range thumb border radius.
   static const double defaultRangeThumbBorderRadius = 16;
 
-  /// Default range thumb box shadow.
   static const List<BoxShadow> defaultRangeThumbBoxShadow = [
     BoxShadow(color: Color(0x1A000000), offset: Offset(0, 1.6), blurRadius: 4),
   ];
 
   static const Color defaultFileButtonColor = defaultInputColor;
 
-  /// Default file button color in dark mode.
   static const Color defaultDarkFileButtonColor = defaultDarkInputColor;
 
   static const Color defaultFileButtonBackground = BsColors.gray100;
@@ -567,13 +491,10 @@ class BsFormStyle {
 
   static const Color defaultFileButtonHoverBackground = BsColors.gray200;
 
-  /// Default file button hover background in dark mode.
   static const Color defaultDarkFileButtonHoverBackground = BsBody.darkSecondaryBackground;
 
-  /// Default floating height.
   static const double defaultFloatingHeight = 56 + defaultInputHeightBorder;
 
-  /// Default floating line height.
   static const double defaultFloatingLineHeight = 1.25;
 
   static const EdgeInsets defaultFloatingPadding = EdgeInsets.symmetric(
@@ -581,15 +502,12 @@ class BsFormStyle {
     vertical: 16,
   );
 
-  /// Default floating input padding top.
   static const double defaultFloatingInputPaddingTop = 26;
 
-  /// Default floating input padding bottom.
   static const double defaultFloatingInputPaddingBottom = 10;
 
   static const double defaultFloatingLabelOpacity = 0.65;
 
-  /// Default floating label disabled color.
   static const Color defaultFloatingLabelDisabledColor = BsColors.gray600;
 
   /// Default color of the valid state: the success color.

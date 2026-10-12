@@ -39,61 +39,44 @@ class BsDropdownStyle {
     this.headerPadding,
   });
 
-  /// Minimum width.
   final double? minWidth;
 
-  /// Padding of the menu.
   final EdgeInsetsGeometry? padding;
 
   /// Gap between the toggle and the menu.
   final double? spacer;
 
-  /// Font size.
   final double? fontSize;
 
-  /// Text color.
   final Color? color;
 
-  /// Background color.
   final Color? background;
 
-  /// Border color.
   final Color? borderColor;
 
-  /// Corner radius.
   final double? borderRadius;
 
-  /// Border width.
   final double? borderWidth;
 
-  /// Divider color.
   final Color? dividerColor;
 
-  /// Divider margin y.
   final double? dividerMarginY;
 
   /// Drop shadow of the menu. Null by default (no shadow); pass [defaultBoxShadow] to opt in.
   final List<BoxShadow>? boxShadow;
 
-  /// Link color.
   final Color? linkColor;
 
-  /// Link hover color.
   final Color? linkHoverColor;
 
-  /// Link hover background.
   final Color? linkHoverBackground;
 
-  /// Link active color.
   final Color? linkActiveColor;
 
-  /// Link active background.
   final Color? linkActiveBackground;
 
-  /// Link disabled color.
   final Color? linkDisabledColor;
 
-  /// Padding of an item.
   final EdgeInsetsGeometry? itemPadding;
 
   /// Corner radius of an item's hover and active background. Square by default.
@@ -102,10 +85,8 @@ class BsDropdownStyle {
   /// Gap between consecutive entries; none by default.
   final double? itemSpacing;
 
-  /// Header color.
   final Color? headerColor;
 
-  /// Padding of a header.
   final EdgeInsetsGeometry? headerPadding;
 
   BsDropdownStyle merge(BsDropdownStyle? other) {

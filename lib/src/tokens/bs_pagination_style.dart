@@ -40,64 +40,44 @@ class BsPaginationStyle {
   /// Padding of a page link.
   final EdgeInsetsGeometry? padding;
 
-  /// Font size.
   final double? fontSize;
 
-  /// Text color.
   final Color? color;
 
-  /// Background color.
   final Color? background;
 
-  /// Corner radius.
   final double? borderRadius;
 
-  /// Border width.
   final double? borderWidth;
 
-  /// Border color.
   final Color? borderColor;
 
-  /// Focus color.
   final Color? focusColor;
 
-  /// Focus background.
   final Color? focusBackground;
 
-  /// Color of the focus ring.
   final Color? focusRingColor;
 
-  /// Width of the focus ring drawn in [focusRingColor].
   final double? focusRingWidth;
 
-  /// Hover color.
   final Color? hoverColor;
 
-  /// Hover background.
   final Color? hoverBackground;
 
-  /// Hover border color.
   final Color? hoverBorderColor;
 
-  /// Active color.
   final Color? activeColor;
 
-  /// Active background.
   final Color? activeBackground;
 
-  /// Active border color.
   final Color? activeBorderColor;
 
-  /// Disabled color.
   final Color? disabledColor;
 
-  /// Disabled background.
   final Color? disabledBackground;
 
-  /// Disabled border color.
   final Color? disabledBorderColor;
 
-  /// Transition duration.
   final Duration? transitionDuration;
 
   BsPaginationStyle merge(BsPaginationStyle? other) {
@@ -132,19 +112,16 @@ class BsPaginationStyle {
   static Color get defaultColor => BsVariant.primary.color;
   static const Color defaultBackground = BsColors.white;
 
-  /// Default background in dark mode.
   static const Color defaultDarkBackground = BsBody.darkBackground;
 
   static const double defaultBorderRadius = BsBorders.radius;
   static const double defaultBorderWidth = BsBorders.width;
   static const Color defaultBorderColor = BsBorders.color;
 
-  /// Default border color in dark mode.
   static const Color defaultDarkBorderColor = BsBorders.darkColor;
 
   static const Color defaultFocusBackground = BsColors.gray200;
 
-  /// Default focus background in dark mode.
   static const Color defaultDarkFocusBackground = BsBody.darkSecondaryBackground;
 
   static const Color defaultHoverBackground = BsColors.gray100;
@@ -156,17 +133,14 @@ class BsPaginationStyle {
   static Color get defaultActiveBackground => BsVariant.primary.color;
   static const Color defaultDisabledColor = BsColors.gray600;
 
-  /// Default disabled color in dark mode.
   static const Color defaultDarkDisabledColor = BsBody.darkSecondaryColor;
 
   static const Color defaultDisabledBackground = BsColors.gray200;
 
-  /// Default disabled background in dark mode.
   static const Color defaultDarkDisabledBackground = BsBody.darkSecondaryBackground;
 
   static const Duration defaultTransitionDuration = Duration(milliseconds: 150);
 
-  /// Default focus ring width.
   static const double defaultFocusRingWidth = BsFocusRing.width;
   static Color get defaultFocusRingColor => BsFocusRing.color();
 

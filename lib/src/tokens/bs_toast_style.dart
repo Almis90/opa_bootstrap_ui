@@ -28,43 +28,31 @@ class BsToastStyle {
     this.headerBorderColor,
   });
 
-  /// Maximum width.
   final double? maxWidth;
 
   /// Padding of the toast and its header.
   final EdgeInsetsGeometry? padding;
 
-  /// Font size.
   final double? fontSize;
 
-  /// Text color.
   final Color? color;
 
-  /// Background color.
   final Color? background;
 
-  /// Border width.
   final double? borderWidth;
 
-  /// Border color.
   final Color? borderColor;
 
-  /// Corner radius.
   final double? borderRadius;
 
-  /// Drop shadow.
   final List<BoxShadow>? boxShadow;
 
-  /// Spacing.
   final double? spacing;
 
-  /// Header color.
   final Color? headerColor;
 
-  /// Header background.
   final Color? headerBackground;
 
-  /// Header border color.
   final Color? headerBorderColor;
 
   BsToastStyle merge(BsToastStyle? other) {
@@ -90,32 +78,25 @@ class BsToastStyle {
   static const EdgeInsets defaultPadding = EdgeInsets.symmetric(horizontal: 12, vertical: 8);
   static const double defaultFontSize = 14;
 
-  /// Default background.
   static const Color defaultBackground = Color(0xD9FFFFFF);
 
-  /// Default background in dark mode.
   static const Color defaultDarkBackground = Color(0xD9212529);
 
   static const double defaultBorderWidth = BsBorders.width;
   static const Color defaultBorderColor = BsBorders.colorTranslucent;
 
-  /// Default border color in dark mode.
   static const Color defaultDarkBorderColor = BsBorders.darkColorTranslucent;
 
   static const double defaultBorderRadius = BsBorders.radius;
   static const List<BoxShadow> defaultBoxShadow = BsShadows.shadow;
   static const double defaultSpacing = 24;
 
-  /// Default header color.
   static const Color defaultHeaderColor = BsColors.gray600;
 
-  /// Default header color in dark mode.
   static const Color defaultDarkHeaderColor = BsBody.darkSecondaryColor;
 
-  /// Default header background.
   static const Color defaultHeaderBackground = Color(0xD9FFFFFF);
 
-  /// Default header background in dark mode.
   static const Color defaultDarkHeaderBackground = Color(0xD9212529);
 
   static const BsToastStyle defaults = BsToastStyle(

@@ -59,10 +59,8 @@ class BsCard extends StatelessWidget {
   /// Style overrides layered on top of [BsCardStyle.defaults].
   final BsCardStyle? style;
 
-  /// The card's corner radius.
   final BsRounded? rounded;
 
-  /// The card's shadow.
   final BsShadow? shadow;
 
   /// The color of the border, from a theme color.
@@ -208,7 +206,8 @@ class BsCardHeader extends StatelessWidget {
   /// Vertical padding in place of the card's cap padding.
   final BsSpacing? py;
 
-  /// `text-bg-*` (and the same variant's border): a contextual header.
+  /// A contextual header: the variant's background with a contrasting text color, and the same
+  /// variant's border.
   final BsVariant? textBg;
 
   @override

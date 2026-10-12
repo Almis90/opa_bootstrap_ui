@@ -32,64 +32,45 @@ class BsCarouselStyle {
     this.transitionDuration,
   });
 
-  /// Control color.
   final Color? controlColor;
 
-  /// Control width fraction.
   final double? controlWidthFraction;
 
-  /// Control opacity.
   final double? controlOpacity;
 
-  /// Control hover opacity.
   final double? controlHoverOpacity;
 
-  /// Control transition duration.
   final Duration? controlTransitionDuration;
 
-  /// Control icon size.
   final double? controlIconSize;
 
-  /// Indicator width.
   final double? indicatorWidth;
 
-  /// Indicator height.
   final double? indicatorHeight;
 
-  /// Indicator hit area height.
   final double? indicatorHitAreaHeight;
 
-  /// Indicator spacer.
   final double? indicatorSpacer;
 
   /// Space below the indicators.
   final double? indicatorMarginBottom;
 
-  /// Indicator opacity.
   final double? indicatorOpacity;
 
-  /// Indicator active background.
   final Color? indicatorActiveBackground;
 
-  /// Indicator active opacity.
   final double? indicatorActiveOpacity;
 
-  /// Indicator transition duration.
   final Duration? indicatorTransitionDuration;
 
-  /// Caption width fraction.
   final double? captionWidthFraction;
 
-  /// Caption color.
   final Color? captionColor;
 
-  /// Caption padding y.
   final double? captionPaddingY;
 
-  /// Caption spacer.
   final double? captionSpacer;
 
-  /// Transition duration.
   final Duration? transitionDuration;
 
   BsCarouselStyle merge(BsCarouselStyle? other) {

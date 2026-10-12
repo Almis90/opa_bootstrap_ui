@@ -36,26 +36,25 @@ class BsBadge extends StatelessWidget {
   /// Whether to render fully-rounded (pill-shaped) corners.
   final bool pill;
 
-  /// `bg-{variant}-subtle text-{variant}-emphasis` instead of `text-bg-{variant}`:
-  /// a pale background with dark text of the same hue.
+  /// A pale background with dark text of the same hue, instead of the solid variant color with
+  /// contrasting text.
   final bool subtle;
 
-  /// `text-{variant}-emphasis`: the text color of this variant's emphasis
-  /// colors (for a [subtle] badge whose text is another hue than its
-  /// background, `text-dark-emphasis bg-light-subtle`).
+  /// The text color of this variant's emphasis colors (for a [subtle] badge whose text is another
+  /// hue than its background).
   final BsVariant? emphasis;
 
-  /// `border border-{variant}-subtle`: a 1px border, in [borderVariant]'s
-  /// subtle border color (or [variant]'s). It adds to the badge's size.
+  /// A 1px border, in [borderVariant]'s subtle border color (or [variant]'s). It adds to the
+  /// badge's size.
   final bool border;
 
-  /// `border-{variant}-subtle` of another variant than the badge's own.
+  /// A border in the subtle border color of a variant other than the badge's own.
   final BsVariant? borderVariant;
 
   /// Padding on every side in place of the badge's default.
   final BsSpacing? p;
 
-  /// `pe-*`: the end padding, over [p] and the default.
+  /// The end padding, over [p] and the default.
   final BsSpacing? pe;
 
   /// Style overrides layered on top of [BsBadgeStyle.defaults].

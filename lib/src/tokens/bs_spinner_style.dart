@@ -13,16 +13,12 @@ class BsSpinnerStyle {
     this.verticalAlign,
   });
 
-  /// Size of the spinner.
   final double? size;
 
-  /// Border width.
   final double? borderWidth;
 
-  /// Animation duration.
   final Duration? animationDuration;
 
-  /// Vertical align.
   final double? verticalAlign;
 
   BsSpinnerStyle merge(BsSpinnerStyle? other) {
@@ -39,13 +35,10 @@ class BsSpinnerStyle {
   static const double defaultBorderWidth = 4;
   static const Duration defaultAnimationDuration = Duration(milliseconds: 750);
 
-  /// Default vertical align.
   static const double defaultVerticalAlign = -2;
 
-  /// Default size of a small spinner.
   static const double defaultSizeSm = 16;
 
-  /// Default border width sm.
   static const double defaultBorderWidthSm = 3.2;
 
   static const BsSpinnerStyle defaults = BsSpinnerStyle(

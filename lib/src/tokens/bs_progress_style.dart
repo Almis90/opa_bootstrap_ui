@@ -25,31 +25,23 @@ class BsProgressStyle {
     this.barTransitionDuration,
   });
 
-  /// Height.
   final double? height;
 
-  /// Font size.
   final double? fontSize;
 
-  /// Background color.
   final Color? background;
 
-  /// Corner radius.
   final double? borderRadius;
 
   /// Inset shadow of the track. Null by default (no shadow); pass [defaultBoxShadow] to opt in.
   final List<BoxShadow>? boxShadow;
 
-  /// Bar color.
   final Color? barColor;
 
-  /// Bar background.
   final Color? barBackground;
 
-  /// Bar animation duration.
   final Duration? barAnimationDuration;
 
-  /// Bar transition duration.
   final Duration? barTransitionDuration;
 
   BsProgressStyle merge(BsProgressStyle? other) {
@@ -71,7 +63,6 @@ class BsProgressStyle {
   static const double defaultFontSize = 12;
   static const Color defaultBackground = BsColors.gray200;
 
-  /// Default background in dark mode.
   static const Color defaultDarkBackground = BsBody.darkSecondaryBackground;
 
   static const double defaultBorderRadius = BsBorders.radius;

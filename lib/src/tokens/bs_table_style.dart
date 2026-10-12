@@ -28,46 +28,34 @@ class BsTableStyle {
     this.captionColor,
   });
 
-  /// Padding of a cell.
   final EdgeInsetsGeometry? cellPadding;
 
   /// Padding of a cell in a compact table.
   final EdgeInsetsGeometry? cellPaddingSm;
 
-  /// Text color.
   final Color? color;
 
-  /// Background color.
   final Color? background;
 
-  /// Accent background.
   final Color? accentBackground;
 
-  /// Striped color.
   final Color? stripedColor;
 
   /// Opacity with which [stripedColor] tints a striped row's background over [background].
   final double? stripedBackgroundOpacity;
 
-  /// Active color.
   final Color? activeColor;
 
-  /// Active background opacity.
   final double? activeBackgroundOpacity;
 
-  /// Hover color.
   final Color? hoverColor;
 
-  /// Hover background opacity.
   final double? hoverBackgroundOpacity;
 
-  /// Border width.
   final double? borderWidth;
 
-  /// Border color.
   final Color? borderColor;
 
-  /// Caption color.
   final Color? captionColor;
 
   BsTableStyle merge(BsTableStyle? other) {
@@ -93,16 +81,12 @@ class BsTableStyle {
   static const EdgeInsets defaultCellPadding = EdgeInsets.all(8);
   static const EdgeInsets defaultCellPaddingSm = EdgeInsets.all(4);
 
-  /// Default color.
   static const Color defaultColor = BsColors.black;
 
-  /// Default color in dark mode.
   static const Color defaultDarkColor = BsBody.darkEmphasisColor;
 
-  /// Default background.
   static const Color defaultBackground = BsColors.white;
 
-  /// Default background in dark mode.
   static const Color defaultDarkBackground = BsBody.darkBackground;
 
   static const Color defaultAccentBackground = Color(0x00000000);
@@ -111,16 +95,12 @@ class BsTableStyle {
   static const double defaultHoverBackgroundOpacity = 0.075;
   static const double defaultBorderWidth = BsBorders.width;
 
-  /// Default border color.
   static const Color defaultBorderColor = BsBorders.color;
 
-  /// Default border color in dark mode.
   static const Color defaultDarkBorderColor = BsBorders.darkColor;
 
-  /// Default caption color.
   static const Color defaultCaptionColor = BsColors.gray600;
 
-  /// Default caption color in dark mode.
   static const Color defaultDarkCaptionColor = BsBody.darkSecondaryColor;
 
   static const BsTableStyle defaults = BsTableStyle(

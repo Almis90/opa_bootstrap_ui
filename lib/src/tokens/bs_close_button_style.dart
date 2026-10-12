@@ -28,7 +28,6 @@ class BsCloseButtonStyle {
   /// Padding around the glyph.
   final EdgeInsetsGeometry? padding;
 
-  /// Text color.
   final Color? color;
 
   /// Background behind the glyph; none by default. It fades with the button.
@@ -37,16 +36,12 @@ class BsCloseButtonStyle {
   /// The background's corner radius.
   final BorderRadiusGeometry? borderRadius;
 
-  /// Opacity.
   final double? opacity;
 
-  /// Hover opacity.
   final double? hoverOpacity;
 
-  /// Focus opacity.
   final double? focusOpacity;
 
-  /// Disabled opacity.
   final double? disabledOpacity;
 
   BsCloseButtonStyle merge(BsCloseButtonStyle? other) {
@@ -67,7 +62,6 @@ class BsCloseButtonStyle {
   static const double defaultSize = 16;
   static const EdgeInsets defaultPadding = EdgeInsets.all(4);
 
-  /// Default color.
   static const Color defaultColor = BsColors.black;
 
   /// Default glyph color in dark mode: white.
@@ -78,7 +72,6 @@ class BsCloseButtonStyle {
   static const double defaultFocusOpacity = 1;
   static const double defaultDisabledOpacity = 0.25;
 
-  /// Default focus ring width.
   static const double defaultFocusRingWidth = BsFocusRing.width;
 
   static const BsCloseButtonStyle defaults = BsCloseButtonStyle(

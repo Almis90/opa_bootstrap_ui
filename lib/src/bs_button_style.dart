@@ -50,7 +50,6 @@ class BsButtonStyle {
   final Color? activeBorderColor;
   // scss-docs-end btn-variables
 
-  /// The button's padding.
   final EdgeInsetsGeometry? padding;
 
   /// Typographic properties: font family, size, weight and line height.
@@ -66,7 +65,6 @@ class BsButtonStyle {
 
   final double? borderWidth;
 
-  /// Opacity applied to the whole button when disabled.
   final double? disabledOpacity;
 
   /// The button's resting shadow. Null by default (no shadow); pass [defaultBoxShadow] to opt in.
@@ -83,13 +81,10 @@ class BsButtonStyle {
   /// and [borderColor] when unset.
   final Color? focusRingColor;
 
-  /// The width of the focus ring.
   final double? focusRingWidth;
 
-  /// The duration of color and shadow transitions.
   final Duration? transitionDuration;
 
-  /// The curve of color and shadow transitions.
   final Curve? transitionCurve;
 
   /// Layers [other]'s non-null fields over this style's, leaving the rest inherited.
@@ -140,26 +135,20 @@ class BsButtonStyle {
     ),
   ];
 
-  /// The default button typography.
   static const TextStyle defaultTextStyle = TextStyle(
     fontWeight: FontWeight.normal,
     height: 1.5,
     leadingDistribution: TextLeadingDistribution.even,
   );
 
-  /// Default border width.
   static const double defaultBorderWidth = 1;
 
-  /// Default opacity of a disabled button.
   static const double defaultDisabledOpacity = 0.65;
 
-  /// Default width of the focus ring.
   static const double defaultFocusRingWidth = 4;
 
-  /// Default duration of color and shadow transitions.
   static const Duration defaultTransitionDuration = Duration(milliseconds: 150);
 
-  /// Default curve of color and shadow transitions.
   static const Curve defaultTransitionCurve = Curves.easeInOut;
 
   // The shade and tint weights used to compute hover and active colors in

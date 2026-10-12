@@ -36,62 +36,44 @@ class BsNavStyle {
     this.underlineLinkActiveColor,
   });
 
-  /// Padding of a link.
   final EdgeInsetsGeometry? linkPadding;
 
-  /// Link color.
   final Color? linkColor;
 
-  /// Link hover color.
   final Color? linkHoverColor;
 
-  /// Link disabled color.
   final Color? linkDisabledColor;
 
-  /// Link focus ring color.
   final Color? linkFocusRingColor;
 
-  /// Width of the focus ring drawn in [linkFocusRingColor].
   final double? linkFocusRingWidth;
 
-  /// Tabs border color.
   final Color? tabsBorderColor;
 
-  /// Tabs border width.
   final double? tabsBorderWidth;
 
-  /// Tabs border radius.
   final double? tabsBorderRadius;
 
-  /// Tabs link active color.
   final Color? tabsLinkActiveColor;
 
-  /// Tabs link active background.
   final Color? tabsLinkActiveBackground;
 
   /// Border color of the active tab, as a single flat color; the bottom edge takes
   /// [tabsLinkActiveBackground].
   final Color? tabsLinkActiveBorderColor;
 
-  /// Tabs link hover border color.
   final Color? tabsLinkHoverBorderColor;
 
-  /// Pills border radius.
   final double? pillsBorderRadius;
 
-  /// Pills link active color.
   final Color? pillsLinkActiveColor;
 
-  /// Pills link active background.
   final Color? pillsLinkActiveBackground;
 
-  /// Underline gap.
   final double? underlineGap;
 
-  /// Underline border width.
   final double? underlineBorderWidth;
 
-  /// Underline link active color.
   final Color? underlineLinkActiveColor;
 
   BsNavStyle merge(BsNavStyle? other) {
@@ -130,10 +112,8 @@ class BsNavStyle {
   static Color get defaultLinkHoverColor => BsLink.hoverColor;
   static Color get defaultDarkLinkHoverColor => BsLink.darkHoverColor;
 
-  /// Default link disabled color.
   static const Color defaultLinkDisabledColor = BsColors.gray600;
 
-  /// Default link disabled color in dark mode.
   static const Color defaultDarkLinkDisabledColor = BsBody.darkSecondaryColor;
 
   /// No `-dark` override exists for the focus ring; it's primary-tinted in
@@ -142,36 +122,27 @@ class BsNavStyle {
 
   static const double defaultLinkFocusRingWidth = BsFocusRing.width;
 
-  /// Default tabs border color.
   static const Color defaultTabsBorderColor = BsBorders.color;
 
-  /// Default tabs border color in dark mode.
   static const Color defaultDarkTabsBorderColor = BsBorders.darkColor;
 
   static const double defaultTabsBorderWidth = BsBorders.width;
   static const double defaultTabsBorderRadius = BsBorders.radius;
 
-  /// Default tabs link active color.
   static const Color defaultTabsLinkActiveColor = BsColors.black;
 
-  /// Default tabs link active color in dark mode.
   static const Color defaultDarkTabsLinkActiveColor = BsBody.darkEmphasisColor;
 
-  /// Default tabs link active background.
   static const Color defaultTabsLinkActiveBackground = BsColors.white;
 
-  /// Default tabs link active background in dark mode.
   static const Color defaultDarkTabsLinkActiveBackground = BsBody.darkBackground;
 
-  /// Default tabs link hover border color.
   static const Color defaultTabsLinkHoverBorderColor = BsColors.gray200;
 
-  /// Default tabs link hover border color in dark mode.
   static const Color defaultDarkTabsLinkHoverBorderColor = BsBody.darkSecondaryBackground;
 
   static const double defaultPillsBorderRadius = BsBorders.radius;
 
-  /// Default pills link active color.
   static const Color defaultPillsLinkActiveColor = BsColors.white;
 
   /// Default background of the active pill: the primary color, the same in both themes.
@@ -180,10 +151,8 @@ class BsNavStyle {
   static const double defaultUnderlineGap = 16;
   static const double defaultUnderlineBorderWidth = 2;
 
-  /// Default underline link active color.
   static const Color defaultUnderlineLinkActiveColor = BsColors.black;
 
-  /// Default underline link active color in dark mode.
   static const Color defaultDarkUnderlineLinkActiveColor = BsBody.darkEmphasisColor;
 
   static BsNavStyle get defaults => BsNavStyle(

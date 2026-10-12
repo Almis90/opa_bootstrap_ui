@@ -68,14 +68,14 @@ class BsContainer extends StatelessWidget {
   /// Horizontal padding in place of the default half gutter. Ignored if [padding] is given.
   final BsResponsive<BsSpacing>? px;
 
-  /// `py-*`: vertical padding. Ignored if [padding] is given.
+  /// Vertical padding. Ignored if [padding] is given.
   final BsResponsive<BsSpacing>? py;
 
-  /// `my-*`: vertical margin (`container my-5`).
+  /// Vertical margin.
   final BsResponsive<BsSpacing>? my;
 
-  /// `col-*` on the container (`container col-xxl-8`): its width as a share of
-  /// 12 columns of its parent, still capped by the container's max-width.
+  /// The container's width as a share of 12 columns of its parent, still capped by the
+  /// container's maximum width.
   final BsResponsive<BsCol>? col;
 
   /// How to align the (possibly narrower-than-parent) container box.

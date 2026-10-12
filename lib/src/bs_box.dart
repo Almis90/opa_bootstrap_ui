@@ -400,46 +400,35 @@ class BsBox extends StatelessWidget {
   final BsResponsive<BsSpacing>? mb;
   final BsResponsive<BsSpacing>? ms;
 
-  /// `border`: a border on all four sides.
+  /// A border on all four sides.
   final bool border;
 
-  /// A border on the top edge.
   final bool borderTop;
 
-  /// A border on the end edge.
   final bool borderEnd;
 
-  /// A border on the bottom edge.
   final bool borderBottom;
 
-  /// A border on the start edge.
   final bool borderStart;
 
   /// The style of [border] (all four sides).
   final BsBorderStyle borderStyle;
 
-  /// The background color.
   final BsBg? bg;
 
-  /// The corner radius.
   final BsRounded? rounded;
 
-  /// `text-bg-*`: the variant's background with a contrasting text color.
+  /// The variant's background with a contrasting text color.
   final BsVariant? textBg;
 
-  /// The text color.
   final BsTextColor? textColor;
 
-  /// The font size.
   final BsResponsive<BsFs>? fs;
 
-  /// The font weight.
   final BsFw? fw;
 
-  /// The line height.
   final BsLh? lh;
 
-  /// The text alignment.
   final BsResponsive<BsTextAlign>? textAlign;
 
   /// The width as a share of the parent's.
@@ -448,11 +437,10 @@ class BsBox extends StatelessWidget {
   /// The height as a share of the parent's.
   final BsResponsive<BsHeight>? h;
 
-  /// The box's width as a share of 12 columns of its parent, outside a row (`col-lg-6` with
-  /// centering is half the parent, centered, from `lg`).
+  /// The box's width as a share of 12 columns of its parent, outside a row: from a breakpoint
+  /// upward, half the parent when centered at six columns.
   final BsResponsive<BsCol>? col;
 
-  /// The shadow.
   final BsShadow? shadow;
 
   /// Sizes the box to its content rather than its parent, and places it by the inherited text

@@ -43,59 +43,42 @@ class BsAccordionStyle {
   /// overridden independently.
   final EdgeInsetsGeometry? bodyPadding;
 
-  /// Text color.
   final Color? color;
 
-  /// Background color.
   final Color? background;
 
-  /// Border width.
   final double? borderWidth;
 
-  /// Border color.
   final Color? borderColor;
 
-  /// Corner radius.
   final double? borderRadius;
 
   /// Corner radius of the header and body fills: slightly smaller than the item's outer radius so
   /// that they nest inside its border.
   final double? innerBorderRadius;
 
-  /// Button color.
   final Color? buttonColor;
 
-  /// Button background.
   final Color? buttonBackground;
 
-  /// Transition duration.
   final Duration? transitionDuration;
 
-  /// Button active background.
   final Color? buttonActiveBackground;
 
-  /// Button active color.
   final Color? buttonActiveColor;
 
-  /// Icon width.
   final double? iconWidth;
 
-  /// Icon color.
   final Color? iconColor;
 
-  /// Icon active color.
   final Color? iconActiveColor;
 
-  /// Icon transition duration.
   final Duration? iconTransitionDuration;
 
-  /// Icon rotation turns.
   final double? iconRotationTurns;
 
-  /// Focus ring color.
   final Color? focusRingColor;
 
-  /// Width of the focus ring around the header button.
   final double? focusRingWidth;
 
   BsAccordionStyle merge(BsAccordionStyle? other) {
@@ -129,21 +112,17 @@ class BsAccordionStyle {
   /// Default text color, for the item and its header button.
   static const Color defaultColor = BsColors.gray900;
 
-  /// Default color in dark mode.
   static const Color defaultDarkColor = BsBody.darkColor;
 
   /// Default background color, for the item and its header button.
   static const Color defaultBackground = BsColors.white;
 
-  /// Default background in dark mode.
   static const Color defaultDarkBackground = BsBody.darkBackground;
 
   static const double defaultBorderWidth = BsBorders.width;
 
-  /// Default border color.
   static const Color defaultBorderColor = BsBorders.color;
 
-  /// Default border color in dark mode.
   static const Color defaultDarkBorderColor = BsBorders.darkColor;
 
   static const double defaultBorderRadius = BsBorders.radius;
@@ -151,7 +130,6 @@ class BsAccordionStyle {
   static const Duration defaultTransitionDuration = Duration(milliseconds: 150);
   static const double defaultIconWidth = 20;
 
-  /// Default icon color.
   static const Color defaultIconColor = BsColors.gray900;
 
   /// Default chevron color in dark mode: the primary color's emphasis tone, matching

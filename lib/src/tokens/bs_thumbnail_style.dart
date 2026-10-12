@@ -14,19 +14,14 @@ import 'bs_shadows.dart';
 class BsThumbnailStyle {
   const BsThumbnailStyle({this.padding, this.background, this.borderWidth, this.borderColor, this.borderRadius, this.boxShadow});
 
-  /// Padding.
   final double? padding;
 
-  /// Background color.
   final Color? background;
 
-  /// Border width.
   final double? borderWidth;
 
-  /// Border color.
   final Color? borderColor;
 
-  /// Corner radius.
   final double? borderRadius;
 
   /// Drop shadow of the thumbnail. Null by default (no shadow); pass [defaultBoxShadow] to opt in.
@@ -51,10 +46,8 @@ class BsThumbnailStyle {
   static const double defaultBorderRadius = BsBorders.radius;
   static const List<BoxShadow> defaultBoxShadow = BsShadows.shadowSm;
 
-  /// Default background in dark mode.
   static const Color defaultDarkBackground = BsBody.darkBackground;
 
-  /// Default border color in dark mode.
   static const Color defaultDarkBorderColor = BsBorders.darkColor;
 
   static const BsThumbnailStyle defaults = BsThumbnailStyle(

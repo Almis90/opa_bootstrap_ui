@@ -30,37 +30,27 @@ class BsOffcanvasStyle {
   /// Padding of the header and body.
   final EdgeInsetsGeometry? padding;
 
-  /// Horizontal width.
   final double? horizontalWidth;
 
-  /// Vertical height fraction.
   final double? verticalHeightFraction;
 
-  /// Transition duration.
   final Duration? transitionDuration;
 
-  /// Border color.
   final Color? borderColor;
 
-  /// Border width.
   final double? borderWidth;
 
-  /// Title line height.
   final double? titleLineHeight;
 
-  /// Background color.
   final Color? background;
 
-  /// Text color.
   final Color? color;
 
   /// Drop shadow of the panel. Null by default (no shadow); pass [defaultBoxShadow] to opt in.
   final List<BoxShadow>? boxShadow;
 
-  /// Backdrop color.
   final Color? backdropColor;
 
-  /// Backdrop opacity.
   final double? backdropOpacity;
 
   BsOffcanvasStyle merge(BsOffcanvasStyle? other) {
@@ -94,12 +84,10 @@ class BsOffcanvasStyle {
   static const double defaultTitleLineHeight = 1.5;
   static const Color defaultBackground = BsColors.white;
 
-  /// Default background in dark mode.
   static const Color defaultDarkBackground = BsBody.darkBackground;
 
   static const Color defaultColor = BsColors.gray900;
 
-  /// Default color in dark mode.
   static const Color defaultDarkColor = BsBody.darkColor;
 
   static const List<BoxShadow> defaultBoxShadow = BsShadows.shadowSm;

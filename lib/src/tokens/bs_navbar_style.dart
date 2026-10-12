@@ -32,58 +32,41 @@ class BsNavbarStyle {
     this.brandHoverColor,
   });
 
-  /// Padding of the navbar.
   final EdgeInsetsGeometry? padding;
 
-  /// Nav link padding x.
   final double? navLinkPaddingX;
 
-  /// Brand font size.
   final double? brandFontSize;
 
-  /// Brand margin end.
   final double? brandMarginEnd;
 
-  /// Padding of the toggler button.
   final EdgeInsetsGeometry? togglerPadding;
 
-  /// Toggler font size.
   final double? togglerFontSize;
 
-  /// Toggler border radius.
   final double? togglerBorderRadius;
 
-  /// Spread of the toggler's focus ring.
   final double? togglerFocusRingWidth;
 
-  /// Color of the toggler's focus ring.
   final Color? togglerFocusRingColor;
 
-  /// Toggler transition duration.
   final Duration? togglerTransitionDuration;
 
-  /// Color of the nav links.
   final Color? color;
 
-  /// Color of a nav link under the pointer.
   final Color? hoverColor;
 
-  /// Color of the active nav link.
   final Color? activeColor;
 
-  /// Color of a disabled nav link.
   final Color? disabledColor;
 
-  /// Border color of the toggler button.
   final Color? togglerBorderColor;
 
   /// Color of the toggler's menu icon, independent of [color], which tints the nav links.
   final Color? iconColor;
 
-  /// Color of the brand.
   final Color? brandColor;
 
-  /// Color of the brand under the pointer.
   final Color? brandHoverColor;
 
   BsNavbarStyle merge(BsNavbarStyle? other) {
@@ -118,13 +101,10 @@ class BsNavbarStyle {
   static const double defaultTogglerFontSize = 20;
   static const double defaultTogglerBorderRadius = BsBorders.radius;
 
-  /// Default toggler focus ring width.
   static const double defaultTogglerFocusRingWidth = BsFocusRing.width;
 
-  /// Default toggler transition duration.
   static const Duration defaultTogglerTransitionDuration = Duration(milliseconds: 150);
 
-  /// Light color.
   static const Color lightColor = Color(0xA6212529);
   static const Color lightHoverColor = Color(0xCC212529);
   static const Color lightActiveColor = Color(0xFF212529);
@@ -140,7 +120,6 @@ class BsNavbarStyle {
   static const Color darkDisabledColor = Color(0x40FFFFFF);
   static const Color darkTogglerBorderColor = Color(0x1AFFFFFF);
 
-  /// Icon color.
   static const Color darkIconColor = darkColor;
 
   static BsNavbarStyle get _shared => BsNavbarStyle(

@@ -20,28 +20,21 @@ class BsBreadcrumbStyle {
     this.borderRadius,
   });
 
-  /// Padding of the breadcrumb.
   final EdgeInsetsGeometry? padding;
 
   /// Gap before each divider.
   final double? itemSpacing;
 
-  /// Margin bottom.
   final double? marginBottom;
 
-  /// Background color.
   final Color? background;
 
-  /// Divider color.
   final Color? dividerColor;
 
-  /// Active color.
   final Color? activeColor;
 
-  /// Divider.
   final String? divider;
 
-  /// Corner radius.
   final double? borderRadius;
 
   BsBreadcrumbStyle merge(BsBreadcrumbStyle? other) {
@@ -63,12 +56,10 @@ class BsBreadcrumbStyle {
   static const double defaultMarginBottom = 16;
   static const Color defaultDividerColor = BsBody.secondaryColor;
 
-  /// Default divider color in dark mode.
   static const Color defaultDarkDividerColor = BsBody.darkSecondaryColor;
 
   static const Color defaultActiveColor = BsBody.secondaryColor;
 
-  /// Default active color in dark mode.
   static const Color defaultDarkActiveColor = BsBody.darkSecondaryColor;
 
   static const String defaultDivider = '/';

@@ -8,7 +8,7 @@ import 'bs_breakpoint.dart';
 import 'bs_responsive_value.dart';
 import 'bs_spacing.dart';
 
-/// `justify-content-*`: where a [BsFlex]'s items sit along its main axis.
+/// Where a [BsFlex]'s items sit along its main axis.
 enum BsJustify implements BsResponsive<BsJustify> {
   start,
   end,
@@ -24,8 +24,7 @@ enum BsJustify implements BsResponsive<BsJustify> {
   BsJustify resolve(BsBreakpoint breakpoint) => this;
 }
 
-/// `align-items-*` / `align-self-*`: how an item sits on a [BsFlex] line's
-/// cross axis. (`baseline` is not supported.)
+/// How an item sits on a [BsFlex] line's cross axis. (`baseline` is not supported.)
 enum BsAlign implements BsResponsive<BsAlign> {
   start,
   end,
@@ -178,7 +177,7 @@ class BsFlex extends StatelessWidget {
   /// unless it is itself a flex item).
   final bool inline;
 
-  /// `justify-content-*`. Defaults to `start`.
+  /// Where items sit along the main axis. Defaults to `start`.
   final BsResponsive<BsJustify>? justifyContent;
 
   /// How items sit on the cross axis. Defaults to stretch.
@@ -275,7 +274,7 @@ class BsFlexItem extends ParentDataWidget<_BsFlexParentData> {
   final BsResponsive<BsSpacing>? pb;
   final BsResponsive<BsSpacing>? ps;
 
-  /// `align-self-*`.
+  /// Overrides the container's cross-axis alignment for this item.
   final BsResponsive<BsAlign>? alignSelf;
 
   /// A maximum width in logical pixels. Bootstrap has no utility for it other than a
@@ -1206,13 +1205,11 @@ class BsRow extends StatelessWidget {
 
   final List<Widget> children;
 
-  /// `row-cols-*`: how many equal columns each child takes a share of (`row-cols-1
-  /// row-cols-md-3` is `BsResponsiveValue(xs: 1, md: 3)`).
+  /// How many equal columns each child takes a share of (for example `BsResponsiveValue(xs:
+  /// 1, md: 3)` is one column on small screens and three from `md`).
   final BsResponsive<int>? rowCols;
 
-  /// `data-masonry='{"percentPosition": true}'`: the columns are packed the
-  /// way the Masonry plugin does — each item into the shortest column — instead
-  /// of in lines.
+  /// Packs the columns masonry-style, each item into the shortest column, instead of in lines.
   final bool masonry;
 
   /// Both gutters. The default is the grid gutter width horizontally and none vertically.
@@ -1224,10 +1221,10 @@ class BsRow extends StatelessWidget {
   /// The vertical gutter (wins over [g]).
   final BsResponsive<BsSpacing>? gy;
 
-  /// `align-items-*`.
+  /// How the row's columns sit on the cross axis.
   final BsResponsive<BsAlign>? alignItems;
 
-  /// `justify-content-*`.
+  /// Where the row's columns sit along the main axis.
   final BsResponsive<BsJustify>? justifyContent;
 
   /// The direction of the row's columns, which can change per breakpoint.
@@ -1241,16 +1238,14 @@ class BsRow extends StatelessWidget {
   final BsResponsive<BsSpacing>? pb;
   final BsResponsive<BsSpacing>? ps;
 
-  /// `border`.
+  /// A border on all four sides.
   final bool border;
 
   /// A top border; the line spans the row and its negative margins.
   final bool borderTop;
 
-  /// The corner radius of the row.
   final BsRounded? rounded;
 
-  /// The shadow of the row.
   final BsShadow? shadow;
 
   @override

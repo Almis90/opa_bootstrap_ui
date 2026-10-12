@@ -37,71 +37,50 @@ class BsModalStyle {
     this.transitionDuration,
   });
 
-  /// Inner padding.
   final double? innerPadding;
 
-  /// Footer margin between.
   final double? footerMarginBetween;
 
-  /// Dialog margin.
   final double? dialogMargin;
 
-  /// Title line height.
   final double? titleLineHeight;
 
-  /// Content color.
   final Color? contentColor;
 
-  /// Content background.
   final Color? contentBackground;
 
-  /// Content border color.
   final Color? contentBorderColor;
 
-  /// Content border width.
   final double? contentBorderWidth;
 
-  /// Content border radius.
   final double? contentBorderRadius;
 
   /// Drop shadow of the dialog. Null by default (no shadow); pass [defaultContentBoxShadow] to opt
   /// in.
   final List<BoxShadow>? contentBoxShadow;
 
-  /// Backdrop color.
   final Color? backdropColor;
 
-  /// Backdrop opacity.
   final double? backdropOpacity;
 
-  /// Header border color.
   final Color? headerBorderColor;
 
-  /// Header border width.
   final double? headerBorderWidth;
 
-  /// Footer background.
   final Color? footerBackground;
 
-  /// Footer border color.
   final Color? footerBorderColor;
 
-  /// Footer border width.
   final double? footerBorderWidth;
 
-  /// Small size.
   final double? smallSize;
 
-  /// Medium size.
   final double? mediumSize;
 
-  /// Large size.
   final double? largeSize;
 
-  /// Extra large size.
   final double? extraLargeSize;
 
-  /// Transition duration.
   final Duration? transitionDuration;
 
   BsModalStyle merge(BsModalStyle? other) {
@@ -138,17 +117,14 @@ class BsModalStyle {
   static const double defaultTitleLineHeight = 1.5;
   static const Color defaultContentColor = BsColors.gray900;
 
-  /// Default content color in dark mode.
   static const Color defaultDarkContentColor = BsBody.darkColor;
 
   static const Color defaultContentBackground = BsColors.white;
 
-  /// Default content background in dark mode.
   static const Color defaultDarkContentBackground = BsBody.darkBackground;
 
   static const Color defaultContentBorderColor = BsBorders.colorTranslucent;
 
-  /// Default content border color in dark mode.
   static const Color defaultDarkContentBorderColor = BsBorders.darkColorTranslucent;
 
   static const double defaultContentBorderWidth = BsBorders.width;
@@ -161,7 +137,6 @@ class BsModalStyle {
 
   static const Color defaultHeaderBorderColor = BsBorders.color;
 
-  /// Default header border color in dark mode.
   static const Color defaultDarkHeaderBorderColor = BsBorders.darkColor;
   static const double defaultSmallSize = 300;
   static const double defaultMediumSize = 500;

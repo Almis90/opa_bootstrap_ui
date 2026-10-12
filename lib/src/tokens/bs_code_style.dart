@@ -21,25 +21,18 @@ class BsCodeStyle {
     this.preColor,
   });
 
-  /// Code font size.
   final double? codeFontSize;
 
-  /// Code color.
   final Color? codeColor;
 
-  /// Padding of keyboard input.
   final EdgeInsetsGeometry? kbdPadding;
 
-  /// Kbd font size.
   final double? kbdFontSize;
 
-  /// Kbd color.
   final Color? kbdColor;
 
-  /// Kbd background.
   final Color? kbdBackground;
 
-  /// Pre color.
   final Color? preColor;
 
   BsCodeStyle merge(BsCodeStyle? other) {
@@ -55,10 +48,8 @@ class BsCodeStyle {
     );
   }
 
-  /// Default code font size.
   static const double defaultCodeFontSize = 14;
 
-  /// Default code color.
   static const Color defaultCodeColor = BsColors.pink;
 
   /// Default code color in dark mode: a lighter tint of [defaultCodeColor].
@@ -67,16 +58,12 @@ class BsCodeStyle {
   static const EdgeInsets defaultKbdPadding = EdgeInsets.symmetric(horizontal: 6, vertical: 3);
   static const double defaultKbdFontSize = defaultCodeFontSize;
 
-  /// Default kbd color.
   static const Color defaultKbdColor = BsColors.white;
 
-  /// Default kbd color in dark mode.
   static const Color defaultDarkKbdColor = BsBody.darkBackground;
 
-  /// Default kbd background.
   static const Color defaultKbdBackground = BsColors.gray900;
 
-  /// Default kbd background in dark mode.
   static const Color defaultDarkKbdBackground = BsBody.darkColor;
 
   static const BsCodeStyle defaults = BsCodeStyle(

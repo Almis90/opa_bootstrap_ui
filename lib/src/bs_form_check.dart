@@ -175,7 +175,7 @@ class _BsFormCheckGlyph extends StatelessWidget {
   final bool value;
   final BsFormStyle style;
 
-  /// `:focus`: the light-blue border and the ring.
+  /// Whether the control is focused: a light-blue border and a ring.
   final bool focused;
 
   /// A validation color for the border (and the checked fill).
@@ -392,7 +392,7 @@ class _BsFormSwitchGlyph extends StatelessWidget {
   final bool value;
   final BsFormStyle style;
 
-  /// `:focus`: the light-blue border and thumb, and the ring.
+  /// Whether the switch is focused: a light-blue border and thumb, and a ring.
   final bool focused;
   final Color? accent;
 

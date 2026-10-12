@@ -30,49 +30,35 @@ class BsPopoverStyle {
     this.arrowHeight,
   });
 
-  /// Font size.
   final double? fontSize;
 
-  /// Background color.
   final Color? background;
 
-  /// Maximum width.
   final double? maxWidth;
 
-  /// Border width.
   final double? borderWidth;
 
-  /// Border color.
   final Color? borderColor;
 
-  /// Corner radius.
   final double? borderRadius;
 
   /// Drop shadow of the popover. Null by default (no shadow); pass [defaultBoxShadow] to opt in.
   final List<BoxShadow>? boxShadow;
 
-  /// Header font size.
   final double? headerFontSize;
 
-  /// Header background.
   final Color? headerBackground;
 
-  /// Header color.
   final Color? headerColor;
 
-  /// Padding of the header.
   final EdgeInsetsGeometry? headerPadding;
 
-  /// Body color.
   final Color? bodyColor;
 
-  /// Padding of the body.
   final EdgeInsetsGeometry? bodyPadding;
 
-  /// Arrow width.
   final double? arrowWidth;
 
-  /// Arrow height.
   final double? arrowHeight;
 
   BsPopoverStyle merge(BsPopoverStyle? other) {
@@ -98,16 +84,13 @@ class BsPopoverStyle {
 
   static const double defaultFontSize = 14;
 
-  /// Default background.
   static const Color defaultBackground = BsColors.white;
 
-  /// Default background in dark mode.
   static const Color defaultDarkBackground = BsBody.darkBackground;
 
   static const double defaultMaxWidth = 276;
   static const double defaultBorderWidth = BsBorders.width;
 
-  /// Default border color.
   static const Color defaultBorderColor = BsBorders.colorTranslucent;
 
   /// Default border color in dark mode: translucent white.
@@ -117,18 +100,14 @@ class BsPopoverStyle {
   static const List<BoxShadow> defaultBoxShadow = BsShadows.shadow;
   static const double defaultHeaderFontSize = 16;
 
-  /// Default header background.
   static const Color defaultHeaderBackground = BsColors.gray200;
 
-  /// Default header background in dark mode.
   static const Color defaultDarkHeaderBackground = BsBody.darkSecondaryBackground;
 
   static const EdgeInsets defaultHeaderPadding = EdgeInsets.symmetric(horizontal: 16, vertical: 8);
 
-  /// Default body color.
   static const Color defaultBodyColor = BsColors.gray900;
 
-  /// Default body text color in dark mode.
   static const Color defaultDarkBodyColor = BsBody.darkColor;
 
   static const EdgeInsets defaultBodyPadding = EdgeInsets.all(16);

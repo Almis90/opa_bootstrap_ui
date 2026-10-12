@@ -32,49 +32,35 @@ class BsCardStyle {
   /// Padding of the card's body.
   final EdgeInsetsGeometry? spacing;
 
-  /// Title spacer y.
   final double? titleSpacerY;
 
-  /// Title color.
   final Color? titleColor;
 
-  /// Subtitle color.
   final Color? subtitleColor;
 
-  /// Border width.
   final double? borderWidth;
 
-  /// Border color.
   final Color? borderColor;
 
-  /// Corner radius.
   final double? borderRadius;
 
-  /// Inner border radius.
   final double? innerBorderRadius;
 
   /// Padding of the card's header and footer.
   final EdgeInsetsGeometry? capPadding;
 
-  /// Cap background.
   final Color? capBackground;
 
-  /// Cap color.
   final Color? capColor;
 
-  /// Text color.
   final Color? color;
 
-  /// Background color.
   final Color? background;
 
-  /// Drop shadow.
   final List<BoxShadow>? boxShadow;
 
-  /// Img overlay padding.
   final double? imgOverlayPadding;
 
-  /// Group margin.
   final double? groupMargin;
 
   BsCardStyle merge(BsCardStyle? other) {
@@ -99,50 +85,39 @@ class BsCardStyle {
     );
   }
 
-  /// Spacer.
   static const double spacer = 16;
 
   /// Default padding of the card's body.
   static const EdgeInsets defaultSpacing = EdgeInsets.all(spacer);
 
-  /// Default title spacer y.
   static const double defaultTitleSpacerY = spacer * 0.5;
 
-  /// Default border width.
   static const double defaultBorderWidth = BsBorders.width;
 
-  /// Default border color.
   static const Color defaultBorderColor = BsBorders.colorTranslucent;
 
-  /// Default border radius.
   static const double defaultBorderRadius = BsBorders.radius;
 
-  /// Default inner border radius.
   static const double defaultInnerBorderRadius = defaultBorderRadius - defaultBorderWidth;
 
   /// Default padding of the card's header and footer.
   static const EdgeInsets defaultCapPadding = EdgeInsets.symmetric(horizontal: spacer, vertical: spacer * 0.5);
 
-  /// Default cap background.
   static const Color defaultCapBackground = Color(0x08212529);
 
   /// Default header and footer background in dark mode: a faint tint of the dark theme's text
   /// color.
   static const Color defaultDarkCapBackground = Color(0x08DEE2E6);
 
-  /// Default background.
   static const Color defaultBackground = BsColors.white;
 
-  /// Default background in dark mode.
   static const Color defaultDarkBackground = BsColors.gray900;
 
   /// Default border color in dark mode: translucent white.
   static const Color defaultDarkBorderColor = BsBorders.darkColorTranslucent;
 
-  /// Default img overlay padding.
   static const double defaultImgOverlayPadding = spacer;
 
-  /// Default group margin.
   static const double defaultGroupMargin = 12;
 
   static const BsCardStyle defaults = BsCardStyle(

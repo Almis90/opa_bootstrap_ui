@@ -35,22 +35,16 @@ class BsAlertStyle {
   /// Color of links inside the alert. Null uses [color].
   final Color? linkColor;
 
-  /// Padding.
   final EdgeInsetsGeometry? padding;
 
-  /// Margin bottom.
   final double? marginBottom;
 
-  /// Corner radius.
   final double? borderRadius;
 
-  /// Border width.
   final double? borderWidth;
 
-  /// Link font weight.
   final FontWeight? linkFontWeight;
 
-  /// Dismissible padding end.
   final double? dismissiblePaddingEnd;
 
   BsAlertStyle merge(BsAlertStyle? other) {

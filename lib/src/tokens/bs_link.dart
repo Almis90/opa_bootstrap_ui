@@ -10,13 +10,11 @@ import '../bs_theme.dart';
 /// Use [colorOf] and [hoverColorOf] to resolve against the ambient [BsTheme]
 /// instead of reading [color] or [darkColor] directly.
 abstract final class BsLink {
-  /// Text color.
   static const Color color = BsColors.blue;
 
   /// Link color in dark mode: a lighter tint of the primary color.
   static Color get darkColor => BsColorUtils.tint(BsColors.blue, 0.4);
 
-  /// Decoration.
   static const TextDecoration decoration = TextDecoration.underline;
 
   /// How much darker the hover color is than [color], as a percentage; also used to compute
@@ -29,7 +27,6 @@ abstract final class BsLink {
   /// Link color under the pointer in dark mode: [darkColor] lightened by [shadePercentage].
   static Color get darkHoverColor => BsColorUtils.tint(darkColor, shadePercentage);
 
-  /// Hover decoration.
   static const TextDecoration? hoverDecoration = null;
 
   static Color colorOf(BuildContext context) =>

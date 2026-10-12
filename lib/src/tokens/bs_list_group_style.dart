@@ -31,52 +31,36 @@ class BsListGroupStyle {
     this.actionActiveBackground,
   });
 
-  /// Text color.
   final Color? color;
 
-  /// Background color.
   final Color? background;
 
-  /// Border color.
   final Color? borderColor;
 
-  /// Border width.
   final double? borderWidth;
 
-  /// Corner radius.
   final double? borderRadius;
 
-  /// Padding of an item.
   final EdgeInsetsGeometry? itemPadding;
 
-  /// Hover background.
   final Color? hoverBackground;
 
-  /// Active color.
   final Color? activeColor;
 
-  /// Active background.
   final Color? activeBackground;
 
-  /// Active border color.
   final Color? activeBorderColor;
 
-  /// Disabled color.
   final Color? disabledColor;
 
-  /// Disabled background.
   final Color? disabledBackground;
 
-  /// Action color.
   final Color? actionColor;
 
-  /// Action hover color.
   final Color? actionHoverColor;
 
-  /// Action active color.
   final Color? actionActiveColor;
 
-  /// Action active background.
   final Color? actionActiveBackground;
 
   BsListGroupStyle merge(BsListGroupStyle? other) {
@@ -103,25 +87,21 @@ class BsListGroupStyle {
 
   static const Color defaultBackground = BsColors.white;
 
-  /// Default background in dark mode.
   static const Color defaultDarkBackground = BsBody.darkBackground;
 
   static const Color defaultBorderColor = BsBorders.color;
 
-  /// Default border color in dark mode.
   static const Color defaultDarkBorderColor = BsBorders.darkColor;
 
   static const double defaultBorderWidth = BsBorders.width;
   static const double defaultBorderRadius = BsBorders.radius;
   static const EdgeInsets defaultItemPadding = EdgeInsets.symmetric(horizontal: 16, vertical: 8);
 
-  /// Default hover background.
   static const Color defaultHoverBackground = BsColors.gray100;
 
   /// Default hover background in dark mode.
   static Color get defaultDarkHoverBackground => BsBody.darkTertiaryBackground;
 
-  /// Default active color.
   static const Color defaultActiveColor = BsColors.white;
 
   /// Default background of the active item: the primary color, the same in both themes.
@@ -131,16 +111,12 @@ class BsListGroupStyle {
   static Color get defaultDarkDisabledBackground => defaultDarkBackground;
   static const Color defaultActionColor = BsColors.gray600;
 
-  /// Default action hover color.
   static const Color defaultActionHoverColor = BsColors.black;
 
-  /// Default action hover color in dark mode.
   static const Color defaultDarkActionHoverColor = BsBody.darkEmphasisColor;
 
-  /// Default action active background.
   static const Color defaultActionActiveBackground = BsColors.gray200;
 
-  /// Default action active background in dark mode.
   static const Color defaultDarkActionActiveBackground = BsBody.darkSecondaryBackground;
 
   static BsListGroupStyle get defaults => BsListGroupStyle(

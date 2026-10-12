@@ -3,15 +3,12 @@ import 'package:flutter/widgets.dart';
 /// Bootstrap's generic transition tokens, shared by all components. Transitions
 /// specific to one component live on that component's style class instead.
 abstract final class BsTransitions {
-  /// Base.
   static const Duration base = Duration(milliseconds: 200);
   static const Curve baseCurve = Curves.easeInOut;
 
-  /// Fade.
   static const Duration fade = Duration(milliseconds: 150);
   static const Curve fadeCurve = Curves.linear;
 
-  /// Collapse.
   static const Duration collapse = Duration(milliseconds: 350);
   static const Curve collapseCurve = Curves.ease;
 
