@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 
+import 'file_input_labels.dart';
 import 'file_picker.dart';
 
 /// `<input type="file" class="form-control">` as the examples have it: a
@@ -35,7 +36,12 @@ class _ExampleFileInputState extends State<ExampleFileInput> {
 
   @override
   Widget build(BuildContext context) {
+    // (the words are the browser's own: Chrome's "No file chosen", Safari's
+    // "no file selected", Firefox's "Browse…" and "No file selected.")
+    final labels = fileInputLabelsFor(browserUserAgent());
     return BsFormFile(
+      buttonLabel: labels.button,
+      noFileLabel: labels.noFile,
       fileName: _fileName,
       enabled: widget.enabled,
       size: widget.size,

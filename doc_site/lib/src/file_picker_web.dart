@@ -42,3 +42,10 @@ Future<String?> pickFileName() {
   input.callMethod<JSAny?>('click'.toJS);
   return completer.future;
 }
+
+/// The browser's user-agent string.
+String browserUserAgent() {
+  final navigator = globalContext['navigator'] as JSObject?;
+  final agent = navigator?['userAgent'];
+  return agent.isA<JSString>() ? (agent as JSString).toDart : '';
+}
