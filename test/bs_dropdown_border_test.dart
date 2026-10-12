@@ -1,3 +1,6 @@
+import 'dart:ui' as ui;
+
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
@@ -55,4 +58,55 @@ void main() {
       expect(item.right, menu.right - 1);
     },
   );
+
+  // `.dropdown-menu` has `background-clip: padding-box`: its translucent border
+  // is painted over what is behind the menu, not over the menu's background.
+  testWidgets("the border is drawn over the page, not over the menu's background", (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(400, 300);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    final key = GlobalKey();
+    await tester.pumpWidget(
+      RepaintBoundary(
+        key: key,
+        child: BsApp(
+          home: ColoredBox(
+            color: const Color(0xFF0000FF),
+            child: Align(
+              alignment: Alignment.topLeft,
+              child: BsDropdown(
+                toggleBuilder: (context, toggle, isOpen) =>
+                    GestureDetector(onTap: toggle, child: const Text('Toggle')),
+                items: [BsDropdownItem(child: const Text('Action'))],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.tap(find.text('Toggle'));
+    await tester.pumpAndSettle();
+    final menu = tester.getRect(
+      find
+          .ancestor(of: find.text('Action'), matching: find.byType(IntrinsicWidth))
+          .first,
+    );
+
+    final pixel = (await tester.runAsync(() async {
+      final boundary = key.currentContext!.findRenderObject()! as RenderRepaintBoundary;
+      final image = await boundary.toImage();
+      final data = (await image.toByteData(format: ui.ImageByteFormat.rawRgba))!;
+      final x = menu.left.round();
+      final y = (menu.top + menu.height / 2).round();
+      final i = (y * image.width + x) * 4;
+      return [data.getUint8(i), data.getUint8(i + 1), data.getUint8(i + 2)];
+    }))!;
+    // rgba(0,0,0,.175) over the blue page (not over the white menu: ~210 grey).
+    expect(pixel[0], lessThan(10));
+    expect(pixel[1], lessThan(10));
+    expect(pixel[2], inInclusiveRange(200, 220));
+  });
 }

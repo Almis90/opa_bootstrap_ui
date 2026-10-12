@@ -420,8 +420,11 @@ class _BsDropdownMenu extends StatelessWidget {
           minWidth: style.minWidth ?? BsDropdownStyle.defaultMinWidth,
         ),
         child: BsDecoratedBox(
+          // (no colour here: `.dropdown-menu` has `background-clip: padding-box`,
+          // so the translucent border is painted over what is *behind* the
+          // menu, not over the menu's own background; the background is the
+          // inner box below)
           decoration: BoxDecoration(
-            color: style.background ?? BsDropdownStyle.defaultBackground,
             border: Border.all(
               color: style.borderColor ?? BsDropdownStyle.defaultBorderColor,
               width: style.borderWidth ?? BsDropdownStyle.defaultBorderWidth,
@@ -445,23 +448,29 @@ class _BsDropdownMenu extends StatelessWidget {
                       (style.borderWidth ?? BsDropdownStyle.defaultBorderWidth),
                 ),
               ),
-              child: Padding(
-                padding: style.padding ?? BsDropdownStyle.defaultPadding,
-                child: DefaultTextStyle.merge(
-                  style: TextStyle(
-                    color: style.color ?? BsDropdownStyle.defaultColor,
-                    fontSize: style.fontSize ?? BsDropdownStyle.defaultFontSize,
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      for (var i = 0; i < items.length; i++) ...[
-                        if (i > 0 && (style.itemSpacing ?? 0) > 0)
-                          SizedBox(height: style.itemSpacing),
-                        _buildEntry(items[i]),
+              child: BsDecoratedBox(
+                decoration: BoxDecoration(
+                  color: style.background ?? BsDropdownStyle.defaultBackground,
+                ),
+                child: Padding(
+                  padding: style.padding ?? BsDropdownStyle.defaultPadding,
+                  child: DefaultTextStyle.merge(
+                    style: TextStyle(
+                      color: style.color ?? BsDropdownStyle.defaultColor,
+                      fontSize:
+                          style.fontSize ?? BsDropdownStyle.defaultFontSize,
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        for (var i = 0; i < items.length; i++) ...[
+                          if (i > 0 && (style.itemSpacing ?? 0) > 0)
+                            SizedBox(height: style.itemSpacing),
+                          _buildEntry(items[i]),
+                        ],
                       ],
-                    ],
+                    ),
                   ),
                 ),
               ),

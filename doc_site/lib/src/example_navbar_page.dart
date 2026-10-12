@@ -210,23 +210,34 @@ BsNavbarItem navbarDropdownItem(
                 horizontal: expanded ? 8 : 0,
                 vertical: 8,
               ),
-              child: BsFlex(
-                inline: true,
-                alignItems: BsAlign.start,
-                children: [
-                  Text(label),
-                  // `.dropdown-toggle::after`: .255em from the text, raised
-                  // .255em off the baseline of the 24px line.
-                  Padding(
-                    padding: EdgeInsets.only(
-                      left:
-                          BsDropdownCaret.marginStart +
-                          (spaceBeforeCaret ? 3.92 : 0),
-                      top: 17 - 4.08 - BsDropdownCaret.heightFor(context),
+              // `.navbar-nav .nav-link.show`: the link of an open menu takes the
+              // active colour.
+              child: DefaultTextStyle.merge(
+                style: TextStyle(
+                  color: isOpen
+                      ? (BsTheme.of(context) == Brightness.dark
+                            ? BsNavbarStyle.darkActiveColor
+                            : BsNavbarStyle.lightActiveColor)
+                      : null,
+                ),
+                child: BsFlex(
+                  inline: true,
+                  alignItems: BsAlign.start,
+                  children: [
+                    Text(label),
+                    // `.dropdown-toggle::after`: .255em from the text, raised
+                    // .255em off the baseline of the 24px line.
+                    Padding(
+                      padding: EdgeInsets.only(
+                        left:
+                            BsDropdownCaret.marginStart +
+                            (spaceBeforeCaret ? 3.92 : 0),
+                        top: 17 - 4.08 - BsDropdownCaret.heightFor(context),
+                      ),
+                      child: BsDropdownCaret(up: up),
                     ),
-                    child: BsDropdownCaret(up: up),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
