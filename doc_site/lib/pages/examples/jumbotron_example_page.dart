@@ -2,7 +2,6 @@ import 'package:flutter/widgets.dart';
 import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 
 import '../../src/bootstrap_icon.dart';
-import '../../src/example_code.dart';
 
 /// The "Jumbotron" example: a port of Bootstrap's own `examples/jumbotron`
 /// page, with each element's class list as the widget's props (see
@@ -122,21 +121,12 @@ class JumbotronExamplePage extends StatelessWidget {
                 ),
                 BsBox(
                   mb: BsSpacing.s3,
-                  child: Text.rich(
-                    TextSpan(
-                      children: [
-                        const TextSpan(
-                          text: 'Swap the background-color utility and add a ',
-                        ),
-                        codeSpan(context, '.text-*'),
-                        const TextSpan(
-                          text:
-                              ' color utility to mix up the jumbotron look. '
-                              'Then, mix and match with additional component '
-                              'themes and more.',
-                        ),
-                      ],
-                    ),
+                  // (v5.3.8's markup has backticks here, not a `<code>`, so the
+                  // page shows them)
+                  child: Text(
+                    'Swap the background-color utility and add a `.text-*` '
+                    'color utility to mix up the jumbotron look. Then, mix and '
+                    'match with additional component themes and more.',
                   ),
                 ),
                 Align(
