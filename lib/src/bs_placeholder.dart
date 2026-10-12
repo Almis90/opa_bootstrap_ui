@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 
 import 'bs_clip_rrect.dart';
 import 'bs_colors.dart';
+import 'bs_visibility_gate.dart';
 import 'tokens/bs_placeholder_style.dart';
 import 'tokens/bs_transitions.dart';
 import 'bs_decorated_box.dart';
@@ -62,7 +63,8 @@ class BsPlaceholder extends StatefulWidget {
   State<BsPlaceholder> createState() => _BsPlaceholderState();
 }
 
-class _BsPlaceholderState extends State<BsPlaceholder> with SingleTickerProviderStateMixin {
+class _BsPlaceholderState extends State<BsPlaceholder>
+    with SingleTickerProviderStateMixin {
   static const _baseDuration = Duration(seconds: 2);
 
   AnimationController? _controller;
@@ -104,32 +106,74 @@ class _BsPlaceholderState extends State<BsPlaceholder> with SingleTickerProvider
     super.dispose();
   }
 
+  /// Stops the glow or wave while the placeholder is scrolled out of view (see
+  /// [BsVisibilityGate]) and starts it again when it is back.
+  Widget _gated(Widget child) {
+    final controller = _controller;
+    if (controller == null) return child;
+    return BsVisibilityGate(
+      onVisibilityChanged: (visible) {
+        if (!visible) {
+          controller.stop();
+        } else if (widget.animation == BsPlaceholderAnimation.glow) {
+          controller.repeat(reverse: true);
+        } else {
+          controller.repeat();
+        }
+      },
+      child: child,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final style = BsPlaceholderStyle.defaults.merge(widget.style);
     final minOpacity = style.opacityMin ?? BsPlaceholderStyle.defaultOpacityMin;
     final maxOpacity = style.opacityMax ?? BsPlaceholderStyle.defaultOpacityMax;
-    final color = widget.color ?? DefaultTextStyle.of(context).style.color ?? BsColors.gray400;
+    final color =
+        widget.color ??
+        DefaultTextStyle.of(context).style.color ??
+        BsColors.gray400;
 
     Widget bar = ColoredBox(color: color);
     if (widget.animation == BsPlaceholderAnimation.wave) {
       bar = Stack(
         fit: StackFit.expand,
-        children: [bar, AnimatedBuilder(animation: _controller!, builder: (context, _) => _BsPlaceholderWave(progress: _controller!.value))],
+        children: [
+          bar,
+          AnimatedBuilder(
+            animation: _controller!,
+            builder: (context, _) =>
+                _BsPlaceholderWave(progress: _controller!.value),
+          ),
+        ],
       );
     }
 
     bar = BsClipRRect(
       borderRadius: BorderRadius.circular(widget.borderRadius),
-      child: SizedBox(width: widget.width ?? double.infinity, height: widget.height, child: bar),
+      child: SizedBox(
+        width: widget.width ?? double.infinity,
+        height: widget.height,
+        child: bar,
+      ),
     );
 
+    // (A repaint boundary round what animates forever, so a tick doesn't
+    // re-record the page around it.)
     if (widget.animation == BsPlaceholderAnimation.glow) {
-      return AnimatedBuilder(
-        animation: _controller!,
-        builder: (context, child) =>
-            Opacity(opacity: minOpacity + (maxOpacity - minOpacity) * _controller!.value, child: child),
-        child: bar,
+      return _gated(
+        RepaintBoundary(
+          child: AnimatedBuilder(
+            animation: _controller!,
+            builder: (context, child) => Opacity(
+              opacity:
+                  minOpacity + (maxOpacity - minOpacity) * _controller!.value,
+              child: child,
+            ),
+            child: bar,
+          ),
+        ),
       );
     }
 
@@ -137,7 +181,13 @@ class _BsPlaceholderState extends State<BsPlaceholder> with SingleTickerProvider
     // `.placeholder-glow` is the only variant that dips down to
     // `$placeholder-opacity-min` (via its keyframe animation). Both the
     // static (`none`) and `wave` variants rest at the max opacity.
-    return Opacity(opacity: maxOpacity, child: bar);
+    return widget.animation == BsPlaceholderAnimation.wave
+        ? _gated(
+            RepaintBoundary(
+              child: Opacity(opacity: maxOpacity, child: bar),
+            ),
+          )
+        : Opacity(opacity: maxOpacity, child: bar);
   }
 }
 
@@ -156,7 +206,9 @@ class _BsPlaceholderWave extends StatelessWidget {
       translation: Offset(-1 + progress * 2, 0),
       child: const BsDecoratedBox(
         decoration: BoxDecoration(
-          gradient: LinearGradient(colors: [Color(0x00FFFFFF), Color(0x4DFFFFFF), Color(0x00FFFFFF)]),
+          gradient: LinearGradient(
+            colors: [Color(0x00FFFFFF), Color(0x4DFFFFFF), Color(0x00FFFFFF)],
+          ),
         ),
       ),
     );

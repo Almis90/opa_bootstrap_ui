@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'bs_color_utils.dart';
 import 'bs_clip_rrect.dart';
 import 'bs_theme.dart';
+import 'bs_visibility_gate.dart';
 import 'bs_variant.dart';
 import 'tokens/bs_progress_style.dart';
 import 'tokens/bs_transitions.dart';
@@ -242,7 +243,7 @@ class _BsProgressBarState extends State<BsProgressBar>
     final striped = widget.striped || widget.animated;
     final rtl = Directionality.of(context) == TextDirection.rtl;
 
-    return BsDecoratedBox(
+    final bar = BsDecoratedBox(
       decoration: BoxDecoration(color: background),
       child: Stack(
         fit: StackFit.expand,
@@ -252,12 +253,15 @@ class _BsProgressBarState extends State<BsProgressBar>
                 ? CustomPaint(
                     painter: _BsProgressStripePainter(offset: 0, rtl: rtl),
                   )
-                : AnimatedBuilder(
-                    animation: _controller!,
-                    builder: (context, _) => CustomPaint(
-                      painter: _BsProgressStripePainter(
-                        offset: _controller!.value,
-                        rtl: rtl,
+                // (a repaint boundary: the stripes repaint every frame, forever)
+                : RepaintBoundary(
+                    child: AnimatedBuilder(
+                      animation: _controller!,
+                      builder: (context, _) => CustomPaint(
+                        painter: _BsProgressStripePainter(
+                          offset: _controller!.value,
+                          rtl: rtl,
+                        ),
                       ),
                     ),
                   ),
@@ -274,6 +278,14 @@ class _BsProgressBarState extends State<BsProgressBar>
             ),
         ],
       ),
+    );
+    // (the stripes stop sliding while scrolled out of view: see [BsVisibilityGate])
+    final controller = _controller;
+    if (controller == null) return bar;
+    return BsVisibilityGate(
+      onVisibilityChanged: (visible) =>
+          visible ? controller.repeat() : controller.stop(),
+      child: bar,
     );
   }
 }

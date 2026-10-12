@@ -2,6 +2,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/widgets.dart';
 
+import 'bs_visibility_gate.dart';
+
 import 'tokens/bs_spinner_style.dart';
 import 'bs_decorated_box.dart';
 
@@ -85,25 +87,36 @@ class _BsSpinnerBorderState extends State<BsSpinnerBorder>
     final verticalAlign =
         style.verticalAlign ?? BsSpinnerStyle.defaultVerticalAlign;
 
-    final spinner = Transform.translate(
-      // `$spinner-vertical-align` (`-.125em`): nudges the spinner down
-      // from the baseline it would otherwise sit on next to inline text.
-      offset: Offset(0, -verticalAlign),
-      child: RotationTransition(
-        turns: _controller,
-        child: CustomPaint(
-          size: Size.square(size),
-          painter: _BsSpinnerBorderPainter(
-            color: color,
-            strokeWidth: borderWidth,
+    // (A repaint boundary: the spinner repaints every frame, forever, and
+    // without one that would re-record whatever it shares a layer with, up to
+    // a whole page.)
+    final spinner = RepaintBoundary(
+      child: Transform.translate(
+        // `$spinner-vertical-align` (`-.125em`): nudges the spinner down
+        // from the baseline it would otherwise sit on next to inline text.
+        offset: Offset(0, -verticalAlign),
+        child: RotationTransition(
+          turns: _controller,
+          child: CustomPaint(
+            size: Size.square(size),
+            painter: _BsSpinnerBorderPainter(
+              color: color,
+              strokeWidth: borderWidth,
+            ),
           ),
         ),
       ),
     );
 
+    // (not spinning while scrolled out of view: see [BsVisibilityGate])
+    final gated = BsVisibilityGate(
+      onVisibilityChanged: (visible) =>
+          visible ? _controller.repeat() : _controller.stop(),
+      child: spinner,
+    );
     return widget.semanticsLabel == null
-        ? spinner
-        : Semantics(label: widget.semanticsLabel, child: spinner);
+        ? gated
+        : Semantics(label: widget.semanticsLabel, child: gated);
   }
 }
 
@@ -210,26 +223,37 @@ class _BsSpinnerGrowState extends State<BsSpinnerGrow>
         DefaultTextStyle.of(context).style.color ??
         const Color(0xFF212529);
 
-    final verticalAlign = style.verticalAlign ?? BsSpinnerStyle.defaultVerticalAlign;
+    final verticalAlign =
+        style.verticalAlign ?? BsSpinnerStyle.defaultVerticalAlign;
 
-    final spinner = Transform.translate(
-      // `$spinner-vertical-align` (`-.125em`): nudges the spinner down
-      // from the baseline it would otherwise sit on next to inline text.
-      offset: Offset(0, -verticalAlign),
-      child: ScaleTransition(
-        scale: _growth,
-        child: FadeTransition(
-          opacity: _growth,
-          child: BsDecoratedBox(
-            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-            child: SizedBox.square(dimension: size),
+    // (A repaint boundary: it animates every frame, forever; see the border
+    // spinner.)
+    final spinner = RepaintBoundary(
+      child: Transform.translate(
+        // `$spinner-vertical-align` (`-.125em`): nudges the spinner down
+        // from the baseline it would otherwise sit on next to inline text.
+        offset: Offset(0, -verticalAlign),
+        child: ScaleTransition(
+          scale: _growth,
+          child: FadeTransition(
+            opacity: _growth,
+            child: BsDecoratedBox(
+              decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+              child: SizedBox.square(dimension: size),
+            ),
           ),
         ),
       ),
     );
 
+    // (not spinning while scrolled out of view: see [BsVisibilityGate])
+    final gated = BsVisibilityGate(
+      onVisibilityChanged: (visible) =>
+          visible ? _controller.repeat() : _controller.stop(),
+      child: spinner,
+    );
     return widget.semanticsLabel == null
-        ? spinner
-        : Semantics(label: widget.semanticsLabel, child: spinner);
+        ? gated
+        : Semantics(label: widget.semanticsLabel, child: gated);
   }
 }
