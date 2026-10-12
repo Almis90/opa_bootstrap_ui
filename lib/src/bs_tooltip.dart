@@ -121,10 +121,10 @@ class BsTooltip extends StatefulWidget {
 
   final BsTooltipPlacement placement;
 
-  /// Keeps the bubble on screen, as Bootstrap's tooltips do by default: when it would not fit on
-  /// the side [placement] asks for, it appears on the opposite side instead (its arrow flipping
-  /// with it), and slides along the target to stay in view, the arrow keeping its aim. Pass
-  /// false to always show exactly where asked.
+  /// Keeps the bubble on screen: when it would not fit on the side [placement] asks for, it
+  /// appears on the opposite side instead (its arrow flipping with it), and slides along the
+  /// target to stay in view, the arrow keeping its aim. Pass false to always show exactly where
+  /// asked.
   final bool flip;
 
   /// Programmatic enable/disable and show/hide. Defaults to an
@@ -142,20 +142,16 @@ class BsTooltip extends StatefulWidget {
   /// Style overrides layered on top of [BsTooltipStyle.defaults].
   final BsTooltipStyle? style;
 
-  /// Called as soon as the tooltip is triggered to show, before the
-  /// fade-in animation starts. Mirrors Bootstrap's `show.bs.tooltip`.
+  /// Called as soon as the tooltip is triggered to show, before the fade-in animation starts.
   final VoidCallback? onShow;
 
   /// Called once the tooltip has finished fading in and is fully visible.
-  /// Mirrors Bootstrap's `shown.bs.tooltip`.
   final VoidCallback? onShown;
 
-  /// Called as soon as the tooltip is triggered to hide, before the
-  /// fade-out animation starts. Mirrors Bootstrap's `hide.bs.tooltip`.
+  /// Called as soon as the tooltip is triggered to hide, before the fade-out animation starts.
   final VoidCallback? onHide;
 
   /// Called once the tooltip has finished fading out and is fully hidden.
-  /// Mirrors Bootstrap's `hidden.bs.tooltip`.
   final VoidCallback? onHidden;
 
   @override
@@ -230,9 +226,8 @@ class _BsTooltipState extends State<BsTooltip> with SingleTickerProviderStateMix
   /// [BsTooltip.placement], unless overridden by [BsTooltipController.setPlacement].
   BsTooltipPlacement get _effectivePlacement => _controller.placement ?? widget.placement;
 
-  /// Mirrors Bootstrap's own behavior of never initializing a tooltip whose
-  /// `title` is empty: an empty/whitespace-only [Text] (the overwhelmingly
-  /// common [BsTooltip.message]) is treated the same way.
+  /// A tooltip whose message is empty is never shown: an empty or whitespace-only [Text] (the
+  /// overwhelmingly common [BsTooltip.message]) is treated the same way.
   bool get _hasContent {
     final message = _effectiveMessage;
     if (message is Text) {

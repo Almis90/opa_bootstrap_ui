@@ -4,10 +4,10 @@ import 'package:flutter/painting.dart';
 ///
 /// Inset shadows use [BoxShadow.blurStyle] `inner`.
 ///
-/// Flutter sizes a blur differently from the web: a web blur radius `B` is a Gaussian
-/// of standard deviation `B / 2`, while Flutter turns a [BoxShadow.blurRadius] `r` into
-/// `r * 0.57735 + 0.5`. The blur radii below are `(B / 2 - 0.5) / 0.57735` for the web
-/// radius `B` (16, 4, 48 and 2 respectively), so the shadows fall off as Bootstrap's do.
+/// Flutter sizes a blur differently from the web: a web blur radius `B` is a Gaussian of standard
+/// deviation `B / 2`, while Flutter turns a [BoxShadow.blurRadius] `r` into `r * 0.57735 + 0.5`.
+/// The blur radii below are `(B / 2 - 0.5) / 0.57735` for the web radius `B` (16, 4, 48 and 2
+/// respectively), so that the shadows fall off as they do on the web.
 abstract final class BsShadows {
   /// The default shadow, for elevated surfaces.
   static const List<BoxShadow> shadow = [

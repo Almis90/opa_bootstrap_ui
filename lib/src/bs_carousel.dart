@@ -16,13 +16,11 @@ enum BsCarouselTransition {
   fade,
 }
 
-/// Programmatic control of a [BsCarousel] — mirrors Bootstrap's own
-/// `bootstrap.Carousel` JS plugin: `next()`/`prev()`/`to()`/`pause()`/
-/// `cycle()`. Needs [itemCount] up front (the same tradeoff Flutter's own
-/// `TabController` makes with `length`) since [next]/[previous] resolve
-/// wraparound — keep it (and [wrap]) in sync with [BsCarousel.items].length/
-/// [BsCarousel.wrap] via their setters if those can change; [BsCarousel]
-/// itself does this automatically for an internally-owned controller.
+/// Programmatic control of a [BsCarousel]: [next], [previous], jump to a slide, [pause] and
+/// [cycle]. Needs [itemCount] up front, since [next] and [previous] resolve wraparound: keep it
+/// (and [wrap]) in sync with [BsCarousel.items].length and [BsCarousel.wrap] via their setters if
+/// those can change; [BsCarousel] itself does this automatically for an internally-owned
+/// controller.
 class BsCarouselController extends ChangeNotifier {
   BsCarouselController({required int itemCount, this.wrap = true, int initialIndex = 0})
     : assert(itemCount > 0, 'BsCarouselController requires at least one item'),
@@ -167,13 +165,11 @@ class BsCarousel extends StatefulWidget {
   /// first two as they change) when null.
   final BsCarouselController? controller;
 
-  /// Called as soon as a transition to a new slide is triggered — by
-  /// autoplay, a control, an indicator, [controller], or a swipe — before
-  /// it starts animating. Mirrors Bootstrap's `slide.bs.carousel`.
+  /// Called as soon as a transition to a new slide is triggered (by autoplay, a control, an
+  /// indicator, [controller] or a swipe), before it starts animating.
   final VoidCallback? onSlide;
 
-  /// Called once the transition to a new slide finishes. Mirrors
-  /// Bootstrap's `slid.bs.carousel`.
+  /// Called once the transition to a new slide finishes.
   final VoidCallback? onSlid;
 
   @override
@@ -358,10 +354,8 @@ class _BsCarouselState extends State<BsCarousel> {
               fit: StackFit.expand,
               children: [
                 slides,
-                // PositionedDirectional so "previous" stays on the
-                // reading-start side (left in LTR, right in RTL) instead
-                // of always physical left, matching Bootstrap's own
-                // RTL-flipped .carousel-control-prev/-next.
+                // PositionedDirectional so that "previous" stays on the reading-start side (left in
+                // left-to-right, right in right-to-left) instead of always the physical left.
                 if (widget.showControls && count > 1) ...[
                   PositionedDirectional(
                     start: 0,

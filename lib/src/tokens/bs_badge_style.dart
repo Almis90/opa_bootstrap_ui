@@ -20,8 +20,7 @@ class BsBadgeStyle {
     this.borderRadius,
   });
 
-  /// Text color. Null derives it from the background, choosing the color with the better contrast,
-  /// as Bootstrap's contextual badges do.
+  /// Text color. Null derives it from the background, choosing the color with the better contrast.
   final Color? color;
 
   /// Background color, set per variant; there is no single default.

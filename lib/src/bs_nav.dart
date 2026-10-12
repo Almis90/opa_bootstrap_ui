@@ -487,8 +487,7 @@ class BsTabController extends ChangeNotifier {
   /// The currently active pane's index into [BsTabView.children].
   int get index => _index;
 
-  /// Switches to [index], mirroring `bootstrap.Tab.show()`. A no-op if
-  /// [index] is already active.
+  /// Switches to [index]. A no-op if [index] is already active.
   void show(int index) {
     if (index == _index) return;
     _index = index;
@@ -531,21 +530,17 @@ class BsTabView extends StatefulWidget {
   /// internally-owned controller (seeded from [activeIndex]) when null.
   final BsTabController? controller;
 
-  /// Called immediately when a new pane is triggered active, before the
-  /// fade transition starts, with the newly active index. Mirrors
-  /// Bootstrap's `show.bs.tab`.
+  /// Called immediately when a new pane is triggered active, before the fade transition starts,
+  /// with the newly active index.
   final ValueChanged<int>? onShow;
 
   /// Called once the newly active pane's fade-in finishes, with its index.
-  /// Mirrors Bootstrap's `shown.bs.tab`.
   final ValueChanged<int>? onShown;
 
-  /// Called immediately when the previously active pane starts fading out,
-  /// with its index. Mirrors Bootstrap's `hide.bs.tab`.
+  /// Called immediately when the previously active pane starts fading out, with its index.
   final ValueChanged<int>? onHide;
 
-  /// Called once the previously active pane's fade-out finishes, with its
-  /// index. Mirrors Bootstrap's `hidden.bs.tab`.
+  /// Called once the previously active pane's fade-out finishes, with its index.
   final ValueChanged<int>? onHidden;
 
   @override

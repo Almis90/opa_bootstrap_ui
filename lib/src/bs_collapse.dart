@@ -11,12 +11,9 @@ enum BsCollapseAxis {
   horizontal,
 }
 
-/// Programmatic control of a [BsCollapse] — mirrors Bootstrap's own
-/// `bootstrap.Collapse` JS plugin: `expand()`/`collapse()`/`toggle()`
-/// (its `show()`/`hide()`/`toggle()`). No `enable`/`disable` — Bootstrap's
-/// Collapse plugin doesn't have it either, and unlike
-/// [BsTooltip]/[BsPopover]/[BsDropdown], [BsCollapse] doesn't own a trigger
-/// of its own to gate (the button that flips it lives outside this widget).
+/// Programmatic control of a [BsCollapse]: [expand], [collapse] and [toggle]. There is no
+/// enable or disable: unlike [BsTooltip], [BsPopover] and [BsDropdown], [BsCollapse] does not
+/// own a trigger of its own to gate (the button that flips it lives outside this widget).
 class BsCollapseController extends ChangeNotifier {
   BsCollapseController({bool initiallyExpanded = false}) : _expanded = initiallyExpanded;
 
@@ -85,20 +82,16 @@ class BsCollapse extends StatefulWidget {
   /// internally-owned controller (seeded from [isExpanded]) when null.
   final BsCollapseController? controller;
 
-  /// Called as soon as an expand is triggered, before the size animation
-  /// starts. Mirrors Bootstrap's `show.bs.collapse`.
+  /// Called as soon as an expand is triggered, before the size animation starts.
   final VoidCallback? onShow;
 
-  /// Called once the expand animation finishes. Mirrors Bootstrap's
-  /// `shown.bs.collapse`.
+  /// Called once the expand animation finishes.
   final VoidCallback? onShown;
 
-  /// Called as soon as a collapse is triggered, before the size animation
-  /// starts. Mirrors Bootstrap's `hide.bs.collapse`.
+  /// Called as soon as a collapse is triggered, before the size animation starts.
   final VoidCallback? onHide;
 
-  /// Called once the collapse animation finishes. Mirrors Bootstrap's
-  /// `hidden.bs.collapse`.
+  /// Called once the collapse animation finishes.
   final VoidCallback? onHidden;
 
   @override

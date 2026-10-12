@@ -49,8 +49,7 @@ class BsToastController extends ChangeNotifier {
 ///
 /// [onShow] fires synchronously, right here. [onShown] fires once the fade-in finishes, [onHide]
 /// as soon as a dismissal is triggered (by the timer, the close button or
-/// [BsToastController.hide]) and [onHidden] once the fade-out finishes. They mirror Bootstrap's
-/// `show`, `shown`, `hide` and `hidden` toast events.
+/// [BsToastController.hide]) and [onHidden] once the fade-out finishes.
 BsToastController showBsToast(
   BuildContext context, {
   required Widget Function(BuildContext context, VoidCallback dismiss) builder,

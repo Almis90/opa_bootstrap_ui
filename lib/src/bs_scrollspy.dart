@@ -32,12 +32,10 @@ class BsScrollspyController extends ChangeNotifier {
   /// count as reached.
   final double offset;
 
-  /// Called whenever [activeIndex] changes to a new section, mirroring
-  /// Bootstrap's `activate.bs.scrollspy` event. Unlike the generic
-  /// [ChangeNotifier] notification (which a [ListenableBuilder] already
-  /// reacts to for re-rendering), this fires only for an actual section
-  /// change — handy for one-off side effects like analytics that shouldn't
-  /// re-run on every rebuild-triggering notification.
+  /// Called whenever [activeIndex] changes to a new section. Unlike the generic [ChangeNotifier]
+  /// notification (which a [ListenableBuilder] already reacts to for re-rendering), this fires
+  /// only for an actual section change, which suits one-off side effects like analytics that
+  /// should not re-run on every rebuild-triggering notification.
   final ValueChanged<int>? onActivate;
 
   int _activeIndex = 0;
@@ -72,11 +70,10 @@ class BsScrollspyController extends ChangeNotifier {
     }
   }
 
-  /// Recalculates the active section immediately, without waiting for a
-  /// scroll event — mirrors Bootstrap's `refresh()`. Call it after content
-  /// changes that could move the tracked sections (e.g. one is added,
-  /// removed, or resized) so the active index reflects the new layout
-  /// right away instead of only on the next scroll.
+  /// Recalculates the active section immediately, without waiting for a scroll event. Call it
+  /// after content changes that could move the tracked sections (for example one is added,
+  /// removed or resized) so that the active index reflects the new layout right away instead of
+  /// only on the next scroll.
   void refresh() => _handleScroll();
 
   /// Scrolls so [sectionKeys][index] reaches the top of the viewport.

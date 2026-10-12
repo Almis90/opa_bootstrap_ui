@@ -140,20 +140,16 @@ class BsNavbar extends StatefulWidget {
   /// an internally-owned controller when null.
   final BsCollapseController? collapseController;
 
-  /// Called as soon as the mobile menu is triggered to open, before it
-  /// starts animating. Mirrors Bootstrap's `show.bs.collapse`.
+  /// Called as soon as the mobile menu is triggered to open, before it starts animating.
   final VoidCallback? onShow;
 
-  /// Called once the mobile menu has finished opening. Mirrors
-  /// Bootstrap's `shown.bs.collapse`.
+  /// Called once the mobile menu has finished opening.
   final VoidCallback? onShown;
 
-  /// Called as soon as the mobile menu is triggered to close, before it
-  /// starts animating. Mirrors Bootstrap's `hide.bs.collapse`.
+  /// Called as soon as the mobile menu is triggered to close, before it starts animating.
   final VoidCallback? onHide;
 
-  /// Called once the mobile menu has finished closing. Mirrors
-  /// Bootstrap's `hidden.bs.collapse`.
+  /// Called once the mobile menu has finished closing.
   final VoidCallback? onHidden;
 
   @override

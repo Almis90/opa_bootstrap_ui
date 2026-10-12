@@ -43,9 +43,9 @@ class _BsFormRangeState extends State<BsFormRange> {
   bool _dragging = false;
 
   void _updateFromLocalX(double dx, double width, double thumbSize) {
-    // A native range input mirrors itself in a right-to-left layout (the minimum on the right,
-    // and dragging from the right increases the value), so the pixel math is measured from the
-    // reading-end edge instead of always the left.
+    // In a right-to-left layout the minimum is on the right and dragging from the right
+    // increases the value, so the pixel math is measured from the reading-end edge instead of
+    // always the left.
     final isRtl = Directionality.of(context) == TextDirection.rtl;
     final effectiveDx = isRtl ? width - dx : dx;
     final usable = width - thumbSize;

@@ -9,8 +9,7 @@ enum BsBreakpoint {
 
   const BsBreakpoint(this.minWidth);
 
-  /// The minimum viewport width (in logical pixels) at which this
-  /// breakpoint applies, matching Bootstrap's `px` values.
+  /// The minimum viewport width (in logical pixels) at which this breakpoint applies.
   final double minWidth;
 
   /// Returns the breakpoint that applies to [width], i.e. the largest

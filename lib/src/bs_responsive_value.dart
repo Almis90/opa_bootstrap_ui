@@ -4,18 +4,18 @@ import 'bs_breakpoint.dart';
 /// that varies per breakpoint, or a plain value (a [BsSpacing], [BsJustify]…) that is the same
 /// at all of them.
 ///
-/// It lets a utility prop take either form, as Bootstrap's responsive utilities do: `mb:
-/// BsSpacing.s3` is the same at every breakpoint, while `mb: BsResponsiveValue(xs:
-/// BsSpacing.s3, md: BsSpacing.s0)` changes at `md`, with the type checker still on your side.
+/// It lets a utility prop take either form: `mb: BsSpacing.s3` is the same at every breakpoint,
+/// while `mb: BsResponsiveValue(xs: BsSpacing.s3, md: BsSpacing.s0)` changes at `md`, with the
+/// type checker still on your side.
 abstract interface class BsResponsive<T> {
   /// The effective value at [breakpoint], or null if none applies there (nor at
   /// any smaller breakpoint).
   T? resolve(BsBreakpoint breakpoint);
 }
 
-/// A value that can vary per [BsBreakpoint], cascading mobile-first as Bootstrap's responsive
-/// utilities do: a value set at a given breakpoint applies at that breakpoint and all wider
-/// ones, until overridden by a value set at a larger breakpoint.
+/// A value that can vary per [BsBreakpoint], cascading mobile-first: a value set at a given
+/// breakpoint applies at that breakpoint and all wider ones, until overridden by a value set at a
+/// larger breakpoint.
 class BsResponsiveValue<T> implements BsResponsive<T> {
   const BsResponsiveValue({this.xs, this.sm, this.md, this.lg, this.xl, this.xxl});
 

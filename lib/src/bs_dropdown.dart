@@ -29,12 +29,9 @@ sealed class BsDropdownEntry {
   const BsDropdownEntry();
 }
 
-/// Programmatic control of a [BsDropdown], independent of its
-/// [BsDropdown.toggleBuilder]-driven open/close — mirrors [BsPopoverController]
-/// (Bootstrap's dropdown JS plugin has no controller of its own to draw an
-/// API from instead): `enable()`/`disable()`/`toggleEnabled()`,
-/// `show()`/`hide()`/`toggle()`, and `setItems()`/`setDirection()`
-/// overrides.
+/// Programmatic control of a [BsDropdown], independent of its [BsDropdown.toggleBuilder]-driven
+/// open and close: enable and disable it, show, hide and toggle it, and override its items and
+/// direction.
 class BsDropdownController extends ChangeNotifier {
   BsDropdownController({bool enabled = true}) {
     _enabled = enabled;
@@ -178,11 +175,10 @@ class BsDropdown extends StatefulWidget {
   /// affects [direction]s [BsDropdownDirection.down] and [BsDropdownDirection.up].
   final bool alignEnd;
 
-  /// Keeps the menu on screen, as Bootstrap's dropdowns do by default: when the menu would not
-  /// fit where [direction] and [alignEnd] put it, it opens on the opposite alignment or side
-  /// instead (a menu near the bottom edge opens upward, a left-aligned menu at the right edge
-  /// becomes right-aligned), and as a last resort slides along the toggle to stay on screen.
-  /// Pass false to always open exactly where asked.
+  /// Keeps the menu on screen: when it would not fit where [direction] and [alignEnd] put it, it
+  /// opens on the opposite alignment or side instead (a menu near the bottom edge opens upward, a
+  /// left-aligned menu at the right edge becomes right-aligned), and as a last resort slides along
+  /// the toggle to stay on screen. Pass false to always open exactly where asked.
   final bool flip;
 
   /// Lays the menu out in the flow right below the toggle instead of popping it over the page,
@@ -202,22 +198,18 @@ class BsDropdown extends StatefulWidget {
   /// null.
   final BsDropdownController? controller;
 
-  /// Called as soon as the menu is triggered to open. Mirrors Bootstrap's
-  /// `show.bs.dropdown`.
+  /// Called as soon as the menu is triggered to open.
   final VoidCallback? onShow;
 
-  /// Called once the menu has finished opening. [BsDropdown] has no
-  /// open/close animation, so this fires right after [onShow]. Mirrors
-  /// Bootstrap's `shown.bs.dropdown`.
+  /// Called once the menu has finished opening. [BsDropdown] has no open or close animation, so
+  /// this fires right after [onShow].
   final VoidCallback? onShown;
 
-  /// Called as soon as the menu is triggered to close. Mirrors Bootstrap's
-  /// `hide.bs.dropdown`.
+  /// Called as soon as the menu is triggered to close.
   final VoidCallback? onHide;
 
-  /// Called once the menu has finished closing. [BsDropdown] has no
-  /// open/close animation, so this fires right after [onHide]. Mirrors
-  /// Bootstrap's `hidden.bs.dropdown`.
+  /// Called once the menu has finished closing. [BsDropdown] has no open or close animation, so
+  /// this fires right after [onHide].
   final VoidCallback? onHidden;
 
   @override
@@ -334,8 +326,8 @@ class _BsDropdownState extends State<BsDropdown>
       // then the same tap reopens it via the toggle's own handler).
       child: TapRegion(
         groupId: this,
-        // Escape closes an open menu from the toggle (or anything focused in it),
-        // as Bootstrap's dropdown plugin does; the focus stays on the toggle.
+        // Escape closes an open menu from the toggle (or anything focused in it); the focus stays
+        // on the toggle.
         child: Focus(
           canRequestFocus: false,
           skipTraversal: true,

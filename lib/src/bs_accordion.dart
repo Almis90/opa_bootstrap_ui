@@ -166,15 +166,12 @@ class BsAccordion extends StatefulWidget {
   /// [AnimatedRotation].
   final Widget Function(BuildContext context, Color color, bool isExpanded)? iconBuilder;
 
-  /// Called immediately when an item starts expanding or collapsing —
-  /// whether triggered by a tap or programmatically via [controller] —
-  /// mirroring Bootstrap's `show.bs.collapse`/`hide.bs.collapse` events.
+  /// Called immediately when an item starts expanding or collapsing, whether triggered by a tap or
+  /// programmatically via [controller].
   final void Function(int index, bool isExpanded)? onExpansionChanged;
 
-  /// Called once an item's expand/collapse animation finishes, mirroring
-  /// Bootstrap's `shown.bs.collapse`/`hidden.bs.collapse` events. Useful for
-  /// e.g. scrolling newly-revealed content into view, or lazily building it
-  /// only once actually visible.
+  /// Called once an item's expand or collapse animation finishes. Useful for example for
+  /// scrolling newly revealed content into view, or lazily building it only once visible.
   final void Function(int index, bool isExpanded)? onExpansionEnd;
 
   @override
@@ -466,8 +463,7 @@ class _BsAccordionItemViewState extends State<_BsAccordionItemView> {
   }
 }
 
-/// A minimal chevron-down glyph, replicating Bootstrap's accordion caret
-/// without depending on an icon font/package.
+/// A minimal chevron-down glyph, drawn without depending on an icon font or package.
 class _BsChevron extends StatelessWidget {
   const _BsChevron({required this.size, required this.color});
 

@@ -115,7 +115,7 @@ enum BsWidth implements BsResponsive<BsWidth> {
 ///
 /// Children may be wrapped in a [BsFlexItem] for item-level utilities (margins, column width);
 /// anything else is an item with none. Responsive props (anything taking a [BsResponsive]) are
-/// resolved against the viewport's breakpoint, as Bootstrap's responsive utilities are.
+/// resolved against the viewport's breakpoint.
 ///
 /// ```dart
 /// BsFlex(
@@ -405,8 +405,8 @@ class _Item {
   _Item(this.child);
 
   final RenderBox child;
-  // Margins along the main axis are *logical* (start/end): layout runs in
-  // reading order and mirrors the result for RTL at the end.
+  // Margins along the main axis are logical (start and end): layout runs in reading order and
+  // is mirrored for right-to-left at the end.
   double ms = 0, me = 0, mt = 0, mb = 0;
   // Padding, physical: the gutter's (or the item's own utilities') inset of
   // the child inside the item's box.

@@ -123,8 +123,7 @@ class BsResolvedPlacement {
   String toString() => '$placement + $shift';
 }
 
-/// Chooses where an overlay goes so that it stays on screen, as Bootstrap's dropdowns,
-/// popovers and tooltips do.
+/// Chooses where an overlay goes so that it stays on screen.
 ///
 /// Starting from [preferred], tries the same side with the opposite alignment (skipped for
 /// centered placements, which have none), then the opposite side with each alignment, and takes

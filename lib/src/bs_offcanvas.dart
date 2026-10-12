@@ -25,8 +25,7 @@ enum BsOffcanvasPlacement { start, end, top, bottom }
 /// once the slide-in transition completes, [onHide] once the route starts sliding back out, for
 /// whatever reason (this covers every dismissal path: [BsOffcanvasController.hide],
 /// `Navigator.pop`, an outside tap on [barrierDismissible], the system back button), and
-/// [onHidden] once it is fully gone. They mirror Bootstrap's `show`, `shown`, `hide` and
-/// `hidden` offcanvas events.
+/// [onHidden] once it is fully gone.
 Future<T?> showBsOffcanvas<T>({
   required BuildContext context,
   required WidgetBuilder builder,
@@ -106,18 +105,16 @@ Future<T?> showBsOffcanvas<T>({
   );
 }
 
-/// Programmatic control of [showBsOffcanvas], tracking whether one is
-/// currently open — mirrors [BsPopoverController]/[BsDropdownController],
-/// adapted to [showBsOffcanvas] being a one-shot route push rather than a
-/// persistent widget: [show] and [hide] take a [BuildContext] (there's no
-/// [BsOffcanvas] `State` for the controller to attach to), and there's no
-/// `setContent`/`setPlacement` override — both are baked into the route the
-/// moment [show] pushes it, with no "already open" instance left to swap
-/// them on afterward the way [BsPopoverController.setContent] can.
+/// Programmatic control of [showBsOffcanvas], tracking whether one is currently open. It works
+/// like [BsPopoverController] and [BsDropdownController], adapted to [showBsOffcanvas] being a
+/// one-shot route push rather than a persistent widget: [show] and [hide] take a [BuildContext]
+/// (there is no [BsOffcanvas] `State` for the controller to attach to), and there is no
+/// `setContent` or `setPlacement` override, since both are baked into the route the moment
+/// [show] pushes it.
 ///
-/// Unlike its siblings, [disable] can only prevent a *future* [show] — it
-/// can't force-close an offcanvas already open through this controller,
-/// since doing that needs a [BuildContext] this method isn't given.
+/// Unlike its siblings, [disable] can only prevent a future [show]: it cannot force-close an
+/// offcanvas that is already open through this controller, since doing that needs a
+/// [BuildContext] this method is not given.
 class BsOffcanvasController extends ChangeNotifier {
   BsOffcanvasController({bool enabled = true}) {
     _enabled = enabled;

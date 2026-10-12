@@ -15,8 +15,8 @@ import 'tokens/bs_typography.dart';
 enum BsHeadingLevel { h1, h2, h3, h4, h5, h6 }
 
 /// A Bootstrap heading (levels 1 to 6), sized per [level] from [BsTypography]'s heading scale
-/// (fluid below the `xl` breakpoint for levels 1 to 4, as Bootstrap's responsive font sizes
-/// make them), with a bottom margin matching [BsTypography.headingsMarginBottom].
+/// (fluid below the `xl` breakpoint for levels 1 to 4), with a bottom margin matching
+/// [BsTypography.headingsMarginBottom].
 ///
 /// [fw] and [lh] set the heading's own weight and line height (a [BsBox] around a heading
 /// cannot override them).

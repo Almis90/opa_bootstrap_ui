@@ -23,8 +23,7 @@ enum BsModalSize { small, medium, large, extraLarge }
 /// once the fade-in transition completes, [onHide] once the route starts fading back out, for
 /// whatever reason (this covers every dismissal path: [BsModalController.hide],
 /// `Navigator.pop`, an outside tap on [barrierDismissible], the system back button), and
-/// [onHidden] once it is fully gone. They mirror Bootstrap's `show`, `shown`, `hide` and
-/// `hidden` modal events.
+/// [onHidden] once it is fully gone.
 Future<T?> showBsModal<T>({
   required BuildContext context,
   required WidgetBuilder builder,
@@ -90,14 +89,12 @@ Future<T?> showBsModal<T>({
   );
 }
 
-/// Programmatic control of [showBsModal], tracking whether one is currently
-/// open — mirrors [BsOffcanvasController] (see its own doc comment for the
-/// full rationale, which applies here unchanged: [show]/[hide] take a
-/// [BuildContext] since [showBsModal] pushes a route rather than driving a
-/// persistent widget, there's no `setContent`/`setPlacement` override, and
-/// [disable] can only prevent a *future* [show] — it can't force-close a
-/// modal already open, since that needs a [BuildContext] this method isn't
-/// given).
+/// Programmatic control of [showBsModal], tracking whether one is currently open. It works like
+/// [BsOffcanvasController], and its rationale applies here unchanged: [show] and [hide] take a
+/// [BuildContext], since [showBsModal] pushes a route rather than driving a persistent widget,
+/// there is no `setContent` or `setPlacement` override, and [disable] can only prevent a future
+/// [show]: it cannot force-close a modal that is already open, since that needs a [BuildContext]
+/// this method is not given.
 class BsModalController extends ChangeNotifier {
   BsModalController({bool enabled = true}) {
     _enabled = enabled;

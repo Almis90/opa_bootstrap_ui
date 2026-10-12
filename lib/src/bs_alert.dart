@@ -7,10 +7,9 @@ import 'tokens/bs_alert_style.dart';
 import 'tokens/bs_transitions.dart';
 import 'bs_decorated_box.dart';
 
-/// Programmatic control of a [BsAlert]'s dismissal — mirrors Bootstrap's
-/// `bootstrap.Alert.getInstance(element).close()`. [BsAlert] only ever
-/// closes once, with no reopening, so unlike its sibling controllers
-/// there's no `enable`/`disable` or `show` — just [close].
+/// Programmatic control of a [BsAlert]'s dismissal. A [BsAlert] only ever closes once, with no
+/// reopening, so unlike its sibling controllers there is no enable, disable or show: just
+/// [close].
 class BsAlertController extends ChangeNotifier {
   bool _closed = false;
 
@@ -55,15 +54,11 @@ class BsAlert extends StatefulWidget {
   final bool dismissible;
 
   /// Called immediately when the close button is tapped (or [controller]'s
-  /// [BsAlertController.close] is called), before the fade/collapse
-  /// animation starts — mirrors Bootstrap's `close.bs.alert` event.
+  /// [BsAlertController.close] is called), before the fade and collapse animation starts.
   final VoidCallback? onClose;
 
-  /// Called once the alert has finished fading/collapsing out — mirrors
-  /// Bootstrap's `closed.bs.alert` event (and Flutter's own
-  /// [Dismissible.onDismissed], which fires at the same point in its own
-  /// dismiss animation). The caller is responsible for actually removing
-  /// the alert (e.g. from a list) at that point.
+  /// Called once the alert has finished fading and collapsing out. The caller is responsible for
+  /// actually removing the alert (for example from a list) at that point.
   final VoidCallback? onDismissed;
 
   /// Style overrides layered on top of [BsAlertStyle.defaults].
@@ -149,8 +144,8 @@ class _BsAlertState extends State<BsAlert> {
                 ),
                 // The close button is a Stack sibling, not nested inside the padded content, so its own
                 // padding does not shrink the content area. It is centered vertically against the alert's
-                // rendered height, which is simpler and more robust than replicating a padding formula that
-                // assumes exact text-line metrics Flutter does not guarantee.
+                // rendered height, which is simpler and more robust than a padding formula that assumes
+                // exact text-line metrics Flutter does not guarantee.
                 child: Stack(
                   children: [
                     Padding(

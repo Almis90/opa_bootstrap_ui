@@ -1,6 +1,7 @@
 import 'package:flutter/painting.dart';
 
-/// Color math matching Bootstrap's color functions: mix, shade, tint and contrast.
+/// Color math for deriving Bootstrap's shades, tints and contrast colors: mix, shade, tint and
+/// contrast.
 abstract final class BsColorUtils {
   /// Blends [color1] into [color2] by [weight] (0 to 1), where `1.0` returns pure [color1].
   static Color mix(Color color1, Color color2, double weight) {

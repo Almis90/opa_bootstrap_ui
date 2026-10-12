@@ -131,10 +131,9 @@ class BsPopover extends StatefulWidget {
   /// physical side.
   final BsPopoverPlacement? placement;
 
-  /// Keeps the bubble on screen, as Bootstrap's popovers do by default: when it would not fit on
-  /// the side [placement] asks for, it opens on the opposite side instead (its arrow flipping
-  /// with it), and slides along the trigger to stay in view, the arrow keeping its aim. Pass
-  /// false to always open exactly where asked.
+  /// Keeps the bubble on screen: when it would not fit on the side [placement] asks for, it opens
+  /// on the opposite side instead (its arrow flipping with it), and slides along the trigger to
+  /// stay in view, the arrow keeping its aim. Pass false to always open exactly where asked.
   final bool flip;
 
   /// Style overrides layered on top of [BsPopoverStyle.defaults].
@@ -147,22 +146,18 @@ class BsPopover extends StatefulWidget {
   /// null.
   final BsPopoverController? controller;
 
-  /// Called as soon as the popover is triggered to open. Mirrors
-  /// Bootstrap's `show.bs.popover`.
+  /// Called as soon as the popover is triggered to open.
   final VoidCallback? onShow;
 
-  /// Called once the popover has finished opening. [BsPopover] has no
-  /// open/close animation, so this fires right after [onShow].
-  /// Mirrors Bootstrap's `shown.bs.popover`.
+  /// Called once the popover has finished opening. [BsPopover] has no open or close animation, so
+  /// this fires right after [onShow].
   final VoidCallback? onShown;
 
-  /// Called as soon as the popover is triggered to close. Mirrors
-  /// Bootstrap's `hide.bs.popover`.
+  /// Called as soon as the popover is triggered to close.
   final VoidCallback? onHide;
 
-  /// Called once the popover has finished closing. [BsPopover] has no
-  /// open/close animation, so this fires right after [onHide]. Mirrors
-  /// Bootstrap's `hidden.bs.popover`.
+  /// Called once the popover has finished closing. [BsPopover] has no open or close animation, so
+  /// this fires right after [onHide].
   final VoidCallback? onHidden;
 
   @override
@@ -299,16 +294,12 @@ class _BsPopoverState extends State<BsPopover>
 
     return Stack(
       children: [
-        // The TapRegion sits *inside* the follower (see BsDropdown): wrapped
-        // around it, its box would stay at the Stack's origin and a tap on the
-        // popover itself would count as outside it.
+        // The TapRegion sits inside the follower (see BsDropdown): wrapped around it, its box would
+        // stay at the Stack's origin and a tap on the popover itself would count as outside it.
         //
-        // TapRegion (not a full-screen hit-test barrier, unlike the
-        // Positioned.fill+opaque GestureDetector this replaced) detects an
-        // outside tap passively, without absorbing it — so closing the
-        // popover this way still lets that same tap reach whatever it
-        // actually landed on, matching Bootstrap's own document-click
-        // listener instead of swallowing clicks meant for other widgets.
+        // A TapRegion (not a full-screen hit-test barrier) detects an outside tap passively, without
+        // absorbing it, so closing the popover this way still lets that same tap reach whatever it
+        // actually landed on instead of swallowing clicks meant for other widgets.
         CompositedTransformFollower(
           link: _link,
           targetAnchor: placement.targetAnchor,
