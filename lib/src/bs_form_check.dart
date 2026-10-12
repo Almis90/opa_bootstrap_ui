@@ -272,8 +272,6 @@ List<BoxShadow> _focusRing(BsFormStyle style, Color? accent) => accent != null
     ? [BoxShadow(color: accent.withValues(alpha: 0.25), spreadRadius: 4)]
     : (style.inputFocusBoxShadow ?? BsFormStyle.defaultInputFocusBoxShadow);
 
-/// The checkbox's tick: a polyline in a 20-unit square, 3 units thick, with round caps and
-/// joins.
 class _BsCheckmarkPainter extends CustomPainter {
   _BsCheckmarkPainter(this.color);
 
@@ -445,7 +443,7 @@ class _BsFormSwitchGlyph extends StatelessWidget {
       ),
       child: AnimatedAlign(
         duration: transitionDuration,
-        // // The checked thumb migrates toward the reading-end side, not always physically right.
+        // The checked thumb migrates toward the reading-end side, not always physically right.
         alignment: value
             ? AlignmentDirectional.centerEnd
             : AlignmentDirectional.centerStart,

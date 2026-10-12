@@ -528,8 +528,6 @@ class _BsNavbarTogglerIconPainter extends CustomPainter {
 
   final Color color;
 
-  /// The menu icon: three horizontal bars in a 30-unit square, stroked 2 units wide with round
-  /// caps.
   @override
   void paint(Canvas canvas, Size size) {
     final unit = size.width / 30;

@@ -179,8 +179,8 @@ class BsNav extends StatelessWidget {
       );
     }
 
-    // // No wrap: a single line, as wide as its links unless a justification gives it the room to
-    // // place them in.
+    // No wrap: a single line, as wide as its links unless a justification gives it the room to
+    // place them in.
     if (nowrap) {
       return Row(
         mainAxisSize: justifyContent == null

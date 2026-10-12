@@ -288,7 +288,7 @@ class _BsFormControlState extends State<BsFormControl>
                     BsFormStyle.defaultInputPlaceholderColor,
               ),
             ),
-          // // A disabled input cannot be clicked into or tabbed to.
+          // A disabled input cannot be clicked into or tabbed to.
           ExcludeFocus(
             excluding: !widget.enabled,
             child: EditableText(

@@ -501,7 +501,6 @@ class _BsCarouselChevronPainter extends CustomPainter {
 
   final Color color;
 
-  /// The chevron: a stroke 1 unit wide (of 16) with round ends, from (5, 2) to (11, 8) to (5, 14).
   @override
   void paint(Canvas canvas, Size size) {
     final unit = size.width / 16;

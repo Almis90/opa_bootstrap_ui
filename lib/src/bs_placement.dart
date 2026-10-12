@@ -150,8 +150,8 @@ BsResolvedPlacement resolvePlacement({
     BsPlacementSide.right => r.right - viewport.right,
   };
 
-  // // Three checks per placement: the side it opens towards, then the two sides along the
-  // // alignment axis (the far one first).
+  // Three checks per placement: the side it opens towards, then the two sides along the
+  // alignment axis (the far one first).
   List<bool> checks(BsPlacement p) {
     final r = p.rect(target, content, spacer);
     final (far, near) = p.side.isVertical

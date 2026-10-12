@@ -103,8 +103,6 @@ class _BsCloseGlyphPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    // Two strokes 2 units wide with round ends, from (1, 1) to (15, 15) of a 16-unit square,
-    // so that the glyph fills the square.
     final unit = size.width / 16;
     final paint = Paint()
       ..color = color

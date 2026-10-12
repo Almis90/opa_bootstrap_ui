@@ -487,8 +487,6 @@ class _BsChevronPainter extends CustomPainter {
 
   final Color color;
 
-  /// The chevron: a polyline in a 16-unit square, stroked 1 unit wide (1.25 logical pixels at
-  /// the 20 pixel size) with round caps and joins.
   @override
   void paint(Canvas canvas, Size size) {
     final unit = size.width / 16;

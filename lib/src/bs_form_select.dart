@@ -192,8 +192,6 @@ class _SelectChevronPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    // // The 16-unit chevron is shown in a 16x12 box: scaled to fit and centered, so at 0.75 of its
-    // // size.
     final scale = size.width / 16 < size.height / 16
         ? size.width / 16
         : size.height / 16;
