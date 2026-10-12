@@ -98,4 +98,49 @@ void main() {
     // 'shown:1' must never appear.
     expect(events, ['hidden:1', 'shown:2']);
   });
+
+  testWidgets(
+    'a switch fades the old pane out, then the new one in: never both on screen',
+    (tester) async {
+      final controller = BsTabController();
+      addTearDown(controller.dispose);
+      await tester.pumpWidget(
+        BsApp(
+          home: BsTabView(controller: controller, children: children),
+        ),
+      );
+
+      double opacity() => tester
+          .widget<FadeTransition>(find.byType(FadeTransition).last)
+          .opacity
+          .value;
+      expect(opacity(), 1);
+
+      controller.show(1);
+      await tester.pump();
+      await tester.pump(
+        const Duration(milliseconds: 75),
+      ); // half of `.15s linear`
+      expect(
+        find.text('Pane 0'),
+        findsOneWidget,
+        reason: 'the old pane is still there, fading',
+      );
+      expect(
+        find.text('Pane 1'),
+        findsNothing,
+        reason: 'the new one is not there yet',
+      );
+      expect(opacity(), closeTo(0.5, 0.05));
+
+      await tester.pump(const Duration(milliseconds: 80)); // faded out: swapped
+      expect(find.text('Pane 0'), findsNothing);
+      expect(find.text('Pane 1'), findsOneWidget);
+      expect(opacity(), lessThan(0.2));
+
+      await tester.pump(const Duration(milliseconds: 150));
+      expect(opacity(), 1);
+      expect(find.text('Pane 1'), findsOneWidget);
+    },
+  );
 }

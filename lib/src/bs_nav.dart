@@ -532,22 +532,30 @@ class BsTabView extends StatefulWidget {
   State<BsTabView> createState() => _BsTabViewState();
 }
 
-class _BsTabViewState extends State<BsTabView> {
+class _BsTabViewState extends State<BsTabView> with SingleTickerProviderStateMixin {
   BsTabController? _ownedController;
   late int _lastIndex;
   int? _pendingFrom;
   int? _pendingTo;
 
+  /// The pane on screen. It trails the controller's index while the old pane
+  /// fades out (`.tab-pane.fade`: the active pane loses `.show` and fades over
+  /// `$transition-fade`; only when that ends is it replaced, and the new one
+  /// then fades in — one after the other, never both at once).
+  late int _displayed;
+
+  /// The opacity of the pane on screen.
+  late final AnimationController _fade = AnimationController(vsync: this, value: 1)
+    ..addStatusListener(_handleFadeStatus);
+
   BsTabController get _controller =>
-      widget.controller ??
-      (_ownedController ??= BsTabController(
-        initialIndex: widget.activeIndex ?? 0,
-      ));
+      widget.controller ?? (_ownedController ??= BsTabController(initialIndex: widget.activeIndex ?? 0));
 
   @override
   void initState() {
     super.initState();
     _lastIndex = _controller.index;
+    _displayed = _lastIndex;
     _controller.addListener(_handleControllerChanged);
   }
 
@@ -556,9 +564,7 @@ class _BsTabViewState extends State<BsTabView> {
     super.didUpdateWidget(oldWidget);
     // activeIndex only drives the internally-owned controller — an
     // explicit controller is always the source of truth once given.
-    if (widget.controller == null &&
-        widget.activeIndex != null &&
-        widget.activeIndex != _controller.index) {
+    if (widget.controller == null && widget.activeIndex != null && widget.activeIndex != _controller.index) {
       _controller.show(widget.activeIndex!);
     }
   }
@@ -573,41 +579,55 @@ class _BsTabViewState extends State<BsTabView> {
       widget.onHide?.call(oldIndex);
       widget.onShow?.call(newIndex);
 
-      final duration = BsTransitions.resolve(
-        context,
-        widget.duration ?? BsTransitions.fade,
-      );
+      final duration = BsTransitions.resolve(context, widget.duration ?? BsTransitions.fade);
+      _fade.duration = duration;
+      // Fade the pane on screen out (or, if it is the one wanted again, back in).
+      if (_displayed == newIndex) {
+        _fade.forward();
+      } else {
+        _fade.reverse();
+      }
+      // The old pane is gone once it has faded out, the new one shown once it
+      // has faded in.
       Future.delayed(duration, () {
         if (!mounted) return;
         // Only fire if this is still the transition we scheduled it for —
         // a rapid second switch before this fires means this one never
         // actually completed, so reporting it would be stale.
         if (_pendingFrom != oldIndex || _pendingTo != newIndex) return;
-        _pendingFrom = null;
-        _pendingTo = null;
         widget.onHidden?.call(oldIndex);
-        widget.onShown?.call(newIndex);
+        Future.delayed(duration, () {
+          if (!mounted || _pendingFrom != oldIndex || _pendingTo != newIndex) return;
+          _pendingFrom = null;
+          _pendingTo = null;
+          widget.onShown?.call(newIndex);
+        });
       });
     }
     setState(() {});
+  }
+
+  void _handleFadeStatus(AnimationStatus status) {
+    // Faded out: put the wanted pane in its place and fade it in.
+    if (status == AnimationStatus.dismissed && _displayed != _controller.index) {
+      setState(() => _displayed = _controller.index);
+      _fade.forward();
+    }
   }
 
   @override
   void dispose() {
     _controller.removeListener(_handleControllerChanged);
     _ownedController?.dispose();
+    _fade.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final index = _controller.index;
-    return AnimatedSwitcher(
-      duration: BsTransitions.resolve(
-        context,
-        widget.duration ?? BsTransitions.fade,
-      ),
-      child: KeyedSubtree(key: ValueKey(index), child: widget.children[index]),
+    return FadeTransition(
+      opacity: _fade,
+      child: KeyedSubtree(key: ValueKey(_displayed), child: widget.children[_displayed]),
     );
   }
 }
