@@ -7,7 +7,7 @@ import 'tokens/bs_body.dart';
 import 'tokens/bs_form_style.dart';
 import 'bs_decorated_box.dart';
 
-/// A Bootstrap range slider (`.form-range`).
+/// A Bootstrap range slider.
 class BsFormRange extends StatefulWidget {
   const BsFormRange({
     super.key,
@@ -43,10 +43,9 @@ class _BsFormRangeState extends State<BsFormRange> {
   bool _dragging = false;
 
   void _updateFromLocalX(double dx, double width, double thumbSize) {
-    // Native <input type="range" dir="rtl"> mirrors itself — min on the
-    // right, dragging from the right increases the value — so the pixel
-    // math is measured from the reading-end edge instead of always the
-    // left, matching that browser behavior for Bootstrap's .form-range.
+    // // A native range input mirrors itself in a right-to-left layout (the minimum on the right,
+    // // and dragging from the right increases the value), so the pixel math is measured from the
+    // // reading-end edge instead of always the left.
     final isRtl = Directionality.of(context) == TextDirection.rtl;
     final effectiveDx = isRtl ? width - dx : dx;
     final usable = width - thumbSize;
@@ -138,10 +137,10 @@ class _BsFormRangeState extends State<BsFormRange> {
         : (style.rangeThumbBackground ??
               BsFormStyle.defaults.rangeThumbBackground!);
 
-    // `.form-range:focus`: the thumb gets a 1px halo of the page's background
-    // and the `.25rem` focus ring (not `:focus-visible`: a clicked range keeps it).
-    // (Flutter paints a list of shadows first to last, CSS last to first: the
-    // halo goes last so it is on top of the ring's translucent fill)
+    // // A focused range (not only a keyboard-focused one: a clicked range keeps it) gives the
+    // // thumb a 1px halo of the page's background and the focus ring. Flutter paints a list of
+    // // shadows from first to last, so the halo goes last to be on top of the ring's translucent
+    // // fill.
     final focusRing = [
       ...(style.inputFocusBoxShadow ?? BsFormStyle.defaultInputFocusBoxShadow),
       BoxShadow(color: BsBody.backgroundOf(context), spreadRadius: 1),
@@ -186,7 +185,7 @@ class _BsFormRangeState extends State<BsFormRange> {
                     ? (_) => setState(() => _dragging = false)
                     : null,
                 child: SizedBox(
-                  // `.form-range { height: 1.5rem }`; the thumb is centred in it.
+                  // // The control is 24 logical pixels tall, with the thumb centered in it.
                   height: thumbSize < 24 ? 24 : thumbSize,
                   width: double.infinity,
                   child: Stack(

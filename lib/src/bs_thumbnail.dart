@@ -5,8 +5,8 @@ import 'bs_theme.dart';
 import 'tokens/bs_thumbnail_style.dart';
 import 'bs_decorated_box.dart';
 
-/// A Bootstrap thumbnail (`.img-thumbnail`): a bordered, padded, rounded
-/// frame around [child], typically an [Image].
+/// A Bootstrap thumbnail: a bordered, padded, rounded frame around [child], typically an
+/// [Image].
 class BsThumbnail extends StatelessWidget {
   const BsThumbnail({super.key, required this.child, this.style});
 

@@ -1,12 +1,10 @@
 import 'package:flutter/painting.dart';
 
-/// `border-style: dashed` (all four sides alike), which Flutter's [Border] has
-/// no equivalent of: a dashed stroke along the box's outline, following its
-/// rounded corners.
+/// A dashed border (all four sides alike), which Flutter's [Border] has no equivalent of: a
+/// dashed stroke along the box's outline, following its rounded corners.
 ///
-/// Dashes are three times the border width long, with gaps of the same length
-/// stretched a little so a whole number of dashes fits the outline — as
-/// browsers do.
+/// Dashes are three times the border width long, with gaps of the same length stretched a
+/// little so that a whole number of dashes fits the outline, as browsers do.
 class BsDashedBorder extends Border {
   BsDashedBorder({required Color color, double width = 1})
     : super.fromBorderSide(BorderSide(color: color, width: width));

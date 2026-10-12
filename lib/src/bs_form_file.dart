@@ -6,14 +6,11 @@ import 'bs_form_control.dart';
 import 'bs_theme.dart';
 import 'tokens/bs_form_style.dart';
 
-/// A Bootstrap file input (`<input type="file" class="form-control">`): the
-/// browser's "Choose File" button (`::file-selector-button`, restyled by
-/// `$form-file-button-*`) and the name of the chosen file, in a
-/// `.form-control` frame.
+/// A Bootstrap file input: a "Choose File" button and the name of the chosen file, in a
+/// control frame.
 ///
-/// This package has no file picker to call (and none to depend on), so the
-/// widget only draws the control: pass [onPressed] to open one, and the
-/// chosen name as [fileName].
+/// This package has no file picker to call (and none to depend on), so the widget only draws
+/// the control: pass [onPressed] to open one, and the chosen name as [fileName].
 class BsFormFile extends StatefulWidget {
   const BsFormFile({
     super.key,
@@ -33,7 +30,7 @@ class BsFormFile extends StatefulWidget {
   /// Called when the button (or the field) is tapped.
   final VoidCallback? onPressed;
 
-  /// `disabled`: the muted `.form-control:disabled` background, and no taps.
+  /// Draws the muted disabled background and ignores taps.
   final bool enabled;
 
   final BsFormControlSize size;
@@ -44,7 +41,8 @@ class BsFormFile extends StatefulWidget {
   /// What it says while nothing is chosen ("No file chosen").
   final String noFileLabel;
 
-  /// `.is-valid`/`.is-invalid`: the border takes the success or danger color.
+  /// The validation state: the border takes the success color when true and the danger color when
+  /// false.
   final bool? valid;
 
   /// Style overrides layered on top of [BsFormStyle.defaults].
@@ -106,9 +104,7 @@ class _BsFormFileState extends State<BsFormFile> {
               BsFormStyle.defaultFileButtonHoverBackground
         : style.fileButtonBackground ?? BsFormStyle.defaultFileButtonBackground;
 
-    // `::file-selector-button { margin: -.375rem -.75rem -.375rem -.75rem;
-    // padding: .375rem .75rem; margin-inline-end: .75rem; border-inline-end:
-    // 1px }`: the button fills the control's padding box, edge to edge.
+    // // The button fills the control's padding box, edge to edge.
     final button = BsDecoratedBox(
       decoration: BoxDecoration(
         color: buttonBackground,

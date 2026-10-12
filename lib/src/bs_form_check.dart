@@ -323,7 +323,7 @@ class BsFormCheckInput extends StatelessWidget {
   /// The font size that the control's side is measured against.
   final double fontSize;
 
-  /// `border-style: dashed`.
+  /// Draws the border dashed.
   final bool dashed;
 
   /// `bg-*` on the control, in place of the input background.

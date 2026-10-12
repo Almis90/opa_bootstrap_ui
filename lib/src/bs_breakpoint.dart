@@ -1,6 +1,4 @@
-/// Bootstrap responsive breakpoints.
-///
-/// Mirrors the `$grid-breakpoints` map from Bootstrap's SCSS source.
+/// Bootstrap's responsive breakpoints, from the smallest (`xs`) to the largest (`xxl`).
 enum BsBreakpoint {
   xs(0),
   sm(576),

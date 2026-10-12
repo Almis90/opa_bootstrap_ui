@@ -73,7 +73,7 @@ class BsInputGroup extends StatelessWidget {
   }
 }
 
-/// A static label addon inside a [BsInputGroup] (for example `@`, `$` or `.00`).
+/// A static label addon inside a [BsInputGroup], for example "@", "$" or ".00".
 class BsInputGroupText extends StatelessWidget {
   const BsInputGroupText({super.key, required this.child, this.style});
 

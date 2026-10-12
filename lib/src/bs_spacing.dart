@@ -1,16 +1,13 @@
 import 'bs_breakpoint.dart';
 import 'bs_responsive_value.dart';
 
-/// Bootstrap's spacing scale, used by the margin/padding/gap utilities
-/// (e.g. `m-3`, `px-2`, `gap-4`, `me-auto`).
+/// Bootstrap's spacing scale, used by the margin, padding and gap utilities: 0, 0.25, 0.5, 1,
+/// 1.5 and 3 times the base spacing (16 logical pixels), plus [auto], which the margin
+/// utilities accept.
 ///
-/// Mirrors the `$spacers` map from Bootstrap's SCSS source, expressed as
-/// multiples of `$spacer` (1rem): 0, .25rem, .5rem, 1rem, 1.5rem, 3rem — plus
-/// [auto], which the margin utilities accept (`mx-auto`, `ms-auto`).
-///
-/// A [BsSpacing] is itself a [BsResponsive] value, so it can be passed straight
-/// to a utility prop (`BsBox(py: BsSpacing.s3)`) or wrapped in a
-/// [BsResponsiveValue] to vary per breakpoint.
+/// A [BsSpacing] is itself a [BsResponsive] value, so it can be passed straight to a utility
+/// prop (`BsBox(py: BsSpacing.s3)`) or wrapped in a [BsResponsiveValue] to vary per
+/// breakpoint.
 enum BsSpacing implements BsResponsive<BsSpacing> {
   s0(0, 0),
   s1(1, 0.25),
@@ -29,10 +26,10 @@ enum BsSpacing implements BsResponsive<BsSpacing> {
   /// -1 for [auto].
   final int step;
 
-  /// The size in rem units, assuming the default `$spacer: 1rem`.
+  /// The size as a multiple of the 16 logical pixel base spacing.
   final double rem;
 
-  /// The CSS class suffix used by Bootstrap, e.g. `3` in `m-3`, or `auto`.
+  /// Bootstrap's name for this value, as used in its utility names.
   String get className => this == auto ? 'auto' : step.toString();
 
   /// The size in logical pixels, assuming the default `16px` root font size.

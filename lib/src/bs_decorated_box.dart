@@ -1,16 +1,14 @@
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
-/// A [DecoratedBox] that paints like a browser does: its edges (background,
-/// border, shadow) are snapped to whole device pixels.
+/// A [DecoratedBox] that paints like a browser does: its edges (background, border, shadow)
+/// are snapped to whole device pixels.
 ///
-/// CSS layout is fractional — a header below a 32.34px title starts at
-/// y=185.34 — but browsers snap every box's edges to the pixel grid when they
-/// paint, so a 1px border is always one crisp row. Flutter paints at the
-/// fractional position instead and the border blurs over two rows. This box
-/// rounds its left/top/right/bottom (in device pixels, from its position on
-/// screen, as Chrome does) before painting the decoration; layout and the
-/// child are untouched.
+/// Layout is fractional (a header below a 32.34px title starts at y=185.34), but browsers
+/// snap every box's edges to the pixel grid when they paint, so a 1px border is always one
+/// crisp row. Flutter paints at the fractional position instead and the border blurs over two
+/// rows. This box rounds its left, top, right and bottom (in device pixels, from its position
+/// on screen) before painting the decoration; layout and the child are untouched.
 class BsDecoratedBox extends DecoratedBox {
   const BsDecoratedBox({
     super.key,
@@ -52,11 +50,10 @@ class _RenderBsDecoratedBox extends RenderDecoratedBox {
     return _painter!;
   }
 
-  /// A box-shadow is only ever visible *outside* the border box in CSS, whereas
-  /// Flutter paints it under the box too, which shows through a background
-  /// that is transparent (or translucent). So the shadows are painted
-  /// separately, clipped to the outside of the box's shape, and the rest of the
-  /// decoration without them.
+  /// A shadow should only ever be visible outside the box, whereas Flutter paints it under the
+  /// box too, which shows through a background that is transparent (or translucent). So the
+  /// shadows are painted separately, clipped to the outside of the box's shape, and the rest of
+  /// the decoration without them.
   Decoration _withoutShadows(BoxDecoration d) => BoxDecoration(
     color: d.color,
     image: d.image,
@@ -178,8 +175,8 @@ class _RenderBsDecoratedBox extends RenderDecoratedBox {
 
 /// A [Container] whose decoration is a [BsDecoratedBox] (pixel-snapped).
 ///
-/// Same layering as [Container] — the decoration's border is added to the
-/// padding, so it adds to the box's size like a CSS border.
+/// It layers like [Container]: the decoration's border is added to the padding, so it adds to
+/// the box's size.
 class BsDecoratedContainer extends StatelessWidget {
   const BsDecoratedContainer({
     super.key,

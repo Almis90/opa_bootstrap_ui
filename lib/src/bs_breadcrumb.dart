@@ -12,14 +12,12 @@ class BsBreadcrumbItem {
   /// The crumb's content, typically a [Text].
   final Widget label;
 
-  /// Called when tapped. Ignored on the last item, which is always
-  /// rendered as the current page (Bootstrap's `.active`) — non-interactive,
-  /// in [BsBreadcrumbStyle.activeColor].
+  /// Called when tapped. Ignored on the last item, which is always rendered as the current page:
+  /// non-interactive, in [BsBreadcrumbStyle.activeColor].
   final VoidCallback? onTap;
 }
 
-/// A Bootstrap breadcrumb (`.breadcrumb`): a trail of page links ending in
-/// the current page.
+/// A Bootstrap breadcrumb: a trail of page links ending in the current page.
 class BsBreadcrumb extends StatelessWidget {
   const BsBreadcrumb({super.key, required this.items, this.style, this.dividerBuilder});
 
@@ -28,17 +26,13 @@ class BsBreadcrumb extends StatelessWidget {
   final List<BsBreadcrumbItem> items;
 
   /// Style overrides layered on top of [BsBreadcrumbStyle.defaults]. Use
-  /// [BsBreadcrumbStyle.divider] for a custom text/character divider (e.g.
-  /// `'>'`), or an empty string to remove it — mirroring Bootstrap's
-  /// `--bs-breadcrumb-divider` CSS variable / `$breadcrumb-divider` Sass
-  /// variable.
+  /// [BsBreadcrumbStyle.divider] for a custom text or character divider (for example `'>'`), or
+  /// an empty string to remove it.
   final BsBreadcrumbStyle? style;
 
-  /// Overrides the divider between crumbs entirely with an arbitrary
-  /// widget (e.g. an [Icon] or custom-painted glyph) instead of
-  /// [BsBreadcrumbStyle.divider]'s text — mirroring Bootstrap's example of
-  /// setting `--bs-breadcrumb-divider` to an embedded SVG. Called once per
-  /// gap between crumbs.
+  /// Overrides the divider between crumbs entirely with an arbitrary widget (for example an
+  /// [Icon] or a custom-painted glyph) instead of [BsBreadcrumbStyle.divider]'s text. Called
+  /// once per gap between crumbs.
   final WidgetBuilder? dividerBuilder;
 
   @override

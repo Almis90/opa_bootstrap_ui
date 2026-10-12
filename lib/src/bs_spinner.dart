@@ -218,8 +218,7 @@ class _BsSpinnerGrowState extends State<BsSpinnerGrow>
     // spinner.)
     final spinner = RepaintBoundary(
       child: Transform.translate(
-        // `$spinner-vertical-align` (`-.125em`): nudges the spinner down
-        // from the baseline it would otherwise sit on next to inline text.
+        // // Nudges the spinner down from the baseline it would otherwise sit on next to inline text.
         offset: Offset(0, -verticalAlign),
         child: ScaleTransition(
           scale: _growth,

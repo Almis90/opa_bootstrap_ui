@@ -1,13 +1,12 @@
 import 'bs_breakpoint.dart';
 
-/// Anything that yields a value of type [T] at a given [BsBreakpoint]: a
-/// [BsResponsiveValue] that varies per breakpoint, or a plain value (a
-/// [BsSpacing], [BsJustify]…) that is the same at all of them.
+/// Anything that yields a value of type [T] at a given [BsBreakpoint]: a [BsResponsiveValue]
+/// that varies per breakpoint, or a plain value (a [BsSpacing], [BsJustify]…) that is the same
+/// at all of them.
 ///
-/// It lets a utility prop take either form, as Bootstrap's classes do —
-/// `mb-3` is `mb: BsSpacing.s3`, `mb-3 mb-md-0` is
-/// `mb: BsResponsiveValue(xs: BsSpacing.s3, md: BsSpacing.s0)` — with the
-/// type checker still on your side.
+/// It lets a utility prop take either form, as Bootstrap's responsive utilities do: `mb:
+/// BsSpacing.s3` is the same at every breakpoint, while `mb: BsResponsiveValue(xs:
+/// BsSpacing.s3, md: BsSpacing.s0)` changes at `md`, with the type checker still on your side.
 abstract interface class BsResponsive<T> {
   /// The effective value at [breakpoint], or null if none applies there (nor at
   /// any smaller breakpoint).

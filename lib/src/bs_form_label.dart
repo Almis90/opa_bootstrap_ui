@@ -3,8 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'bs_theme.dart';
 import 'tokens/bs_form_style.dart';
 
-/// `.form-label`: a form field's label, with a bottom margin separating it
-/// from the control.
+/// A form field's label, with a bottom margin separating it from the control.
 class BsFormLabel extends StatelessWidget {
   const BsFormLabel({super.key, required this.child, this.style});
 
@@ -26,7 +25,7 @@ class BsFormLabel extends StatelessWidget {
   }
 }
 
-/// `.form-text`: small, muted help text below a form field.
+/// Small, muted help text below a form field.
 class BsFormText extends StatelessWidget {
   const BsFormText({super.key, required this.child, this.style});
 

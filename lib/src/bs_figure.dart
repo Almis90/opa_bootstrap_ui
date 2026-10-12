@@ -3,8 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'bs_theme.dart';
 import 'tokens/bs_figure_style.dart';
 
-/// A Bootstrap figure (`<figure class="figure">`): an [image] with an
-/// optional [caption] underneath.
+/// A Bootstrap figure: an [image] with an optional [caption] underneath.
 class BsFigure extends StatelessWidget {
   const BsFigure({super.key, required this.image, this.caption});
 
@@ -24,7 +23,7 @@ class BsFigure extends StatelessWidget {
   }
 }
 
-/// `.figure-caption`: a small, muted caption for a [BsFigure].
+/// A small, muted caption for a [BsFigure].
 class BsFigureCaption extends StatelessWidget {
   const BsFigureCaption({super.key, required this.child, this.style});
 

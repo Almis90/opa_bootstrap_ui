@@ -5,8 +5,6 @@ enum BsSize {
   normal,
   lg;
 
-  /// The CSS class suffix used by Bootstrap, e.g. `sm` in `btn-sm`.
-  ///
-  /// [normal] has no suffix, since it is Bootstrap's unmodified default.
+  /// Bootstrap's name for this size, as used in its utility names (for example `sm`).
   String? get className => this == BsSize.normal ? null : name;
 }

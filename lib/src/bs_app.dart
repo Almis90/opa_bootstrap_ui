@@ -5,22 +5,17 @@ import 'bs_theme.dart';
 import 'tokens/bs_body.dart';
 import 'tokens/bs_typography.dart';
 
-/// The top-level app widget for an `opa_bootstrap_ui`-only app — the
-/// equivalent of `MaterialApp`/`CupertinoApp` for this package.
+/// The top-level app widget for an app built only on `opa_bootstrap_ui`.
 ///
-/// `MaterialApp` and `CupertinoApp` are both themed wrappers around
-/// [WidgetsApp]; [BsApp] uses the same technique, so an app built on this
-/// package never has to reference [WidgetsApp], Material, or Cupertino
-/// directly. It fixes [WidgetsApp.pageRouteBuilder] to a plain
-/// [PageRouteBuilder] (the boilerplate every hand-rolled `WidgetsApp` in this
-/// repo repeated), installs a [BsTheme] from [brightness] so every `Bs*`
-/// widget beneath it can resolve dark-mode colors, and defaults [color] and
-/// [textStyle] to [BsColors.blue]/[BsBody] + [BsTypography] (both
+/// [BsApp] wraps [WidgetsApp], so an app built on this package never has to reference
+/// [WidgetsApp] or another design system's app widget directly. It fixes
+/// [WidgetsApp.pageRouteBuilder] to a plain [PageRouteBuilder], installs a [BsTheme] from
+/// [brightness] so that every `Bs*` widget beneath it can resolve dark-mode colors, and
+/// defaults [color] and [textStyle] to [BsColors.blue] and [BsBody] plus [BsTypography] (both
 /// overridable, and both brightness-aware unless [textStyle] is set).
 ///
-/// Only wraps [WidgetsApp]'s `Navigator`-based constructor — there's no
-/// `BsApp.router` equivalent to `MaterialApp.router` yet, since nothing in
-/// this package needs `Router`-based navigation.
+/// Only wraps [WidgetsApp]'s `Navigator`-based constructor: there is no router-based variant,
+/// since nothing in this package needs `Router`-based navigation.
 class BsApp extends StatelessWidget {
   const BsApp({
     super.key,
@@ -82,12 +77,11 @@ class BsApp extends StatelessWidget {
   /// this package has no `ThemeData`-style primary color to derive from.
   final Color? color;
 
-  /// Bootstrap's `data-bs-theme`: [Brightness.light] (the default) or
-  /// [Brightness.dark]. Pass null for Bootstrap's `data-bs-theme="auto"` —
-  /// follows the OS's `prefers-color-scheme` ([MediaQuery.platformBrightness])
-  /// instead of a fixed value, switching live if the user changes it while
-  /// the app keeps running. Installed as a [BsTheme] ancestor, so every
-  /// `Bs*` widget beneath [home] resolves its dark-mode colors from this.
+  /// The app's theme: [Brightness.light] (the default) or [Brightness.dark]. Pass null to follow
+  /// the operating system's setting ([MediaQueryData.platformBrightness]) instead of a fixed
+  /// value, switching live if the user changes it while the app keeps running. Installed as a
+  /// [BsTheme] ancestor, so every `Bs*` widget beneath [home] resolves its dark-mode colors from
+  /// this.
   final Brightness? brightness;
 
   final Locale? locale;
@@ -113,12 +107,11 @@ class BsApp extends StatelessWidget {
       ],
       fontSize: BsTypography.fontSizeBase,
       fontWeight: BsTypography.fontWeightBase,
-      // `body { line-height: $line-height-base }` — every `.nav-link`,
-      // `.dropdown-item` etc. inherits it rather than setting its own.
+      // // The base line height, inherited by every widget that does not set its own.
       height: BsTypography.lineHeightBase,
-      // CSS puts a line's half-leading above and below the glyphs equally;
-      // Flutter's default splits it in proportion to ascent/descent, which
-      // sits text about a pixel high in a 1.5 line box.
+      // // Half-leading goes above and below the glyphs equally, as on the web; Flutter's default
+      // // splits it in proportion to ascent and descent, which sits text about a pixel high in a
+      // // 1.5 line box.
       leadingDistribution: TextLeadingDistribution.even,
     );
   }

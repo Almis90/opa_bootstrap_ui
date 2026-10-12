@@ -25,13 +25,13 @@ import 'tokens/bs_link.dart';
   return (color: color, decoration: decoration);
 }
 
-/// A Bootstrap link (`<a>`): [BsLink.color] text with an underline, that
-/// shifts to [BsLink.hoverColor] under the pointer and invokes [onTap].
+/// A Bootstrap link: [BsLink.color] text with an underline, that shifts to [BsLink.hoverColor]
+/// under the pointer and invokes [onTap].
 ///
 /// For a link inside a sentence, see [BsInlineAnchors].
 ///
-/// Named `BsAnchor` rather than `BsLink` because the latter already names
-/// this package's raw link color/decoration tokens (`tokens/bs_link.dart`).
+/// Named `BsAnchor` rather than `BsLink` because the latter already names this package's raw
+/// link color and decoration tokens (`tokens/bs_link.dart`).
 class BsAnchor extends StatefulWidget {
   const BsAnchor({
     super.key,

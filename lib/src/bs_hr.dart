@@ -5,13 +5,12 @@ import 'bs_responsive_value.dart';
 import 'bs_spacing.dart';
 import 'bs_breakpoint.dart';
 
-/// `<hr>`: a 1px horizontal rule in the current text color at 25% opacity,
-/// with Reboot's `1rem` vertical margin unless [my] says otherwise
-/// (`<hr class="my-4">`).
+/// A 1px horizontal rule in the current text color at 25% opacity, with a 16 logical pixel
+/// vertical margin unless [my] says otherwise.
 class BsHr extends StatelessWidget {
   const BsHr({super.key, this.my});
 
-  /// `my-*`: vertical margin; `1rem` (`my-3`) when null.
+  /// The vertical margin; 16 logical pixels when null.
   final BsResponsive<BsSpacing>? my;
 
   @override
@@ -35,9 +34,8 @@ class BsHr extends StatelessWidget {
   }
 }
 
-/// `.vr`: a 1px vertical rule in the current text color at 25% opacity, at
-/// least `1em` tall — in a flex row it stretches to the row's height
-/// (`align-self: stretch`), as the class does.
+/// A 1px vertical rule in the current text color at 25% opacity, at least one font size tall.
+/// In a flex row it stretches to the row's height.
 class BsVr extends StatelessWidget {
   const BsVr({super.key});
 

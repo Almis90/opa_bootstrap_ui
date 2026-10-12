@@ -7,8 +7,8 @@ import 'tokens/bs_focus_ring.dart';
 import 'tokens/bs_transitions.dart';
 import 'bs_decorated_box.dart';
 
-/// A Bootstrap close button (`.btn-close`): a small "×" glyph used to
-/// dismiss alerts, modals, toasts, and offcanvas panels.
+/// A Bootstrap close button: a small "×" glyph used to dismiss alerts, modals, toasts and
+/// offcanvas panels.
 class BsCloseButton extends StatefulWidget {
   const BsCloseButton({super.key, required this.onPressed, this.style});
 
@@ -31,17 +31,12 @@ class _BsCloseButtonState extends State<BsCloseButton> {
     final style = (isDark ? BsCloseButtonStyle.darkDefaults : BsCloseButtonStyle.defaults).merge(widget.style);
     final enabled = widget.onPressed != null;
 
-    // Bootstrap's `.btn-close` is a fixed 1em x 1em inline-block that never
-    // stretches. A plain SizedBox can't guarantee that on its own — a parent
-    // that hands down *tight* constraints (e.g. a `Container(width:
-    // double.infinity)` wrapping this directly, with no Center/Align/Row of
-    // its own) still clamps SizedBox's requested size to the tight value.
-    // UnconstrainedBox breaks out of that by giving its child loose
-    // constraints regardless of what the parent forces, so the button always
-    // renders at its natural size instead of getting stretched — which,
-    // combined with the glyph painter scaling off `size.width` for both
-    // axes, used to draw the "×" at coordinates far outside the visible
-    // area.
+    // // The button is a fixed square that never stretches. A plain SizedBox cannot guarantee
+    // // that on its own: a parent that hands down tight constraints (for example a Container with
+    // // an infinite width wrapping this directly, with no Center, Align or Row of its own) still
+    // // clamps the SizedBox's requested size to the tight value. UnconstrainedBox breaks out of
+    // // that by giving its child loose constraints regardless of what the parent forces, so the
+    // // button always renders at its natural size.
     final glyphSize = style.size ?? BsCloseButtonStyle.defaultSize;
     final padding = style.padding ?? BsCloseButtonStyle.defaultPadding;
     final resolvedPadding = padding.resolve(Directionality.of(context));
@@ -108,8 +103,8 @@ class _BsCloseGlyphPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    // Bootstrap's `.btn-close` glyph: two strokes 2 units wide with round ends,
-    // from (1, 1) to (15, 15) of a 16-unit square, so it fills the square.
+    // // Two strokes 2 units wide with round ends, from (1, 1) to (15, 15) of a 16-unit square,
+    // // so that the glyph fills the square.
     final unit = size.width / 16;
     final paint = Paint()
       ..color = color
@@ -125,10 +120,9 @@ class _BsCloseGlyphPainter extends CustomPainter {
   bool shouldRepaint(covariant _BsCloseGlyphPainter oldDelegate) => oldDelegate.color != color;
 }
 
-/// `.modal-header .btn-close` / `.offcanvas-header .btn-close`: the button's padding is
-/// half of the header's [headerPadding] and its margin the negative of it, so the glyph
-/// sits where the header's padding ends and the button's box reaches out into that
-/// padding without taking room.
+/// A close button for a modal or offcanvas header: its padding is half of the header's
+/// [headerPadding] and its margin the negative of it, so the glyph sits where the header's
+/// padding ends and the button's box reaches out into that padding without taking room.
 class BsHeaderCloseButton extends StatelessWidget {
   const BsHeaderCloseButton({super.key, required this.onPressed, this.headerPadding = 16});
 

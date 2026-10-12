@@ -3,19 +3,16 @@ import 'dart:math' as math;
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
-/// Gives text the *CSS* height of its lines.
+/// Gives text the fractional line height that a browser lays out.
 ///
-/// CSS keeps `line-height` fractional (to 1/64px) — `fs-4` at 390px is 21.57px
-/// × 1.5 = 32.34px — while Flutter rounds a text line to whole pixels (32px).
-/// (The browser lays out in device pixels, so the 1/64px floor is taken there.)
-/// Over a page of such titles the difference adds up to visible drift, so this
-/// makes [child] as much taller (or shorter) as its lines should be: the
-/// difference of one line, times the number of lines when [perLine] is set
-/// (the lines being counted from the child's height, so [child] should be
-/// text — a paragraph with `fs-4`), or once otherwise (exact for single-line
-/// text, and fine for a block whose lines it can't know). The boxes' edges are snapped to device pixels
-/// when painted ([BsDecoratedBox]), as a browser does, so the fractions don't
-/// blur borders.
+/// Browsers keep line heights fractional (to 1/64px): a 21.57px font at a 1.5 line height is
+/// 32.34px per line, while Flutter rounds a text line to whole pixels (32px). Over a page of
+/// such titles the difference adds up to visible drift, so this makes [child] as much taller
+/// (or shorter) as its lines should be: the difference of one line, times the number of lines
+/// when [perLine] is set (the lines being counted from the child's height, so [child] should
+/// be text), or once otherwise (exact for single-line text, and fine for a block whose lines it
+/// cannot know). The boxes' edges are snapped to device pixels when painted
+/// ([BsDecoratedBox]), so the fractions do not blur borders.
 class BsCssLineHeight extends StatelessWidget {
   const BsCssLineHeight({
     super.key,
@@ -47,9 +44,8 @@ class BsCssLineHeight extends StatelessWidget {
   }
 }
 
-/// Makes [child] [delta] logical pixels taller — per line of [lineHeight] if
-/// given — keeping it vertically centred in the extra (half-leading) space, as
-/// CSS splits a line box's leading.
+/// Makes [child] [delta] logical pixels taller (per line of [lineHeight] if given), keeping it
+/// vertically centered in the extra (half-leading) space.
 class _LineHeightAdjust extends SingleChildRenderObjectWidget {
   const _LineHeightAdjust({
     required this.delta,

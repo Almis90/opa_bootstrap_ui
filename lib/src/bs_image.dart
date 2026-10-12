@@ -6,16 +6,13 @@ import 'package:flutter/widgets.dart';
 import 'bs_box.dart';
 import 'tokens/bs_borders.dart';
 
-/// An `<img>`, with `.img-fluid` when [fluid]: [width] is the `width`
-/// attribute — the width of the whole box, border included — the image's own
-/// aspect ratio gives the height (`height: auto`), and with [fluid] it never
-/// grows wider than its container (`max-width: 100%`).
+/// An image whose [width] is the width of the whole box, border included. The image's own
+/// aspect ratio gives the height, and with [fluid] it never grows wider than its container.
 ///
-/// An `<img>` is inline content, so it's placed by the surrounding `text-*`
-/// alignment (centred in a `text-center` block); [block] is `d-block`.
-/// [border], [rounded] and [shadow] are the utilities of the same names on the
-/// image itself; for margins and the rest wrap it in a [BsBox]. See
-/// [BsThumbnail] for `.img-thumbnail`.
+/// An image is inline content, so it is placed by the surrounding text alignment (centered in
+/// a centered block); [block] makes it a block instead. [border], [rounded] and [shadow] are the
+/// utilities of the same names on the image itself; for margins and the rest wrap it in a
+/// [BsBox]. See [BsThumbnail] for a framed image.
 class BsImage extends StatelessWidget {
   const BsImage({
     super.key,
@@ -35,7 +32,7 @@ class BsImage extends StatelessWidget {
   /// The `width` attribute; the image's natural width if null.
   final double? width;
 
-  /// `img-fluid`: `max-width: 100%; height: auto`.
+  /// Caps the width at the container's, keeping the aspect ratio.
   final bool fluid;
 
   /// `d-block`: a block of its own, at its start, instead of inline content.
@@ -82,12 +79,11 @@ class BsImage extends StatelessWidget {
   }
 }
 
-/// Sizes an image the way an `<img width=… class="img-fluid">` is: [width] is
-/// the border box's (so [frame], the borders, comes off it), [fluid] caps that
-/// at the container's width, and the height follows from the aspect ratio. A
-/// plain `<img width=…>` keeps its width even where its container is narrower
-/// — it overflows, to be clipped by `overflow-hidden` — and an image is its own
-/// width, at the start, not its container's.
+/// Sizes an image: [width] is the border box's (so [frame], the borders, comes off it), [fluid]
+/// caps that at the container's width, and the height follows from the aspect ratio. A plain
+/// fixed-width image keeps its width even where its container is narrower (it overflows, to be
+/// clipped by an overflow-hiding ancestor), and an image is its own width, at the start, not
+/// its container's.
 class _ImageWidth extends SingleChildRenderObjectWidget {
   const _ImageWidth({
     required this.width,

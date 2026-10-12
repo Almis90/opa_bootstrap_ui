@@ -1,8 +1,6 @@
 import 'package:flutter/painting.dart';
 
-/// Bootstrap's base color palette.
-///
-/// Mirrors the `$grays` and `$colors` maps from Bootstrap's SCSS source.
+/// Bootstrap's base color palette: the grays and the named colors.
 abstract final class BsColors {
   // scss-docs-start gray-color-variables
   static const Color white = Color(0xFFFFFFFF);

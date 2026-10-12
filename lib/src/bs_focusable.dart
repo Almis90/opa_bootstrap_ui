@@ -69,14 +69,13 @@ class BsFocusableBuilder extends StatefulWidget {
   /// Forwarded to the underlying [Focus] widget.
   final bool autofocus;
 
-  /// When false the control can't take focus at all (a click or Tab goes past
-  /// it, as for a `disabled` element) and [builder] is always called with
-  /// `focused: false`.
+  /// When false the control cannot take focus at all (a click or Tab goes past it, as for a
+  /// disabled control) and [builder] is always called with `focused: false`.
   final bool enabled;
 
-  /// `:focus-visible` rather than `:focus`: while the user is pointing, a
-  /// focused subtree reports `focused: false` (a clicked `.btn` gets no focus
-  /// ring), and `true` again once a key is pressed.
+  /// Report focus only when it is keyboard focus: while the user is pointing, a focused subtree
+  /// reports `focused: false` (a clicked button gets no focus ring), and `true` again once a key
+  /// is pressed.
   final bool focusVisibleOnly;
 
   /// Rebuilt whenever focus changes, with the current state.

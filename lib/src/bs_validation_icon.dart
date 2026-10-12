@@ -2,18 +2,18 @@ import 'package:flutter/widgets.dart';
 
 import 'bs_variant.dart';
 
-/// The icon Bootstrap's validation states put at the end of a control
-/// (`$form-feedback-icon-valid`/`-invalid`): a check mark in the success color
-/// or an exclamation circle in the danger color, `.75em + .375rem` square.
+/// The icon Bootstrap's validation states put at the end of a control: a check mark in the
+/// success color or an exclamation circle in the danger color, a little larger than 0.75 times
+/// the font size.
 class BsValidationIcon extends StatelessWidget {
   const BsValidationIcon({super.key, required this.valid, this.fontSize = 16});
 
   final bool valid;
 
-  /// The control's font size, which the icon's `.75em` is measured against.
+  /// The control's font size, which the icon's size is measured against.
   final double fontSize;
 
-  /// `calc(.75em + .375rem)`.
+  /// The icon's side: 0.75 times the font size plus 6.
   double get size => fontSize * 0.75 + 6;
 
   @override

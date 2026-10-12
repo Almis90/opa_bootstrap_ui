@@ -4,16 +4,11 @@ import 'bs_button.dart';
 import 'bs_button_style.dart';
 import 'bs_size.dart';
 
-/// A Bootstrap button group (`.btn-group`/`.btn-group-vertical`): a row (or
-/// column) of [BsButton]s rendered as one visual block, with only the
-/// group's outer corners rounded and a shared size applied uniformly.
+/// A Bootstrap button group: a row (or column) of [BsButton]s rendered as one visual block,
+/// with only the group's outer corners rounded and a shared size applied uniformly.
 ///
-/// Mirrors `scss/_button-group.scss`, which has no dedicated variables of
-/// its own — corner rounding reuses `$btn-border-radius`, and `.btn-group-sm`
-/// /`.btn-group-lg` just re-apply the regular button size classes. Adjacent
-/// buttons overlap by one border width, per Bootstrap's
-/// `margin-left: calc(-1 * $btn-border-width)`, so the seam between them
-/// reads as a single shared border rather than a doubled-up one.
+/// Adjacent buttons overlap by one border width, so that the seam between them reads as a
+/// single shared border rather than a doubled-up one.
 class BsButtonGroup extends StatelessWidget {
   const BsButtonGroup({super.key, required this.children, this.vertical = false, this.size});
 
@@ -22,12 +17,10 @@ class BsButtonGroup extends StatelessWidget {
   /// corner radii are overridden by the group.
   final List<BsButton> children;
 
-  /// Whether to stack the buttons vertically (`.btn-group-vertical`)
-  /// instead of side by side.
+  /// Whether to stack the buttons vertically instead of side by side.
   final bool vertical;
 
-  /// Applies this size to every child, per `.btn-group-sm`/`.btn-group-lg`.
-  /// Leaves each child's own [BsButton.size] alone when null.
+  /// Applies this size to every child. Leaves each child's own [BsButton.size] alone when null.
   final BsSize? size;
 
   @override

@@ -3,13 +3,12 @@
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
-/// A [ClipRRect] whose rectangle is snapped to whole device pixels, as
-/// [BsDecoratedBox] snaps what it paints.
+/// A [ClipRRect] whose rectangle is snapped to whole device pixels, as [BsDecoratedBox] snaps
+/// what it paints.
 ///
-/// A browser clips (`overflow: hidden`) a box at its snapped edges. Flutter
-/// clips at the fractional ones, so a 1px border that [BsDecoratedBox] has
-/// painted exactly on such an edge is half cut away by the anti-aliased clip
-/// and fades out — whenever the box sits at a fractional offset, as in any
+/// A browser clips a box at its snapped edges. Flutter clips at the fractional ones, so a 1px
+/// border that [BsDecoratedBox] has painted exactly on such an edge is half cut away by the
+/// anti-aliased clip and fades out, whenever the box sits at a fractional offset, as in any
 /// fractional layout (grid columns, percentages).
 class BsClipRRect extends SingleChildRenderObjectWidget {
   const BsClipRRect({

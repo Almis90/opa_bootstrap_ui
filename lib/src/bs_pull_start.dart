@@ -1,10 +1,8 @@
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
-/// A negative `margin-inline-start` of [by] (`.page-item:not(:first-child)
-/// .page-link { margin-left: -1px }`): the child overlaps what comes before it,
-/// and takes that much less room — in a wrapping line too, where it hangs
-/// out over the edge of the line.
+/// A negative start margin of [by]: the child overlaps what comes before it, and takes that
+/// much less room, in a wrapping line too, where it hangs out over the edge of the line.
 class BsPullStart extends SingleChildRenderObjectWidget {
   const BsPullStart({super.key, required this.by, required super.child});
 

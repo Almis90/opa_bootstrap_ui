@@ -7,13 +7,11 @@ import 'bs_variant.dart';
 import 'tokens/bs_badge_style.dart';
 import 'bs_decorated_box.dart';
 
-/// A Bootstrap badge (`.badge`): a small count/label pill.
+/// A Bootstrap badge: a small count or label pill.
 ///
-/// Matches the `.badge.text-bg-{variant}` pattern used throughout
-/// Bootstrap's docs — background is [variant]'s raw color, and text color
-/// is computed via [BsColorUtils.contrast] rather than Bootstrap's static
-/// `$badge-color: $white` fallback, so `light`/`warning` badges correctly
-/// get dark text. Pass [pill] for the fully-rounded `.rounded-pill` variant.
+/// The background is [variant]'s raw color and the text color is computed via
+/// [BsColorUtils.contrast] rather than a static white, so that light and warning badges
+/// correctly get dark text. Pass [pill] for fully rounded ends.
 class BsBadge extends StatelessWidget {
   const BsBadge({
     super.key,
@@ -54,7 +52,7 @@ class BsBadge extends StatelessWidget {
   /// `border-{variant}-subtle` of another variant than the badge's own.
   final BsVariant? borderVariant;
 
-  /// `p-*`: padding on every side in place of the badge's `.35em .65em`.
+  /// Padding on every side in place of the badge's default.
   final BsSpacing? p;
 
   /// `pe-*`: the end padding, over [p] and the default.
@@ -66,9 +64,8 @@ class BsBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final style = BsBadgeStyle.defaults.merge(this.style);
-    // `.badge { font-size: .75em; padding: .35em .65em }`: relative to the text
-    // it sits in (a badge in an `h4` is `.75em` of the heading), unless the
-    // style sets its own.
+    // // The font size and padding are relative to the text the badge sits in (a badge in a
+    // // heading is 75% of the heading), unless the style sets its own.
     final parentSize = DefaultTextStyle.of(context).style.fontSize ?? 16;
     final fontSize = this.style?.fontSize ?? parentSize * 0.75;
     final dark = BsTheme.of(context) == Brightness.dark;
@@ -122,7 +119,7 @@ class BsBadge extends StatelessWidget {
           height: 1,
         ),
         textAlign: TextAlign.center,
-        // `.badge { white-space: nowrap }`
+        // // A badge never wraps.
         softWrap: false,
         child: child,
       ),

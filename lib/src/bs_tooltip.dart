@@ -12,11 +12,8 @@ import 'bs_decorated_box.dart';
 /// pointing back at it.
 enum BsTooltipPlacement { top, bottom, start, end }
 
-/// Programmatic control of a [BsTooltip], independent of its hover/
-/// long-press triggers — mirrors Bootstrap's own `tooltip.enable()`/
-/// `.disable()`/`.toggleEnabled()`, `.show()`/`.hide()`/`.toggle()`, and
-/// `.setContent()` API, plus a `setPlacement` with no Bootstrap equivalent
-/// (Popper.js has no notion of a controller to expose one through).
+/// Programmatic control of a [BsTooltip], independent of its hover and long-press triggers:
+/// enable and disable it, show, hide and toggle it, and override its content and placement.
 class BsTooltipController extends ChangeNotifier {
   BsTooltipController({bool enabled = true}) {
     _enabled = enabled;
@@ -89,17 +86,14 @@ class BsTooltipController extends ChangeNotifier {
   }
 }
 
-/// A Bootstrap tooltip (`.tooltip`): a small, non-interactive text bubble
-/// revealed on hover (or long-press, on touch devices) — the same
-/// hover/long-press dual trigger Flutter's own Material `Tooltip` uses,
-/// reimplemented on [CompositedTransformTarget]/[CompositedTransformFollower]
-/// plus an [OverlayPortal] (the anchoring approach this package already
-/// built for [BsDropdown]/[BsPopover]) since `Tooltip` itself lives in the
-/// Material library.
+/// A Bootstrap tooltip: a small, non-interactive text bubble revealed on hover (or long-press,
+/// on touch devices).
 ///
-/// Unlike [BsPopover], the bubble ignores pointer events entirely (it
-/// can't be clicked) and there's no outside-tap dismissal — it just
-/// disappears when the pointer leaves, or after [showDuration] when
+/// Built with a [CompositedTransformTarget], a [CompositedTransformFollower] and an
+/// [OverlayPortal], the same anchoring approach as [BsDropdown] and [BsPopover].
+///
+/// Unlike [BsPopover], the bubble ignores pointer events entirely and there is no outside-tap
+/// dismissal: it just disappears when the pointer leaves, or after [showDuration] when
 /// triggered by long-press.
 class BsTooltip extends StatefulWidget {
   const BsTooltip({

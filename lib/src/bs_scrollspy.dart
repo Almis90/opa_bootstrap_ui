@@ -1,17 +1,14 @@
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
-/// Drives a nav's active item from a scroll position, the way Bootstrap's
-/// Scrollspy JS plugin highlights the `.nav-link` for whichever section is
-/// currently in view — and, like Material's [TabController], is a plain
-/// [ChangeNotifier] rather than a widget: it doesn't render anything
-/// itself, it just drives whatever nav widget (a [BsNav], [BsListGroup],
-/// or anything else) you build around it with a [ListenableBuilder].
+/// Drives a nav's active item from a scroll position, highlighting the link of whichever
+/// section is currently in view. It is a plain [ChangeNotifier] rather than a widget: it does
+/// not render anything itself, it just drives whatever nav widget (a [BsNav], [BsListGroup] or
+/// anything else) you build around it with a [ListenableBuilder].
 ///
-/// Attach it to the same [ScrollController] driving the scrollable holding
-/// your sections, and give each section a [GlobalKey] (in [sectionKeys],
-/// in the same order the sections appear) so their positions can be
-/// measured via [RenderAbstractViewport.getOffsetToReveal] — the same
+/// Attach it to the [ScrollController] driving the scrollable that holds your sections, and
+/// give each section a [GlobalKey] (in [sectionKeys], in the order the sections appear) so that
+/// their positions can be measured via [RenderAbstractViewport.getOffsetToReveal], the
 /// mechanism [Scrollable.ensureVisible] uses internally.
 class BsScrollspyController extends ChangeNotifier {
   BsScrollspyController({
@@ -31,9 +28,8 @@ class BsScrollspyController extends ChangeNotifier {
   /// scrollable content, in the order the sections appear.
   final List<GlobalKey> sectionKeys;
 
-  /// How far (in pixels) a section's top can be below the viewport's top
-  /// edge and still count as "reached" — mirrors Bootstrap's
-  /// `data-bs-offset`/`rootMargin`.
+  /// How far (in logical pixels) a section's top can be below the viewport's top edge and still
+  /// count as reached.
   final double offset;
 
   /// Called whenever [activeIndex] changes to a new section, mirroring

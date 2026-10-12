@@ -1,12 +1,9 @@
 import 'package:flutter/widgets.dart';
 
-/// Provides the ambient [Brightness] (Bootstrap's `data-bs-theme`
-/// `light`/`dark`) to every `Bs*` widget beneath it, the same way
-/// [MediaQuery] provides ambient context in its own ecosystem.
+/// Provides the ambient [Brightness] (light or dark) to every `Bs*` widget beneath it.
 ///
-/// [BsApp] installs one automatically from its `brightness` parameter.
-/// Nest another [BsTheme] deeper in the tree to override it for a subtree
-/// (e.g. a docs site's live dark-mode preview pane).
+/// [BsApp] installs one automatically from its `brightness` parameter. Nest another [BsTheme]
+/// deeper in the tree to override it for a subtree (for example a live dark-mode preview pane).
 class BsTheme extends InheritedWidget {
   const BsTheme({super.key, required this.brightness, required super.child});
 

@@ -5,17 +5,13 @@ import 'bs_button_group.dart';
 import 'bs_size.dart';
 import 'bs_variant.dart';
 
-/// A group of toggleable [BsButton]s, mirroring Bootstrap's checkbox/radio
-/// "toggle button" groups (`<input class="btn-check">` + `<label class="btn">`).
+/// A group of toggleable [BsButton]s, like Bootstrap's checkbox and radio toggle button groups.
 ///
-/// Fully controlled, like Flutter's own `ToggleButtons`: this widget only
-/// renders [isSelected] and reports taps via [onPressed] — it does not track
-/// selection itself. That single contract covers both of Bootstrap's HTML
-/// variants:
-///  * checkbox-like (independent toggles): flip just the tapped index in
-///    [isSelected].
-///  * radio-like (mutually exclusive): replace [isSelected] with a list
-///    where only the tapped index is true.
+/// Fully controlled: this widget only renders [isSelected] and reports taps via [onPressed];
+/// it does not track selection itself. That single contract covers both kinds of group:
+///   * checkbox-like (independent toggles): flip just the tapped index in [isSelected].
+///   * radio-like (mutually exclusive): replace [isSelected] with a list where only the tapped
+///     index is true.
 class BsToggleButtonGroup extends StatelessWidget {
   const BsToggleButtonGroup({
     super.key,
@@ -46,8 +42,7 @@ class BsToggleButtonGroup extends StatelessWidget {
   /// The Bootstrap contextual color applied to every button.
   final BsVariant variant;
 
-  /// Whether to render the outline style, per Bootstrap's own examples
-  /// (`.btn-outline-primary`).
+  /// Whether to render the outline style.
   final bool outline;
 
   /// Whether to stack the buttons vertically.
