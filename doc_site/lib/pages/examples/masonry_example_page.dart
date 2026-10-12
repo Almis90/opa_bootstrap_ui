@@ -9,14 +9,23 @@ import '../../src/placeholder_image.dart';
 /// `<div class="row" data-masonry='{"percentPosition": true }'>` is `BsRow(
 /// masonry: true)`, which packs each column into the shortest stack as the
 /// Masonry plugin does; the cards are [BsCard]s with the page's utilities
-/// (`p-3`, `text-bg-primary`, `text-center`, `text-end`) on them.
+/// (`p-3`, `text-bg-primary`, `text-center`, `text-end`) on them. The intro text
+/// is adapted: there is no plugin to add, so it shows `BsRow(masonry: true)`.
 class MasonryExamplePage extends StatelessWidget {
   const MasonryExamplePage({super.key});
 
-  static const _scriptTag =
-      '\n<script src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js" '
-      'integrity="sha384-GNFwBvfVxBkLMJpYMOABq3c+d3KnQxudP/mGPkzpZSTYykLBNsZEnG2D9G/X/+7D" '
-      'crossorigin="anonymous" async></script>\n  ';
+  static const _usage =
+      '\nBsRow(\n'
+      '  masonry: true,\n'
+      '  children: [\n'
+      '    BsFlexItem(\n'
+      '      col: BsResponsiveValue(sm: BsCol(6), lg: BsCol(4)),\n'
+      '      mb: BsSpacing.s4,\n'
+      '      child: BsCard(...),\n'
+      '    ),\n'
+      '    ...\n'
+      '  ],\n'
+      ')\n  ';
 
   static const _quote =
       'A well-known quote, contained in a blockquote element.';
@@ -26,11 +35,6 @@ class MasonryExamplePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final link = TextStyle(
-      color: BsLink.colorOf(context),
-      decoration: TextDecoration.underline,
-      decorationColor: BsLink.colorOf(context),
-    );
     // <main class="container py-5">
     return BsContainer(
       py: BsSpacing.s5,
@@ -47,10 +51,10 @@ class MasonryExamplePage extends StatelessWidget {
               child: Text.rich(
                 TextSpan(
                   children: [
-                    const TextSpan(text: 'Integrate '),
-                    TextSpan(text: 'Masonry', style: link),
                     const TextSpan(
-                      text: ' with the Bootstrap grid system and cards component.',
+                      text:
+                          'Lay out cards in a Masonry-style grid with the '
+                          'Bootstrap grid system and cards component.',
                     ),
                   ],
                 ),
@@ -59,8 +63,8 @@ class MasonryExamplePage extends StatelessWidget {
           ),
           _p(
             const Text(
-              'Masonry is not included in Bootstrap. Add it by including the '
-              'JavaScript plugin manually, or using a CDN like so:',
+              'Masonry positioning is built into BsRow, so there is no plugin '
+              'to add. Just set masonry on the row, like so:',
             ),
           ),
           // <pre><code>…</code></pre>
@@ -69,7 +73,7 @@ class MasonryExamplePage extends StatelessWidget {
             child: BsPre(
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
-                child: Text(_scriptTag, softWrap: false),
+                child: Text(_usage, softWrap: false),
               ),
             ),
           ),
@@ -77,16 +81,13 @@ class MasonryExamplePage extends StatelessWidget {
             Text.rich(
               TextSpan(
                 children: [
-                  const TextSpan(text: 'By adding '),
-                  codeSpan(
-                    context,
-                    'data-masonry=\'{"percentPosition": true }\'',
-                  ),
-                  const TextSpan(text: ' to the '),
-                  codeSpan(context, '.row'),
+                  const TextSpan(text: 'By setting '),
+                  codeSpan(context, 'masonry: true'),
+                  const TextSpan(text: ' on the '),
+                  codeSpan(context, 'BsRow'),
                   const TextSpan(
                     text:
-                        " wrapper, we can combine the powers of Bootstrap's "
+                        ", we can combine the powers of Bootstrap's "
                         "responsive grid and Masonry's positioning.",
                   ),
                 ],
