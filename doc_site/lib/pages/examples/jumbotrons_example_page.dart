@@ -84,7 +84,7 @@ class JumbotronsExamplePage extends StatelessWidget {
                           'the top, some longer text that wraps early thanks to '
                           'a responsive ',
                     ),
-                    codeSpan(context, '.col-*'),
+                    codeSpan(context, '.col-*', parentFontSize: 20),
                     const TextSpan(
                       text: ' class, and a customized call to action.',
                     ),
@@ -265,7 +265,7 @@ class JumbotronsExamplePage extends StatelessWidget {
                               'This takes the basic jumbotron above and makes '
                               'its background edge-to-edge with a ',
                         ),
-                        codeSpan(context, '.container'),
+                        codeSpan(context, '.container', parentFontSize: 20),
                         const TextSpan(
                           text:
                               ' inside to align content. Similar to above, '
@@ -314,7 +314,7 @@ class JumbotronsExamplePage extends StatelessWidget {
                             'This is a simple Bootstrap jumbotron that sits '
                             'within a ',
                       ),
-                      codeSpan(context, '.container'),
+                      codeSpan(context, '.container', parentFontSize: 20),
                       const TextSpan(
                         text: ', recreated with built-in utility classes.',
                       ),
