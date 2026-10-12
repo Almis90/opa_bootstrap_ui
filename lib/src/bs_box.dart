@@ -437,8 +437,8 @@ class BsBox extends StatelessWidget {
   /// The height as a share of the parent's.
   final BsResponsive<BsHeight>? h;
 
-  /// The box's width as a share of 12 columns of its parent, outside a row: from a breakpoint
-  /// upward, half the parent when centered at six columns.
+  /// The box's width as a share of 12 columns of its parent, outside a row. It can change per
+  /// breakpoint.
   final BsResponsive<BsCol>? col;
 
   final BsShadow? shadow;

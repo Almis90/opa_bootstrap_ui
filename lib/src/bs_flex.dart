@@ -634,7 +634,6 @@ class _RenderBsFlex extends RenderBox
         item.fraction = col.columns! / 12;
         item.shrink = d.flexShrink ?? false;
       } else if (_row && _rowCols != null && col == null && w == null) {
-        // Each child is 1/n of the line.
         item.fraction = 1 / _rowCols!;
         item.shrink = d.flexShrink ?? false;
       } else if (_row && col == null && w == null) {

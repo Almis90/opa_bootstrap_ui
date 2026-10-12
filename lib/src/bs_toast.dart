@@ -345,7 +345,6 @@ class BsToast extends StatelessWidget {
             children: [
               ?header,
               Padding(
-                // The body is padded by the horizontal padding on every side.
                 padding: EdgeInsets.all(
                   (style.padding ?? BsToastStyle.defaultPadding)
                       .resolve(TextDirection.ltr)
@@ -392,7 +391,6 @@ class BsToastHeader extends StatelessWidget {
         ),
       ),
       child: Padding(
-        // The header's padding.
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         child: DefaultTextStyle.merge(
           style: TextStyle(
@@ -412,7 +410,6 @@ class BsToastHeader extends StatelessWidget {
                 ),
               ),
               if (meta != null)
-                // The meta text is 87.5% of the toast's font size.
                 DefaultTextStyle.merge(
                   style: TextStyle(
                     fontSize:

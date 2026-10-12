@@ -305,7 +305,6 @@ class _BsNavbarState extends State<BsNavbar> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            // The nav's own bottom margin.
                             ...rawLinks,
                             ...widget.trailing,
                           ],
@@ -368,7 +367,6 @@ class _BsNavbarBrandState extends State<_BsNavbarBrand> {
               fontSize:
                   style.brandFontSize ?? BsNavbarStyle.defaultBrandFontSize,
             ),
-            // The brand never wraps.
             softWrap: false,
             child: widget.child,
           ),
@@ -506,7 +504,6 @@ class _BsNavbarTogglerState extends State<_BsNavbarToggler> {
                   : (style.togglerPadding ??
                         BsNavbarStyle.defaultTogglerPadding),
               child: CustomPaint(
-                // The icon is 1.5 times the font size, square.
                 size: Size.square(
                   1.5 *
                       (style.togglerFontSize ??

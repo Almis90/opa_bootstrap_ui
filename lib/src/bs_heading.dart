@@ -286,7 +286,6 @@ class BsBlockquoteFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // The footer is 87.5% of the surrounding size.
     final base = DefaultTextStyle.of(context).style.fontSize ?? BsTypography.fontSizeBase;
     Widget footer = DefaultTextStyle.merge(
       style: TextStyle(

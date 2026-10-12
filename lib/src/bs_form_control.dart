@@ -239,7 +239,6 @@ class _BsFormControlState extends State<BsFormControl>
         : padding
               .resolve(Directionality.of(context))
               .copyWith(
-                // Room for the feedback icon: 1.5 times the font size plus 12.
                 right: fontSize * 1.5 + 12,
               );
     final box = BsDecoratedContainer(
@@ -333,7 +332,6 @@ class _BsFormControlState extends State<BsFormControl>
       ),
     );
     if (!validated) return box;
-    // The feedback icon, centered, a little in from the end of the padding box.
     return Stack(
       children: [
         box,

@@ -185,7 +185,6 @@ class _BsFormRangeState extends State<BsFormRange> {
                     ? (_) => setState(() => _dragging = false)
                     : null,
                 child: SizedBox(
-                  // The control is 24 logical pixels tall, with the thumb centered in it.
                   height: thumbSize < 24 ? 24 : thumbSize,
                   width: double.infinity,
                   child: Stack(

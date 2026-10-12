@@ -36,7 +36,6 @@ class BsButtonStyle {
     this.transitionCurve,
   });
 
-  // scss-docs-start btn-variables (color/bg/border trio, per state)
   final Color? color;
   final Color? background;
   final Color? borderColor;
@@ -48,7 +47,6 @@ class BsButtonStyle {
   final Color? activeColor;
   final Color? activeBackground;
   final Color? activeBorderColor;
-  // scss-docs-end btn-variables
 
   final EdgeInsetsGeometry? padding;
 
@@ -161,7 +159,6 @@ class BsButtonStyle {
   static const double activeBgTintAmount = 0.20;
   static const double activeBorderShadeAmount = 0.25;
   static const double activeBorderTintAmount = 0.10;
-  // scss-docs-end btn-hover-active-amounts
 
   /// Font sizes of the small, regular and large button, in logical pixels.
   static const double fontSizeSm = 14;

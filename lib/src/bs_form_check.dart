@@ -67,7 +67,6 @@ class BsFormCheck extends StatelessWidget {
           ? 1
           : (style.checkInputDisabledOpacity ??
                 BsFormStyle.defaultCheckInputDisabledOpacity),
-      // (a checkbox is toggled with Space)
       child: _SpaceToggles(
         enabled: enabled,
         onToggle: onTap,
@@ -242,7 +241,6 @@ class _BsFormCheckGlyph extends StatelessWidget {
           // its half-pixel edges and push the dot off center.
           ? Center(
               child: SizedBox(
-                // The dot's diameter is half of the box inside its border.
                 width: (size - 2 * border.width) / 2,
                 height: (size - 2 * border.width) / 2,
                 child: DecoratedBox(

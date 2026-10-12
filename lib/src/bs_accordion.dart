@@ -425,7 +425,6 @@ class _BsAccordionItemViewState extends State<_BsAccordionItemView> {
                         ),
                         const SizedBox(width: 12),
                         AnimatedRotation(
-                          // The chevron turns over 0.2 seconds, easing in and out.
                           curve: Curves.easeInOut,
                           turns: widget.isExpanded
                               ? (style.iconRotationTurns ?? BsAccordionStyle.defaultIconRotationTurns)
@@ -446,7 +445,6 @@ class _BsAccordionItemViewState extends State<_BsAccordionItemView> {
                 ),
               ),
             ),
-            // The body is a [BsCollapse], so it opens and closes the way every collapse does.
             BsCollapse(
               isExpanded: widget.isExpanded,
               duration: transitionDuration,

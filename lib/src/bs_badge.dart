@@ -118,7 +118,6 @@ class BsBadge extends StatelessWidget {
           height: 1,
         ),
         textAlign: TextAlign.center,
-        // A badge never wraps.
         softWrap: false,
         child: child,
       ),

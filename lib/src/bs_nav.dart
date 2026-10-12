@@ -404,7 +404,6 @@ class _BsNavLinkWidgetState extends State<_BsNavLinkWidget> {
         border: border,
         borderRadius: switch (variant) {
           BsNavVariant.pills => BorderRadius.circular(radius),
-          // Tabs: only the top corners are rounded.
           BsNavVariant.tabs => BorderRadius.vertical(
             top: Radius.circular(radius),
           ),
@@ -450,7 +449,6 @@ class _BsNavLinkWidgetState extends State<_BsNavLinkWidget> {
       onExit: enabled ? (_) => setState(() => _hovered = false) : null,
       child: BsFocusableBuilder(
         enabled: enabled,
-        // A focus ring only for keyboard focus.
         focusVisibleOnly: true,
         builder: (context, focused) => GestureDetector(
           behavior: HitTestBehavior.opaque,

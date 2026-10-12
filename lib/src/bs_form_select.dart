@@ -156,7 +156,6 @@ class BsFormSelect<T> extends StatelessWidget {
                     BsValidationIcon(valid: valid!, fontSize: fontSize),
                   ],
                   const SizedBox(width: 8),
-                  // The indicator: a 16x12 chevron drawn with a 2 logical pixel round stroke.
                   CustomPaint(
                     size:
                         style.selectBackgroundSize ??

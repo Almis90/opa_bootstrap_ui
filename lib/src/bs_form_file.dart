@@ -104,7 +104,6 @@ class _BsFormFileState extends State<BsFormFile> {
               BsFormStyle.defaultFileButtonHoverBackground
         : style.fileButtonBackground ?? BsFormStyle.defaultFileButtonBackground;
 
-    // The button fills the control's padding box, edge to edge.
     final button = BsDecoratedBox(
       decoration: BoxDecoration(
         color: buttonBackground,
