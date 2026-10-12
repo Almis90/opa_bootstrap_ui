@@ -525,7 +525,10 @@ class _MegaMenu extends StatelessWidget {
         const SizedBox(height: 16),
       ],
     );
-    final link = BsLink.colorOf(context);
+    // (the menu's own theme: this context is outside the `_Menu`'s BsTheme, so
+    // `BsLink.colorOf(context)` would be the page's, not the dark menu's)
+    final link = dark ? BsLink.darkColor : BsLink.color;
+    final linkHover = dark ? BsLink.darkHoverColor : BsLink.hoverColor;
     final links = DefaultTextStyle.merge(
       style: const TextStyle(fontSize: 14),
       child: Column(
@@ -533,7 +536,7 @@ class _MegaMenu extends StatelessWidget {
         children: [
           for (var i = 0; i < _links.length; i++) ...[
             if (i > 0) const SizedBox(height: 8),
-            _UnderlinedLink(_links[i], color: link),
+            _UnderlinedLink(_links[i], color: link, hoverColor: linkHover),
           ],
           const SizedBox(height: 16),
         ],
@@ -544,8 +547,9 @@ class _MegaMenu extends StatelessWidget {
       child: SizedBox(
         width: 1,
         child: ColoredBox(
+          // `.vr.opacity-10`: `.opacity-10` replaces `.vr`'s own `.25`
           color: (style.color ?? const Color(0xFF000000)).withValues(
-            alpha: 0.1 * 0.25 * (style.color?.a ?? 1),
+            alpha: 0.1 * (style.color?.a ?? 1),
           ),
         ),
       ),
@@ -670,10 +674,18 @@ class _MegaItemState extends State<_MegaItem> {
 /// link-underline-opacity-75-hover`: a link whose underline sits `.25em` lower,
 /// at 25% opacity (75% under the pointer).
 class _UnderlinedLink extends StatefulWidget {
-  const _UnderlinedLink(this.text, {required this.color});
+  const _UnderlinedLink(
+    this.text, {
+    required this.color,
+    required this.hoverColor,
+  });
 
   final String text;
   final Color color;
+
+  /// `a:hover { color: var(--bs-link-hover-color) }`; the underline stays the
+  /// link color, at `link-underline-opacity-75-hover`.
+  final Color hoverColor;
 
   @override
   State<_UnderlinedLink> createState() => _UnderlinedLinkState();
@@ -696,7 +708,12 @@ class _UnderlinedLinkState extends State<_UnderlinedLink> {
             painter: _UnderlinePainter(
               widget.color.withValues(alpha: _hovered ? 0.75 : 0.25),
             ),
-            child: Text(widget.text, style: TextStyle(color: widget.color)),
+            child: Text(
+              widget.text,
+              style: TextStyle(
+                color: _hovered ? widget.hoverColor : widget.color,
+              ),
+            ),
           ),
         ),
       ),
