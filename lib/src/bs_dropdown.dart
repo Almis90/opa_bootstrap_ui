@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/widgets.dart';
 
 import 'bs_clip_rrect.dart';
@@ -427,25 +429,40 @@ class _BsDropdownMenu extends StatelessWidget {
             borderRadius: borderRadius,
             boxShadow: style.boxShadow,
           ),
-          child: BsClipRRect(
-            borderRadius: borderRadius,
-            child: Padding(
-              padding: style.padding ?? BsDropdownStyle.defaultPadding,
-              child: DefaultTextStyle.merge(
-                style: TextStyle(
-                  color: style.color ?? BsDropdownStyle.defaultColor,
-                  fontSize: style.fontSize ?? BsDropdownStyle.defaultFontSize,
+          // The border takes room (box-sizing: border-box): the menu's content
+          // sits inside it, so a hovered item's background stops at the border
+          // instead of painting over it, and the menu is as tall and wide as
+          // the CSS one. The clip follows the inside of the rounded border.
+          child: Padding(
+            padding: EdgeInsets.all(
+              style.borderWidth ?? BsDropdownStyle.defaultBorderWidth,
+            ),
+            child: BsClipRRect(
+              borderRadius: BorderRadius.circular(
+                math.max(
+                  0,
+                  (style.borderRadius ?? BsDropdownStyle.defaultBorderRadius) -
+                      (style.borderWidth ?? BsDropdownStyle.defaultBorderWidth),
                 ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    for (var i = 0; i < items.length; i++) ...[
-                      if (i > 0 && (style.itemSpacing ?? 0) > 0)
-                        SizedBox(height: style.itemSpacing),
-                      _buildEntry(items[i]),
+              ),
+              child: Padding(
+                padding: style.padding ?? BsDropdownStyle.defaultPadding,
+                child: DefaultTextStyle.merge(
+                  style: TextStyle(
+                    color: style.color ?? BsDropdownStyle.defaultColor,
+                    fontSize: style.fontSize ?? BsDropdownStyle.defaultFontSize,
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      for (var i = 0; i < items.length; i++) ...[
+                        if (i > 0 && (style.itemSpacing ?? 0) > 0)
+                          SizedBox(height: style.itemSpacing),
+                        _buildEntry(items[i]),
+                      ],
                     ],
-                  ],
+                  ),
                 ),
               ),
             ),
