@@ -4,7 +4,6 @@ import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 
 import '../../src/bootstrap_logo.dart';
 import '../../src/example_divider.dart';
-import '../../src/native_checkbox.dart';
 
 /// The "Heroes" example: a port of Bootstrap's own `examples/heroes` page.
 ///
@@ -572,28 +571,14 @@ class _SignUpFormState extends State<_SignUpForm> {
             mb: BsSpacing.s3,
             child: BsFormFloating(label: Text('Password'), obscureText: true),
           ),
-          // <div class="checkbox mb-3"><label><input type="checkbox"> Remember me
-          // (a bare checkbox in v5.3.8: Bootstrap's own page has no `.form-check`)
+          // <div class="form-check mb-3"> (v5.3.8 has a bare checkbox here, which
+          // Bootstrap does not theme: the themed one is used instead)
           BsBox(
             mb: BsSpacing.s3,
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () => setState(() => _remember = !_remember),
-              child: Text.rich(
-                TextSpan(
-                  children: [
-                    WidgetSpan(
-                      alignment: PlaceholderAlignment.baseline,
-                      baseline: TextBaseline.alphabetic,
-                      child: NativeCheckbox(
-                        value: _remember,
-                        onChanged: (value) => setState(() => _remember = value),
-                      ),
-                    ),
-                    const TextSpan(text: ' Remember me'),
-                  ],
-                ),
-              ),
+            child: BsFormCheck(
+              value: _remember,
+              onChanged: (value) => setState(() => _remember = value),
+              label: const Text('Remember me'),
             ),
           ),
           // <button class="w-100 btn btn-lg btn-primary" type="submit">
