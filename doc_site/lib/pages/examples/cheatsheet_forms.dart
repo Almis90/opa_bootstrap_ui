@@ -204,6 +204,7 @@ class _CsFormState extends State<CsForm> {
             value: _range,
             min: 0,
             max: 5,
+            step: 0.5,
             onChanged: disabled ? null : (v) => setState(() => _range = v),
           ),
         ),

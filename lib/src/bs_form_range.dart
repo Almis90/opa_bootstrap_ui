@@ -23,7 +23,9 @@ class BsFormRange extends StatefulWidget {
   final double min;
   final double max;
 
-  /// How far an arrow key moves the value (`step`, 1 by default).
+  /// `step` (1 by default): the value is always a multiple of it counted from
+  /// [min], so the thumb moves in jumps as it is dragged, and an arrow key moves
+  /// it by this much.
   final double step;
 
   /// Disables the control (dims the thumb to
@@ -51,7 +53,29 @@ class _BsFormRangeState extends State<BsFormRange> {
     final t = usable <= 0
         ? 0.0
         : ((effectiveDx - thumbSize / 2) / usable).clamp(0.0, 1.0);
-    widget.onChanged?.call(widget.min + t * (widget.max - widget.min));
+    _change(widget.min + t * (widget.max - widget.min));
+  }
+
+  /// What a native range does with a value: it lands on a multiple of `step`
+  /// counted from `min` (the thumb moves in jumps, not smoothly), never past
+  /// `max`.
+  double _snap(double raw) {
+    final step = widget.step;
+    var value = raw.clamp(widget.min, widget.max);
+    if (step > 0) {
+      value = widget.min + ((value - widget.min) / step).round() * step;
+      if (value > widget.max) value -= step; // the last multiple that fits
+      // (0.1 * 3 is not 0.3: tidy what floating point left behind)
+      value = double.parse(
+        value.clamp(widget.min, widget.max).toStringAsFixed(10),
+      );
+    }
+    return value;
+  }
+
+  void _change(double raw) {
+    final value = _snap(raw);
+    if (value != widget.value) widget.onChanged?.call(value);
   }
 
   /// A native range's keys: the arrows move by [BsFormRange.step] (in a
@@ -85,7 +109,7 @@ class _BsFormRangeState extends State<BsFormRange> {
       target = widget.max;
     }
     if (target == null) return KeyEventResult.ignored;
-    widget.onChanged?.call(target.clamp(widget.min, widget.max));
+    _change(target);
     return KeyEventResult.handled;
   }
 
