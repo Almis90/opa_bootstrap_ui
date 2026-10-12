@@ -14,18 +14,9 @@ import '../../src/placeholder_image.dart';
 class MasonryExamplePage extends StatelessWidget {
   const MasonryExamplePage({super.key});
 
+  // (the original's `<code>` is a blank line, the tag, and a line of indent: three lines)
   static const _usage =
-      '\nBsRow(\n'
-      '  masonry: true,\n'
-      '  children: [\n'
-      '    BsFlexItem(\n'
-      '      col: BsResponsiveValue(sm: BsCol(6), lg: BsCol(4)),\n'
-      '      mb: BsSpacing.s4,\n'
-      '      child: BsCard(...),\n'
-      '    ),\n'
-      '    ...\n'
-      '  ],\n'
-      ')\n  ';
+      '\nBsRow(masonry: true, children: [BsFlexItem(...), ...])\n  ';
 
   static const _quote =
       'A well-known quote, contained in a blockquote element.';
@@ -77,21 +68,20 @@ class MasonryExamplePage extends StatelessWidget {
               ),
             ),
           ),
-          _p(
-            Text.rich(
-              TextSpan(
-                children: [
-                  const TextSpan(text: 'By setting '),
-                  codeSpan(context, 'masonry: true'),
-                  const TextSpan(text: ' on the '),
-                  codeSpan(context, 'BsRow'),
-                  const TextSpan(
-                    text:
-                        ", we can combine the powers of Bootstrap's "
-                        "responsive grid and Masonry's positioning.",
-                  ),
-                ],
-              ),
+          // (this `<p>`'s 1rem margin collapses into the `<hr>`'s 3rem)
+          Text.rich(
+            TextSpan(
+              children: [
+                const TextSpan(text: 'By setting '),
+                codeSpan(context, 'masonry: true'),
+                const TextSpan(text: ' on the '),
+                codeSpan(context, 'BsRow'),
+                const TextSpan(
+                  text:
+                      ", we can combine the powers of Bootstrap's "
+                      "responsive grid and Masonry's positioning.",
+                ),
+              ],
             ),
           ),
           // <hr class="my-5">
