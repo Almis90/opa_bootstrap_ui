@@ -12,6 +12,7 @@
 //
 //   node tool/vendor_examples.mjs            build, then serve on :8800
 //   node tool/vendor_examples.mjs --port 9000
+//   node tool/vendor_examples.mjs --out /tmp/x   build somewhere else
 //   node tool/vendor_examples.mjs --no-serve  just build
 //   node tool/vendor_examples.mjs --font roboto
 //                                    render every page in Roboto (loaded from
@@ -33,10 +34,10 @@ import { fileURLToPath } from 'node:url'
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const VENDOR = path.join(ROOT, 'vendor/bootstrap')
 const EXAMPLES = path.join(VENDOR, 'site/src/assets/examples')
-const OUT = path.join(ROOT, 'build/vendor_examples')
+const args = process.argv.slice(2)
+const OUT = args.includes('--out') ? path.resolve(args[args.indexOf('--out') + 1]) : path.join(ROOT, 'build/vendor_examples')
 const DOCS_VERSION = '5.3'
 
-const args = process.argv.slice(2)
 const serve = !args.includes('--no-serve')
 const port = Number(args[args.indexOf('--port') + 1]) || 8800
 const grayscale = args.includes('--grayscale')

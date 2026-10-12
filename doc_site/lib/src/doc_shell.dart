@@ -62,6 +62,25 @@ class _DocShellState extends State<DocShell> {
   void initState() {
     super.initState();
     HardwareKeyboard.instance.addHandler(_onKey);
+    _openLinkedExample();
+  }
+
+  /// `?example=masonry` opens that example straight away (its title, lower-cased
+  /// with dashes for spaces: `navbar-bottom`, `sticky-footer`), so a page can be
+  /// linked to or reloaded in place.
+  void _openLinkedExample() {
+    final wanted = Uri.base.queryParameters['example'];
+    if (wanted == null) return;
+    String slug(String title) =>
+        title.toLowerCase().replaceAll(RegExp(r'[^a-z0-9]+'), '-');
+    for (final example in widget.examples) {
+      if (slug(example.title) == wanted) {
+        _section = AppSection.examples;
+        _searchedExample = example;
+        _exampleDetailOpen = true;
+        return;
+      }
+    }
   }
 
   @override
