@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 
 /// The languages the docs highlight.
-enum DocLanguage { dart, yaml, bash }
+enum DocLanguage { dart, yaml, bash, text }
 
 /// Syntax highlighting of the docs' code snippets, in the colors of Bootstrap's
 /// own snippets (a light and a dark palette).
@@ -90,7 +90,12 @@ class DocSyntax {
     final spans = <TextSpan>[];
     void add(String text, Color color) {
       if (text.isEmpty) return;
-      spans.add(TextSpan(text: text, style: TextStyle(color: color)));
+      spans.add(
+        TextSpan(
+          text: text,
+          style: TextStyle(color: color),
+        ),
+      );
     }
 
     switch (language) {
@@ -100,6 +105,8 @@ class DocSyntax {
         _scanYaml(code, add);
       case DocLanguage.bash:
         _scanBash(code, add);
+      case DocLanguage.text:
+        add(code, plain);
     }
     return TextSpan(
       children: spans,
