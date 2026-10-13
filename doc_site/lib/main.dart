@@ -89,6 +89,7 @@ import 'pages/getting_started/rtl_page.dart';
 import 'pages/layout/breakpoints_page.dart';
 import 'pages/layout/containers_page.dart';
 import 'pages/layout/flex_page.dart';
+import 'pages/layout/grid_page.dart';
 import 'pages/layout/utilities_page.dart';
 import 'src/bootstrap_icon.dart';
 import 'src/doc_nav.dart';
@@ -181,7 +182,7 @@ final _sections = [
     [
       DocNavPage('Breakpoints', (_) => const BreakpointsPage()),
       DocNavPage('Containers', (_) => const ContainersPage()),
-      DocNavPage.planned('Grid'),
+      DocNavPage('Grid', (_) => const GridPage()),
       DocNavPage.planned('Columns'),
       DocNavPage.planned('Gutters'),
       DocNavPage('Utilities', (_) => const UtilitiesPage()),

@@ -1,7 +1,9 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:doc_site/pages/layout/breakpoints_page.dart';
 import 'package:doc_site/pages/layout/containers_page.dart';
 import 'package:doc_site/pages/layout/flex_page.dart';
+import 'package:doc_site/pages/layout/grid_page.dart';
 import 'package:doc_site/pages/layout/utilities_page.dart';
 
 import '../test_utils.dart';
@@ -49,5 +51,28 @@ void main() {
     expect(tester.takeException(), isNull);
 
     await unmountDocPage(tester);
+  });
+
+  testWidgets('Grid renders at every size and stacks below sm', (tester) async {
+    addTearDown(tester.view.reset);
+    tester.view.devicePixelRatio = 1;
+
+    for (final width in [400.0, 800.0, 1500.0]) {
+      tester.view.physicalSize = Size(width, 900);
+      await pumpDocPage(tester, const GridPage());
+
+      expect(find.text('Grid system'), findsWidgets);
+      expect(find.text('Nesting'), findsOneWidget);
+
+      final wide = tester.getTopLeft(find.text('col-sm-8'));
+      final narrow = tester.getTopLeft(find.text('col-sm-4'));
+      if (width < 576) {
+        expect(narrow.dy, greaterThan(wide.dy), reason: 'stacked at $width');
+      } else {
+        expect(narrow.dy, wide.dy, reason: 'side by side at $width');
+      }
+      expect(tester.takeException(), isNull);
+      await unmountDocPage(tester);
+    }
   });
 }
