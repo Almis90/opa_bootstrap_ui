@@ -1,7 +1,9 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 import 'package:doc_site/pages/content/reboot_page.dart';
 import 'package:doc_site/pages/content/figures_page.dart';
+import 'package:doc_site/pages/content/images_page.dart';
 import 'package:doc_site/pages/content/tables_page.dart';
 import 'package:doc_site/pages/content/typography_page.dart';
 
@@ -31,6 +33,63 @@ void main() {
     addTearDown(tester.view.resetDevicePixelRatio);
 
     await pumpDocPage(tester, const RebootPage());
+
+    expect(tester.takeException(), isNull);
+
+    await unmountDocPage(tester);
+  });
+
+  testWidgets('Images renders without errors', (tester) async {
+    tester.view.physicalSize = const Size(1200, 6000);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await pumpDocPage(tester, const ImagesPage());
+
+    expect(find.text('Images'), findsWidgets);
+    expect(find.text('Aligning images'), findsOneWidget);
+    expect(find.byType(BsThumbnail), findsNWidgets(2));
+    expect(tester.takeException(), isNull);
+
+    await unmountDocPage(tester);
+  });
+
+  testWidgets('Images aligns the images', (tester) async {
+    tester.view.physicalSize = const Size(1200, 6000);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await pumpDocPage(tester, const ImagesPage());
+
+    final wrap = find.byType(Wrap).first;
+    final wrapRect = tester.getRect(wrap);
+    final images = find.descendant(of: wrap, matching: find.byType(BsImage));
+    expect(images, findsNWidgets(2));
+    expect(tester.getRect(images.at(0)).left, closeTo(wrapRect.left, 1));
+    expect(tester.getRect(images.at(1)).right, closeTo(wrapRect.right, 1));
+
+    final centered = find.byWidgetPredicate(
+      (w) => w is BsImage && w.block && w.width == 200,
+    );
+    final box = find.ancestor(of: centered, matching: find.byType(BsBox)).last;
+    expect(
+      tester.getRect(centered).center.dx,
+      closeTo(tester.getRect(box).center.dx, 1),
+    );
+    expect(tester.getRect(centered).width, 200);
+
+    await unmountDocPage(tester);
+  });
+
+  testWidgets('Images renders on a narrow window', (tester) async {
+    tester.view.physicalSize = const Size(400, 6000);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await pumpDocPage(tester, const ImagesPage());
 
     expect(tester.takeException(), isNull);
 

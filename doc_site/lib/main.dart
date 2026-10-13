@@ -26,9 +26,9 @@ import 'pages/components/spinners_page.dart';
 import 'pages/components/toasts_page.dart';
 import 'pages/components/tooltips_page.dart';
 import 'pages/content/figures_page.dart';
+import 'pages/content/images_page.dart';
 import 'pages/content/reboot_page.dart';
 import 'pages/content/tables_page.dart';
-import 'pages/content/thumbnails_page.dart';
 import 'pages/content/typography_page.dart';
 import 'pages/forms/checks_radios_page.dart';
 import 'pages/forms/floating_labels_page.dart';
@@ -200,7 +200,7 @@ final _sections = [
     [
       DocNavPage('Reboot', (_) => const RebootPage()),
       DocNavPage('Typography', (_) => const TypographyPage()),
-      DocNavPage('Images', (_) => const ThumbnailsPage()),
+      DocNavPage('Images', (_) => const ImagesPage()),
       DocNavPage('Tables', (_) => const TablesPage()),
       DocNavPage('Figures', (_) => const FiguresPage()),
     ],
