@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:doc_site/pages/getting_started/installation_page.dart';
 import 'package:doc_site/pages/getting_started/introduction_page.dart';
 
 import '../test_utils.dart';
@@ -8,6 +9,17 @@ void main() {
     await pumpDocPage(tester, const IntroductionPage());
 
     expect(find.text('Get started with opa_bootstrap_ui'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+
+    await unmountDocPage(tester);
+  });
+
+  testWidgets('Installation renders without errors', (tester) async {
+    await pumpDocPage(tester, const InstallationPage());
+
+    expect(find.text('Installation'), findsOneWidget);
+    expect(find.text('Package installation'), findsOneWidget);
+    expect(find.text('Download source'), findsOneWidget);
     expect(tester.takeException(), isNull);
 
     await unmountDocPage(tester);

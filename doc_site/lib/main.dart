@@ -69,6 +69,7 @@ import 'pages/examples/sign_in_example_page.dart';
 import 'pages/examples/starter_template_example_page.dart';
 import 'pages/examples/sticky_footer_example_page.dart';
 import 'pages/examples/sticky_footer_navbar_example_page.dart';
+import 'pages/getting_started/installation_page.dart';
 import 'pages/getting_started/introduction_page.dart';
 import 'pages/layout/breakpoints_page.dart';
 import 'pages/layout/containers_page.dart';
@@ -133,7 +134,7 @@ final _sections = [
     iconColor: BsColors.indigo,
     [
       DocNavPage('Introduction', (_) => const IntroductionPage()),
-      DocNavPage.planned('Download'),
+      DocNavPage('Installation', (_) => const InstallationPage()),
       DocNavPage.planned('Contents'),
       DocNavPage.planned('Browsers & devices'),
       DocNavPage.planned('JavaScript'),

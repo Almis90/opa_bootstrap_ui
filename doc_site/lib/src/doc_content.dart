@@ -336,3 +336,41 @@ class _CopyButtonState extends State<_CopyButton> {
     );
   }
 }
+
+/// A call-to-action button of a docs page, in the docs' violet, that opens a
+/// web address.
+class DocButton extends StatelessWidget {
+  const DocButton(this.label, this.url, {super.key});
+
+  final String label;
+  final String url;
+
+  static const _violet = Color(0xFF712CF9);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Align(
+        alignment: AlignmentDirectional.centerStart,
+        child: BsButton(
+          onPressed: () => openUrl(url),
+          style: BsButtonStyle(
+            color: BsColors.white,
+            background: _violet,
+            borderColor: _violet,
+            hoverColor: BsColors.white,
+            hoverBackground: BsColorUtils.shade(_violet, 0.1),
+            hoverBorderColor: BsColorUtils.shade(_violet, 0.1),
+            activeColor: BsColors.white,
+            activeBackground: BsColorUtils.shade(_violet, 0.2),
+            activeBorderColor: BsColorUtils.shade(_violet, 0.2),
+            focusRingColor: _violet.withValues(alpha: 0.5),
+            textStyle: const TextStyle(fontWeight: FontWeight.w600),
+          ),
+          child: Text(label),
+        ),
+      ),
+    );
+  }
+}
