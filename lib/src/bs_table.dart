@@ -165,7 +165,6 @@ class _BsTableState extends State<BsTable> {
           style,
           background,
           i == 0 && widget.columns == null ? firstRowPadding : cellPadding,
-          isDark,
           ruleColor: color,
           rowRule: perRowRules
               ? BorderSide(color: borderColor, width: borderWidth)
@@ -211,14 +210,14 @@ class _BsTableState extends State<BsTable> {
     BsTableRow row,
     BsTableStyle style,
     Color background,
-    EdgeInsetsGeometry padding,
-    bool isDark, {
+    EdgeInsetsGeometry padding, {
     required Color ruleColor,
     BorderSide? rowRule,
   }) {
     var rowColor = background;
     // A variant row's own text color: the contrast of its background (the tints are light;
-    // the dark and light variants are the theme colors themselves).
+    // the dark and light variants are the theme colors themselves). As in Bootstrap, the
+    // rows keep these colors in dark mode too, unlike the subtle colors of an alert.
     Color? rowText;
     final variant = row.variant;
     if (variant == BsVariant.dark) {
@@ -228,15 +227,17 @@ class _BsTableState extends State<BsTable> {
       rowColor = BsColors.gray100;
       rowText = BsColors.black;
     } else if (variant != null) {
-      rowColor = isDark ? variant.darkBgSubtle : variant.bgSubtle;
-      rowText = isDark ? null : BsColors.black;
+      rowColor = variant.bgSubtle;
+      rowText = BsColors.black;
     }
     // (the hover, stripe and active tints are of the text color's kind)
     final onDark = rowText == BsColors.white;
     if (widget.striped && index.isEven) {
       rowColor = _blend(
         rowColor,
-        onDark ? BsColors.white : style.stripedColor ?? BsTableStyle.defaultColor,
+        onDark
+            ? BsColors.white
+            : style.stripedColor ?? BsTableStyle.defaultColor,
         style.stripedBackgroundOpacity ??
             BsTableStyle.defaultStripedBackgroundOpacity,
       );
@@ -252,7 +253,9 @@ class _BsTableState extends State<BsTable> {
     if (row.active) {
       rowColor = _blend(
         rowColor,
-        onDark ? BsColors.white : style.activeColor ?? BsTableStyle.defaultColor,
+        onDark
+            ? BsColors.white
+            : style.activeColor ?? BsTableStyle.defaultColor,
         style.activeBackgroundOpacity ??
             BsTableStyle.defaultActiveBackgroundOpacity,
       );
@@ -339,11 +342,15 @@ class _SnappedRowDecoration extends Decoration {
   final BorderSide? bottom;
 
   @override
-  BoxPainter createBoxPainter([VoidCallback? onChanged]) => _SnappedRowPainter(this);
+  BoxPainter createBoxPainter([VoidCallback? onChanged]) =>
+      _SnappedRowPainter(this);
 
   @override
   bool operator ==(Object other) =>
-      other is _SnappedRowDecoration && other.color == color && other.top == top && other.bottom == bottom;
+      other is _SnappedRowDecoration &&
+      other.color == color &&
+      other.top == top &&
+      other.bottom == bottom;
 
   @override
   int get hashCode => Object.hash(color, top, bottom);
@@ -371,17 +378,29 @@ class _SnappedRowPainter extends BoxPainter {
     final bottom = snapY(offset.dy + size.height);
 
     if (decoration.color.a > 0) {
-      canvas.drawRect(Rect.fromLTRB(left, top, right, bottom), Paint()..color = decoration.color);
+      canvas.drawRect(
+        Rect.fromLTRB(left, top, right, bottom),
+        Paint()..color = decoration.color,
+      );
     }
     final topRule = decoration.top;
     if (topRule != null && topRule.width > 0) {
-      final h = (topRule.width * sy).roundToDouble().clamp(1, double.infinity) / sy;
-      canvas.drawRect(Rect.fromLTRB(left, top, right, top + h), Paint()..color = topRule.color);
+      final h =
+          (topRule.width * sy).roundToDouble().clamp(1, double.infinity) / sy;
+      canvas.drawRect(
+        Rect.fromLTRB(left, top, right, top + h),
+        Paint()..color = topRule.color,
+      );
     }
     final bottomRule = decoration.bottom;
     if (bottomRule != null && bottomRule.width > 0) {
-      final h = (bottomRule.width * sy).roundToDouble().clamp(1, double.infinity) / sy;
-      canvas.drawRect(Rect.fromLTRB(left, bottom - h, right, bottom), Paint()..color = bottomRule.color);
+      final h =
+          (bottomRule.width * sy).roundToDouble().clamp(1, double.infinity) /
+          sy;
+      canvas.drawRect(
+        Rect.fromLTRB(left, bottom - h, right, bottom),
+        Paint()..color = bottomRule.color,
+      );
     }
   }
 }

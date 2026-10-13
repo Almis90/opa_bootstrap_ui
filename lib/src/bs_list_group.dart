@@ -163,12 +163,15 @@ class _BsListGroupItemWidgetState extends State<_BsListGroupItemWidget> {
     final style = widget.style;
     final interactive = item.onTap != null;
     final enabled = interactive && !item.disabled;
+    final isDark = BsTheme.of(context) == Brightness.dark;
 
     final borderWidth =
         style.borderWidth ?? BsListGroupStyle.defaultBorderWidth;
     final borderColor = item.active
         ? style.activeBorderColor ?? BsListGroupStyle.defaultActiveBackground
-        : item.variant?.borderSubtle ??
+        : (isDark
+                  ? item.variant?.darkBorderSubtle
+                  : item.variant?.borderSubtle) ??
               style.borderColor ??
               BsListGroupStyle.defaultBorderColor;
     final side = BorderSide(color: borderColor, width: borderWidth);
@@ -257,8 +260,10 @@ class _BsListGroupItemWidgetState extends State<_BsListGroupItemWidget> {
       color =
           style.actionHoverColor ?? BsListGroupStyle.defaultActionHoverColor;
     } else if (item.variant != null) {
-      background = item.variant!.bgSubtle;
-      color = item.variant!.textEmphasis;
+      background = isDark ? item.variant!.darkBgSubtle : item.variant!.bgSubtle;
+      color = isDark
+          ? item.variant!.darkTextEmphasis
+          : item.variant!.textEmphasis;
     } else {
       background =
           item.bg?.of(context) ??

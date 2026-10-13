@@ -4,6 +4,44 @@ import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 
 void main() {
   testWidgets(
+    'variant rows keep their light tint and black text in dark mode, as in Bootstrap',
+    (tester) async {
+      await tester.pumpWidget(
+        BsApp(
+          brightness: Brightness.dark,
+          home: Align(
+            alignment: Alignment.topLeft,
+            child: BsTable(
+              columns: const [Text('Head')],
+              rows: const [
+                BsTableRow(
+                  variant: BsVariant.success,
+                  cells: [Text('Success')],
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+
+      final rows = tester.widget<Table>(find.byType(Table)).children;
+      expect(
+        (rows[1].decoration! as dynamic).color,
+        BsVariant.success.bgSubtle,
+      );
+      final text = tester.widget<DefaultTextStyle>(
+        find
+            .ancestor(
+              of: find.text('Success'),
+              matching: find.byType(DefaultTextStyle),
+            )
+            .first,
+      );
+      expect(text.style.color, BsColors.black);
+    },
+  );
+
+  testWidgets(
     '.table-dark and .table-light rows are the theme colors, with their own text color',
     (tester) async {
       await tester.pumpWidget(
