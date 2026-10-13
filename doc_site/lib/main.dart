@@ -38,6 +38,7 @@ import 'pages/forms/select_page.dart';
 import 'pages/customize/color_modes_page.dart';
 import 'pages/customize/components_page.dart';
 import 'pages/customize/color_page.dart';
+import 'pages/customize/optimize_page.dart';
 import 'pages/customize/options_page.dart';
 import 'pages/customize/overview_page.dart';
 import 'pages/customize/style_classes_page.dart';
@@ -170,7 +171,7 @@ final _sections = [
       DocNavPage('Color modes', (_) => const ColorModesPage()),
       DocNavPage('Components', (_) => const ComponentsPage()),
       DocNavPage('Style classes', (_) => const StyleClassesPage()),
-      DocNavPage.planned('Optimize'),
+      DocNavPage('Optimize', (_) => const OptimizePage()),
     ],
   ),
   DocNavSection(

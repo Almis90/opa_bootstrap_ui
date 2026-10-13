@@ -4,6 +4,7 @@ import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 import 'package:doc_site/pages/customize/color_modes_page.dart';
 import 'package:doc_site/pages/customize/color_page.dart';
 import 'package:doc_site/pages/customize/components_page.dart';
+import 'package:doc_site/pages/customize/optimize_page.dart';
 import 'package:doc_site/pages/customize/options_page.dart';
 import 'package:doc_site/pages/customize/overview_page.dart';
 import 'package:doc_site/pages/customize/style_classes_page.dart';
@@ -116,6 +117,17 @@ void main() {
     await tester.tap(toggle);
     await tester.pump();
     expect(alertStyle()?.borderRadius, 24);
+    expect(tester.takeException(), isNull);
+
+    await unmountDocPage(tester);
+  });
+
+  testWidgets('Optimize renders without errors', (tester) async {
+    await pumpDocPage(tester, const OptimizePage());
+
+    expect(find.text('Optimize'), findsWidgets);
+    expect(find.text('Lean imports'), findsOneWidget);
+    expect(find.text('Cheap rebuilds'), findsOneWidget);
     expect(tester.takeException(), isNull);
 
     await unmountDocPage(tester);
