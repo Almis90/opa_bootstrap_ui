@@ -72,6 +72,7 @@ import 'pages/examples/sticky_footer_navbar_example_page.dart';
 import 'pages/getting_started/contents_page.dart';
 import 'pages/getting_started/installation_page.dart';
 import 'pages/getting_started/introduction_page.dart';
+import 'pages/getting_started/platforms_page.dart';
 import 'pages/layout/breakpoints_page.dart';
 import 'pages/layout/containers_page.dart';
 import 'pages/layout/flex_page.dart';
@@ -137,7 +138,7 @@ final _sections = [
       DocNavPage('Introduction', (_) => const IntroductionPage()),
       DocNavPage('Installation', (_) => const InstallationPage()),
       DocNavPage('Contents', (_) => const ContentsPage()),
-      DocNavPage.planned('Browsers & devices'),
+      DocNavPage('Platforms & devices', (_) => const PlatformsPage()),
       DocNavPage.planned('JavaScript'),
       DocNavPage.planned('Webpack'),
       DocNavPage.planned('Parcel'),

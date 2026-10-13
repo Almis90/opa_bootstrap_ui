@@ -374,3 +374,34 @@ class DocButton extends StatelessWidget {
     );
   }
 }
+
+/// A table of a docs page: [headers] over [rows], whose cells are strings or
+/// widgets.
+class DocTable extends StatelessWidget {
+  const DocTable({super.key, required this.headers, required this.rows});
+
+  final List<String> headers;
+  final List<List<Object>> rows;
+
+  @override
+  Widget build(BuildContext context) {
+    Widget cell(Object content) =>
+        content is Widget ? content : Text(content as String);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 24),
+      child: DefaultTextStyle.merge(
+        style: const TextStyle(fontSize: 14),
+        child: BsTable(
+          columns: [
+            for (final header in headers)
+              Text(header, style: const TextStyle(fontWeight: FontWeight.w700)),
+          ],
+          rows: [
+            for (final row in rows)
+              BsTableRow(cells: [for (final content in row) cell(content)]),
+          ],
+        ),
+      ),
+    );
+  }
+}
