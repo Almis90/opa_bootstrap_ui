@@ -106,9 +106,78 @@ void main() {
   });
 
   testWidgets('Tables renders without errors', (tester) async {
+    tester.view.physicalSize = const Size(1200, 4000);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
     await pumpDocPage(tester, const TablesPage());
 
     expect(find.text('Tables'), findsWidgets);
+    expect(find.text('Overview'), findsOneWidget);
+    expect(find.text('Customizing'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+
+    await unmountDocPage(tester);
+  });
+
+  testWidgets('Tables scrolls only the always responsive table from md up', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(1200, 4000);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await pumpDocPage(tester, const TablesPage());
+
+    final scrolling = find.byWidgetPredicate(
+      (w) => w is SingleChildScrollView && w.scrollDirection == Axis.horizontal,
+    );
+    final wrapped = find.descendant(
+      of: scrolling,
+      matching: find.byType(BsTable),
+    );
+    // Only the always-responsive table scrolls from md up.
+    expect(wrapped, findsOneWidget);
+    expect(
+      tester.getSize(wrapped).width,
+      greaterThanOrEqualTo(
+        tester
+            .getSize(find.ancestor(of: wrapped, matching: scrolling).first)
+            .width,
+      ),
+    );
+    expect(tester.takeException(), isNull);
+
+    await unmountDocPage(tester);
+  });
+
+  testWidgets('Tables scrolls the responsive tables on a narrow window', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(400, 4000);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await pumpDocPage(tester, const TablesPage());
+
+    final scrolling = find.byWidgetPredicate(
+      (w) => w is SingleChildScrollView && w.scrollDirection == Axis.horizontal,
+    );
+    final wrapped = find.descendant(
+      of: scrolling,
+      matching: find.byType(BsTable),
+    );
+    expect(wrapped, findsNWidgets(2));
+    for (var i = 0; i < 2; i++) {
+      final table = tester.getSize(wrapped.at(i)).width;
+      final view = tester
+          .getSize(find.ancestor(of: wrapped.at(i), matching: scrolling).first)
+          .width;
+      expect(table, greaterThan(view));
+    }
     expect(tester.takeException(), isNull);
 
     await unmountDocPage(tester);
