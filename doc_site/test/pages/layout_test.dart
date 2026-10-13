@@ -48,13 +48,28 @@ void main() {
     await unmountDocPage(tester);
   });
 
-  testWidgets('Utilities renders without errors', (tester) async {
-    await pumpDocPage(tester, const UtilitiesPage());
+  testWidgets('Utilities shows the alert of the current breakpoint', (
+    tester,
+  ) async {
+    addTearDown(tester.view.reset);
+    tester.view.devicePixelRatio = 1;
 
-    expect(find.text('Utilities'), findsWidgets);
-    expect(tester.takeException(), isNull);
+    for (final width in [400.0, 800.0]) {
+      tester.view.physicalSize = Size(width, 900);
+      await pumpDocPage(tester, const UtilitiesPage());
 
-    await unmountDocPage(tester);
+      expect(find.text('Utilities for layout'), findsWidgets);
+      expect(
+        find.text('Below md'),
+        width < 768 ? findsOneWidget : findsNothing,
+      );
+      expect(
+        find.text('md and up'),
+        width < 768 ? findsNothing : findsOneWidget,
+      );
+      expect(tester.takeException(), isNull);
+      await unmountDocPage(tester);
+    }
   });
 
   testWidgets('Grid renders at every size and stacks below sm', (tester) async {

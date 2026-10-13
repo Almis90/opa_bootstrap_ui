@@ -190,7 +190,6 @@ final _sections = [
       DocNavPage('Gutters', (_) => const GuttersPage()),
       DocNavPage('Utilities', (_) => const UtilitiesPage()),
       DocNavPage('Z-index', (_) => const ZIndexPage()),
-      DocNavPage.planned('CSS Grid'),
     ],
   ),
   DocNavSection(
