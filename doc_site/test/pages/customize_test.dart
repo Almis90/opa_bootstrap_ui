@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 import 'package:doc_site/pages/customize/color_modes_page.dart';
 import 'package:doc_site/pages/customize/color_page.dart';
+import 'package:doc_site/pages/customize/components_page.dart';
 import 'package:doc_site/pages/customize/options_page.dart';
 import 'package:doc_site/pages/customize/overview_page.dart';
 import 'package:doc_site/pages/customize/tokens_page.dart';
@@ -78,6 +79,18 @@ void main() {
     final menuItem = find.text('Another action');
     expect(menuItem, findsOneWidget);
     expect(BsTheme.of(tester.element(menuItem)), Brightness.dark);
+
+    await unmountDocPage(tester);
+  });
+
+  testWidgets('Components renders without errors', (tester) async {
+    await pumpDocPage(tester, const ComponentsPage());
+
+    expect(find.text('Components'), findsOneWidget);
+    expect(find.text('Modifiers'), findsOneWidget);
+    expect(find.text('Creating your own'), findsOneWidget);
+    expect(find.text('This is an info callout.'), findsOneWidget);
+    expect(tester.takeException(), isNull);
 
     await unmountDocPage(tester);
   });
