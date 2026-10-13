@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:doc_site/pages/getting_started/accessibility_page.dart';
 import 'package:doc_site/pages/getting_started/contents_page.dart';
+import 'package:doc_site/pages/getting_started/contribute_page.dart';
 import 'package:doc_site/pages/getting_started/installation_page.dart';
 import 'package:doc_site/pages/getting_started/interactivity_page.dart';
 import 'package:doc_site/pages/getting_started/introduction_page.dart';
@@ -87,6 +88,17 @@ void main() {
     expect(find.text('RTL'), findsOneWidget);
     expect(find.text('Required setup'), findsOneWidget);
     expect(find.text('The breadcrumb case'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+
+    await unmountDocPage(tester);
+  });
+
+  testWidgets('Contribute renders without errors', (tester) async {
+    await pumpDocPage(tester, const ContributePage());
+
+    expect(find.text('Contribute'), findsOneWidget);
+    expect(find.text('Tooling setup'), findsOneWidget);
+    expect(find.text('Adding a component'), findsOneWidget);
     expect(tester.takeException(), isNull);
 
     await unmountDocPage(tester);

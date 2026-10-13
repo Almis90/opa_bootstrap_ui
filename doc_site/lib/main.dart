@@ -71,6 +71,7 @@ import 'pages/examples/sticky_footer_example_page.dart';
 import 'pages/examples/sticky_footer_navbar_example_page.dart';
 import 'pages/getting_started/accessibility_page.dart';
 import 'pages/getting_started/contents_page.dart';
+import 'pages/getting_started/contribute_page.dart';
 import 'pages/getting_started/installation_page.dart';
 import 'pages/getting_started/interactivity_page.dart';
 import 'pages/getting_started/introduction_page.dart';
@@ -147,7 +148,7 @@ final _sections = [
       DocNavPage('Accessibility', (_) => const AccessibilityPage()),
       DocNavPage('RFS', (_) => const RfsPage()),
       DocNavPage('RTL', (_) => const RtlPage()),
-      DocNavPage.planned('Contribute'),
+      DocNavPage('Contribute', (_) => const ContributePage()),
     ],
   ),
   DocNavSection(
