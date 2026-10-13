@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:doc_site/pages/customize/color_page.dart';
 import 'package:doc_site/pages/customize/options_page.dart';
 import 'package:doc_site/pages/customize/overview_page.dart';
 import 'package:doc_site/pages/customize/tokens_page.dart';
@@ -33,6 +34,17 @@ void main() {
 
     expect(find.text('Options'), findsOneWidget);
     expect(find.text(r'$enable-shadows'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+
+    await unmountDocPage(tester);
+  });
+
+  testWidgets('Color renders without errors', (tester) async {
+    await pumpDocPage(tester, const ColorPage());
+
+    expect(find.text('Color'), findsOneWidget);
+    expect(find.text('Theme colors'), findsOneWidget);
+    expect(find.text('All colors'), findsOneWidget);
     expect(tester.takeException(), isNull);
 
     await unmountDocPage(tester);
