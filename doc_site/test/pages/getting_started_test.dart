@@ -5,6 +5,7 @@ import 'package:doc_site/pages/getting_started/installation_page.dart';
 import 'package:doc_site/pages/getting_started/interactivity_page.dart';
 import 'package:doc_site/pages/getting_started/introduction_page.dart';
 import 'package:doc_site/pages/getting_started/platforms_page.dart';
+import 'package:doc_site/pages/getting_started/rfs_page.dart';
 
 import '../test_utils.dart';
 
@@ -64,6 +65,16 @@ void main() {
 
     expect(find.text('Accessibility'), findsOneWidget);
     expect(find.text('Touch targets'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+
+    await unmountDocPage(tester);
+  });
+
+  testWidgets('RFS renders without errors', (tester) async {
+    await pumpDocPage(tester, const RfsPage());
+
+    expect(find.text('RFS'), findsOneWidget);
+    expect(find.text('RFS API'), findsOneWidget);
     expect(tester.takeException(), isNull);
 
     await unmountDocPage(tester);

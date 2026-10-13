@@ -75,6 +75,7 @@ import 'pages/getting_started/installation_page.dart';
 import 'pages/getting_started/interactivity_page.dart';
 import 'pages/getting_started/introduction_page.dart';
 import 'pages/getting_started/platforms_page.dart';
+import 'pages/getting_started/rfs_page.dart';
 import 'pages/layout/breakpoints_page.dart';
 import 'pages/layout/containers_page.dart';
 import 'pages/layout/flex_page.dart';
@@ -146,7 +147,7 @@ final _sections = [
       DocNavPage.planned('Parcel'),
       DocNavPage.planned('Vite'),
       DocNavPage('Accessibility', (_) => const AccessibilityPage()),
-      DocNavPage.planned('RFS'),
+      DocNavPage('RFS', (_) => const RfsPage()),
       DocNavPage.planned('RTL'),
       DocNavPage.planned('Contribute'),
     ],
