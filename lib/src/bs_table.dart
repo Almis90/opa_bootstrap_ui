@@ -237,15 +237,17 @@ class _BsTableState extends State<BsTable> {
       rowColor = variant.bgSubtle;
       rowText = BsColors.black;
     }
-    // (the hover, stripe and active tints are of the text color's kind)
-    final onDark =
-        rowText == BsColors.white || (widget.dark && rowText == null);
+    // The stripe, hover and active tints are of the row's text color: black over the light tint
+    // of a variant even in dark mode, white over a dark table or row.
+    Color tint(Color? styleColor) =>
+        rowText ??
+        (widget.dark
+            ? BsColors.white
+            : styleColor ?? BsTableStyle.defaultColor);
     if (widget.striped && index.isEven) {
       rowColor = _blend(
         rowColor,
-        onDark
-            ? BsColors.white
-            : style.stripedColor ?? BsTableStyle.defaultColor,
+        tint(style.stripedColor),
         style.stripedBackgroundOpacity ??
             BsTableStyle.defaultStripedBackgroundOpacity,
       );
@@ -253,7 +255,7 @@ class _BsTableState extends State<BsTable> {
     if (widget.hover && _hoveredRow == index) {
       rowColor = _blend(
         rowColor,
-        onDark ? BsColors.white : style.hoverColor ?? BsTableStyle.defaultColor,
+        tint(style.hoverColor),
         style.hoverBackgroundOpacity ??
             BsTableStyle.defaultHoverBackgroundOpacity,
       );
@@ -261,9 +263,7 @@ class _BsTableState extends State<BsTable> {
     if (row.active) {
       rowColor = _blend(
         rowColor,
-        onDark
-            ? BsColors.white
-            : style.activeColor ?? BsTableStyle.defaultColor,
+        tint(style.activeColor),
         style.activeBackgroundOpacity ??
             BsTableStyle.defaultActiveBackgroundOpacity,
       );

@@ -32,4 +32,29 @@ void main() {
       expect(rule.b * 255, closeTo(0x54, 1));
     },
   );
+
+  testWidgets('striped variant rows get a black tint in dark mode too', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      const BsApp(
+        brightness: Brightness.dark,
+        home: Align(
+          alignment: Alignment.topLeft,
+          child: BsTable(
+            striped: true,
+            rows: [
+              BsTableRow(variant: BsVariant.success, cells: [Text('a')]),
+              BsTableRow(variant: BsVariant.success, cells: [Text('b')]),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    final table = tester.widget<Table>(find.byType(Table));
+    double red(int i) =>
+        ((table.children[i].decoration! as dynamic).color as Color).r;
+    expect(red(0), lessThan(red(1)));
+  });
 }
