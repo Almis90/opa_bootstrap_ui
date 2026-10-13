@@ -296,13 +296,15 @@ class _Contained extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: DecoratedBox(
-        decoration: const BoxDecoration(color: BsColors.gray100),
+        decoration: BoxDecoration(color: BsBody.secondaryBackgroundOf(context)),
         child: container(
           LayoutBuilder(
             builder: (context, constraints) => DecoratedBox(
               decoration: BoxDecoration(
-                color: BsVariant.primary.bgSubtle,
-                border: Border.all(color: BsVariant.primary.borderSubtle),
+                color: BsVariant.primary.bgSubtleOf(context),
+                border: Border.all(
+                  color: BsVariant.primary.borderSubtleOf(context),
+                ),
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 12),

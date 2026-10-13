@@ -33,14 +33,16 @@ Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               for (final variant in BsVariant.values)
-                BsAlert(variant: variant, child: Text('A simple ${variant.name} alert — check it out!')),
+                BsAlert(
+                  variant: variant,
+                  child: Text('A simple ${variant.name} alert — check it out!'),
+                ),
             ],
           ),
         ),
         DocExample(
           title: 'Additional content',
-          description:
-              'Since child accepts any widget, an alert can hold a heading, a divider, and multiple paragraphs.',
+          description: 'Since child accepts any widget, an alert can hold a heading, a divider, and multiple paragraphs.',
           code: '''
 BsAlert(
   variant: BsVariant.success,
@@ -51,7 +53,7 @@ BsAlert(
       Text('Well done!', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
       SizedBox(height: 8),
       Text('Aww yeah, you successfully read this important alert message.'),
-      Container(height: 1, color: BsVariant.success.borderSubtle),
+      Container(height: 1, color: BsVariant.success.borderSubtleOf(context)),
       Text('Whenever you need to, be sure to use margin utilities.'),
     ],
   ),
@@ -62,7 +64,10 @@ BsAlert(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text('Well done!', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
+                const Text(
+                  'Well done!',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                ),
                 const SizedBox(height: 8),
                 const Text(
                   'Aww yeah, you successfully read this important alert message. This example text is going '
@@ -70,18 +75,19 @@ BsAlert(
                 ),
                 Container(
                   height: 1,
-                  color: BsVariant.success.borderSubtle,
+                  color: BsVariant.success.borderSubtleOf(context),
                   margin: const EdgeInsets.symmetric(vertical: 12),
                 ),
-                const Text('Whenever you need to, be sure to use margin utilities to keep things nice and tidy.'),
+                const Text(
+                  'Whenever you need to, be sure to use margin utilities to keep things nice and tidy.',
+                ),
               ],
             ),
           ),
         ),
         DocExample(
           title: 'Dismissible',
-          description:
-              'dismissible: true adds a close control; onDismissed fires once the alert has finished removing itself.',
+          description: 'dismissible: true adds a close control; onDismissed fires once the alert has finished removing itself.',
           code: '''
 BsAlert(
   variant: BsVariant.warning,
@@ -116,8 +122,7 @@ Column(
         ),
         DocExample(
           title: 'Custom style',
-          description:
-              'style overrides color, background, and borderColor directly, bypassing the BsVariant palette entirely.',
+          description: 'style overrides color, background, and borderColor directly, bypassing the BsVariant palette entirely.',
           code: '''
 BsAlert(
   style: BsAlertStyle(
@@ -128,8 +133,14 @@ BsAlert(
   child: Text('A custom-styled alert using a brand color instead of a theme variant.'),
 )''',
           preview: const BsAlert(
-            style: BsAlertStyle(color: BsColors.white, background: Color(0xFF5C2D91), borderColor: Color(0xFF381A59)),
-            child: Text('A custom-styled alert using a brand color instead of a theme variant.'),
+            style: BsAlertStyle(
+              color: BsColors.white,
+              background: Color(0xFF5C2D91),
+              borderColor: Color(0xFF381A59),
+            ),
+            child: Text(
+              'A custom-styled alert using a brand color instead of a theme variant.',
+            ),
           ),
         ),
       ],
@@ -143,15 +154,33 @@ BsAlert(
               'Brightness.dark. The values below are for the default variant in light mode — pass a different '
               'variant and those four rows change; the rest stay fixed.',
           rows: [
-            DocStyleRow(field: 'color', defaultValue: 'null — derived: #052c65 (BsVariant.primary.textEmphasis)'),
-            DocStyleRow(field: 'background', defaultValue: 'null — derived: #cfe2ff (BsVariant.primary.bgSubtle)'),
-            DocStyleRow(field: 'borderColor', defaultValue: 'null — derived: #9ec5fe (BsVariant.primary.borderSubtle)'),
-            DocStyleRow(field: 'linkColor', defaultValue: 'null — same as color'),
+            DocStyleRow(
+              field: 'color',
+              defaultValue:
+                  'null — derived: #052c65 (BsVariant.primary.textEmphasis)',
+            ),
+            DocStyleRow(
+              field: 'background',
+              defaultValue:
+                  'null — derived: #cfe2ff (BsVariant.primary.bgSubtle)',
+            ),
+            DocStyleRow(
+              field: 'borderColor',
+              defaultValue:
+                  'null — derived: #9ec5fe (BsVariant.primary.borderSubtle)',
+            ),
+            DocStyleRow(
+              field: 'linkColor',
+              defaultValue: 'null — same as color',
+            ),
             DocStyleRow(field: 'padding', defaultValue: 'EdgeInsets.all(16)'),
             DocStyleRow(field: 'marginBottom', defaultValue: '16'),
             DocStyleRow(field: 'borderRadius', defaultValue: '6'),
             DocStyleRow(field: 'borderWidth', defaultValue: '1'),
-            DocStyleRow(field: 'linkFontWeight', defaultValue: 'FontWeight.bold'),
+            DocStyleRow(
+              field: 'linkFontWeight',
+              defaultValue: 'FontWeight.bold',
+            ),
             DocStyleRow(field: 'dismissiblePaddingEnd', defaultValue: '48'),
           ],
         ),
@@ -183,7 +212,9 @@ class _DismissibleDemoState extends State<_DismissibleDemo> {
       variant: BsVariant.warning,
       dismissible: true,
       onDismissed: () => setState(() => _dismissed = true),
-      child: const Text('Holy guacamole! You should check in on some of those fields below.'),
+      child: const Text(
+        'Holy guacamole! You should check in on some of those fields below.',
+      ),
     );
   }
 }
@@ -218,7 +249,11 @@ class _ControllerDemoState extends State<_ControllerDemo> {
   @override
   Widget build(BuildContext context) {
     if (_dismissed) {
-      return BsButton(size: BsSize.sm, onPressed: _reset, child: const Text('Show alert again'));
+      return BsButton(
+        size: BsSize.sm,
+        onPressed: _reset,
+        child: const Text('Show alert again'),
+      );
     }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -227,10 +262,16 @@ class _ControllerDemoState extends State<_ControllerDemo> {
           controller: _controller,
           variant: BsVariant.info,
           onDismissed: () => setState(() => _dismissed = true),
-          child: const Text('This alert has no close button — dismiss it with the button below instead.'),
+          child: const Text(
+            'This alert has no close button — dismiss it with the button below instead.',
+          ),
         ),
         const SizedBox(height: 12),
-        BsButton(size: BsSize.sm, onPressed: _controller.close, child: const Text('Dismiss')),
+        BsButton(
+          size: BsSize.sm,
+          onPressed: _controller.close,
+          child: const Text('Dismiss'),
+        ),
       ],
     );
   }

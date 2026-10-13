@@ -258,19 +258,26 @@ BsButtonGroup(
               'with the same pairs the library uses.',
         ]),
         const DocCodeSnippet('''
-final dark = BsTheme.of(context) == Brightness.dark;
-
 Container(
-  color: dark ? BsVariant.primary.darkBgSubtle : BsVariant.primary.bgSubtle,
+  color: BsVariant.primary.bgSubtleOf(context),
   child: Text(
     'Primary subtle',
-    style: TextStyle(
-      color: dark
-          ? BsVariant.primary.darkTextEmphasis
-          : BsVariant.primary.textEmphasis,
-    ),
+    style: TextStyle(color: BsVariant.primary.textEmphasisOf(context)),
   ),
 )'''),
+        DocText([
+          DocCode('bgSubtleOf'),
+          ', ',
+          DocCode('borderSubtleOf'),
+          ' and ',
+          DocCode('textEmphasisOf'),
+          ' of a ',
+          DocCode('BsVariant'),
+          ' return the light or the dark one of the pair, from ',
+          DocCode('BsTheme.of(context)'),
+          '. For any other color, read the mode yourself.',
+        ]),
+
         const DocHeading('Custom color modes'),
         DocText([
           'Bootstrap\'s attribute takes any name, so that you can write a ',

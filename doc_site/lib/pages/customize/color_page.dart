@@ -119,13 +119,13 @@ BsBox(
 Container(
   padding: const EdgeInsets.all(16),
   decoration: BoxDecoration(
-    color: BsVariant.primary.bgSubtle,
-    border: Border.all(color: BsVariant.primary.borderSubtle),
+    color: BsVariant.primary.bgSubtleOf(context),
+    border: Border.all(color: BsVariant.primary.borderSubtleOf(context)),
     borderRadius: BorderRadius.circular(BsBorders.radius),
   ),
   child: Text(
     'Primary subtle, with emphasis text',
-    style: TextStyle(color: BsVariant.primary.textEmphasis),
+    style: TextStyle(color: BsVariant.primary.textEmphasisOf(context)),
   ),
 )''',
           preview: Column(
@@ -143,13 +143,17 @@ Container(
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: BsVariant.primary.bgSubtle,
-                  border: Border.all(color: BsVariant.primary.borderSubtle),
+                  color: BsVariant.primary.bgSubtleOf(context),
+                  border: Border.all(
+                    color: BsVariant.primary.borderSubtleOf(context),
+                  ),
                   borderRadius: BorderRadius.circular(BsBorders.radius),
                 ),
                 child: Text(
                   'Primary subtle, with emphasis text',
-                  style: TextStyle(color: BsVariant.primary.textEmphasis),
+                  style: TextStyle(
+                    color: BsVariant.primary.textEmphasisOf(context),
+                  ),
                 ),
               ),
             ],
@@ -161,6 +165,12 @@ Container(
           ' return the light-mode colors, and the ones starting with ',
           DocCode('dark'),
           ' the dark-mode ones. ',
+          DocCode('bgSubtleOf(context)'),
+          ', ',
+          DocCode('borderSubtleOf(context)'),
+          ' and ',
+          DocCode('textEmphasisOf(context)'),
+          ' pick the pair for the ambient mode. ',
           DocCode('BsBadge'),
           ' (with ',
           DocCode('subtle: true'),

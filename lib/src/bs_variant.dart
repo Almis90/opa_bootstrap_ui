@@ -1,7 +1,8 @@
-import 'package:flutter/painting.dart';
+import 'package:flutter/widgets.dart';
 
 import 'bs_color_utils.dart';
 import 'bs_colors.dart';
+import 'bs_theme.dart';
 
 /// Bootstrap's contextual color variants: primary, secondary, success, info, warning, danger,
 /// light and dark.
@@ -69,4 +70,16 @@ enum BsVariant {
     BsVariant.dark => BsColors.gray800,
     _ => BsColorUtils.shade(color, 0.4),
   };
+
+  /// [textEmphasis] in light mode, [darkTextEmphasis] in dark mode.
+  Color textEmphasisOf(BuildContext context) =>
+      BsTheme.of(context) == Brightness.dark ? darkTextEmphasis : textEmphasis;
+
+  /// [bgSubtle] in light mode, [darkBgSubtle] in dark mode.
+  Color bgSubtleOf(BuildContext context) =>
+      BsTheme.of(context) == Brightness.dark ? darkBgSubtle : bgSubtle;
+
+  /// [borderSubtle] in light mode, [darkBorderSubtle] in dark mode.
+  Color borderSubtleOf(BuildContext context) =>
+      BsTheme.of(context) == Brightness.dark ? darkBorderSubtle : borderSubtle;
 }
