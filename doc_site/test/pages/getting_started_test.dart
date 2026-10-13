@@ -7,7 +7,7 @@ void main() {
   testWidgets('Introduction renders without errors', (tester) async {
     await pumpDocPage(tester, const IntroductionPage());
 
-    expect(find.text('Introduction'), findsWidgets);
+    expect(find.text('Get started with opa_bootstrap_ui'), findsOneWidget);
     expect(tester.takeException(), isNull);
 
     await unmountDocPage(tester);

@@ -19,7 +19,7 @@ void main() {
     expect(find.text('Introduction'), findsWidgets);
     expect(find.text('Getting started'), findsOneWidget);
     expect(
-      find.textContaining('opa_bootstrap_ui ports Bootstrap 5 components'),
+      find.text('Get started with opa_bootstrap_ui'),
       findsOneWidget,
     );
   });
