@@ -36,6 +36,7 @@ import 'pages/forms/input_group_page.dart';
 import 'pages/forms/range_page.dart';
 import 'pages/forms/select_page.dart';
 import 'pages/customize/overview_page.dart';
+import 'pages/customize/tokens_page.dart';
 import 'pages/examples/album_example_page.dart';
 import 'pages/examples/badges_example_page.dart';
 import 'pages/examples/blog_example_page.dart';
@@ -158,7 +159,7 @@ final _sections = [
     iconColor: BsColors.pink,
     [
       DocNavPage('Overview', (_) => const CustomizeOverviewPage()),
-      DocNavPage.planned('Tokens'),
+      DocNavPage('Tokens', (_) => const TokensPage()),
       DocNavPage.planned('Options'),
       DocNavPage.planned('Color'),
       DocNavPage.planned('Color modes'),
