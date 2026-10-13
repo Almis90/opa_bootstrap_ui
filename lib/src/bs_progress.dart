@@ -199,7 +199,8 @@ class _BsProgressBarState extends State<BsProgressBar>
   }
 
   void _syncController() {
-    if (!widget.animated) {
+    // (reduced motion: the stripes stand still)
+    if (!widget.animated || BsTransitions.reducedOf(context)) {
       _controller?.dispose();
       _controller = null;
       return;

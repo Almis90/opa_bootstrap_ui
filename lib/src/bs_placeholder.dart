@@ -72,8 +72,11 @@ class _BsPlaceholderState extends State<BsPlaceholder>
     if (oldWidget.animation != widget.animation) _syncController();
   }
 
+  /// What runs: nothing at all when reduced motion is asked for.
+  BsPlaceholderAnimation get _animation => BsTransitions.reducedOf(context) ? BsPlaceholderAnimation.none : widget.animation;
+
   void _syncController() {
-    if (widget.animation == BsPlaceholderAnimation.none) {
+    if (_animation == BsPlaceholderAnimation.none) {
       _controller?.dispose();
       _controller = null;
       return;
@@ -84,7 +87,7 @@ class _BsPlaceholderState extends State<BsPlaceholder>
     } else {
       _controller!.duration = duration;
     }
-    if (widget.animation == BsPlaceholderAnimation.glow) {
+    if (_animation == BsPlaceholderAnimation.glow) {
       _controller!.repeat(reverse: true);
     } else {
       _controller!.repeat();
@@ -106,7 +109,7 @@ class _BsPlaceholderState extends State<BsPlaceholder>
       onVisibilityChanged: (visible) {
         if (!visible) {
           controller.stop();
-        } else if (widget.animation == BsPlaceholderAnimation.glow) {
+        } else if (_animation == BsPlaceholderAnimation.glow) {
           controller.repeat(reverse: true);
         } else {
           controller.repeat();
@@ -118,6 +121,7 @@ class _BsPlaceholderState extends State<BsPlaceholder>
 
   @override
   Widget build(BuildContext context) {
+    final animation = _animation;
     final style = BsPlaceholderStyle.defaults.merge(widget.style);
     final minOpacity = style.opacityMin ?? BsPlaceholderStyle.defaultOpacityMin;
     final maxOpacity = style.opacityMax ?? BsPlaceholderStyle.defaultOpacityMax;
@@ -127,7 +131,7 @@ class _BsPlaceholderState extends State<BsPlaceholder>
         BsColors.gray400;
 
     Widget bar = ColoredBox(color: color);
-    if (widget.animation == BsPlaceholderAnimation.wave) {
+    if (animation == BsPlaceholderAnimation.wave) {
       bar = Stack(
         fit: StackFit.expand,
         children: [
@@ -152,7 +156,7 @@ class _BsPlaceholderState extends State<BsPlaceholder>
 
     // (A repaint boundary round what animates forever, so a tick doesn't
     // re-record the page around it.)
-    if (widget.animation == BsPlaceholderAnimation.glow) {
+    if (animation == BsPlaceholderAnimation.glow) {
       return _gated(
         RepaintBoundary(
           child: AnimatedBuilder(
@@ -170,7 +174,7 @@ class _BsPlaceholderState extends State<BsPlaceholder>
 
     // Only the glow variant dips down to the minimum opacity (via its animation). The static and
     // wave variants rest at the maximum opacity.
-    return widget.animation == BsPlaceholderAnimation.wave
+    return animation == BsPlaceholderAnimation.wave
         ? _gated(
             RepaintBoundary(
               child: Opacity(opacity: maxOpacity, child: bar),

@@ -20,6 +20,10 @@ abstract final class BsTransitions {
   /// clear of that edge case.
   static const Duration reducedMotionDuration = Duration(milliseconds: 1);
 
+  /// Whether the user has asked for reduced motion. Animations that repeat
+  /// forever stand still then, rather than speeding up to [reducedMotionDuration].
+  static bool reducedOf(BuildContext context) => MediaQuery.maybeOf(context)?.disableAnimations ?? false;
+
   /// Resolves [duration] against the user's reduced-motion preference: when
   /// [MediaQueryData.disableAnimations] is on, every transition collapses to
   /// [reducedMotionDuration] instead of playing at its normal [duration].
@@ -28,7 +32,6 @@ abstract final class BsTransitions {
   /// rotation: freezing a spinner would suggest that a running operation had finished,
   /// so their motion is treated as essential rather than decorative.
   static Duration resolve(BuildContext context, Duration duration) {
-    final reduceMotion = MediaQuery.maybeOf(context)?.disableAnimations ?? false;
-    return reduceMotion ? reducedMotionDuration : duration;
+    return reducedOf(context) ? reducedMotionDuration : duration;
   }
 }

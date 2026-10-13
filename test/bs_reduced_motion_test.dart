@@ -107,4 +107,34 @@ void main() {
     await tester.pumpAndSettle();
     expect(tester.getSize(findCollapse()).height, 200);
   });
+
+  // An animation that repeats forever must stand still, not run at the
+  // one-millisecond duration a transition collapses to.
+  Widget looping(Widget child, {required bool reduced}) => Directionality(
+    textDirection: TextDirection.ltr,
+    child: MediaQuery(
+      data: MediaQueryData(disableAnimations: reduced),
+      child: Align(alignment: Alignment.topLeft, child: SizedBox(width: 200, child: child)),
+    ),
+  );
+
+  testWidgets('an animated BsProgress stands still when reduced motion is on', (tester) async {
+    await tester.pumpWidget(looping(const BsProgress(value: 50, animated: true), reduced: true));
+    await tester.pumpAndSettle(); // times out if anything keeps ticking
+    expect(find.byType(BsProgress), findsOneWidget);
+  });
+
+  testWidgets('an animated BsProgress keeps animating otherwise', (tester) async {
+    await tester.pumpWidget(looping(const BsProgress(value: 50, animated: true), reduced: false));
+    await tester.pump(const Duration(milliseconds: 100));
+    expect(tester.hasRunningAnimations, isTrue);
+  });
+
+  for (final animation in [BsPlaceholderAnimation.glow, BsPlaceholderAnimation.wave]) {
+    testWidgets('a $animation BsPlaceholder stands still when reduced motion is on', (tester) async {
+      await tester.pumpWidget(looping(BsPlaceholder(height: 16, animation: animation), reduced: true));
+      await tester.pumpAndSettle();
+      expect(find.byType(BsPlaceholder), findsOneWidget);
+    });
+  }
 }
