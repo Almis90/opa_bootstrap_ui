@@ -35,6 +35,7 @@ import 'pages/forms/form_control_page.dart';
 import 'pages/forms/input_group_page.dart';
 import 'pages/forms/range_page.dart';
 import 'pages/forms/select_page.dart';
+import 'pages/customize/overview_page.dart';
 import 'pages/examples/album_example_page.dart';
 import 'pages/examples/badges_example_page.dart';
 import 'pages/examples/blog_example_page.dart';
@@ -156,13 +157,13 @@ final _sections = [
     icon: BootstrapIconData.palette2,
     iconColor: BsColors.pink,
     [
-      DocNavPage.planned('Overview'),
-      DocNavPage.planned('Sass'),
+      DocNavPage('Overview', (_) => const CustomizeOverviewPage()),
+      DocNavPage.planned('Tokens'),
       DocNavPage.planned('Options'),
       DocNavPage.planned('Color'),
       DocNavPage.planned('Color modes'),
       DocNavPage.planned('Components'),
-      DocNavPage.planned('CSS variables'),
+      DocNavPage.planned('Style classes'),
       DocNavPage.planned('Optimize'),
     ],
   ),
