@@ -76,6 +76,7 @@ import 'pages/getting_started/interactivity_page.dart';
 import 'pages/getting_started/introduction_page.dart';
 import 'pages/getting_started/platforms_page.dart';
 import 'pages/getting_started/rfs_page.dart';
+import 'pages/getting_started/rtl_page.dart';
 import 'pages/layout/breakpoints_page.dart';
 import 'pages/layout/containers_page.dart';
 import 'pages/layout/flex_page.dart';
@@ -143,12 +144,9 @@ final _sections = [
       DocNavPage('Contents', (_) => const ContentsPage()),
       DocNavPage('Platforms & devices', (_) => const PlatformsPage()),
       DocNavPage('Interactivity', (_) => const InteractivityPage()),
-      DocNavPage.planned('Webpack'),
-      DocNavPage.planned('Parcel'),
-      DocNavPage.planned('Vite'),
       DocNavPage('Accessibility', (_) => const AccessibilityPage()),
       DocNavPage('RFS', (_) => const RfsPage()),
-      DocNavPage.planned('RTL'),
+      DocNavPage('RTL', (_) => const RtlPage()),
       DocNavPage.planned('Contribute'),
     ],
   ),

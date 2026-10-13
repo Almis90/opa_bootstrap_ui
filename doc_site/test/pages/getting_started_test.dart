@@ -6,6 +6,7 @@ import 'package:doc_site/pages/getting_started/interactivity_page.dart';
 import 'package:doc_site/pages/getting_started/introduction_page.dart';
 import 'package:doc_site/pages/getting_started/platforms_page.dart';
 import 'package:doc_site/pages/getting_started/rfs_page.dart';
+import 'package:doc_site/pages/getting_started/rtl_page.dart';
 
 import '../test_utils.dart';
 
@@ -75,6 +76,17 @@ void main() {
 
     expect(find.text('RFS'), findsOneWidget);
     expect(find.text('RFS API'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+
+    await unmountDocPage(tester);
+  });
+
+  testWidgets('RTL renders without errors', (tester) async {
+    await pumpDocPage(tester, const RtlPage());
+
+    expect(find.text('RTL'), findsOneWidget);
+    expect(find.text('Required setup'), findsOneWidget);
+    expect(find.text('The breadcrumb case'), findsOneWidget);
     expect(tester.takeException(), isNull);
 
     await unmountDocPage(tester);
