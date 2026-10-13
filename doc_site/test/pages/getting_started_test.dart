@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:doc_site/pages/getting_started/contents_page.dart';
 import 'package:doc_site/pages/getting_started/installation_page.dart';
+import 'package:doc_site/pages/getting_started/interactivity_page.dart';
 import 'package:doc_site/pages/getting_started/introduction_page.dart';
 import 'package:doc_site/pages/getting_started/platforms_page.dart';
 
@@ -42,6 +43,16 @@ void main() {
 
     expect(find.text('Supported platforms and devices'), findsOneWidget);
     expect(find.text('Platform compatibility'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+
+    await unmountDocPage(tester);
+  });
+
+  testWidgets('Interactivity renders without errors', (tester) async {
+    await pumpDocPage(tester, const InteractivityPage());
+
+    expect(find.text('Interactivity'), findsOneWidget);
+    expect(find.text('Controllers'), findsOneWidget);
     expect(tester.takeException(), isNull);
 
     await unmountDocPage(tester);
