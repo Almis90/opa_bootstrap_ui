@@ -91,6 +91,7 @@ import 'pages/layout/columns_page.dart';
 import 'pages/layout/containers_page.dart';
 import 'pages/layout/flex_page.dart';
 import 'pages/layout/grid_page.dart';
+import 'pages/layout/gutters_page.dart';
 import 'pages/layout/utilities_page.dart';
 import 'src/bootstrap_icon.dart';
 import 'src/doc_nav.dart';
@@ -185,7 +186,7 @@ final _sections = [
       DocNavPage('Containers', (_) => const ContainersPage()),
       DocNavPage('Grid', (_) => const GridPage()),
       DocNavPage('Columns', (_) => const ColumnsPage()),
-      DocNavPage.planned('Gutters'),
+      DocNavPage('Gutters', (_) => const GuttersPage()),
       DocNavPage('Utilities', (_) => const UtilitiesPage()),
       DocNavPage.planned('Z-index'),
       DocNavPage.planned('CSS Grid'),

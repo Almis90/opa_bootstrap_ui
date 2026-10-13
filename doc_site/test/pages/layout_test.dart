@@ -5,6 +5,7 @@ import 'package:doc_site/pages/layout/columns_page.dart';
 import 'package:doc_site/pages/layout/containers_page.dart';
 import 'package:doc_site/pages/layout/flex_page.dart';
 import 'package:doc_site/pages/layout/grid_page.dart';
+import 'package:doc_site/pages/layout/gutters_page.dart';
 import 'package:doc_site/pages/layout/utilities_page.dart';
 
 import '../test_utils.dart';
@@ -97,6 +98,40 @@ void main() {
       final end = tester.getRect(find.text('End')).top;
       expect(center, greaterThan(start));
       expect(end, greaterThan(center));
+
+      expect(tester.takeException(), isNull);
+      await unmountDocPage(tester);
+    }
+  });
+
+  testWidgets('Gutters renders at every size and spaces columns by g', (
+    tester,
+  ) async {
+    addTearDown(tester.view.reset);
+    tester.view.devicePixelRatio = 1;
+
+    for (final width in [400.0, 800.0, 1500.0]) {
+      tester.view.physicalSize = Size(width, 900);
+      await pumpDocPage(tester, const GuttersPage());
+
+      expect(find.text('Gutters'), findsWidgets);
+      expect(find.text('No gutters'), findsOneWidget);
+
+      // The fourth example (g-2) has four columns of col-6: the first two
+      // texts of it are the ninth and the tenth on the page.
+      Rect box(int index) => tester.getRect(
+        find
+            .ancestor(
+              of: find.text('Custom column padding').at(index),
+              matching: find.byType(DecoratedBox),
+            )
+            .first,
+      );
+      final first = box(8);
+      final right = box(9);
+      final below = box(10);
+      expect(right.left - first.right, 8, reason: 'gx at $width');
+      expect(below.top - first.bottom, 8, reason: 'gy at $width');
 
       expect(tester.takeException(), isNull);
       await unmountDocPage(tester);
