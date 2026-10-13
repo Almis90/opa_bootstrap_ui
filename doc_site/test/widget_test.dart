@@ -17,7 +17,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Introduction'), findsWidgets);
-    expect(find.text('GETTING STARTED'), findsOneWidget);
+    expect(find.text('Getting started'), findsOneWidget);
     expect(
       find.textContaining('opa_bootstrap_ui ports Bootstrap 5 components'),
       findsOneWidget,
@@ -37,7 +37,7 @@ void main() {
 
       // No persistent sidebar at this width, and no overflow errors from the
       // narrower page/example padding.
-      expect(find.text('GETTING STARTED'), findsNothing);
+      expect(find.text('Getting started'), findsNothing);
       expect(find.byKey(const Key('doc-shell-hamburger')), findsOneWidget);
       expect(tester.takeException(), isNull);
 
@@ -45,13 +45,13 @@ void main() {
       await tester.tap(find.byKey(const Key('doc-shell-hamburger')));
       await tester.pumpAndSettle();
 
-      expect(find.text('GETTING STARTED'), findsOneWidget);
+      expect(find.text('Getting started'), findsOneWidget);
 
       // Selecting a page closes the offcanvas and swaps the content.
       await tester.tap(find.text('Introduction').last);
       await tester.pumpAndSettle();
 
-      expect(find.text('GETTING STARTED'), findsNothing);
+      expect(find.text('Getting started'), findsNothing);
       expect(tester.takeException(), isNull);
     },
   );
