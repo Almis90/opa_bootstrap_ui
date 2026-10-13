@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:doc_site/pages/layout/breakpoints_page.dart';
+import 'package:doc_site/pages/layout/columns_page.dart';
 import 'package:doc_site/pages/layout/containers_page.dart';
 import 'package:doc_site/pages/layout/flex_page.dart';
 import 'package:doc_site/pages/layout/grid_page.dart';
@@ -71,6 +72,32 @@ void main() {
       } else {
         expect(narrow.dy, wide.dy, reason: 'side by side at $width');
       }
+      expect(tester.takeException(), isNull);
+      await unmountDocPage(tester);
+    }
+  });
+
+  testWidgets('Columns renders at every size and aligns within the line', (
+    tester,
+  ) async {
+    addTearDown(tester.view.reset);
+    tester.view.devicePixelRatio = 1;
+
+    for (final width in [400.0, 800.0, 1500.0]) {
+      tester.view.physicalSize = Size(width, 900);
+      await pumpDocPage(tester, const ColumnsPage());
+
+      expect(find.text('Columns'), findsWidgets);
+      expect(find.text('Standalone column widths'), findsOneWidget);
+
+      // The "Start", "Center" and "End" columns sit at the top, middle
+      // and bottom of the line set by the tall one.
+      final start = tester.getRect(find.text('Start')).top;
+      final center = tester.getRect(find.text('Center')).top;
+      final end = tester.getRect(find.text('End')).top;
+      expect(center, greaterThan(start));
+      expect(end, greaterThan(center));
+
       expect(tester.takeException(), isNull);
       await unmountDocPage(tester);
     }

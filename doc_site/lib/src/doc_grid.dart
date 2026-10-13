@@ -13,6 +13,7 @@ class DocGridCell extends StatelessWidget {
     this.gutter = 24,
     this.child,
     this.textAlign = TextAlign.center,
+    this.height,
   });
 
   final String label;
@@ -25,16 +26,23 @@ class DocGridCell extends StatelessWidget {
 
   final TextAlign textAlign;
 
+  /// A fixed height, for the tall column of the alignment examples.
+  final double? height;
+
   @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: _fill,
-        border: Border.all(color: _line),
-      ),
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: gutter / 2, vertical: 12),
-        child: child ?? Text(label, textAlign: textAlign),
+    final content = child ?? Text(label, textAlign: textAlign);
+    return SizedBox(
+      height: height,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: _fill,
+          border: Border.all(color: _line),
+        ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: gutter / 2, vertical: 12),
+          child: height == null ? content : Center(child: content),
+        ),
       ),
     );
   }
@@ -47,14 +55,19 @@ BsFlexItem docCol(
   BsResponsive<BsCol>? col,
   BsResponsive<BsCol>? offset,
   BsResponsive<BsAlign>? alignSelf,
+  BsResponsive<BsSpacing>? ms,
+  BsResponsive<BsSpacing>? me,
   double gutter = 24,
+  double? height,
   Widget? child,
 }) {
   return BsFlexItem(
     col: col,
     offset: offset,
     alignSelf: alignSelf,
+    ms: ms,
+    me: me,
     p: BsSpacing.s0,
-    child: DocGridCell(label, gutter: gutter, child: child),
+    child: DocGridCell(label, gutter: gutter, height: height, child: child),
   );
 }

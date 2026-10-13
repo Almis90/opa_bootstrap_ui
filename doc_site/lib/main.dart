@@ -87,6 +87,7 @@ import 'pages/getting_started/platforms_page.dart';
 import 'pages/getting_started/rfs_page.dart';
 import 'pages/getting_started/rtl_page.dart';
 import 'pages/layout/breakpoints_page.dart';
+import 'pages/layout/columns_page.dart';
 import 'pages/layout/containers_page.dart';
 import 'pages/layout/flex_page.dart';
 import 'pages/layout/grid_page.dart';
@@ -183,7 +184,7 @@ final _sections = [
       DocNavPage('Breakpoints', (_) => const BreakpointsPage()),
       DocNavPage('Containers', (_) => const ContainersPage()),
       DocNavPage('Grid', (_) => const GridPage()),
-      DocNavPage.planned('Columns'),
+      DocNavPage('Columns', (_) => const ColumnsPage()),
       DocNavPage.planned('Gutters'),
       DocNavPage('Utilities', (_) => const UtilitiesPage()),
       DocNavPage.planned('Z-index'),
