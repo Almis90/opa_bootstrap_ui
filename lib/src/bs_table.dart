@@ -102,7 +102,6 @@ class _BsTableState extends State<BsTable> {
     final padding = widget.small
         ? (style.cellPaddingSm ?? BsTableStyle.defaultCellPaddingSm)
         : (style.cellPadding ?? BsTableStyle.defaultCellPadding);
-    final borderColor = style.borderColor ?? BsTableStyle.defaultBorderColor;
     final borderWidth = style.borderWidth ?? BsTableStyle.defaultBorderWidth;
     final background = widget.dark
         ? BsColors.gray900
@@ -110,6 +109,12 @@ class _BsTableState extends State<BsTable> {
     final color = widget.dark
         ? BsColors.white
         : (style.color ?? BsTableStyle.defaultColor);
+    // A dark table's rules are its text color mixed 20% into its background, as in Bootstrap,
+    // unless the style says otherwise.
+    final borderColor = widget.dark
+        ? widget.style?.borderColor ??
+              Color.alphaBlend(color.withValues(alpha: 0.2), background)
+        : style.borderColor ?? BsTableStyle.defaultBorderColor;
     final accentBackground =
         style.accentBackground ?? BsTableStyle.defaultAccentBackground;
 
@@ -233,7 +238,8 @@ class _BsTableState extends State<BsTable> {
       rowText = BsColors.black;
     }
     // (the hover, stripe and active tints are of the text color's kind)
-    final onDark = rowText == BsColors.white;
+    final onDark =
+        rowText == BsColors.white || (widget.dark && rowText == null);
     if (widget.striped && index.isEven) {
       rowColor = _blend(
         rowColor,
