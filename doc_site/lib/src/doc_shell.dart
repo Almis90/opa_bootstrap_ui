@@ -106,16 +106,17 @@ class _DocShellState extends State<DocShell> {
     _searchOpen = true;
     showDocSearch(context, [
       for (final section in widget.sections)
-        for (final page in section.pages)
-          DocSearchHit(
-            group: section.title,
-            title: page.title,
-            onSelect: () => setState(() {
-              _selected = page;
-              _section = AppSection.docs;
-              _exampleDetailOpen = false;
-            }),
-          ),
+        for (final page in section.allPages)
+          if (!page.planned)
+            DocSearchHit(
+              group: section.title,
+              title: page.title,
+              onSelect: () => setState(() {
+                _selected = page;
+                _section = AppSection.docs;
+                _exampleDetailOpen = false;
+              }),
+            ),
       for (final example in widget.examples)
         DocSearchHit(
           group: 'Examples',
@@ -197,10 +198,13 @@ class _DocShellState extends State<DocShell> {
                       children: [
                         SizedBox(
                           width: 260,
-                          child: DocSidebar(
-                            sections: widget.sections,
-                            selected: _selected,
-                            onSelect: _select,
+                          child: ColoredBox(
+                            color: BsBody.backgroundOf(context),
+                            child: DocSidebar(
+                              sections: widget.sections,
+                              selected: _selected,
+                              onSelect: _select,
+                            ),
                           ),
                         ),
                         Container(width: 1, color: BsBorders.colorOf(context)),
