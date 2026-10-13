@@ -4,6 +4,7 @@ import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 
 import 'app_section.dart';
 import 'doc_nav.dart';
+import 'doc_navigation.dart';
 import 'doc_sidebar.dart';
 import 'doc_header.dart';
 import 'doc_search.dart';
@@ -140,6 +141,23 @@ class _DocShellState extends State<DocShell> {
 
   void _select(DocNavPage page) => setState(() => _selected = page);
 
+  /// Opens the page [title] of the sidebar group [group] (a link in a page).
+  void _openPage(String group, String title) {
+    for (final section in widget.sections) {
+      if (section.title != group) continue;
+      for (final page in section.allPages) {
+        if (page.title == title) {
+          setState(() {
+            _selected = page;
+            _section = AppSection.docs;
+            _exampleDetailOpen = false;
+          });
+          return;
+        }
+      }
+    }
+  }
+
   void _openMobileNav(BuildContext context) {
     showBsOffcanvas<void>(
       context: context,
@@ -171,67 +189,74 @@ class _DocShellState extends State<DocShell> {
         final isMobile = constraints.maxWidth < BsBreakpoint.lg.minWidth;
         final header = !_exampleDetailOpen;
         // The header goes last so its shadow falls over the page below it.
-        return Stack(
-          children: [
-            Positioned.fill(
-              top: header ? docHeaderHeight : 0,
-              child: _section == AppSection.examples
-                  ? ColoredBox(
-                      color: BsBody.backgroundOf(context),
-                      child: ExamplesShell(
-                        key: ValueKey(_examplesGeneration),
-                        initialEntry: _searchedExample,
-                        examples: widget.examples,
-                        themeMode: widget.themeMode,
-                        onThemeModeChanged: widget.onThemeModeChanged,
-                        onDetailChanged: (open) =>
-                            setState(() => _exampleDetailOpen = open),
-                      ),
-                    )
-                  : isMobile
-                  ? ColoredBox(
-                      color: BsBody.backgroundOf(context),
-                      child: Builder(builder: _selected.builder),
-                    )
-                  : Row(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        SizedBox(
-                          width: 260,
-                          child: ColoredBox(
-                            color: BsBody.backgroundOf(context),
-                            child: DocSidebar(
-                              sections: widget.sections,
-                              selected: _selected,
-                              onSelect: _select,
+        return DocNavigation(
+          openPage: _openPage,
+          openExamples: () => _selectSection(AppSection.examples),
+          child: Stack(
+            children: [
+              Positioned.fill(
+                top: header ? docHeaderHeight : 0,
+                child: _section == AppSection.examples
+                    ? ColoredBox(
+                        color: BsBody.backgroundOf(context),
+                        child: ExamplesShell(
+                          key: ValueKey(_examplesGeneration),
+                          initialEntry: _searchedExample,
+                          examples: widget.examples,
+                          themeMode: widget.themeMode,
+                          onThemeModeChanged: widget.onThemeModeChanged,
+                          onDetailChanged: (open) =>
+                              setState(() => _exampleDetailOpen = open),
+                        ),
+                      )
+                    : isMobile
+                    ? ColoredBox(
+                        color: BsBody.backgroundOf(context),
+                        child: Builder(builder: _selected.builder),
+                      )
+                    : Row(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          SizedBox(
+                            width: 260,
+                            child: ColoredBox(
+                              color: BsBody.backgroundOf(context),
+                              child: DocSidebar(
+                                sections: widget.sections,
+                                selected: _selected,
+                                onSelect: _select,
+                              ),
                             ),
                           ),
-                        ),
-                        Container(width: 1, color: BsBorders.colorOf(context)),
-                        Expanded(
-                          child: ColoredBox(
-                            color: BsBody.backgroundOf(context),
-                            child: Builder(builder: _selected.builder),
+                          Container(
+                            width: 1,
+                            color: BsBorders.colorOf(context),
                           ),
-                        ),
-                      ],
-                    ),
-            ),
-            if (header)
-              Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                child: DocHeader(
-                  section: _section,
-                  onSelectSection: _selectSection,
-                  themeMode: widget.themeMode,
-                  onThemeModeChanged: widget.onThemeModeChanged,
-                  onOpenSidebar: () => _openMobileNav(context),
-                  onOpenSearch: _openSearch,
-                ),
+                          Expanded(
+                            child: ColoredBox(
+                              color: BsBody.backgroundOf(context),
+                              child: Builder(builder: _selected.builder),
+                            ),
+                          ),
+                        ],
+                      ),
               ),
-          ],
+              if (header)
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  child: DocHeader(
+                    section: _section,
+                    onSelectSection: _selectSection,
+                    themeMode: widget.themeMode,
+                    onThemeModeChanged: widget.onThemeModeChanged,
+                    onOpenSidebar: () => _openMobileNav(context),
+                    onOpenSearch: _openSearch,
+                  ),
+                ),
+            ],
+          ),
         );
       },
     );

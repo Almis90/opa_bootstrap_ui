@@ -11,7 +11,14 @@ import 'doc_example.dart';
 /// Mirrors Bootstrap's docs page layout (`<h1>` + `.lead` + a series of
 /// `.bd-example` blocks) from `DocsLayout.astro`.
 class DocPage extends StatelessWidget {
-  const DocPage({super.key, required this.title, required this.lead, this.examples = const [], this.children = const []});
+  const DocPage({
+    super.key,
+    required this.title,
+    required this.lead,
+    this.examples = const [],
+    this.children = const [],
+    this.leadGap = 32,
+  });
 
   final String title;
   final String lead;
@@ -21,27 +28,61 @@ class DocPage extends StatelessWidget {
   /// other than a `DocExample`.
   final List<Widget> children;
 
+  /// The space between the lead and what follows it.
+  final double leadGap;
+
+  /// The widest the text of a page gets.
+  static const double maxContentWidth = 805;
+
+  /// A font size that grows with the viewport below `xl` (`calc(<base> + <vw>)`)
+  /// and is [full] from there up, as Bootstrap's responsive font sizes do.
+  static double _fluid(double width, double full, double base, double vw) =>
+      width >= BsBreakpoint.xl.minWidth ? full : base + vw * width;
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
+        final width = MediaQuery.sizeOf(context).width;
         final isMobile = constraints.maxWidth < BsBreakpoint.md.minWidth;
         final horizontalPadding = isMobile ? 16.0 : 40.0;
         return SingleChildScrollView(
-          padding: EdgeInsets.fromLTRB(horizontalPadding, isMobile ? 20 : 32, horizontalPadding, 48),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: TextStyle(fontSize: isMobile ? 26 : 32, fontWeight: FontWeight.w600, color: BsBody.colorOf(context)),
+          padding: EdgeInsets.fromLTRB(
+            horizontalPadding,
+            isMobile ? 20 : 32,
+            horizontalPadding,
+            48,
+          ),
+          child: Align(
+            alignment: AlignmentDirectional.topStart,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: maxContentWidth),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: _fluid(width, 48, 22.8, 0.021),
+                      fontWeight: FontWeight.w500,
+                      height: 1.2,
+                      color: BsTextColor.bodyEmphasis.of(context),
+                    ),
+                  ),
+                  Text(
+                    lead,
+                    style: TextStyle(
+                      fontSize: _fluid(width, 24, 20.4, 0.003),
+                      fontWeight: FontWeight.w300,
+                      height: 1.5,
+                    ),
+                  ),
+                  SizedBox(height: leadGap),
+                  ...examples,
+                  ...children,
+                ],
               ),
-              const SizedBox(height: 12),
-              Text(lead, style: TextStyle(fontSize: 18, color: BsBody.secondaryColorOf(context), height: 1.5)),
-              const SizedBox(height: 32),
-              ...examples,
-              ...children,
-            ],
+            ),
           ),
         );
       },
