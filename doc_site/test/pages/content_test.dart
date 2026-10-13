@@ -97,9 +97,59 @@ void main() {
   });
 
   testWidgets('Figures renders without errors', (tester) async {
+    tester.view.physicalSize = const Size(1200, 4000);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
     await pumpDocPage(tester, const FiguresPage());
 
     expect(find.text('Figures'), findsWidgets);
+    expect(find.text('Aligning the caption'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+
+    await unmountDocPage(tester);
+  });
+
+  testWidgets('Figures aligns the caption with the image', (tester) async {
+    tester.view.physicalSize = const Size(1200, 4000);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await pumpDocPage(tester, const FiguresPage());
+
+    final figures = find.byType(BsFigure);
+    expect(figures, findsNWidgets(3));
+    final captions = find.text('A caption for the above image.');
+    final first = tester.getRect(
+      find.descendant(of: figures.at(0), matching: find.byType(IntrinsicWidth)),
+    );
+    final aligned = tester.getRect(
+      find.descendant(of: figures.at(1), matching: find.byType(IntrinsicWidth)),
+    );
+    expect(first.width, greaterThanOrEqualTo(400));
+    expect(aligned.width, first.width);
+    expect(tester.getRect(captions.at(0)).left, closeTo(first.left, 1));
+    expect(tester.getRect(captions.at(1)).right, closeTo(aligned.right, 1));
+
+    await unmountDocPage(tester);
+  });
+
+  testWidgets('Figures renders on a narrow window', (tester) async {
+    tester.view.physicalSize = const Size(400, 4000);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await pumpDocPage(tester, const FiguresPage());
+
+    for (final figure in find.byType(BsFigure).evaluate()) {
+      expect(
+        tester.getSize(find.byWidget(figure.widget)).width,
+        lessThanOrEqualTo(400),
+      );
+    }
     expect(tester.takeException(), isNull);
 
     await unmountDocPage(tester);
