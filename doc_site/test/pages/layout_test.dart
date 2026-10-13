@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:opa_bootstrap_ui/opa_bootstrap_ui.dart';
 import 'package:doc_site/pages/layout/breakpoints_page.dart';
 import 'package:doc_site/pages/layout/columns_page.dart';
 import 'package:doc_site/pages/layout/containers_page.dart';
@@ -7,6 +8,7 @@ import 'package:doc_site/pages/layout/flex_page.dart';
 import 'package:doc_site/pages/layout/grid_page.dart';
 import 'package:doc_site/pages/layout/gutters_page.dart';
 import 'package:doc_site/pages/layout/utilities_page.dart';
+import 'package:doc_site/pages/layout/z_index_page.dart';
 
 import '../test_utils.dart';
 
@@ -136,5 +138,16 @@ void main() {
       expect(tester.takeException(), isNull);
       await unmountDocPage(tester);
     }
+  });
+
+  testWidgets('Z-index renders without errors', (tester) async {
+    await pumpDocPage(tester, const ZIndexPage());
+
+    expect(find.text('Z-index'), findsWidgets);
+    expect(find.text('How they stack'), findsOneWidget);
+    expect(find.text('${BsZIndex.toast}'), findsNWidgets(2));
+    expect(tester.takeException(), isNull);
+
+    await unmountDocPage(tester);
   });
 }
