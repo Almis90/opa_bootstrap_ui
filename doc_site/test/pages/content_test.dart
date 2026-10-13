@@ -56,9 +56,68 @@ void main() {
   });
 
   testWidgets('Typography renders without errors', (tester) async {
+    tester.view.physicalSize = const Size(1200, 4000);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
     await pumpDocPage(tester, const TypographyPage());
 
     expect(find.text('Typography'), findsWidgets);
+    expect(find.text('Description list alignment'), findsOneWidget);
+    final term = tester.getRect(find.text('Description lists'));
+    final definition = tester.getRect(
+      find.text('A description list is perfect for defining terms.'),
+    );
+    expect(definition.left, greaterThan(term.right));
+    expect(definition.top, lessThan(term.bottom));
+    expect(tester.takeException(), isNull);
+
+    await unmountDocPage(tester);
+  });
+
+  testWidgets('Typography aligns the blockquote footers', (tester) async {
+    tester.view.physicalSize = const Size(1200, 4000);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await pumpDocPage(tester, const TypographyPage());
+
+    final footers = find.textContaining('Someone famous in Source Title');
+    final quotes = find.text(
+      'A well-known quote, contained in a blockquote element.',
+    );
+    expect(footers, findsNWidgets(3));
+    expect(quotes, findsNWidgets(4));
+
+    final start = tester.getRect(footers.at(0));
+    final centered = tester.getRect(footers.at(1));
+    final end = tester.getRect(footers.at(2));
+    final centeredQuote = tester.getRect(quotes.at(2));
+    final endQuote = tester.getRect(quotes.at(3));
+
+    expect(centered.center.dx, closeTo(centeredQuote.center.dx, 1));
+    expect(centered.left, greaterThan(start.left));
+    expect(end.right, closeTo(endQuote.right, 1));
+
+    await unmountDocPage(tester);
+  });
+
+  testWidgets('Typography renders on a narrow window', (tester) async {
+    tester.view.physicalSize = const Size(400, 4000);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await pumpDocPage(tester, const TypographyPage());
+
+    final term = tester.getRect(find.text('Description lists'));
+    final definition = tester.getRect(
+      find.text('A description list is perfect for defining terms.'),
+    );
+    expect(definition.top, greaterThan(term.bottom - 1));
+
     expect(tester.takeException(), isNull);
 
     await unmountDocPage(tester);
