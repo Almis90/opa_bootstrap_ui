@@ -32,4 +32,9 @@ void main() {
     expect(caption.top, image.bottom + 8);
     expect(caption.right, image.right);
   });
+
+  test('the caption defaults to the secondary color of the body', () {
+    expect(BsFigureStyle.defaultCaptionColor, BsBody.secondaryColor);
+    expect(BsTableStyle.defaultCaptionColor, BsBody.secondaryColor);
+  });
 }

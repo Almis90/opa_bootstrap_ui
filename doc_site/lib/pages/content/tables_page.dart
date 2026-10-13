@@ -784,7 +784,7 @@ BsTable(
             [
               r'$table-caption-color',
               'captionColor',
-              'Gray 600, the secondary color in dark mode',
+              'The secondary color of the body',
             ],
           ],
         ),

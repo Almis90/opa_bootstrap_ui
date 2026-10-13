@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
 
-import '../bs_colors.dart';
 import 'bs_body.dart';
 
 /// Visual variables of a Bootstrap figure.
@@ -26,7 +25,7 @@ class BsFigureStyle {
 
   static const double defaultCaptionFontSize = 14;
 
-  static const Color defaultCaptionColor = BsColors.gray600;
+  static const Color defaultCaptionColor = BsBody.secondaryColor;
 
   static const Color defaultDarkCaptionColor = BsBody.darkSecondaryColor;
 

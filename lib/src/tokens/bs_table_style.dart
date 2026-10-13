@@ -99,7 +99,7 @@ class BsTableStyle {
 
   static const Color defaultDarkBorderColor = BsBorders.darkColor;
 
-  static const Color defaultCaptionColor = BsColors.gray600;
+  static const Color defaultCaptionColor = BsBody.secondaryColor;
 
   static const Color defaultDarkCaptionColor = BsBody.darkSecondaryColor;
 
