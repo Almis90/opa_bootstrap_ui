@@ -26,6 +26,7 @@ import 'pages/components/spinners_page.dart';
 import 'pages/components/toasts_page.dart';
 import 'pages/components/tooltips_page.dart';
 import 'pages/content/figures_page.dart';
+import 'pages/content/reboot_page.dart';
 import 'pages/content/tables_page.dart';
 import 'pages/content/thumbnails_page.dart';
 import 'pages/content/typography_page.dart';
@@ -197,7 +198,7 @@ final _sections = [
     icon: BootstrapIconData.fileEarmarkRichtext,
     iconColor: BsColors.gray600,
     [
-      DocNavPage.planned('Reboot'),
+      DocNavPage('Reboot', (_) => const RebootPage()),
       DocNavPage('Typography', (_) => const TypographyPage()),
       DocNavPage('Images', (_) => const ThumbnailsPage()),
       DocNavPage('Tables', (_) => const TablesPage()),
