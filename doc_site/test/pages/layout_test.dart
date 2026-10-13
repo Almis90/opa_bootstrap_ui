@@ -23,6 +23,11 @@ void main() {
     await pumpDocPage(tester, const ContainersPage());
 
     expect(find.text('Containers'), findsWidgets);
+    expect(find.text('Responsive containers'), findsOneWidget);
+    // The test window is 800 wide (md).
+    expect(find.textContaining('BsContainer: 720px,'), findsOneWidget);
+    expect(find.textContaining('responsiveFrom(lg): 100%,'), findsOneWidget);
+    expect(find.textContaining('BsContainer.fluid: 100%,'), findsOneWidget);
     expect(tester.takeException(), isNull);
 
     await unmountDocPage(tester);
