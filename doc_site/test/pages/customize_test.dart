@@ -6,6 +6,7 @@ import 'package:doc_site/pages/customize/color_page.dart';
 import 'package:doc_site/pages/customize/components_page.dart';
 import 'package:doc_site/pages/customize/options_page.dart';
 import 'package:doc_site/pages/customize/overview_page.dart';
+import 'package:doc_site/pages/customize/style_classes_page.dart';
 import 'package:doc_site/pages/customize/tokens_page.dart';
 
 import '../test_utils.dart';
@@ -90,6 +91,31 @@ void main() {
     expect(find.text('Modifiers'), findsOneWidget);
     expect(find.text('Creating your own'), findsOneWidget);
     expect(find.text('This is an info callout.'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+
+    await unmountDocPage(tester);
+  });
+
+  testWidgets('Style classes renders and its demo changes at run time', (
+    tester,
+  ) async {
+    await pumpDocPage(tester, const StyleClassesPage());
+
+    expect(find.text('Style classes'), findsWidgets);
+    expect(find.text('Component variables'), findsOneWidget);
+    expect(find.text('Focus variables'), findsOneWidget);
+
+    BsAlertStyle? alertStyle() => tester
+        .widget<BsAlert>(
+          find.widgetWithText(BsAlert, 'The corners change at run time.'),
+        )
+        .style;
+    expect(alertStyle()?.borderRadius, 0);
+    final toggle = find.text('Round the corners');
+    await tester.ensureVisible(toggle);
+    await tester.tap(toggle);
+    await tester.pump();
+    expect(alertStyle()?.borderRadius, 24);
     expect(tester.takeException(), isNull);
 
     await unmountDocPage(tester);

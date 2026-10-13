@@ -40,6 +40,7 @@ import 'pages/customize/components_page.dart';
 import 'pages/customize/color_page.dart';
 import 'pages/customize/options_page.dart';
 import 'pages/customize/overview_page.dart';
+import 'pages/customize/style_classes_page.dart';
 import 'pages/customize/tokens_page.dart';
 import 'pages/examples/album_example_page.dart';
 import 'pages/examples/badges_example_page.dart';
@@ -168,7 +169,7 @@ final _sections = [
       DocNavPage('Color', (_) => const ColorPage()),
       DocNavPage('Color modes', (_) => const ColorModesPage()),
       DocNavPage('Components', (_) => const ComponentsPage()),
-      DocNavPage.planned('Style classes'),
+      DocNavPage('Style classes', (_) => const StyleClassesPage()),
       DocNavPage.planned('Optimize'),
     ],
   ),
