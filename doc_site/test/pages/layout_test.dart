@@ -11,6 +11,9 @@ void main() {
     await pumpDocPage(tester, const BreakpointsPage());
 
     expect(find.text('Breakpoints'), findsWidgets);
+    expect(find.text('Available breakpoints'), findsOneWidget);
+    expect(find.text('3 columns'), findsWidgets);
+    expect(find.text('your window'), findsOneWidget);
     expect(tester.takeException(), isNull);
 
     await unmountDocPage(tester);
