@@ -5,7 +5,8 @@ import 'tokens/bs_figure_style.dart';
 
 /// A Bootstrap figure: an [image] with an optional [caption] underneath.
 ///
-/// The figure is as wide as its widest part, as an inline block is, and the [caption] is as wide
+/// The figure is as wide as its widest part, as an inline block is (it keeps that width, at the
+/// start, where its parent is wider), and the [caption] is as wide
 /// as the figure, so that the text alignment of a box around it aligns the caption with the
 /// image. The [image] has to be able to tell its width, as an [Image] or a `BsImage` can.
 class BsFigure extends StatelessWidget {
@@ -19,15 +20,20 @@ class BsFigure extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IntrinsicWidth(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          image,
-          if (caption != null) const SizedBox(height: 8),
-          ?caption,
-        ],
+    return Align(
+      alignment: AlignmentDirectional.topStart,
+      widthFactor: 1,
+      heightFactor: 1,
+      child: IntrinsicWidth(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            image,
+            if (caption != null) const SizedBox(height: 8),
+            ?caption,
+          ],
+        ),
       ),
     );
   }

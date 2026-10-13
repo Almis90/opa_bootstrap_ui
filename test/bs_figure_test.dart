@@ -33,6 +33,38 @@ void main() {
     expect(caption.right, image.right);
   });
 
+  testWidgets('a figure keeps its width where its parent is tight', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      const Directionality(
+        textDirection: TextDirection.ltr,
+        child: Align(
+          alignment: Alignment.topLeft,
+          child: SizedBox(
+            width: 800,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                BsFigure(
+                  image: SizedBox(key: Key('image'), width: 400, height: 300),
+                  caption: BsFigureCaption(child: Text('A caption')),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
+    final content = find.descendant(
+      of: find.byType(BsFigure),
+      matching: find.byType(IntrinsicWidth),
+    );
+    expect(tester.getSize(content).width, 400);
+    expect(tester.getRect(find.byKey(const Key('image'))).left, 0);
+  });
+
   test('the caption defaults to the secondary color of the body', () {
     expect(BsFigureStyle.defaultCaptionColor, BsBody.secondaryColor);
     expect(BsTableStyle.defaultCaptionColor, BsBody.secondaryColor);
