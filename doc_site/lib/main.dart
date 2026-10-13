@@ -35,6 +35,7 @@ import 'pages/forms/form_control_page.dart';
 import 'pages/forms/input_group_page.dart';
 import 'pages/forms/range_page.dart';
 import 'pages/forms/select_page.dart';
+import 'pages/customize/options_page.dart';
 import 'pages/customize/overview_page.dart';
 import 'pages/customize/tokens_page.dart';
 import 'pages/examples/album_example_page.dart';
@@ -160,7 +161,7 @@ final _sections = [
     [
       DocNavPage('Overview', (_) => const CustomizeOverviewPage()),
       DocNavPage('Tokens', (_) => const TokensPage()),
-      DocNavPage.planned('Options'),
+      DocNavPage('Options', (_) => const OptionsPage()),
       DocNavPage.planned('Color'),
       DocNavPage.planned('Color modes'),
       DocNavPage.planned('Components'),
