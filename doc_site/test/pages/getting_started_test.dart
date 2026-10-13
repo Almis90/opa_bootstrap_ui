@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:doc_site/pages/getting_started/accessibility_page.dart';
 import 'package:doc_site/pages/getting_started/contents_page.dart';
 import 'package:doc_site/pages/getting_started/installation_page.dart';
 import 'package:doc_site/pages/getting_started/interactivity_page.dart';
@@ -53,6 +54,16 @@ void main() {
 
     expect(find.text('Interactivity'), findsOneWidget);
     expect(find.text('Controllers'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+
+    await unmountDocPage(tester);
+  });
+
+  testWidgets('Accessibility renders without errors', (tester) async {
+    await pumpDocPage(tester, const AccessibilityPage());
+
+    expect(find.text('Accessibility'), findsOneWidget);
+    expect(find.text('Touch targets'), findsOneWidget);
     expect(tester.takeException(), isNull);
 
     await unmountDocPage(tester);
