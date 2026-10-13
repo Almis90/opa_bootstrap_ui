@@ -31,7 +31,8 @@ class BsTableRow {
 /// A Bootstrap table.
 ///
 /// Renders with Flutter's [Table], so columns auto-size to their widest cell by default; pass
-/// [columnWidths] for per-column control (for example `{0: FixedColumnWidth(120)}`).
+/// [columnWidths] for per-column control (for example `{0: FixedColumnWidth(120)}`). Cells sit at
+/// the top of their row and the head cells at the bottom, as in Bootstrap.
 class BsTable extends StatefulWidget {
   const BsTable({
     super.key,
@@ -155,6 +156,7 @@ class _BsTableState extends State<BsTable> {
                 cell,
                 padding: firstRowPadding,
                 fontWeight: FontWeight.bold,
+                alignment: TableCellVerticalAlignment.bottom,
               ),
           ],
         ),
@@ -303,6 +305,7 @@ class _BsTableState extends State<BsTable> {
     FontWeight? fontWeight,
     int? hoverRow,
     Color? color,
+    TableCellVerticalAlignment alignment = TableCellVerticalAlignment.top,
   }) {
     Widget cell = Padding(
       padding: padding,
@@ -321,10 +324,7 @@ class _BsTableState extends State<BsTable> {
         child: cell,
       );
     }
-    return TableCell(
-      verticalAlignment: TableCellVerticalAlignment.middle,
-      child: cell,
-    );
+    return TableCell(verticalAlignment: alignment, child: cell);
   }
 
   Color _blend(Color base, Color tint, double opacity) =>
