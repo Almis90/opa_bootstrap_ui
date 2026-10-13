@@ -51,13 +51,13 @@ class ContentsPage extends StatelessWidget {
           '''
 opa_bootstrap_ui/
 ├── lib/
-│   ├── opa_bootstrap_ui.dart   the library: exports the public API
+│   ├── opa_bootstrap_ui.dart
 │   └── src/
-│       ├── bs_*.dart           widgets and utilities, one per file
-│       └── tokens/             design tokens and component styles
-├── example/                    a Flutter app that shows the components
-├── doc_site/                   this documentation site
-└── test/                       tests of the library''',
+│       ├── bs_*.dart
+│       └── tokens/
+├── example/
+├── doc_site/
+└── test/''',
           language: DocLanguage.text,
         ),
         const DocText(['What each part is for:']),
